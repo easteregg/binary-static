@@ -5909,15 +5909,7 @@ var DatePicker = function () {
                 $selector.attr('type', 'number');
                 return;
             }
-            // Create a label to be friendlier
-            var $label = $('label[for=trading-date]');
-            $label.append('<span class=\'ux-date foot-note\'></span>');
-            if ($selector.val() === '') {
-                $('span.ux-date').text(localize('Today'));
-            }
-            $selector.change(function () {
-                $('span.ux-date').text(moment($selector.val()).format('LL'));
-            });
+
             if (checkInput('date', 'not-a-date') && $selector.attr('data-picker') !== 'native') {
                 hide(selector);
                 $selector.attr({ type: 'date', 'data-picker': 'native' }).val($selector.attr('data-value')).removeClass('clear');
@@ -23671,6 +23663,18 @@ var TradingTimesUI = function () {
             maxDate: 364
         });
         $date.val(localize('Today'));
+        // Create a label to be friendlier
+        var $label = $('label[for=trading-date]');
+        $label.append('<span class=\'ux-date foot-note\'></span>');
+        if ($date.val() === '') {
+            $('span.ux-date').text(localize('Today'));
+            $date.val(moment().format('YYYY-MM-DD'));
+            $date.attr('value', moment.utc().toISOString().substring(0, 10));
+        }
+        $date.change(function () {
+            $('span.ux-date').text(moment($date.val()).format('LL'));
+        });
+
         $date.change(function () {
             if (!dateValueChanged(this, 'date')) {
                 return false;
