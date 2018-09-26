@@ -5909,7 +5909,6 @@ var DatePicker = function () {
                 $selector.attr('type', 'number');
                 return;
             }
-
             if (checkInput('date', 'not-a-date') && $selector.attr('data-picker') !== 'native') {
                 hide(selector);
                 $selector.attr({ type: 'date', 'data-picker': 'native' }).val($selector.attr('data-value')).removeClass('clear');
@@ -23656,7 +23655,8 @@ var TradingTimesUI = function () {
         }
 
         var date = moment.utc();
-        $date.attr('data-value', toISOFormat(date));
+        var isoFormattedDate = toISOFormat(date);
+        $date.attr('data-value', isoFormattedDate);
         DatePicker.init({
             selector: '#trading-date',
             minDate: 0,
@@ -23668,8 +23668,8 @@ var TradingTimesUI = function () {
         $label.append('<span class=\'ux-date foot-note\'></span>');
         if ($date.val() === '') {
             $('span.ux-date').text(localize('Today'));
-            $date.val(moment().format('YYYY-MM-DD'));
-            $date.attr('value', moment.utc().toISOString().substring(0, 10));
+            $date.val(isoFormattedDate);
+            $date.attr('value', isoFormattedDate);
         }
         $date.change(function () {
             $('span.ux-date').text(moment($date.val()).format('LL'));
