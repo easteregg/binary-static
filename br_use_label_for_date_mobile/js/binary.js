@@ -23665,8 +23665,8 @@ var TradingTimesUI = function () {
         $date.val(localize('Today'));
         // Create a label to be friendlier
         var $label = $('label[for=trading-date]');
-        $label.append('<span class=\'ux-date foot-note\'></span>');
-        if ($date.val() === '') {
+        $('<span/>').class('ux-date foot-note').appendTo($label);
+        if (!$date.val()) {
             $('span.ux-date').text(localize('Today'));
             $date.val(isoFormattedDate);
             $date.attr('value', isoFormattedDate);
