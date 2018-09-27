@@ -27731,12 +27731,6 @@ var Settings = function () {
                 $('#professional_client').setVisibility(1).find('p').text(localize(text));
             }
 
-            if (Client.isAccountOfType('real')) {
-                $('#authenticate').setVisibility(1);
-            } else {
-                $('#authenticate').setVisibility(0);
-            }
-
             $('#settings_container').setVisibility(1);
         });
     };
