@@ -1631,7 +1631,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '15034'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     if (config_app_id) {
         app_id = config_app_id;
@@ -23663,18 +23663,23 @@ var TradingTimesUI = function () {
             maxDate: 364
         });
         $date.val(localize('Today'));
-        // Create a label to be friendlier
-        var $label = $('label[for=trading-date]');
-        $label.append($('<span/>', { class: 'ux-date foot-note' }));
-        if (!$date.val()) {
-            $('span.ux-date').text(localize('Today'));
-            $date.val(isoFormattedDate);
-            $date.attr('value', isoFormattedDate);
+        if ($(window).width() < 480) {
+            // Create a label to be friendlier
+            var $label = $('label[for=trading-date]');
+            $label.append($('<span/>', { class: 'ux-date foot-note' }));
+            if (!$date.val()) {
+                $('span.ux-date').text(localize('Today'));
+                $date.val(isoFormattedDate);
+                $date.attr('value', isoFormattedDate);
+            }
+            $date.change(function () {
+                if (moment().diff(moment($date.val()), 'days', true) < 0) {
+                    $('span.ux-date').text('');
+                } else {
+                    $('span.ux-date').text('Today');
+                }
+            });
         }
-        $date.change(function () {
-            $('span.ux-date').text(moment($date.val()).format('LL'));
-        });
-
         $date.change(function () {
             if (!dateValueChanged(this, 'date')) {
                 return false;
