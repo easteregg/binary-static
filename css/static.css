@@ -1500,6 +1500,27 @@ body #not_authenticated_financial ul.checked > li {
 #contract-specification table td {
   white-space: nowrap; }
 
+.mt-mobile-phone {
+  height: 397px;
+  width: auto; }
+
+.mt-desktop-screen-app {
+  max-width: 600px;
+  height: auto; }
+  @media screen and (max-width: 480px) {
+    .mt-desktop-screen-app {
+      max-width: 100%; } }
+
+.mt-browser-icon {
+  max-width: 80px; }
+
+.alternative-download-description {
+  margin: 0; }
+
+#mt_download .app-store-badge, #mt_download .google-play-badge {
+  height: 56px;
+  width: 172px; }
+
 .timeline {
   margin: 0 auto;
   overflow: hidden;
