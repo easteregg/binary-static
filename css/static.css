@@ -1521,6 +1521,23 @@ body #not_authenticated_financial ul.checked > li {
   height: 56px;
   width: 172px; }
 
+.mt-sidebar-button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  height: 46px; }
+  .mt-sidebar-button img {
+    max-width: 100%;
+    width: 32px; }
+  .mt-sidebar-button .mt-link {
+    font-size: smaller; }
+
 .timeline {
   margin: 0 auto;
   overflow: hidden;
