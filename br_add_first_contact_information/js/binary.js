@@ -8,7 +8,7 @@ webpackJsonp([2],[
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var extend = __webpack_require__(544);
+var extend = __webpack_require__(545);
 __webpack_require__(251);
 
 /**
@@ -813,7 +813,7 @@ var urlForLanguage = __webpack_require__(21).urlFor;
 var urlLang = __webpack_require__(21).urlLang;
 var createElement = __webpack_require__(1).createElement;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
-__webpack_require__(561);
+__webpack_require__(562);
 
 var Url = function () {
     var location_url = void 0,
@@ -949,8 +949,7 @@ module.exports = Url;
 /* 11 */,
 /* 12 */,
 /* 13 */,
-/* 14 */,
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1018,6 +1017,7 @@ module.exports = {
 };
 
 /***/ }),
+/* 15 */,
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1032,7 +1032,7 @@ var Url = __webpack_require__(8);
 var applyToAllElements = __webpack_require__(1).applyToAllElements;
 var createElement = __webpack_require__(1).createElement;
 var findParent = __webpack_require__(1).findParent;
-__webpack_require__(542);
+__webpack_require__(543);
 
 var BinaryPjax = function () {
     var previous_url = void 0;
@@ -1730,7 +1730,7 @@ var elementTextContent = __webpack_require__(3).elementTextContent;
 var getElementById = __webpack_require__(3).getElementById;
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var toTitleCase = __webpack_require__(15).toTitleCase;
+var toTitleCase = __webpack_require__(14).toTitleCase;
 var Url = __webpack_require__(8);
 var applyToAllElements = __webpack_require__(1).applyToAllElements;
 var createElement = __webpack_require__(1).createElement;
@@ -3005,7 +3005,7 @@ var getDecimalPlaces = __webpack_require__(7).getDecimalPlaces;
 var Client = __webpack_require__(5);
 var Password = __webpack_require__(245);
 var localize = __webpack_require__(2).localize;
-var compareBigUnsignedInt = __webpack_require__(15).compareBigUnsignedInt;
+var compareBigUnsignedInt = __webpack_require__(14).compareBigUnsignedInt;
 var getHashValue = __webpack_require__(8).getHashValue;
 var cloneObject = __webpack_require__(1).cloneObject;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
@@ -4517,8 +4517,8 @@ var Client = __webpack_require__(5);
 var SocketCache = __webpack_require__(74);
 var getLanguage = __webpack_require__(21).get;
 var localize = __webpack_require__(2).localize;
-var padLeft = __webpack_require__(15).padLeft;
-var toTitleCase = __webpack_require__(15).toTitleCase;
+var padLeft = __webpack_require__(14).padLeft;
+var toTitleCase = __webpack_require__(14).toTitleCase;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
 
 /*
@@ -5853,11 +5853,202 @@ module.exports = Scroll;
 "use strict";
 
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var tabListener = __webpack_require__(26).tabListener;
+var getElementById = __webpack_require__(3).getElementById;
+var Url = __webpack_require__(8);
+var applyToAllElements = __webpack_require__(1).applyToAllElements;
+
+var TabSelector = function () {
+    // obj_tabs will be built in the following format:
+    // obj_tabs = { first_tab_group_selector_id: { id_tabs: [ id_of_tab_one, id_of_tab_two ] }
+    // we will use id_tabs to handle which tab to show when going to the left or right tab
+    var obj_tabs = {};
+
+    var onLoad = function onLoad() {
+        tabListener();
+        obj_tabs = {};
+        applyToAllElements('.tab-selector-wrapper .tm-ul', function (tab_selector) {
+            var tab_selector_id = tab_selector.getAttribute('id');
+            applyToAllElements('.tm-li', function (tab) {
+                if (!/tab-selector/.test(tab.className)) {
+                    var tab_id = tab.getAttribute('id');
+                    if (!obj_tabs[tab_selector_id]) {
+                        obj_tabs[tab_selector_id] = { id_tabs: [] };
+                    }
+                    if (!obj_tabs[tab_selector_id].circles) {
+                        obj_tabs[tab_selector_id].circles = getElementById(tab_selector_id + '_circles').children;
+                    }
+                    obj_tabs[tab_selector_id].id_tabs.push(tab_id);
+                }
+                tab.addEventListener('click', slideSelectorOnMenuClick);
+            }, '', tab_selector);
+        });
+        // set initial width and margin-left of tab selector
+        repositionSelector();
+        window.addEventListener('resize', repositionSelector);
+
+        applyToAllElements('.go-left', function (element) {
+            element.addEventListener('click', goLeft);
+        });
+        applyToAllElements('.go-right', function (element) {
+            element.addEventListener('click', goRight);
+        });
+    };
+
+    var repositionSelector = function repositionSelector() {
+        var params_hash = Url.paramsHash();
+        Object.keys(obj_tabs).forEach(function (tab_id) {
+            var id_to_show = params_hash[tab_id] || obj_tabs[tab_id].id_tabs[0];
+            var el_to_show = getElementById(id_to_show);
+            if (el_to_show.parentNode) {
+                var selector = el_to_show.parentNode.getAttribute('id');
+                changeTab({ selector: selector, el_to_show: el_to_show });
+            }
+        });
+    };
+
+    var slideSelectorOnMenuClick = function slideSelectorOnMenuClick(e) {
+        if (e.target.nodeName !== 'A' || /a-active/.test(e.target.classList)) {
+            return;
+        }
+        var selector = e.target.closest('ul').getAttribute('id');
+        var current_index = obj_tabs[selector].id_tabs.indexOf(e.target.parentNode.getAttribute('id'));
+        slideSelector(selector, e.target);
+        Array.from(obj_tabs[selector].circles).forEach(function (circle, idx) {
+            if (idx === current_index) {
+                circle.classList.add('selected');
+            } else {
+                circle.classList.remove('selected');
+            }
+        });
+        updateURL(selector, e.target.parentNode.getAttribute('id'));
+    };
+
+    var updateURL = function updateURL(selector, tab_id) {
+        Url.updateParamsWithoutReload(_defineProperty({}, selector, tab_id), true);
+    };
+
+    var goLeft = function goLeft(e) {
+        changeTab({ selector: e.target.getAttribute('data-parent'), direction: 'left' });
+    };
+
+    var goRight = function goRight(e) {
+        changeTab({ selector: e.target.getAttribute('data-parent'), direction: 'right' });
+    };
+
+    var changeTab = function changeTab(options) {
+        var params_hash = Url.paramsHash();
+        var arr_id_tabs = obj_tabs[options.selector].id_tabs;
+        var id_selected_tab = params_hash[options.selector] || obj_tabs[options.selector].id_tabs[0];
+        var current_index = arr_id_tabs.indexOf(id_selected_tab);
+        var index_to_show = current_index;
+        if (options.direction) {
+            if (options.direction === 'left') {
+                index_to_show = current_index > 0 ? current_index - 1 : arr_id_tabs.length - 1;
+            } else {
+                index_to_show = current_index === arr_id_tabs.length - 1 ? 0 : current_index + 1;
+            }
+            options.el_to_show = getElementById(arr_id_tabs[index_to_show]);
+            updateURL(options.selector, arr_id_tabs[index_to_show]);
+        }
+
+        if (!options.el_to_show || !options.selector) {
+            return;
+        }
+
+        selectCircle(options.selector, current_index, index_to_show);
+        slideSelector(options.selector, options.el_to_show);
+        options.el_to_show.getElementsByTagName('a')[0].click();
+
+        if (params_hash.section) {
+            setTimeout(function () {
+                $.scrollTo($('#' + params_hash.section), 500, { offset: -10 });
+            }, 500);
+        }
+    };
+
+    var slideSelector = function slideSelector(selector, el_to_show) {
+        getElementById(selector + '_selector').setAttribute('style', 'width: ' + el_to_show.offsetWidth + 'px; margin-left: ' + el_to_show.offsetLeft + 'px;');
+    };
+
+    var selectCircle = function selectCircle(selector, old_index, index_to_show) {
+        if (obj_tabs[selector].circles.length > 1) {
+            obj_tabs[selector].circles[old_index].classList.remove('selected');
+            obj_tabs[selector].circles[index_to_show].classList.add('selected');
+        }
+    };
+
+    var updateTabDisplay = function updateTabDisplay() {
+        applyToAllElements('.tab-menu', function (el_tab_menu) {
+            // hide tabs if there is only one tab visible
+            var ul = el_tab_menu.querySelector('ul');
+            if (ul) {
+                var visible_tabs = Array.from(ul.children).filter(function (el) {
+                    return !el.classList.contains('tab-selector') && (!el.dataset.show || el.dataset.show && el.classList.contains('data-show-visible'));
+                });
+                if (visible_tabs.length <= 1) el_tab_menu.setVisibility(0);
+            }
+            // resize tab selector
+            if (el_tab_menu.querySelector('.tab-selector')) {
+                repositionSelector();
+            }
+        });
+    };
+
+    var onUnload = function onUnload() {
+        window.removeEventListener('resize', repositionSelector);
+
+        applyToAllElements('.tm-li', function (element) {
+            element.removeEventListener('click', slideSelectorOnMenuClick);
+        });
+
+        applyToAllElements('.go-left', function (element) {
+            element.removeEventListener('click', goLeft);
+        });
+        applyToAllElements('.go-right', function (element) {
+            element.removeEventListener('click', goRight);
+        });
+    };
+
+    var onChangeTab = function onChangeTab(fn) {
+        applyToAllElements('.go-left', function (element) {
+            element.addEventListener('click', function (e) {
+                fn({ selector: e.target.getAttribute('data-parent'), direction: 'left' });
+            });
+        });
+        applyToAllElements('.go-right', function (element) {
+            element.addEventListener('click', function (e) {
+                fn({ selector: e.target.getAttribute('data-parent'), direction: 'right' });
+            });
+        });
+    };
+
+    return {
+        onChangeTab: onChangeTab,
+        onLoad: onLoad,
+        onUnload: onUnload,
+        repositionSelector: repositionSelector,
+        slideSelector: slideSelector,
+        updateTabDisplay: updateTabDisplay
+    };
+}();
+
+module.exports = TabSelector;
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var moment = __webpack_require__(9);
 var checkInput = __webpack_require__(3).checkInput;
 var localize = __webpack_require__(2).localize;
-var padLeft = __webpack_require__(15).padLeft;
-var toReadableFormat = __webpack_require__(15).toReadableFormat;
+var padLeft = __webpack_require__(14).padLeft;
+var toReadableFormat = __webpack_require__(14).toReadableFormat;
 var clearable = __webpack_require__(1).clearable;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
 
@@ -6019,13 +6210,13 @@ var DatePicker = function () {
 module.exports = DatePicker;
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var showChart = __webpack_require__(91).showChart;
+var showChart = __webpack_require__(92).showChart;
 var Defaults = __webpack_require__(23);
 var getActiveTab = __webpack_require__(176).getActiveTab;
 var GetTicks = __webpack_require__(100);
@@ -6034,7 +6225,7 @@ var MBPortfolio = __webpack_require__(173);
 var getElementById = __webpack_require__(3).getElementById;
 var getLanguage = __webpack_require__(21).get;
 var State = __webpack_require__(6).State;
-var TabSelector = __webpack_require__(96);
+var TabSelector = __webpack_require__(89);
 var Url = __webpack_require__(8);
 
 /*
@@ -6287,7 +6478,7 @@ var TradingAnalysis = function () {
 module.exports = TradingAnalysis;
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6340,7 +6531,7 @@ var WebtraderChart = function () {
         if (!is_initialized) {
             __webpack_require__.e/* require.ensure */(0).then((function () {
                 __webpack_require__.e/* require.ensure */(3).then((function (require) {
-                    WebtraderCharts = __webpack_require__(566);
+                    WebtraderCharts = __webpack_require__(567);
                     WebtraderCharts.init({
                         server: Config.getSocketURL(),
                         appId: Config.getAppId(),
@@ -6408,7 +6599,7 @@ var WebtraderChart = function () {
 module.exports = WebtraderChart;
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7159,200 +7350,9 @@ var formatMoney = __webpack_require__(7).formatMoney;
 module.exports = ViewPopup;
 
 /***/ }),
-/* 93 */,
 /* 94 */,
 /* 95 */,
-/* 96 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var tabListener = __webpack_require__(26).tabListener;
-var getElementById = __webpack_require__(3).getElementById;
-var Url = __webpack_require__(8);
-var applyToAllElements = __webpack_require__(1).applyToAllElements;
-
-var TabSelector = function () {
-    // obj_tabs will be built in the following format:
-    // obj_tabs = { first_tab_group_selector_id: { id_tabs: [ id_of_tab_one, id_of_tab_two ] }
-    // we will use id_tabs to handle which tab to show when going to the left or right tab
-    var obj_tabs = {};
-
-    var onLoad = function onLoad() {
-        tabListener();
-        obj_tabs = {};
-        applyToAllElements('.tab-selector-wrapper .tm-ul', function (tab_selector) {
-            var tab_selector_id = tab_selector.getAttribute('id');
-            applyToAllElements('.tm-li', function (tab) {
-                if (!/tab-selector/.test(tab.className)) {
-                    var tab_id = tab.getAttribute('id');
-                    if (!obj_tabs[tab_selector_id]) {
-                        obj_tabs[tab_selector_id] = { id_tabs: [] };
-                    }
-                    if (!obj_tabs[tab_selector_id].circles) {
-                        obj_tabs[tab_selector_id].circles = getElementById(tab_selector_id + '_circles').children;
-                    }
-                    obj_tabs[tab_selector_id].id_tabs.push(tab_id);
-                }
-                tab.addEventListener('click', slideSelectorOnMenuClick);
-            }, '', tab_selector);
-        });
-        // set initial width and margin-left of tab selector
-        repositionSelector();
-        window.addEventListener('resize', repositionSelector);
-
-        applyToAllElements('.go-left', function (element) {
-            element.addEventListener('click', goLeft);
-        });
-        applyToAllElements('.go-right', function (element) {
-            element.addEventListener('click', goRight);
-        });
-    };
-
-    var repositionSelector = function repositionSelector() {
-        var params_hash = Url.paramsHash();
-        Object.keys(obj_tabs).forEach(function (tab_id) {
-            var id_to_show = params_hash[tab_id] || obj_tabs[tab_id].id_tabs[0];
-            var el_to_show = getElementById(id_to_show);
-            if (el_to_show.parentNode) {
-                var selector = el_to_show.parentNode.getAttribute('id');
-                changeTab({ selector: selector, el_to_show: el_to_show });
-            }
-        });
-    };
-
-    var slideSelectorOnMenuClick = function slideSelectorOnMenuClick(e) {
-        if (e.target.nodeName !== 'A' || /a-active/.test(e.target.classList)) {
-            return;
-        }
-        var selector = e.target.closest('ul').getAttribute('id');
-        var current_index = obj_tabs[selector].id_tabs.indexOf(e.target.parentNode.getAttribute('id'));
-        slideSelector(selector, e.target);
-        Array.from(obj_tabs[selector].circles).forEach(function (circle, idx) {
-            if (idx === current_index) {
-                circle.classList.add('selected');
-            } else {
-                circle.classList.remove('selected');
-            }
-        });
-        updateURL(selector, e.target.parentNode.getAttribute('id'));
-    };
-
-    var updateURL = function updateURL(selector, tab_id) {
-        Url.updateParamsWithoutReload(_defineProperty({}, selector, tab_id), true);
-    };
-
-    var goLeft = function goLeft(e) {
-        changeTab({ selector: e.target.getAttribute('data-parent'), direction: 'left' });
-    };
-
-    var goRight = function goRight(e) {
-        changeTab({ selector: e.target.getAttribute('data-parent'), direction: 'right' });
-    };
-
-    var changeTab = function changeTab(options) {
-        var params_hash = Url.paramsHash();
-        var arr_id_tabs = obj_tabs[options.selector].id_tabs;
-        var id_selected_tab = params_hash[options.selector] || obj_tabs[options.selector].id_tabs[0];
-        var current_index = arr_id_tabs.indexOf(id_selected_tab);
-        var index_to_show = current_index;
-        if (options.direction) {
-            if (options.direction === 'left') {
-                index_to_show = current_index > 0 ? current_index - 1 : arr_id_tabs.length - 1;
-            } else {
-                index_to_show = current_index === arr_id_tabs.length - 1 ? 0 : current_index + 1;
-            }
-            options.el_to_show = getElementById(arr_id_tabs[index_to_show]);
-            updateURL(options.selector, arr_id_tabs[index_to_show]);
-        }
-
-        if (!options.el_to_show || !options.selector) {
-            return;
-        }
-
-        selectCircle(options.selector, current_index, index_to_show);
-        slideSelector(options.selector, options.el_to_show);
-        options.el_to_show.getElementsByTagName('a')[0].click();
-
-        if (params_hash.section) {
-            setTimeout(function () {
-                $.scrollTo($('#' + params_hash.section), 500, { offset: -10 });
-            }, 500);
-        }
-    };
-
-    var slideSelector = function slideSelector(selector, el_to_show) {
-        getElementById(selector + '_selector').setAttribute('style', 'width: ' + el_to_show.offsetWidth + 'px; margin-left: ' + el_to_show.offsetLeft + 'px;');
-    };
-
-    var selectCircle = function selectCircle(selector, old_index, index_to_show) {
-        if (obj_tabs[selector].circles.length > 1) {
-            obj_tabs[selector].circles[old_index].classList.remove('selected');
-            obj_tabs[selector].circles[index_to_show].classList.add('selected');
-        }
-    };
-
-    var updateTabDisplay = function updateTabDisplay() {
-        applyToAllElements('.tab-menu', function (el_tab_menu) {
-            // hide tabs if there is only one tab visible
-            var ul = el_tab_menu.querySelector('ul');
-            if (ul) {
-                var visible_tabs = Array.from(ul.children).filter(function (el) {
-                    return !el.classList.contains('tab-selector') && (!el.dataset.show || el.dataset.show && el.classList.contains('data-show-visible'));
-                });
-                if (visible_tabs.length <= 1) el_tab_menu.setVisibility(0);
-            }
-            // resize tab selector
-            if (el_tab_menu.querySelector('.tab-selector')) {
-                repositionSelector();
-            }
-        });
-    };
-
-    var onUnload = function onUnload() {
-        window.removeEventListener('resize', repositionSelector);
-
-        applyToAllElements('.tm-li', function (element) {
-            element.removeEventListener('click', slideSelectorOnMenuClick);
-        });
-
-        applyToAllElements('.go-left', function (element) {
-            element.removeEventListener('click', goLeft);
-        });
-        applyToAllElements('.go-right', function (element) {
-            element.removeEventListener('click', goRight);
-        });
-    };
-
-    var onChangeTab = function onChangeTab(fn) {
-        applyToAllElements('.go-left', function (element) {
-            element.addEventListener('click', function (e) {
-                fn({ selector: e.target.getAttribute('data-parent'), direction: 'left' });
-            });
-        });
-        applyToAllElements('.go-right', function (element) {
-            element.addEventListener('click', function (e) {
-                fn({ selector: e.target.getAttribute('data-parent'), direction: 'right' });
-            });
-        });
-    };
-
-    return {
-        onChangeTab: onChangeTab,
-        onLoad: onLoad,
-        onUnload: onUnload,
-        repositionSelector: repositionSelector,
-        slideSelector: slideSelector,
-        updateTabDisplay: updateTabDisplay
-    };
-}();
-
-module.exports = TabSelector;
-
-/***/ }),
+/* 96 */,
 /* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8983,9 +8983,9 @@ module.exports = {
 
 var MBContract = __webpack_require__(78);
 var MBNotifications = __webpack_require__(98);
-var TradingAnalysis = __webpack_require__(90);
-var redrawChart = __webpack_require__(91).redrawChart;
-var ViewPopup = __webpack_require__(92);
+var TradingAnalysis = __webpack_require__(91);
+var redrawChart = __webpack_require__(92).redrawChart;
+var ViewPopup = __webpack_require__(93);
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var formatMoney = __webpack_require__(7).formatMoney;
@@ -9657,12 +9657,12 @@ var Defaults = __webpack_require__(23);
 var Price = __webpack_require__(101);
 var Reset = __webpack_require__(79);
 var BinarySocket = __webpack_require__(4);
-var DatePicker = __webpack_require__(89);
+var DatePicker = __webpack_require__(90);
 var CommonFunctions = __webpack_require__(3);
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var toISOFormat = __webpack_require__(15).toISOFormat;
-var toReadableFormat = __webpack_require__(15).toReadableFormat;
+var toISOFormat = __webpack_require__(14).toISOFormat;
+var toReadableFormat = __webpack_require__(14).toReadableFormat;
 var createElement = __webpack_require__(1).createElement;
 var getPropertyValue = __webpack_require__(1).getPropertyValue;
 
@@ -11016,7 +11016,7 @@ module.exports = {
 
 
 var Portfolio = __webpack_require__(295).Portfolio;
-var ViewPopup = __webpack_require__(92);
+var ViewPopup = __webpack_require__(93);
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var formatMoney = __webpack_require__(7).formatMoney;
@@ -11247,7 +11247,7 @@ var BinarySocket = __webpack_require__(4);
 var Validation = __webpack_require__(52);
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var toTitleCase = __webpack_require__(15).toTitleCase;
+var toTitleCase = __webpack_require__(14).toTitleCase;
 var getPropertyValue = __webpack_require__(1).getPropertyValue;
 
 var MetaTrader = function () {
@@ -12159,9 +12159,9 @@ module.exports = Footer;
 
 
 var moment = __webpack_require__(9);
-var DatePicker = __webpack_require__(89);
+var DatePicker = __webpack_require__(90);
 var dateValueChanged = __webpack_require__(3).dateValueChanged;
-var toISOFormat = __webpack_require__(15).toISOFormat;
+var toISOFormat = __webpack_require__(14).toISOFormat;
 
 var generateBirthDate = function generateBirthDate() {
     var date_of_birth = '#date_of_birth';
@@ -12186,10 +12186,10 @@ module.exports = generateBirthDate;
 
 
 var moment = __webpack_require__(9);
-var DatePicker = __webpack_require__(89);
+var DatePicker = __webpack_require__(90);
 var dateValueChanged = __webpack_require__(3).dateValueChanged;
 var localize = __webpack_require__(2).localize;
-var toISOFormat = __webpack_require__(15).toISOFormat;
+var toISOFormat = __webpack_require__(14).toISOFormat;
 
 var getDateToFrom = function getDateToFrom() {
     var date_to_val = $('#date_to').attr('data-value');
@@ -12363,7 +12363,7 @@ module.exports = TrafficSource;
 var moment = __webpack_require__(9);
 var checkInput = __webpack_require__(3).checkInput;
 var localize = __webpack_require__(2).localize;
-var padLeft = __webpack_require__(15).padLeft;
+var padLeft = __webpack_require__(14).padLeft;
 var clearable = __webpack_require__(1).clearable;
 
 var TimePicker = function () {
@@ -12589,7 +12589,7 @@ var MBNotifications = __webpack_require__(98);
 var MBPrice = __webpack_require__(126);
 var MBSymbols = __webpack_require__(175);
 var MBTick = __webpack_require__(127);
-var showChart = __webpack_require__(91).showChart;
+var showChart = __webpack_require__(92).showChart;
 var commonTrading = __webpack_require__(31);
 var BinaryPjax = __webpack_require__(16);
 var Client = __webpack_require__(5);
@@ -13145,7 +13145,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var refreshDropdown = __webpack_require__(26).selectDropdown;
 var moment = __webpack_require__(9);
-var TradingAnalysis = __webpack_require__(90);
+var TradingAnalysis = __webpack_require__(91);
 var commonTrading = __webpack_require__(31);
 var Contract = __webpack_require__(60);
 var Defaults = __webpack_require__(23);
@@ -13532,7 +13532,7 @@ var BinarySocket = __webpack_require__(4);
 var formatMoney = __webpack_require__(7).formatMoney;
 var CommonFunctions = __webpack_require__(3);
 var localize = __webpack_require__(2).localize;
-var padLeft = __webpack_require__(15).padLeft;
+var padLeft = __webpack_require__(14).padLeft;
 var urlFor = __webpack_require__(8).urlFor;
 var createElement = __webpack_require__(1).createElement;
 var getPropertyValue = __webpack_require__(1).getPropertyValue;
@@ -18970,7 +18970,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 // (+ some custom changes for binary.com)
 
 var $ = __webpack_require__(57);
-var Kinetic = __webpack_require__(551);
+var Kinetic = __webpack_require__(552);
 
 module.exports = function (_options) {
     var that = this;
@@ -20407,7 +20407,7 @@ if (!Element.prototype.matches) {
 var Client = __webpack_require__(5);
 var getLanguage = __webpack_require__(21).get;
 var urlForStatic = __webpack_require__(8).urlForStatic;
-var Pushwoosh = __webpack_require__(562).Pushwoosh;
+var Pushwoosh = __webpack_require__(563).Pushwoosh;
 
 var BinaryPushwoosh = function () {
     var pw = new Pushwoosh();
@@ -20635,7 +20635,7 @@ module.exports = ThirdPartyLinks;
 
 
 // ==================== _common ====================
-var TabSelector = __webpack_require__(96); // eslint-disable-line import/order
+var TabSelector = __webpack_require__(89); // eslint-disable-line import/order
 
 // ==================== app ====================
 var LoggedInHandler = __webpack_require__(257);
@@ -20690,10 +20690,11 @@ var Contact = __webpack_require__(334);
 var GetStarted = __webpack_require__(335);
 var Home = __webpack_require__(336);
 var JobDetails = __webpack_require__(337);
-var Regulation = __webpack_require__(338);
-var StaticPages = __webpack_require__(339);
-var TermsAndConditions = __webpack_require__(340);
-var WhyUs = __webpack_require__(341);
+var Platforms = __webpack_require__(338);
+var Regulation = __webpack_require__(339);
+var StaticPages = __webpack_require__(340);
+var TermsAndConditions = __webpack_require__(341);
+var WhyUs = __webpack_require__(342);
 
 /* eslint-disable max-len */
 var pages_config = {
@@ -20727,7 +20728,7 @@ var pages_config = {
     multi_barriers_trading: { module: MBTradePage, needs_currency: true },
     payment_agent_listws: { module: PaymentAgentList, is_authenticated: true },
     payment_methods: { module: Cashier.PaymentMethods },
-    platforms: { module: TabSelector },
+    platforms: { module: Platforms },
     portfoliows: { module: Portfolio, is_authenticated: true, needs_currency: true },
     profit_tablews: { module: ProfitTable, is_authenticated: true, needs_currency: true },
     professional: { module: professionalClient, is_authenticated: true, only_real: true },
@@ -21049,6 +21050,7 @@ module.exports = NetworkMonitor;
 
 
 var Cookies = __webpack_require__(56);
+var moment = __webpack_require__(9);
 var Client = __webpack_require__(5);
 var Contents = __webpack_require__(256);
 var Header = __webpack_require__(27);
@@ -21067,6 +21069,8 @@ var PushNotification = __webpack_require__(252);
 var Localize = __webpack_require__(2);
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
+var LocalStore = __webpack_require__(6).LocalStore;
+var toISOFormat = __webpack_require__(14).toISOFormat;
 var scrollToTop = __webpack_require__(88).scrollToTop;
 var Url = __webpack_require__(8);
 var createElement = __webpack_require__(1).createElement;
@@ -21142,10 +21146,14 @@ var Page = function () {
                 checkLanguage();
                 RealityCheck.onLoad();
                 Menu.init();
+                LocalStore.remove('date_first_contact');
             });
         } else {
             checkLanguage();
             Menu.init();
+            if (!LocalStore.get('date_first_contact')) {
+                LocalStore.set('date_first_contact', toISOFormat(moment()));
+            }
         }
         TrafficSource.setData();
     };
@@ -21280,6 +21288,7 @@ var GTM = __webpack_require__(58);
 var Login = __webpack_require__(46);
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
+var LocalStore = __webpack_require__(6).LocalStore;
 var urlFor = __webpack_require__(8).urlFor;
 var getPropertyValue = __webpack_require__(1).getPropertyValue;
 
@@ -21363,6 +21372,7 @@ var BinarySocketGeneral = function () {
                                 }
                             });
                         }
+                        LocalStore.remove('date_first_contact');
                     }
                 }
                 break;
@@ -21492,7 +21502,7 @@ module.exports = createLanguageDropDown;
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var State = __webpack_require__(6).State;
-var updateTabDisplay = __webpack_require__(96).updateTabDisplay;
+var updateTabDisplay = __webpack_require__(89).updateTabDisplay;
 var MetaTrader = __webpack_require__(133);
 
 /*
@@ -22230,7 +22240,7 @@ var handleVerifyCode = __webpack_require__(97).handleVerifyCode;
 var getElementById = __webpack_require__(3).getElementById;
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var toTitleCase = __webpack_require__(15).toTitleCase;
+var toTitleCase = __webpack_require__(14).toTitleCase;
 var Url = __webpack_require__(8);
 var template = __webpack_require__(1).template;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
@@ -22926,7 +22936,7 @@ var MBPrice = __webpack_require__(126);
 var MBProcess = __webpack_require__(174);
 var MBTick = __webpack_require__(127);
 var MBSymbols = __webpack_require__(175);
-var TradingAnalysis = __webpack_require__(90);
+var TradingAnalysis = __webpack_require__(91);
 var debounce = __webpack_require__(31).debounce;
 var Client = __webpack_require__(5);
 var Currency = __webpack_require__(7);
@@ -23172,7 +23182,7 @@ var MBTradingEvents = __webpack_require__(274);
 var MBPortfolio = __webpack_require__(173);
 var MBPrice = __webpack_require__(126);
 var MBProcess = __webpack_require__(174);
-var cleanupChart = __webpack_require__(91).cleanupChart;
+var cleanupChart = __webpack_require__(92).cleanupChart;
 var BinaryPjax = __webpack_require__(16);
 var Client = __webpack_require__(5);
 var Header = __webpack_require__(27);
@@ -23690,11 +23700,11 @@ var moment = __webpack_require__(9);
 var TradingTimes = __webpack_require__(280);
 var BinarySocket = __webpack_require__(4);
 var Table = __webpack_require__(76);
-var DatePicker = __webpack_require__(89);
+var DatePicker = __webpack_require__(90);
 var dateValueChanged = __webpack_require__(3).dateValueChanged;
 var localize = __webpack_require__(2).localize;
 var showLoadingImage = __webpack_require__(1).showLoadingImage;
-var toISOFormat = __webpack_require__(15).toISOFormat;
+var toISOFormat = __webpack_require__(14).toISOFormat;
 
 var TradingTimesUI = function () {
     var $date = void 0,
@@ -25334,7 +25344,7 @@ module.exports = displayCurrencies;
 
 
 var moment = __webpack_require__(9);
-var TradingAnalysis = __webpack_require__(90);
+var TradingAnalysis = __webpack_require__(91);
 var Barriers = __webpack_require__(128);
 var CommonTrading = __webpack_require__(31);
 var CommonIndependent = __webpack_require__(49);
@@ -26507,15 +26517,15 @@ module.exports = {
 
 
 var Dropdown = __webpack_require__(26).selectDropdown;
-var TradingAnalysis = __webpack_require__(90);
+var TradingAnalysis = __webpack_require__(91);
 var commonTrading = __webpack_require__(31);
-var cleanupChart = __webpack_require__(91).cleanupChart;
+var cleanupChart = __webpack_require__(92).cleanupChart;
 var displayCurrencies = __webpack_require__(286);
 var Defaults = __webpack_require__(23);
 var TradingEvents = __webpack_require__(287);
 var Price = __webpack_require__(101);
 var Process = __webpack_require__(178);
-var ViewPopup = __webpack_require__(92);
+var ViewPopup = __webpack_require__(93);
 var Client = __webpack_require__(5);
 var Header = __webpack_require__(27);
 var BinarySocket = __webpack_require__(4);
@@ -26629,7 +26639,7 @@ var Client = __webpack_require__(5);
 var displayNotification = __webpack_require__(27).displayNotification;
 var BinarySocket = __webpack_require__(4);
 var localize = __webpack_require__(2).localize;
-var toTitleCase = __webpack_require__(15).toTitleCase;
+var toTitleCase = __webpack_require__(14).toTitleCase;
 var Url = __webpack_require__(8);
 var showLoadingImage = __webpack_require__(1).showLoadingImage;
 
@@ -27408,7 +27418,7 @@ module.exports = {
 
 
 var ProfitTableUI = __webpack_require__(298);
-var ViewPopup = __webpack_require__(92);
+var ViewPopup = __webpack_require__(93);
 var showLocalTimeOnHover = __webpack_require__(47).showLocalTimeOnHover;
 var BinarySocket = __webpack_require__(4);
 var DateTo = __webpack_require__(169);
@@ -27767,7 +27777,7 @@ var Dialog = __webpack_require__(75);
 var FlexTableUI = __webpack_require__(123);
 var FormManager = __webpack_require__(17);
 var localize = __webpack_require__(2).localize;
-var toTitleCase = __webpack_require__(15).toTitleCase;
+var toTitleCase = __webpack_require__(14).toTitleCase;
 
 var APIToken = function () {
     var error_class = 'errorfield';
@@ -27929,7 +27939,7 @@ var FlexTableUI = __webpack_require__(123);
 var elementTextContent = __webpack_require__(3).elementTextContent;
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var toTitleCase = __webpack_require__(15).toTitleCase;
+var toTitleCase = __webpack_require__(14).toTitleCase;
 
 var AuthorisedApps = function () {
     var can_revoke = false;
@@ -28627,7 +28637,7 @@ var BinarySocket = __webpack_require__(4);
 var Dialog = __webpack_require__(75);
 var Currency = __webpack_require__(7);
 var FormManager = __webpack_require__(17);
-var DatePicker = __webpack_require__(89);
+var DatePicker = __webpack_require__(90);
 var TimePicker = __webpack_require__(172);
 var dateValueChanged = __webpack_require__(3).dateValueChanged;
 var localize = __webpack_require__(2).localize;
@@ -28962,12 +28972,12 @@ module.exports = SelfExclusion;
 "use strict";
 
 
-var QRCode = __webpack_require__(543);
+var QRCode = __webpack_require__(544);
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var FormManager = __webpack_require__(17);
 var localize = __webpack_require__(2).localize;
-var toTitleCase = __webpack_require__(15).toTitleCase;
+var toTitleCase = __webpack_require__(14).toTitleCase;
 var getPropertyValue = __webpack_require__(1).getPropertyValue;
 
 var TwoFactorAuthentication = function () {
@@ -29096,7 +29106,7 @@ module.exports = TwoFactorAuthentication;
 
 
 var StatementUI = __webpack_require__(314);
-var ViewPopup = __webpack_require__(92);
+var ViewPopup = __webpack_require__(93);
 var showLocalTimeOnHover = __webpack_require__(47).showLocalTimeOnHover;
 var BinarySocket = __webpack_require__(4);
 var DateTo = __webpack_require__(169);
@@ -29268,7 +29278,7 @@ var Client = __webpack_require__(5);
 var formatCurrency = __webpack_require__(7).formatCurrency;
 var formatMoney = __webpack_require__(7).formatMoney;
 var localize = __webpack_require__(2).localize;
-var toTitleCase = __webpack_require__(15).toTitleCase;
+var toTitleCase = __webpack_require__(14).toTitleCase;
 
 var Statement = function () {
     var getStatementData = function getStatementData(statement, currency) {
@@ -29494,7 +29504,7 @@ var FormManager = __webpack_require__(17);
 var getElementById = __webpack_require__(3).getElementById;
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var toTitleCase = __webpack_require__(15).toTitleCase;
+var toTitleCase = __webpack_require__(14).toTitleCase;
 var urlFor = __webpack_require__(8).urlFor;
 
 var Accounts = function () {
@@ -30494,7 +30504,7 @@ var FormManager = __webpack_require__(17);
 var localize = __webpack_require__(2).localize;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
 var State = __webpack_require__(6).State;
-var toISOFormat = __webpack_require__(15).toISOFormat;
+var toISOFormat = __webpack_require__(14).toISOFormat;
 
 var FinancialAccOpening = function () {
     var form_id = '#financial-form';
@@ -30688,11 +30698,11 @@ var makeOption = __webpack_require__(3).makeOption;
 var localize = __webpack_require__(2).localize;
 var LocalStore = __webpack_require__(6).LocalStore;
 var State = __webpack_require__(6).State;
+var toISOFormat = __webpack_require__(14).toISOFormat;
 var urlFor = __webpack_require__(8).urlFor;
 var getPropertyValue = __webpack_require__(1).getPropertyValue;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
 var isBinaryApp = __webpack_require__(24).isBinaryApp;
-var toISOFormat = __webpack_require__(15).toISOFormat;
 
 var VirtualAccOpening = function () {
     var form = '#virtual-form';
@@ -30708,18 +30718,12 @@ var VirtualAccOpening = function () {
 
     var init = function init() {
         $(form).setVisibility(1);
-        var mobileDevices = ['iPhone', 'iPad', 'Android'];
-        var dateFirstContact = toISOFormat(moment());
-        var signupDevice = mobileDevices.some(function (item) {
-            return item === navigator.platform;
-        }) ? 'mobile' : 'desktop';
         BinarySocket.send({ residence_list: 1 }).then(function (response) {
             return handleResidenceList(response.residence_list);
         });
         bindValidation();
         FormManager.handleSubmit({
             form_selector: form,
-            obj_request: { signup_device: signupDevice, date_first_contact: dateFirstContact },
             fnc_response_handler: handleNewAccount
         });
     };
@@ -30768,7 +30772,7 @@ var VirtualAccOpening = function () {
         // Add TrafficSource parameters
         var utm_data = TrafficSource.getData();
 
-        var req = [{ selector: '#client_password', validations: ['req', 'password'], re_check_field: '#repeat_password' }, { selector: '#repeat_password', validations: ['req', ['compare', { to: '#client_password' }]], exclude_request: 1 }, { selector: '#residence' }, { selector: '#email_consent' }, { request_field: 'utm_source', value: TrafficSource.getSource(utm_data) }, { request_field: 'new_account_virtual', value: 1 }];
+        var req = [{ selector: '#client_password', validations: ['req', 'password'], re_check_field: '#repeat_password' }, { selector: '#repeat_password', validations: ['req', ['compare', { to: '#client_password' }]], exclude_request: 1 }, { selector: '#residence' }, { selector: '#email_consent' }, { request_field: 'utm_source', value: TrafficSource.getSource(utm_data) }, { request_field: 'new_account_virtual', value: 1 }, { request_field: 'signup_device', value: signup_device }, { request_field: 'date_first_contact', value: date_first_contact }];
 
         if (utm_data.utm_medium) req.push({ request_field: 'utm_medium', value: utm_data.utm_medium });
         if (utm_data.utm_campaign) req.push({ request_field: 'utm_campaign', value: utm_data.utm_campaign });
@@ -30777,6 +30781,12 @@ var VirtualAccOpening = function () {
         if (gclid) req.push({ request_field: 'gclid_url', value: gclid });
 
         if (Cookies.get('affiliate_tracking')) req.push({ request_field: 'affiliate_token', value: Cookies.getJSON('affiliate_tracking').t });
+
+        var mobile_devices = ['iPhone', 'iPad', 'Android'];
+        var date_first_contact = LocalStore.get('date_first_contact') != null ? LocalStore.get('date_first_contact') : toISOFormat(moment());
+        var signup_device = mobile_devices.some(function (item) {
+            return item === navigator.platform;
+        }) ? 'mobile' : 'desktop';
 
         FormManager.init(form, req, true);
     };
@@ -30792,6 +30802,7 @@ var VirtualAccOpening = function () {
             State.set('skip_response', 'authorize');
             BinarySocket.send({ authorize: new_account.oauth_token }, { forced: true }).then(function (response_auth) {
                 if (!response_auth.error) {
+                    LocalStore.remove('date_first_contact');
                     Client.processNewAccount({
                         email: new_account.email,
                         loginid: new_account.client_id,
@@ -30861,7 +30872,7 @@ var Client = __webpack_require__(5);
 var localize = __webpack_require__(2).localize;
 var createElement = __webpack_require__(1).createElement;
 var getElementById = __webpack_require__(3).getElementById;
-var toTitleCase = __webpack_require__(15).toTitleCase;
+var toTitleCase = __webpack_require__(14).toTitleCase;
 var Url = __webpack_require__(8);
 
 var WelcomePage = function () {
@@ -31642,7 +31653,7 @@ module.exports = {
 var Login = __webpack_require__(46);
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var TabSelector = __webpack_require__(96);
+var TabSelector = __webpack_require__(89);
 var urlFor = __webpack_require__(8).urlFor;
 var BinaryPjax = __webpack_require__(16);
 var BinarySocket = __webpack_require__(4);
@@ -31794,6 +31805,52 @@ module.exports = JobDetails;
 "use strict";
 
 
+var getElementById = __webpack_require__(3).getElementById;
+var TabSelector = __webpack_require__(89);
+
+var Platforms = function () {
+    var onLoad = function onLoad() {
+        TabSelector.onLoad();
+        $.getJSON('https://api.github.com/repos/binary-com/binary-desktop-installers/releases/latest', function () {
+            var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { assets: [] };
+
+            var link_mac = void 0,
+                link_windows = void 0;
+            // link_linux;
+            data.assets.some(function (asset) {
+                // if (link_mac && link_windows && link_linux) {
+                if (link_mac && link_windows) {
+                    return true;
+                }
+                if (/\.dmg$/.test(asset.browser_download_url)) {
+                    link_mac = asset.browser_download_url;
+                } else if (/\.exe$/.test(asset.browser_download_url)) {
+                    link_windows = asset.browser_download_url;
+                    // } else if (/x86_64\.AppImage$/.test(asset.browser_download_url)) {
+                    //     link_linux = asset.browser_download_url;
+                }
+                return false;
+            });
+            getElementById('app_mac').setAttribute('href', link_mac);
+            getElementById('app_windows').setAttribute('href', link_windows);
+            // getElementById('app_linux').setAttribute('href', link_linux);
+        });
+    };
+
+    return {
+        onLoad: onLoad
+    };
+}();
+
+module.exports = Platforms;
+
+/***/ }),
+/* 339 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var Regulation = function () {
     var onLoad = function onLoad() {
         $(function () {
@@ -31848,7 +31905,7 @@ var Regulation = function () {
 module.exports = Regulation;
 
 /***/ }),
-/* 339 */
+/* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31940,7 +31997,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 340 */
+/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32089,7 +32146,7 @@ var TermsAndConditions = function () {
 module.exports = TermsAndConditions;
 
 /***/ }),
-/* 341 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32117,7 +32174,6 @@ var WhyUs = function () {
 module.exports = WhyUs;
 
 /***/ }),
-/* 342 */,
 /* 343 */,
 /* 344 */,
 /* 345 */,
@@ -32339,13 +32395,14 @@ module.exports = WhyUs;
 /* 561 */,
 /* 562 */,
 /* 563 */,
-/* 564 */
+/* 564 */,
+/* 565 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 565 */
+/* 566 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
