@@ -23673,7 +23673,8 @@ var TradingTimesUI = function () {
                 $date.attr('value', isoFormattedDate);
             }
             $date.change(function () {
-                if (moment().diff(moment($date.val()), 'days', true) < 0) {
+                var diffInDays = moment().diff(moment($date.val()), 'days', true);
+                if (diffInDays < 0 || diffInDays >= 1) {
                     $('span.ux-date').text('');
                 } else {
                     $('span.ux-date').text('Today');
