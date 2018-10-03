@@ -8,7 +8,7 @@ webpackJsonp([2],[
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var extend = __webpack_require__(546);
+var extend = __webpack_require__(545);
 __webpack_require__(251);
 
 /**
@@ -813,7 +813,7 @@ var urlForLanguage = __webpack_require__(21).urlFor;
 var urlLang = __webpack_require__(21).urlLang;
 var createElement = __webpack_require__(1).createElement;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
-__webpack_require__(563);
+__webpack_require__(562);
 
 var Url = function () {
     var location_url = void 0,
@@ -964,7 +964,7 @@ var Url = __webpack_require__(8);
 var applyToAllElements = __webpack_require__(1).applyToAllElements;
 var createElement = __webpack_require__(1).createElement;
 var findParent = __webpack_require__(1).findParent;
-__webpack_require__(544);
+__webpack_require__(543);
 
 var BinaryPjax = function () {
     var previous_url = void 0;
@@ -2173,8 +2173,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var Defaults = __webpack_require__(23);
 var Symbols = __webpack_require__(80);
 var Tick = __webpack_require__(62);
-var contractsElement = __webpack_require__(287);
-var marketsElement = __webpack_require__(290);
+var contractsElement = __webpack_require__(285);
+var marketsElement = __webpack_require__(288);
 var formatMoney = __webpack_require__(7).formatMoney;
 var ActiveSymbols = __webpack_require__(122);
 var elementInnerHtml = __webpack_require__(3).elementInnerHtml;
@@ -4438,7 +4438,7 @@ module.exports = Table;
 "use strict";
 
 
-var createLanguageDropDown = __webpack_require__(264);
+var createLanguageDropDown = __webpack_require__(263);
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var isLoginPages = __webpack_require__(46).isLoginPages;
@@ -5853,6 +5853,197 @@ module.exports = Scroll;
 "use strict";
 
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var tabListener = __webpack_require__(26).tabListener;
+var getElementById = __webpack_require__(3).getElementById;
+var Url = __webpack_require__(8);
+var applyToAllElements = __webpack_require__(1).applyToAllElements;
+
+var TabSelector = function () {
+    // obj_tabs will be built in the following format:
+    // obj_tabs = { first_tab_group_selector_id: { id_tabs: [ id_of_tab_one, id_of_tab_two ] }
+    // we will use id_tabs to handle which tab to show when going to the left or right tab
+    var obj_tabs = {};
+
+    var onLoad = function onLoad() {
+        tabListener();
+        obj_tabs = {};
+        applyToAllElements('.tab-selector-wrapper .tm-ul', function (tab_selector) {
+            var tab_selector_id = tab_selector.getAttribute('id');
+            applyToAllElements('.tm-li', function (tab) {
+                if (!/tab-selector/.test(tab.className)) {
+                    var tab_id = tab.getAttribute('id');
+                    if (!obj_tabs[tab_selector_id]) {
+                        obj_tabs[tab_selector_id] = { id_tabs: [] };
+                    }
+                    if (!obj_tabs[tab_selector_id].circles) {
+                        obj_tabs[tab_selector_id].circles = getElementById(tab_selector_id + '_circles').children;
+                    }
+                    obj_tabs[tab_selector_id].id_tabs.push(tab_id);
+                }
+                tab.addEventListener('click', slideSelectorOnMenuClick);
+            }, '', tab_selector);
+        });
+        // set initial width and margin-left of tab selector
+        repositionSelector();
+        window.addEventListener('resize', repositionSelector);
+
+        applyToAllElements('.go-left', function (element) {
+            element.addEventListener('click', goLeft);
+        });
+        applyToAllElements('.go-right', function (element) {
+            element.addEventListener('click', goRight);
+        });
+    };
+
+    var repositionSelector = function repositionSelector() {
+        var params_hash = Url.paramsHash();
+        Object.keys(obj_tabs).forEach(function (tab_id) {
+            var id_to_show = params_hash[tab_id] || obj_tabs[tab_id].id_tabs[0];
+            var el_to_show = getElementById(id_to_show);
+            if (el_to_show.parentNode) {
+                var selector = el_to_show.parentNode.getAttribute('id');
+                changeTab({ selector: selector, el_to_show: el_to_show });
+            }
+        });
+    };
+
+    var slideSelectorOnMenuClick = function slideSelectorOnMenuClick(e) {
+        if (e.target.nodeName !== 'A' || /a-active/.test(e.target.classList)) {
+            return;
+        }
+        var selector = e.target.closest('ul').getAttribute('id');
+        var current_index = obj_tabs[selector].id_tabs.indexOf(e.target.parentNode.getAttribute('id'));
+        slideSelector(selector, e.target);
+        Array.from(obj_tabs[selector].circles).forEach(function (circle, idx) {
+            if (idx === current_index) {
+                circle.classList.add('selected');
+            } else {
+                circle.classList.remove('selected');
+            }
+        });
+        updateURL(selector, e.target.parentNode.getAttribute('id'));
+    };
+
+    var updateURL = function updateURL(selector, tab_id) {
+        Url.updateParamsWithoutReload(_defineProperty({}, selector, tab_id), true);
+    };
+
+    var goLeft = function goLeft(e) {
+        changeTab({ selector: e.target.getAttribute('data-parent'), direction: 'left' });
+    };
+
+    var goRight = function goRight(e) {
+        changeTab({ selector: e.target.getAttribute('data-parent'), direction: 'right' });
+    };
+
+    var changeTab = function changeTab(options) {
+        var params_hash = Url.paramsHash();
+        var arr_id_tabs = obj_tabs[options.selector].id_tabs;
+        var id_selected_tab = params_hash[options.selector] || obj_tabs[options.selector].id_tabs[0];
+        var current_index = arr_id_tabs.indexOf(id_selected_tab);
+        var index_to_show = current_index;
+        if (options.direction) {
+            if (options.direction === 'left') {
+                index_to_show = current_index > 0 ? current_index - 1 : arr_id_tabs.length - 1;
+            } else {
+                index_to_show = current_index === arr_id_tabs.length - 1 ? 0 : current_index + 1;
+            }
+            options.el_to_show = getElementById(arr_id_tabs[index_to_show]);
+            updateURL(options.selector, arr_id_tabs[index_to_show]);
+        }
+
+        if (!options.el_to_show || !options.selector) {
+            return;
+        }
+
+        selectCircle(options.selector, current_index, index_to_show);
+        slideSelector(options.selector, options.el_to_show);
+        options.el_to_show.getElementsByTagName('a')[0].click();
+
+        if (params_hash.section) {
+            setTimeout(function () {
+                $.scrollTo($('#' + params_hash.section), 500, { offset: -10 });
+            }, 500);
+        }
+    };
+
+    var slideSelector = function slideSelector(selector, el_to_show) {
+        getElementById(selector + '_selector').setAttribute('style', 'width: ' + el_to_show.offsetWidth + 'px; margin-left: ' + el_to_show.offsetLeft + 'px;');
+    };
+
+    var selectCircle = function selectCircle(selector, old_index, index_to_show) {
+        if (obj_tabs[selector].circles.length > 1) {
+            obj_tabs[selector].circles[old_index].classList.remove('selected');
+            obj_tabs[selector].circles[index_to_show].classList.add('selected');
+        }
+    };
+
+    var updateTabDisplay = function updateTabDisplay() {
+        applyToAllElements('.tab-menu', function (el_tab_menu) {
+            // hide tabs if there is only one tab visible
+            var ul = el_tab_menu.querySelector('ul');
+            if (ul) {
+                var visible_tabs = Array.from(ul.children).filter(function (el) {
+                    return !el.classList.contains('tab-selector') && (!el.dataset.show || el.dataset.show && el.classList.contains('data-show-visible'));
+                });
+                if (visible_tabs.length <= 1) el_tab_menu.setVisibility(0);
+            }
+            // resize tab selector
+            if (el_tab_menu.querySelector('.tab-selector')) {
+                repositionSelector();
+            }
+        });
+    };
+
+    var onUnload = function onUnload() {
+        window.removeEventListener('resize', repositionSelector);
+
+        applyToAllElements('.tm-li', function (element) {
+            element.removeEventListener('click', slideSelectorOnMenuClick);
+        });
+
+        applyToAllElements('.go-left', function (element) {
+            element.removeEventListener('click', goLeft);
+        });
+        applyToAllElements('.go-right', function (element) {
+            element.removeEventListener('click', goRight);
+        });
+    };
+
+    var onChangeTab = function onChangeTab(fn) {
+        applyToAllElements('.go-left', function (element) {
+            element.addEventListener('click', function (e) {
+                fn({ selector: e.target.getAttribute('data-parent'), direction: 'left' });
+            });
+        });
+        applyToAllElements('.go-right', function (element) {
+            element.addEventListener('click', function (e) {
+                fn({ selector: e.target.getAttribute('data-parent'), direction: 'right' });
+            });
+        });
+    };
+
+    return {
+        onChangeTab: onChangeTab,
+        onLoad: onLoad,
+        onUnload: onUnload,
+        repositionSelector: repositionSelector,
+        slideSelector: slideSelector,
+        updateTabDisplay: updateTabDisplay
+    };
+}();
+
+module.exports = TabSelector;
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var moment = __webpack_require__(9);
 var checkInput = __webpack_require__(3).checkInput;
 var localize = __webpack_require__(2).localize;
@@ -6019,13 +6210,13 @@ var DatePicker = function () {
 module.exports = DatePicker;
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var showChart = __webpack_require__(91).showChart;
+var showChart = __webpack_require__(92).showChart;
 var Defaults = __webpack_require__(23);
 var getActiveTab = __webpack_require__(176).getActiveTab;
 var GetTicks = __webpack_require__(100);
@@ -6034,7 +6225,7 @@ var MBPortfolio = __webpack_require__(173);
 var getElementById = __webpack_require__(3).getElementById;
 var getLanguage = __webpack_require__(21).get;
 var State = __webpack_require__(6).State;
-var TabSelector = __webpack_require__(96);
+var TabSelector = __webpack_require__(89);
 var Url = __webpack_require__(8);
 
 /*
@@ -6287,7 +6478,7 @@ var TradingAnalysis = function () {
 module.exports = TradingAnalysis;
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6340,7 +6531,7 @@ var WebtraderChart = function () {
         if (!is_initialized) {
             __webpack_require__.e/* require.ensure */(0).then((function () {
                 __webpack_require__.e/* require.ensure */(3).then((function (require) {
-                    WebtraderCharts = __webpack_require__(568);
+                    WebtraderCharts = __webpack_require__(567);
                     WebtraderCharts.init({
                         server: Config.getSocketURL(),
                         appId: Config.getAppId(),
@@ -6408,7 +6599,7 @@ var WebtraderChart = function () {
 module.exports = WebtraderChart;
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6418,7 +6609,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var moment = __webpack_require__(9);
 var ViewPopupUI = __webpack_require__(135);
-var Highchart = __webpack_require__(285);
+var Highchart = __webpack_require__(283);
 var Callputspread = __webpack_require__(99);
 var Lookback = __webpack_require__(61);
 var Reset = __webpack_require__(79);
@@ -7159,200 +7350,9 @@ var formatMoney = __webpack_require__(7).formatMoney;
 module.exports = ViewPopup;
 
 /***/ }),
-/* 93 */,
 /* 94 */,
 /* 95 */,
-/* 96 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var tabListener = __webpack_require__(26).tabListener;
-var getElementById = __webpack_require__(3).getElementById;
-var Url = __webpack_require__(8);
-var applyToAllElements = __webpack_require__(1).applyToAllElements;
-
-var TabSelector = function () {
-    // obj_tabs will be built in the following format:
-    // obj_tabs = { first_tab_group_selector_id: { id_tabs: [ id_of_tab_one, id_of_tab_two ] }
-    // we will use id_tabs to handle which tab to show when going to the left or right tab
-    var obj_tabs = {};
-
-    var onLoad = function onLoad() {
-        tabListener();
-        obj_tabs = {};
-        applyToAllElements('.tab-selector-wrapper .tm-ul', function (tab_selector) {
-            var tab_selector_id = tab_selector.getAttribute('id');
-            applyToAllElements('.tm-li', function (tab) {
-                if (!/tab-selector/.test(tab.className)) {
-                    var tab_id = tab.getAttribute('id');
-                    if (!obj_tabs[tab_selector_id]) {
-                        obj_tabs[tab_selector_id] = { id_tabs: [] };
-                    }
-                    if (!obj_tabs[tab_selector_id].circles) {
-                        obj_tabs[tab_selector_id].circles = getElementById(tab_selector_id + '_circles').children;
-                    }
-                    obj_tabs[tab_selector_id].id_tabs.push(tab_id);
-                }
-                tab.addEventListener('click', slideSelectorOnMenuClick);
-            }, '', tab_selector);
-        });
-        // set initial width and margin-left of tab selector
-        repositionSelector();
-        window.addEventListener('resize', repositionSelector);
-
-        applyToAllElements('.go-left', function (element) {
-            element.addEventListener('click', goLeft);
-        });
-        applyToAllElements('.go-right', function (element) {
-            element.addEventListener('click', goRight);
-        });
-    };
-
-    var repositionSelector = function repositionSelector() {
-        var params_hash = Url.paramsHash();
-        Object.keys(obj_tabs).forEach(function (tab_id) {
-            var id_to_show = params_hash[tab_id] || obj_tabs[tab_id].id_tabs[0];
-            var el_to_show = getElementById(id_to_show);
-            if (el_to_show.parentNode) {
-                var selector = el_to_show.parentNode.getAttribute('id');
-                changeTab({ selector: selector, el_to_show: el_to_show });
-            }
-        });
-    };
-
-    var slideSelectorOnMenuClick = function slideSelectorOnMenuClick(e) {
-        if (e.target.nodeName !== 'A' || /a-active/.test(e.target.classList)) {
-            return;
-        }
-        var selector = e.target.closest('ul').getAttribute('id');
-        var current_index = obj_tabs[selector].id_tabs.indexOf(e.target.parentNode.getAttribute('id'));
-        slideSelector(selector, e.target);
-        Array.from(obj_tabs[selector].circles).forEach(function (circle, idx) {
-            if (idx === current_index) {
-                circle.classList.add('selected');
-            } else {
-                circle.classList.remove('selected');
-            }
-        });
-        updateURL(selector, e.target.parentNode.getAttribute('id'));
-    };
-
-    var updateURL = function updateURL(selector, tab_id) {
-        Url.updateParamsWithoutReload(_defineProperty({}, selector, tab_id), true);
-    };
-
-    var goLeft = function goLeft(e) {
-        changeTab({ selector: e.target.getAttribute('data-parent'), direction: 'left' });
-    };
-
-    var goRight = function goRight(e) {
-        changeTab({ selector: e.target.getAttribute('data-parent'), direction: 'right' });
-    };
-
-    var changeTab = function changeTab(options) {
-        var params_hash = Url.paramsHash();
-        var arr_id_tabs = obj_tabs[options.selector].id_tabs;
-        var id_selected_tab = params_hash[options.selector] || obj_tabs[options.selector].id_tabs[0];
-        var current_index = arr_id_tabs.indexOf(id_selected_tab);
-        var index_to_show = current_index;
-        if (options.direction) {
-            if (options.direction === 'left') {
-                index_to_show = current_index > 0 ? current_index - 1 : arr_id_tabs.length - 1;
-            } else {
-                index_to_show = current_index === arr_id_tabs.length - 1 ? 0 : current_index + 1;
-            }
-            options.el_to_show = getElementById(arr_id_tabs[index_to_show]);
-            updateURL(options.selector, arr_id_tabs[index_to_show]);
-        }
-
-        if (!options.el_to_show || !options.selector) {
-            return;
-        }
-
-        selectCircle(options.selector, current_index, index_to_show);
-        slideSelector(options.selector, options.el_to_show);
-        options.el_to_show.getElementsByTagName('a')[0].click();
-
-        if (params_hash.section) {
-            setTimeout(function () {
-                $.scrollTo($('#' + params_hash.section), 500, { offset: -10 });
-            }, 500);
-        }
-    };
-
-    var slideSelector = function slideSelector(selector, el_to_show) {
-        getElementById(selector + '_selector').setAttribute('style', 'width: ' + el_to_show.offsetWidth + 'px; margin-left: ' + el_to_show.offsetLeft + 'px;');
-    };
-
-    var selectCircle = function selectCircle(selector, old_index, index_to_show) {
-        if (obj_tabs[selector].circles.length > 1) {
-            obj_tabs[selector].circles[old_index].classList.remove('selected');
-            obj_tabs[selector].circles[index_to_show].classList.add('selected');
-        }
-    };
-
-    var updateTabDisplay = function updateTabDisplay() {
-        applyToAllElements('.tab-menu', function (el_tab_menu) {
-            // hide tabs if there is only one tab visible
-            var ul = el_tab_menu.querySelector('ul');
-            if (ul) {
-                var visible_tabs = Array.from(ul.children).filter(function (el) {
-                    return !el.classList.contains('tab-selector') && (!el.dataset.show || el.dataset.show && el.classList.contains('data-show-visible'));
-                });
-                if (visible_tabs.length <= 1) el_tab_menu.setVisibility(0);
-            }
-            // resize tab selector
-            if (el_tab_menu.querySelector('.tab-selector')) {
-                repositionSelector();
-            }
-        });
-    };
-
-    var onUnload = function onUnload() {
-        window.removeEventListener('resize', repositionSelector);
-
-        applyToAllElements('.tm-li', function (element) {
-            element.removeEventListener('click', slideSelectorOnMenuClick);
-        });
-
-        applyToAllElements('.go-left', function (element) {
-            element.removeEventListener('click', goLeft);
-        });
-        applyToAllElements('.go-right', function (element) {
-            element.removeEventListener('click', goRight);
-        });
-    };
-
-    var onChangeTab = function onChangeTab(fn) {
-        applyToAllElements('.go-left', function (element) {
-            element.addEventListener('click', function (e) {
-                fn({ selector: e.target.getAttribute('data-parent'), direction: 'left' });
-            });
-        });
-        applyToAllElements('.go-right', function (element) {
-            element.addEventListener('click', function (e) {
-                fn({ selector: e.target.getAttribute('data-parent'), direction: 'right' });
-            });
-        });
-    };
-
-    return {
-        onChangeTab: onChangeTab,
-        onLoad: onLoad,
-        onUnload: onUnload,
-        repositionSelector: repositionSelector,
-        slideSelector: slideSelector,
-        updateTabDisplay: updateTabDisplay
-    };
-}();
-
-module.exports = TabSelector;
-
-/***/ }),
+/* 96 */,
 /* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7738,7 +7738,7 @@ module.exports = Callputspread;
 
 var Barriers = __webpack_require__(128);
 var updateWarmChart = __webpack_require__(31).updateWarmChart;
-var DigitInfo = __webpack_require__(284);
+var DigitInfo = __webpack_require__(282);
 var Defaults = __webpack_require__(23);
 var getActiveTab = __webpack_require__(176).getActiveTab;
 var Purchase = __webpack_require__(179);
@@ -8983,9 +8983,9 @@ module.exports = {
 
 var MBContract = __webpack_require__(78);
 var MBNotifications = __webpack_require__(98);
-var TradingAnalysis = __webpack_require__(90);
-var redrawChart = __webpack_require__(91).redrawChart;
-var ViewPopup = __webpack_require__(92);
+var TradingAnalysis = __webpack_require__(91);
+var redrawChart = __webpack_require__(92).redrawChart;
+var ViewPopup = __webpack_require__(93);
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var formatMoney = __webpack_require__(7).formatMoney;
@@ -9657,7 +9657,7 @@ var Defaults = __webpack_require__(23);
 var Price = __webpack_require__(101);
 var Reset = __webpack_require__(79);
 var BinarySocket = __webpack_require__(4);
-var DatePicker = __webpack_require__(89);
+var DatePicker = __webpack_require__(90);
 var CommonFunctions = __webpack_require__(3);
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
@@ -11015,8 +11015,8 @@ module.exports = {
 "use strict";
 
 
-var Portfolio = __webpack_require__(297).Portfolio;
-var ViewPopup = __webpack_require__(92);
+var Portfolio = __webpack_require__(295).Portfolio;
+var ViewPopup = __webpack_require__(93);
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var formatMoney = __webpack_require__(7).formatMoney;
@@ -11241,7 +11241,7 @@ module.exports = PortfolioInit;
 
 
 var MetaTraderConfig = __webpack_require__(183);
-var MetaTraderUI = __webpack_require__(321);
+var MetaTraderUI = __webpack_require__(319);
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var Validation = __webpack_require__(52);
@@ -12159,7 +12159,7 @@ module.exports = Footer;
 
 
 var moment = __webpack_require__(9);
-var DatePicker = __webpack_require__(89);
+var DatePicker = __webpack_require__(90);
 var dateValueChanged = __webpack_require__(3).dateValueChanged;
 var toISOFormat = __webpack_require__(16).toISOFormat;
 
@@ -12186,7 +12186,7 @@ module.exports = generateBirthDate;
 
 
 var moment = __webpack_require__(9);
-var DatePicker = __webpack_require__(89);
+var DatePicker = __webpack_require__(90);
 var dateValueChanged = __webpack_require__(3).dateValueChanged;
 var localize = __webpack_require__(2).localize;
 var toISOFormat = __webpack_require__(16).toISOFormat;
@@ -12589,7 +12589,7 @@ var MBNotifications = __webpack_require__(98);
 var MBPrice = __webpack_require__(126);
 var MBSymbols = __webpack_require__(175);
 var MBTick = __webpack_require__(127);
-var showChart = __webpack_require__(91).showChart;
+var showChart = __webpack_require__(92).showChart;
 var commonTrading = __webpack_require__(31);
 var BinaryPjax = __webpack_require__(15);
 var Client = __webpack_require__(5);
@@ -13145,7 +13145,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var refreshDropdown = __webpack_require__(26).selectDropdown;
 var moment = __webpack_require__(9);
-var TradingAnalysis = __webpack_require__(90);
+var TradingAnalysis = __webpack_require__(91);
 var commonTrading = __webpack_require__(31);
 var Contract = __webpack_require__(60);
 var Defaults = __webpack_require__(23);
@@ -13155,7 +13155,7 @@ var Lookback = __webpack_require__(61);
 var Notifications = __webpack_require__(177);
 var Price = __webpack_require__(101);
 var Reset = __webpack_require__(79);
-var StartDates = __webpack_require__(291).StartDates;
+var StartDates = __webpack_require__(289).StartDates;
 var Symbols = __webpack_require__(80);
 var Tick = __webpack_require__(62);
 var BinarySocket = __webpack_require__(4);
@@ -18287,20 +18287,20 @@ if (window.NodeList && !NodeList.prototype.forEach) {
 
 
 var BinaryPjax = __webpack_require__(15);
-var pages_config = __webpack_require__(256);
+var pages_config = __webpack_require__(255);
 var Client = __webpack_require__(5);
 var Header = __webpack_require__(27);
-var NetworkMonitor = __webpack_require__(260);
-var Page = __webpack_require__(261);
+var NetworkMonitor = __webpack_require__(259);
+var Page = __webpack_require__(260);
 var BinarySocket = __webpack_require__(4);
-var ContentVisibility = __webpack_require__(265);
+var ContentVisibility = __webpack_require__(264);
 var GTM = __webpack_require__(58);
 var Login = __webpack_require__(46);
 var getElementById = __webpack_require__(3).getElementById;
 var localize = __webpack_require__(2).localize;
-var ScrollToAnchor = __webpack_require__(254);
+var ScrollToAnchor = __webpack_require__(253);
 var isStorageSupported = __webpack_require__(6).isStorageSupported;
-var ThirdPartyLinks = __webpack_require__(255);
+var ThirdPartyLinks = __webpack_require__(254);
 var urlFor = __webpack_require__(8).urlFor;
 var createElement = __webpack_require__(1).createElement;
 
@@ -18970,7 +18970,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 // (+ some custom changes for binary.com)
 
 var $ = __webpack_require__(57);
-var Kinetic = __webpack_require__(553);
+var Kinetic = __webpack_require__(552);
 
 module.exports = function (_options) {
     var that = this;
@@ -20407,7 +20407,7 @@ if (!Element.prototype.matches) {
 var Client = __webpack_require__(5);
 var getLanguage = __webpack_require__(21).get;
 var urlForStatic = __webpack_require__(8).urlForStatic;
-var Pushwoosh = __webpack_require__(564).Pushwoosh;
+var Pushwoosh = __webpack_require__(563).Pushwoosh;
 
 var BinaryPushwoosh = function () {
     var pw = new Pushwoosh();
@@ -20456,42 +20456,6 @@ module.exports = BinaryPushwoosh;
 
 /***/ }),
 /* 253 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var localize = __webpack_require__(2).localize;
-
-var Systems = {
-    mac: ['Mac68K', 'MacIntel', 'MacPPC'],
-    linux: ['HP-UX', 'Linux i686', 'Linux armv7l', ''],
-    ios: ['iPhone', 'iPod', 'iPad'],
-    android: ['Android'],
-    windows: ['Win16', 'Win32', 'WinCE']
-};
-
-var OSDetect = function OSDetect() {
-    if (typeof navigator !== 'undefined') {
-        return Object.keys(Systems).map(function (os) {
-            if (Systems[os].some(function (platform) {
-                return navigator.platform === platform;
-            })) {
-                return os;
-            }
-            return false;
-        }).filter(function (os) {
-            return os;
-        })[0];
-    }
-
-    return localize('Unknown OS');
-};
-
-module.exports = OSDetect;
-
-/***/ }),
-/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20598,7 +20562,7 @@ var ScrollToAnchor = function () {
 module.exports = ScrollToAnchor;
 
 /***/ }),
-/* 255 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20664,73 +20628,73 @@ var ThirdPartyLinks = function () {
 module.exports = ThirdPartyLinks;
 
 /***/ }),
-/* 256 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 // ==================== _common ====================
-var TabSelector = __webpack_require__(96); // eslint-disable-line import/order
+var TabSelector = __webpack_require__(89); // eslint-disable-line import/order
 
 // ==================== app ====================
-var LoggedInHandler = __webpack_require__(258);
-var Redirect = __webpack_require__(262);
-var AccountTransfer = __webpack_require__(268);
-var Cashier = __webpack_require__(269);
-var DepositWithdraw = __webpack_require__(270);
-var PaymentAgentList = __webpack_require__(271);
-var PaymentAgentWithdraw = __webpack_require__(272);
-var Endpoint = __webpack_require__(273);
-var MBTradePage = __webpack_require__(276);
-var EconomicCalendar = __webpack_require__(280);
-var AssetIndexUI = __webpack_require__(279);
-var MetatraderDownloadUI = __webpack_require__(281);
-var TradingTimesUI = __webpack_require__(283);
-var NewAccount = __webpack_require__(277);
-var TradePage = __webpack_require__(292);
-var Authenticate = __webpack_require__(293);
-var ChangePassword = __webpack_require__(294);
-var PaymentAgentTransfer = __webpack_require__(295);
+var LoggedInHandler = __webpack_require__(257);
+var Redirect = __webpack_require__(261);
+var AccountTransfer = __webpack_require__(267);
+var Cashier = __webpack_require__(268);
+var DepositWithdraw = __webpack_require__(269);
+var PaymentAgentList = __webpack_require__(270);
+var PaymentAgentWithdraw = __webpack_require__(271);
+var Endpoint = __webpack_require__(272);
+var MBTradePage = __webpack_require__(275);
+var EconomicCalendar = __webpack_require__(279);
+var AssetIndexUI = __webpack_require__(278);
+var TradingTimesUI = __webpack_require__(281);
+var NewAccount = __webpack_require__(276);
+var TradePage = __webpack_require__(290);
+var Authenticate = __webpack_require__(291);
+var ChangePassword = __webpack_require__(292);
+var PaymentAgentTransfer = __webpack_require__(293);
 var Portfolio = __webpack_require__(132);
-var ProfitTable = __webpack_require__(298);
-var Settings = __webpack_require__(301);
-var APIToken = __webpack_require__(302);
-var AuthorisedApps = __webpack_require__(303);
+var ProfitTable = __webpack_require__(296);
+var Settings = __webpack_require__(299);
+var APIToken = __webpack_require__(300);
+var AuthorisedApps = __webpack_require__(301);
 var CashierPassword = __webpack_require__(180);
-var FinancialAssessment = __webpack_require__(304);
-var IPHistory = __webpack_require__(307);
-var Limits = __webpack_require__(310);
-var SelfExclusion = __webpack_require__(312);
-var TwoFactorAuthentication = __webpack_require__(313);
+var FinancialAssessment = __webpack_require__(302);
+var IPHistory = __webpack_require__(305);
+var Limits = __webpack_require__(308);
+var SelfExclusion = __webpack_require__(310);
+var TwoFactorAuthentication = __webpack_require__(311);
 var PersonalDetails = __webpack_require__(181);
 var professionalClient = __webpack_require__(182);
-var Statement = __webpack_require__(314);
-var TopUpVirtual = __webpack_require__(317);
-var Accounts = __webpack_require__(318);
-var LostPassword = __webpack_require__(320);
+var Statement = __webpack_require__(312);
+var TopUpVirtual = __webpack_require__(315);
+var Accounts = __webpack_require__(316);
+var LostPassword = __webpack_require__(318);
 var MetaTrader = __webpack_require__(133);
-var TypesOfAccounts = __webpack_require__(322);
-var FinancialAccOpening = __webpack_require__(323);
-var RealAccOpening = __webpack_require__(324);
-var VirtualAccOpening = __webpack_require__(325);
-var WelcomePage = __webpack_require__(326);
-var ResetPassword = __webpack_require__(329);
-var SetCurrency = __webpack_require__(330);
-var TelegramBot = __webpack_require__(331);
+var TypesOfAccounts = __webpack_require__(320);
+var FinancialAccOpening = __webpack_require__(321);
+var RealAccOpening = __webpack_require__(322);
+var VirtualAccOpening = __webpack_require__(323);
+var WelcomePage = __webpack_require__(324);
+var ResetPassword = __webpack_require__(327);
+var SetCurrency = __webpack_require__(328);
+var TelegramBot = __webpack_require__(329);
 var TNCApproval = __webpack_require__(184);
-var VideoFacility = __webpack_require__(333);
+var VideoFacility = __webpack_require__(331);
 
 // ==================== static ====================
-var Charity = __webpack_require__(335);
-var Contact = __webpack_require__(336);
-var GetStarted = __webpack_require__(337);
-var Home = __webpack_require__(338);
-var JobDetails = __webpack_require__(339);
-var Regulation = __webpack_require__(340);
-var StaticPages = __webpack_require__(341);
-var TermsAndConditions = __webpack_require__(342);
-var WhyUs = __webpack_require__(343);
+var Charity = __webpack_require__(333);
+var Contact = __webpack_require__(334);
+var GetStarted = __webpack_require__(335);
+var Home = __webpack_require__(336);
+var JobDetails = __webpack_require__(337);
+var Platforms = __webpack_require__(338);
+var Regulation = __webpack_require__(339);
+var StaticPages = __webpack_require__(340);
+var TermsAndConditions = __webpack_require__(341);
+var WhyUs = __webpack_require__(342);
 
 /* eslint-disable max-len */
 var pages_config = {
@@ -20764,7 +20728,7 @@ var pages_config = {
     multi_barriers_trading: { module: MBTradePage, needs_currency: true },
     payment_agent_listws: { module: PaymentAgentList, is_authenticated: true },
     payment_methods: { module: Cashier.PaymentMethods },
-    platforms: { module: TabSelector },
+    platforms: { module: Platforms },
     portfoliows: { module: Portfolio, is_authenticated: true, needs_currency: true },
     profit_tablews: { module: ProfitTable, is_authenticated: true, needs_currency: true },
     professional: { module: professionalClient, is_authenticated: true, only_real: true },
@@ -20793,7 +20757,6 @@ var pages_config = {
     'cfds': { module: GetStarted.CFDs },
     'contract-specifications': { module: TabSelector },
     'cryptocurrencies': { module: GetStarted.Cryptocurrencies },
-    'download': { module: MetatraderDownloadUI },
     'faq': { module: StaticPages.AffiliatesFAQ },
     'forex': { module: GetStarted.Forex },
     'get-started': { module: TabSelector },
@@ -20820,7 +20783,7 @@ var pages_config = {
 module.exports = pages_config;
 
 /***/ }),
-/* 257 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20844,7 +20807,7 @@ var Contents = function () {
 module.exports = Contents;
 
 /***/ }),
-/* 258 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20964,7 +20927,7 @@ var LoggedInHandler = function () {
 module.exports = LoggedInHandler;
 
 /***/ }),
-/* 259 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21034,14 +20997,14 @@ var Menu = function () {
 module.exports = Menu;
 
 /***/ }),
-/* 260 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var Header = __webpack_require__(27);
-var BinarySocketGeneral = __webpack_require__(263);
+var BinarySocketGeneral = __webpack_require__(262);
 var NetworkMonitorBase = __webpack_require__(243);
 var getElementById = __webpack_require__(3).getElementById;
 var localize = __webpack_require__(2).localize;
@@ -21080,7 +21043,7 @@ var NetworkMonitor = function () {
 module.exports = NetworkMonitor;
 
 /***/ }),
-/* 261 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21088,14 +21051,14 @@ module.exports = NetworkMonitor;
 
 var Cookies = __webpack_require__(56);
 var Client = __webpack_require__(5);
-var Contents = __webpack_require__(257);
+var Contents = __webpack_require__(256);
 var Header = __webpack_require__(27);
 var Footer = __webpack_require__(167);
-var Menu = __webpack_require__(259);
+var Menu = __webpack_require__(258);
 var BinarySocket = __webpack_require__(4);
 var checkLanguage = __webpack_require__(77).checkLanguage;
 var TrafficSource = __webpack_require__(171);
-var RealityCheck = __webpack_require__(327);
+var RealityCheck = __webpack_require__(325);
 var Login = __webpack_require__(46);
 var elementInnerHtml = __webpack_require__(3).elementInnerHtml;
 var getElementById = __webpack_require__(3).getElementById;
@@ -21265,7 +21228,7 @@ var Page = function () {
 module.exports = Page;
 
 /***/ }),
-/* 262 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21298,7 +21261,7 @@ var Redirect = function () {
 module.exports = Redirect;
 
 /***/ }),
-/* 263 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21312,8 +21275,8 @@ var BinarySocket = __webpack_require__(4);
 var Dialog = __webpack_require__(75);
 var showPopup = __webpack_require__(124);
 var setCurrencies = __webpack_require__(7).setCurrencies;
-var SessionDurationLimit = __webpack_require__(267);
-var updateBalance = __webpack_require__(332);
+var SessionDurationLimit = __webpack_require__(266);
+var updateBalance = __webpack_require__(330);
 var GTM = __webpack_require__(58);
 var Login = __webpack_require__(46);
 var localize = __webpack_require__(2).localize;
@@ -21481,7 +21444,7 @@ var BinarySocketGeneral = function () {
 module.exports = BinarySocketGeneral;
 
 /***/ }),
-/* 264 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21521,7 +21484,7 @@ var mapCodeToLanguage = function mapCodeToLanguage(code) {
 module.exports = createLanguageDropDown;
 
 /***/ }),
-/* 265 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21530,7 +21493,7 @@ module.exports = createLanguageDropDown;
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var State = __webpack_require__(6).State;
-var updateTabDisplay = __webpack_require__(96).updateTabDisplay;
+var updateTabDisplay = __webpack_require__(89).updateTabDisplay;
 var MetaTrader = __webpack_require__(133);
 
 /*
@@ -21694,7 +21657,7 @@ var ContentVisibility = function () {
 module.exports = ContentVisibility;
 
 /***/ }),
-/* 266 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21840,7 +21803,7 @@ var Guide = function () {
 module.exports = Guide;
 
 /***/ }),
-/* 267 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21915,7 +21878,7 @@ var SessionDurationLimit = function () {
 module.exports = SessionDurationLimit;
 
 /***/ }),
-/* 268 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22147,7 +22110,7 @@ var AccountTransfer = function () {
 module.exports = AccountTransfer;
 
 /***/ }),
-/* 269 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22250,7 +22213,7 @@ var Cashier = function () {
 module.exports = Cashier;
 
 /***/ }),
-/* 270 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22564,7 +22527,7 @@ var DepositWithdraw = function () {
 module.exports = DepositWithdraw;
 
 /***/ }),
-/* 271 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22660,7 +22623,7 @@ var PaymentAgentList = function () {
 module.exports = PaymentAgentList;
 
 /***/ }),
-/* 272 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22861,7 +22824,7 @@ var PaymentAgentWithdraw = function () {
 module.exports = PaymentAgentWithdraw;
 
 /***/ }),
-/* 273 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22901,7 +22864,7 @@ var Endpoint = function () {
 module.exports = Endpoint;
 
 /***/ }),
-/* 274 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22951,7 +22914,7 @@ var MBDisplayCurrencies = function MBDisplayCurrencies() {
 module.exports = MBDisplayCurrencies;
 
 /***/ }),
-/* 275 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22964,7 +22927,7 @@ var MBPrice = __webpack_require__(126);
 var MBProcess = __webpack_require__(174);
 var MBTick = __webpack_require__(127);
 var MBSymbols = __webpack_require__(175);
-var TradingAnalysis = __webpack_require__(90);
+var TradingAnalysis = __webpack_require__(91);
 var debounce = __webpack_require__(31).debounce;
 var Client = __webpack_require__(5);
 var Currency = __webpack_require__(7);
@@ -23198,19 +23161,19 @@ var MBTradingEvents = function () {
 module.exports = MBTradingEvents;
 
 /***/ }),
-/* 276 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var MBContract = __webpack_require__(78);
-var MBDisplayCurrencies = __webpack_require__(274);
-var MBTradingEvents = __webpack_require__(275);
+var MBDisplayCurrencies = __webpack_require__(273);
+var MBTradingEvents = __webpack_require__(274);
 var MBPortfolio = __webpack_require__(173);
 var MBPrice = __webpack_require__(126);
 var MBProcess = __webpack_require__(174);
-var cleanupChart = __webpack_require__(91).cleanupChart;
+var cleanupChart = __webpack_require__(92).cleanupChart;
 var BinaryPjax = __webpack_require__(15);
 var Client = __webpack_require__(5);
 var Header = __webpack_require__(27);
@@ -23320,7 +23283,7 @@ var MBTradePage = function () {
 module.exports = MBTradePage;
 
 /***/ }),
-/* 277 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23420,7 +23383,7 @@ var NewAccount = function () {
 module.exports = NewAccount;
 
 /***/ }),
-/* 278 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23510,13 +23473,13 @@ var AssetIndex = function () {
 module.exports = AssetIndex;
 
 /***/ }),
-/* 279 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var AssetIndex = __webpack_require__(278);
+var AssetIndex = __webpack_require__(277);
 var BinarySocket = __webpack_require__(4);
 var Table = __webpack_require__(76);
 var showLoadingImage = __webpack_require__(1).showLoadingImage;
@@ -23650,7 +23613,7 @@ var AssetIndexUI = function () {
 module.exports = AssetIndexUI;
 
 /***/ }),
-/* 280 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23690,55 +23653,7 @@ var EconomicCalendar = function () {
 module.exports = EconomicCalendar;
 
 /***/ }),
-/* 281 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _os_detect = __webpack_require__(253);
-
-var _os_detect2 = _interopRequireDefault(_os_detect);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var toggleDownloadPage = function toggleDownloadPage(target) {
-    document.querySelectorAll('.download-block').forEach(function (block) {
-        block.setVisibility(block.getAttribute('id') === target);
-    });
-    document.querySelectorAll('.download-heading').forEach(function (heading) {
-        heading.setVisibility(heading.getAttribute('id') === target + '-heading');
-    });
-    document.querySelectorAll('.alternative-download-description').forEach(function (text) {
-        text.setVisibility(text.getAttribute('id') === target + '-alternative-description');
-    });
-};
-var DownloadMetatrader = function () {
-    var onLoad = function onLoad() {
-        var os = (0, _os_detect2.default)();
-
-        // Hide or show a default item based on navigator.platform
-        toggleDownloadPage(os);
-
-        // Listen for custom OS change requests
-        document.querySelectorAll('a[data-type=alt-link]').forEach(function (link) {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleDownloadPage(e.target.getAttribute('data-target'));
-            });
-        });
-    };
-
-    return {
-        onLoad: onLoad
-    };
-}();
-
-module.exports = DownloadMetatrader;
-
-/***/ }),
-/* 282 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23766,17 +23681,17 @@ var TradingTimes = function () {
 module.exports = TradingTimes;
 
 /***/ }),
-/* 283 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var moment = __webpack_require__(9);
-var TradingTimes = __webpack_require__(282);
+var TradingTimes = __webpack_require__(280);
 var BinarySocket = __webpack_require__(4);
 var Table = __webpack_require__(76);
-var DatePicker = __webpack_require__(89);
+var DatePicker = __webpack_require__(90);
 var dateValueChanged = __webpack_require__(3).dateValueChanged;
 var localize = __webpack_require__(2).localize;
 var showLoadingImage = __webpack_require__(1).showLoadingImage;
@@ -23950,7 +23865,7 @@ var TradingTimesUI = function () {
 module.exports = TradingTimesUI;
 
 /***/ }),
-/* 284 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24222,7 +24137,7 @@ var DigitInfo = function () {
 module.exports = DigitInfo;
 
 /***/ }),
-/* 285 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24230,7 +24145,7 @@ module.exports = DigitInfo;
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var HighchartUI = __webpack_require__(286);
+var HighchartUI = __webpack_require__(284);
 var getHighstock = __webpack_require__(31).requireHighstock;
 var MBContract = __webpack_require__(78);
 var MBDefaults = __webpack_require__(48);
@@ -24906,7 +24821,7 @@ var Highchart = function () {
 module.exports = Highchart;
 
 /***/ }),
-/* 286 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25087,7 +25002,7 @@ var HighchartUI = function () {
 module.exports = HighchartUI;
 
 /***/ }),
-/* 287 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25376,7 +25291,7 @@ var init = exports.init = function init(contracts, contracts_tree, selected) {
 exports.default = init;
 
 /***/ }),
-/* 288 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25413,14 +25328,14 @@ var displayCurrencies = function displayCurrencies() {
 module.exports = displayCurrencies;
 
 /***/ }),
-/* 289 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var moment = __webpack_require__(9);
-var TradingAnalysis = __webpack_require__(90);
+var TradingAnalysis = __webpack_require__(91);
 var Barriers = __webpack_require__(128);
 var CommonTrading = __webpack_require__(31);
 var CommonIndependent = __webpack_require__(49);
@@ -25843,7 +25758,7 @@ var TradingEvents = function () {
 module.exports = TradingEvents;
 
 /***/ }),
-/* 290 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26448,7 +26363,7 @@ var init = exports.init = function init() {
 exports.default = init;
 
 /***/ }),
-/* 291 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26586,26 +26501,26 @@ module.exports = {
 };
 
 /***/ }),
-/* 292 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var Dropdown = __webpack_require__(26).selectDropdown;
-var TradingAnalysis = __webpack_require__(90);
+var TradingAnalysis = __webpack_require__(91);
 var commonTrading = __webpack_require__(31);
-var cleanupChart = __webpack_require__(91).cleanupChart;
-var displayCurrencies = __webpack_require__(288);
+var cleanupChart = __webpack_require__(92).cleanupChart;
+var displayCurrencies = __webpack_require__(286);
 var Defaults = __webpack_require__(23);
-var TradingEvents = __webpack_require__(289);
+var TradingEvents = __webpack_require__(287);
 var Price = __webpack_require__(101);
 var Process = __webpack_require__(178);
-var ViewPopup = __webpack_require__(92);
+var ViewPopup = __webpack_require__(93);
 var Client = __webpack_require__(5);
 var Header = __webpack_require__(27);
 var BinarySocket = __webpack_require__(4);
-var Guide = __webpack_require__(266);
+var Guide = __webpack_require__(265);
 var State = __webpack_require__(6).State;
 
 var TradePage = function () {
@@ -26704,7 +26619,7 @@ var TradePage = function () {
 module.exports = TradePage;
 
 /***/ }),
-/* 293 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27129,7 +27044,7 @@ var Authenticate = function () {
 module.exports = Authenticate;
 
 /***/ }),
-/* 294 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27184,13 +27099,13 @@ var ChangePassword = function () {
 module.exports = ChangePassword;
 
 /***/ }),
-/* 295 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var PaymentAgentTransferUI = __webpack_require__(296);
+var PaymentAgentTransferUI = __webpack_require__(294);
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var getDecimalPlaces = __webpack_require__(7).getDecimalPlaces;
@@ -27319,7 +27234,7 @@ var PaymentAgentTransfer = function () {
 module.exports = PaymentAgentTransfer;
 
 /***/ }),
-/* 296 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27417,7 +27332,7 @@ var PaymentAgentTransferUI = function () {
 module.exports = PaymentAgentTransferUI;
 
 /***/ }),
-/* 297 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27487,14 +27402,14 @@ module.exports = {
 };
 
 /***/ }),
-/* 298 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var ProfitTableUI = __webpack_require__(300);
-var ViewPopup = __webpack_require__(92);
+var ProfitTableUI = __webpack_require__(298);
+var ViewPopup = __webpack_require__(93);
 var showLocalTimeOnHover = __webpack_require__(47).showLocalTimeOnHover;
 var BinarySocket = __webpack_require__(4);
 var DateTo = __webpack_require__(169);
@@ -27642,7 +27557,7 @@ var ProfitTableInit = function () {
 module.exports = ProfitTableInit;
 
 /***/ }),
-/* 299 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27683,13 +27598,13 @@ var ProfitTable = function () {
 module.exports = ProfitTable;
 
 /***/ }),
-/* 300 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var ProfitTable = __webpack_require__(299);
+var ProfitTable = __webpack_require__(297);
 var Client = __webpack_require__(5);
 var Table = __webpack_require__(76);
 var formatMoney = __webpack_require__(7).formatMoney;
@@ -27797,7 +27712,7 @@ var ProfitTableUI = function () {
 module.exports = ProfitTableUI;
 
 /***/ }),
-/* 301 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27841,7 +27756,7 @@ var Settings = function () {
 module.exports = Settings;
 
 /***/ }),
-/* 302 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28000,7 +27915,7 @@ var APIToken = function () {
 module.exports = APIToken;
 
 /***/ }),
-/* 303 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28147,7 +28062,7 @@ var AuthorisedApps = function () {
 module.exports = AuthorisedApps;
 
 /***/ }),
-/* 304 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28307,7 +28222,7 @@ var FinancialAssessment = function () {
 module.exports = FinancialAssessment;
 
 /***/ }),
-/* 305 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28352,14 +28267,14 @@ var IPHistoryData = function () {
 module.exports = IPHistoryData;
 
 /***/ }),
-/* 306 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var IPHistoryData = __webpack_require__(305);
-var IPHistoryUI = __webpack_require__(308);
+var IPHistoryData = __webpack_require__(303);
+var IPHistoryUI = __webpack_require__(306);
 var BinarySocket = __webpack_require__(4);
 
 var IPHistoryInit = function () {
@@ -28395,13 +28310,13 @@ var IPHistoryInit = function () {
 module.exports = IPHistoryInit;
 
 /***/ }),
-/* 307 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var IPHistoryInit = __webpack_require__(306);
+var IPHistoryInit = __webpack_require__(304);
 
 var IPHistory = function () {
     var onLoad = function onLoad() {
@@ -28421,7 +28336,7 @@ var IPHistory = function () {
 module.exports = IPHistory;
 
 /***/ }),
-/* 308 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28496,13 +28411,13 @@ var IPHistoryUI = function () {
 module.exports = IPHistoryUI;
 
 /***/ }),
-/* 309 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var LimitsUI = __webpack_require__(311);
+var LimitsUI = __webpack_require__(309);
 var Client = __webpack_require__(5);
 var formatMoney = __webpack_require__(7).formatMoney;
 var elementInnerHtml = __webpack_require__(3).elementInnerHtml;
@@ -28569,13 +28484,13 @@ var LimitsInit = function () {
 module.exports = LimitsInit;
 
 /***/ }),
-/* 310 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var LimitsInit = __webpack_require__(309);
+var LimitsInit = __webpack_require__(307);
 var BinarySocket = __webpack_require__(4);
 
 var Limits = function () {
@@ -28604,7 +28519,7 @@ var Limits = function () {
 module.exports = Limits;
 
 /***/ }),
-/* 311 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28697,7 +28612,7 @@ var LimitsUI = function () {
 module.exports = LimitsUI;
 
 /***/ }),
-/* 312 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28713,7 +28628,7 @@ var BinarySocket = __webpack_require__(4);
 var Dialog = __webpack_require__(75);
 var Currency = __webpack_require__(7);
 var FormManager = __webpack_require__(17);
-var DatePicker = __webpack_require__(89);
+var DatePicker = __webpack_require__(90);
 var TimePicker = __webpack_require__(172);
 var dateValueChanged = __webpack_require__(3).dateValueChanged;
 var localize = __webpack_require__(2).localize;
@@ -29042,13 +28957,13 @@ var SelfExclusion = function () {
 module.exports = SelfExclusion;
 
 /***/ }),
-/* 313 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var QRCode = __webpack_require__(545);
+var QRCode = __webpack_require__(544);
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var FormManager = __webpack_require__(17);
@@ -29175,14 +29090,14 @@ var TwoFactorAuthentication = function () {
 module.exports = TwoFactorAuthentication;
 
 /***/ }),
-/* 314 */
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var StatementUI = __webpack_require__(316);
-var ViewPopup = __webpack_require__(92);
+var StatementUI = __webpack_require__(314);
+var ViewPopup = __webpack_require__(93);
 var showLocalTimeOnHover = __webpack_require__(47).showLocalTimeOnHover;
 var BinarySocket = __webpack_require__(4);
 var DateTo = __webpack_require__(169);
@@ -29343,7 +29258,7 @@ var StatementInit = function () {
 module.exports = StatementInit;
 
 /***/ }),
-/* 315 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29414,13 +29329,13 @@ var Statement = function () {
 module.exports = Statement;
 
 /***/ }),
-/* 316 */
+/* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Statement = __webpack_require__(315);
+var Statement = __webpack_require__(313);
 var Client = __webpack_require__(5);
 var Table = __webpack_require__(76);
 var showTooltip = __webpack_require__(59).showTooltip;
@@ -29511,7 +29426,7 @@ var StatementUI = function () {
 module.exports = StatementUI;
 
 /***/ }),
-/* 317 */
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29563,7 +29478,7 @@ var TopUpVirtual = function () {
 module.exports = TopUpVirtual;
 
 /***/ }),
-/* 318 */
+/* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29571,7 +29486,7 @@ module.exports = TopUpVirtual;
 
 var moment = __webpack_require__(9);
 var setIsForNewAccount = __webpack_require__(181).setIsForNewAccount;
-var getCurrencies = __webpack_require__(319).getCurrencies;
+var getCurrencies = __webpack_require__(317).getCurrencies;
 var BinaryPjax = __webpack_require__(15);
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
@@ -29778,7 +29693,7 @@ var Accounts = function () {
 module.exports = Accounts;
 
 /***/ }),
-/* 319 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29859,7 +29774,7 @@ var GetCurrency = function () {
 module.exports = GetCurrency;
 
 /***/ }),
-/* 320 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29912,7 +29827,7 @@ var LostPassword = function () {
 module.exports = LostPassword;
 
 /***/ }),
-/* 321 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30525,7 +30440,7 @@ var MetaTraderUI = function () {
 module.exports = MetaTraderUI;
 
 /***/ }),
-/* 322 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30565,7 +30480,7 @@ var TypesOfAccounts = function () {
 module.exports = TypesOfAccounts;
 
 /***/ }),
-/* 323 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30692,7 +30607,7 @@ var FinancialAccOpening = function () {
 module.exports = FinancialAccOpening;
 
 /***/ }),
-/* 324 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30756,7 +30671,7 @@ var RealAccOpening = function () {
 module.exports = RealAccOpening;
 
 /***/ }),
-/* 325 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30929,7 +30844,7 @@ var VirtualAccOpening = function () {
 module.exports = VirtualAccOpening;
 
 /***/ }),
-/* 326 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30984,14 +30899,14 @@ var WelcomePage = function () {
 module.exports = WelcomePage;
 
 /***/ }),
-/* 327 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var RealityCheckData = __webpack_require__(134);
-var RealityCheckUI = __webpack_require__(328);
+var RealityCheckUI = __webpack_require__(326);
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 
@@ -31034,7 +30949,7 @@ var RealityCheck = function () {
 module.exports = RealityCheck;
 
 /***/ }),
-/* 328 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31183,7 +31098,7 @@ var RealityCheckUI = function () {
 module.exports = RealityCheckUI;
 
 /***/ }),
-/* 329 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31251,7 +31166,7 @@ var ResetPassword = function () {
 module.exports = ResetPassword;
 
 /***/ }),
-/* 330 */
+/* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31375,7 +31290,7 @@ var SetCurrency = function () {
 module.exports = SetCurrency;
 
 /***/ }),
-/* 331 */
+/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31414,7 +31329,7 @@ var TelegramBot = function () {
 module.exports = TelegramBot;
 
 /***/ }),
-/* 332 */
+/* 330 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31448,7 +31363,7 @@ var updateBalance = function updateBalance(response) {
 module.exports = updateBalance;
 
 /***/ }),
-/* 333 */
+/* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31493,7 +31408,7 @@ var VideoFacility = function () {
 module.exports = VideoFacility;
 
 /***/ }),
-/* 334 */
+/* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31527,7 +31442,7 @@ $(window).on('pageshow', function (e) {
 });
 
 /***/ }),
-/* 335 */
+/* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31566,7 +31481,7 @@ var Charity = function () {
 module.exports = Charity;
 
 /***/ }),
-/* 336 */
+/* 334 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31652,7 +31567,7 @@ var Contact = function () {
 module.exports = Contact;
 
 /***/ }),
-/* 337 */
+/* 335 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31712,7 +31627,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 338 */
+/* 336 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31721,7 +31636,7 @@ module.exports = {
 var Login = __webpack_require__(46);
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var TabSelector = __webpack_require__(96);
+var TabSelector = __webpack_require__(89);
 var urlFor = __webpack_require__(8).urlFor;
 var BinaryPjax = __webpack_require__(15);
 var BinarySocket = __webpack_require__(4);
@@ -31796,7 +31711,7 @@ var Home = function () {
 module.exports = Home;
 
 /***/ }),
-/* 339 */
+/* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31867,7 +31782,53 @@ var JobDetails = function () {
 module.exports = JobDetails;
 
 /***/ }),
-/* 340 */
+/* 338 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var getElementById = __webpack_require__(3).getElementById;
+var TabSelector = __webpack_require__(89);
+
+var Platforms = function () {
+    var onLoad = function onLoad() {
+        TabSelector.onLoad();
+        $.getJSON('https://api.github.com/repos/binary-com/binary-desktop-installers/releases/latest', function () {
+            var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { assets: [] };
+
+            var link_mac = void 0,
+                link_windows = void 0;
+            // link_linux;
+            data.assets.some(function (asset) {
+                // if (link_mac && link_windows && link_linux) {
+                if (link_mac && link_windows) {
+                    return true;
+                }
+                if (/\.dmg$/.test(asset.browser_download_url)) {
+                    link_mac = asset.browser_download_url;
+                } else if (/\.exe$/.test(asset.browser_download_url)) {
+                    link_windows = asset.browser_download_url;
+                    // } else if (/x86_64\.AppImage$/.test(asset.browser_download_url)) {
+                    //     link_linux = asset.browser_download_url;
+                }
+                return false;
+            });
+            getElementById('app_mac').setAttribute('href', link_mac);
+            getElementById('app_windows').setAttribute('href', link_windows);
+            // getElementById('app_linux').setAttribute('href', link_linux);
+        });
+    };
+
+    return {
+        onLoad: onLoad
+    };
+}();
+
+module.exports = Platforms;
+
+/***/ }),
+/* 339 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31927,7 +31888,7 @@ var Regulation = function () {
 module.exports = Regulation;
 
 /***/ }),
-/* 341 */
+/* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32019,7 +31980,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 342 */
+/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32168,7 +32129,7 @@ var TermsAndConditions = function () {
 module.exports = TermsAndConditions;
 
 /***/ }),
-/* 343 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32196,6 +32157,7 @@ var WhyUs = function () {
 module.exports = WhyUs;
 
 /***/ }),
+/* 343 */,
 /* 344 */,
 /* 345 */,
 /* 346 */,
@@ -32417,18 +32379,17 @@ module.exports = WhyUs;
 /* 562 */,
 /* 563 */,
 /* 564 */,
-/* 565 */,
-/* 566 */
+/* 565 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 567 */
+/* 566 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ })
-],[334]);
+],[332]);
 //# sourceMappingURL=binary.js.map
