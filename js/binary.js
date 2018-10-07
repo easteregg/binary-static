@@ -6797,8 +6797,7 @@ var ViewPopup = function () {
 
         if (current_spot_time) {
             if (window.time && current_spot_time > window.time.unix()) {
-                // epoch needs to be 13 digits before turning to moment
-                window.time = moment(+current_spot_time * 1000).utc();
+                window.time = moment(current_spot_time).utc();
                 updateTimers();
             }
             containerSetText('trade_details_current_date', epochToDateTime(current_spot_time));
@@ -23720,32 +23719,13 @@ var TradingTimesUI = function () {
         }
 
         var date = moment.utc();
-        var isoFormattedDate = toISOFormat(date);
-        $date.attr('data-value', isoFormattedDate);
+        $date.attr('data-value', toISOFormat(date));
         DatePicker.init({
             selector: '#trading-date',
             minDate: 0,
             maxDate: 364
         });
         $date.val(localize('Today'));
-        if ($(window).width() < 480) {
-            // Create a label to be friendlier
-            var $label = $('label[for=trading-date]');
-            $label.append($('<span/>', { class: 'ux-date foot-note' }));
-            if (!$date.val()) {
-                $('span.ux-date').text(localize('Today'));
-                $date.val(isoFormattedDate);
-                $date.attr('value', isoFormattedDate);
-            }
-            $date.change(function () {
-                var diffInDays = moment().diff(moment($date.val()), 'days', true);
-                if (diffInDays < 0 || diffInDays >= 1) {
-                    $('span.ux-date').text('');
-                } else {
-                    $('span.ux-date').text('Today');
-                }
-            });
-        }
         $date.change(function () {
             if (!dateValueChanged(this, 'date')) {
                 return false;
