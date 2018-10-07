@@ -20461,17 +20461,35 @@ module.exports = BinaryPushwoosh;
 "use strict";
 
 
+var localize = __webpack_require__(2).localize;
+
+var systems = {
+    mac: ['Mac68K', 'MacIntel', 'MacPPC'],
+    linux: ['HP-UX', 'Linux i686', 'Linux amd64', 'Linux i686 on x86_64', 'Linux i686 X11', 'Linux x86_64', 'Linux x86_64 X11', 'FreeBSD', 'FreeBSD i386', 'FreeBSD amd64', 'X11'],
+    ios: ['iPhone', 'iPod', 'iPad', 'iPhone Simulator', 'iPod Simulator', 'iPad Simulator'],
+    android: ['Android', 'Linux armv7l', // Samsung galaxy s2 ~ s5, nexus 4/5
+    'Linux armv8l', null],
+    windows: ['Win16', 'Win32', 'Win64', 'WinCE']
+};
+
+var isDesktop = function isDesktop() {
+    var os = OSDetect();
+    return !!['windows', 'mac', 'linux'].find(function (system) {
+        return system === os;
+    });
+};
+
+var isMobile = function isMobile() {
+    var os = OSDetect();
+    return !!['ios', 'android'].find(function (system) {
+        return system === os;
+    });
+};
+
 var OSDetect = function OSDetect() {
-    var Systems = {
-        macos: ['Mac68K', 'MacIntel', 'MacPPC'],
-        linux: ['HP-UX', 'Linux i686', 'Linux armv7l', ''],
-        ios: ['iPhone', 'iPod', 'iPad'],
-        android: ['Android'],
-        windows: ['Win16', 'Win32', 'WinCE']
-    };
-    if (typeof navigator !== 'undefined') {
-        return Object.keys(Systems).map(function (os) {
-            if (Systems[os].some(function (platform) {
+    if (typeof navigator !== 'undefined' && navigator.platform) {
+        return Object.keys(systems).map(function (os) {
+            if (systems[os].some(function (platform) {
                 return navigator.platform === platform;
             })) {
                 return os;
@@ -20482,10 +20500,14 @@ var OSDetect = function OSDetect() {
         })[0];
     }
 
-    return 'Unknown OS';
+    return localize('Unknown OS');
 };
 
-module.exports = OSDetect;
+module.exports = {
+    OSDetect: OSDetect,
+    isDesktop: isDesktop,
+    isMobile: isMobile
+};
 
 /***/ }),
 /* 254 */
@@ -20790,6 +20812,7 @@ var pages_config = {
     'cfds': { module: GetStarted.CFDs },
     'contract-specifications': { module: TabSelector },
     'cryptocurrencies': { module: GetStarted.Cryptocurrencies },
+    'download': { module: MetatraderDownloadUI },
     'faq': { module: StaticPages.AffiliatesFAQ },
     'forex': { module: GetStarted.Forex },
     'get-started': { module: TabSelector },
@@ -20809,8 +20832,7 @@ var pages_config = {
     'types-of-accounts': { module: TypesOfAccounts },
     'video-facility': { module: VideoFacility, is_authenticated: true, only_real: true },
     'why-us': { module: WhyUs },
-    'telegram-bot': { module: TelegramBot, is_authenticated: true },
-    download: { module: MetatraderDownloadUI }
+    'telegram-bot': { module: TelegramBot, is_authenticated: true }
 };
 /* eslint-enable max-len */
 
@@ -23695,38 +23717,33 @@ module.exports = EconomicCalendar;
 
 var _os_detect = __webpack_require__(253);
 
-var _os_detect2 = _interopRequireDefault(_os_detect);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var toggleDownloadPage = function toggleDownloadPage(target) {
-    document.querySelectorAll('.download-block').forEach(function (block) {
-        if (block.getAttribute('id') === target) {
-            block.setVisibility(1);
-        } else {
-            block.setVisibility(0);
-        }
-    });
-    document.querySelectorAll('.download-heading').forEach(function (heading) {
-        if (heading.getAttribute('id') === target + '-heading') {
-            heading.setVisibility(1);
-        } else {
-            heading.setVisibility(0);
-        }
-    });
-    document.querySelectorAll('.alternative-download-description').forEach(function (text) {
-        if (text.getAttribute('id') === target + '-alternative-description') {
-            text.setVisibility(1);
-        } else {
-            text.setVisibility(0);
-        }
-    });
+    if ((0, _os_detect.isDesktop)()) {
+        document.querySelectorAll('.download-block').forEach(function (block) {
+            block.setVisibility(block.getAttribute('id') === target);
+        });
+        document.querySelectorAll('.download-heading').forEach(function (heading) {
+            heading.setVisibility(heading.getAttribute('id') === target + '-heading');
+        });
+        document.querySelectorAll('.alternative-download-description').forEach(function (text) {
+            text.setVisibility(text.getAttribute('id') === target + '-alternative-description');
+        });
+    } else {
+        document.querySelectorAll('.desktop-apps').forEach(function (el) {
+            return el.setVisibility(0);
+        });
+        document.querySelector('#mobile-apps').childNodes.forEach(function (child) {
+            return child.setVisibility(0);
+        });
+        document.querySelector('#' + target + '-app').setVisibility(1);
+        document.querySelector('#' + target + '-heading').setVisibility(1);
+    }
 };
 var DownloadMetatrader = function () {
     var onLoad = function onLoad() {
-        var os = (0, _os_detect2.default)();
+        var os = (0, _os_detect.OSDetect)();
 
-        // Hide or show a default Item based on navigator.platform
+        // Hide or show a default item based on navigator.platform
         toggleDownloadPage(os);
 
         // Listen for custom OS change requests
