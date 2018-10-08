@@ -21068,10 +21068,10 @@ var Language = __webpack_require__(21);
 var PushNotification = __webpack_require__(252);
 var Localize = __webpack_require__(2);
 var localize = __webpack_require__(2).localize;
-var State = __webpack_require__(6).State;
 var LocalStore = __webpack_require__(6).LocalStore;
-var toISOFormat = __webpack_require__(14).toISOFormat;
+var State = __webpack_require__(6).State;
 var scrollToTop = __webpack_require__(88).scrollToTop;
+var toISOFormat = __webpack_require__(14).toISOFormat;
 var Url = __webpack_require__(8);
 var createElement = __webpack_require__(1).createElement;
 __webpack_require__(164);
@@ -21146,7 +21146,6 @@ var Page = function () {
                 checkLanguage();
                 RealityCheck.onLoad();
                 Menu.init();
-                LocalStore.remove('date_first_contact');
             });
         } else {
             checkLanguage();
@@ -21287,8 +21286,8 @@ var updateBalance = __webpack_require__(330);
 var GTM = __webpack_require__(58);
 var Login = __webpack_require__(46);
 var localize = __webpack_require__(2).localize;
-var State = __webpack_require__(6).State;
 var LocalStore = __webpack_require__(6).LocalStore;
+var State = __webpack_require__(6).State;
 var urlFor = __webpack_require__(8).urlFor;
 var getPropertyValue = __webpack_require__(1).getPropertyValue;
 
@@ -30771,6 +30770,11 @@ var VirtualAccOpening = function () {
     var bindValidation = function bindValidation() {
         // Add TrafficSource parameters
         var utm_data = TrafficSource.getData();
+        var mobile_devices = ['iPhone', 'iPad', 'Android'];
+        var date_first_contact = LocalStore.get('date_first_contact') || toISOFormat(moment());
+        var signup_device = mobile_devices.some(function (item) {
+            return item === navigator.platform;
+        }) ? 'mobile' : 'desktop';
 
         var req = [{ selector: '#client_password', validations: ['req', 'password'], re_check_field: '#repeat_password' }, { selector: '#repeat_password', validations: ['req', ['compare', { to: '#client_password' }]], exclude_request: 1 }, { selector: '#residence' }, { selector: '#email_consent' }, { request_field: 'utm_source', value: TrafficSource.getSource(utm_data) }, { request_field: 'new_account_virtual', value: 1 }, { request_field: 'signup_device', value: signup_device }, { request_field: 'date_first_contact', value: date_first_contact }];
 
@@ -30781,12 +30785,6 @@ var VirtualAccOpening = function () {
         if (gclid) req.push({ request_field: 'gclid_url', value: gclid });
 
         if (Cookies.get('affiliate_tracking')) req.push({ request_field: 'affiliate_token', value: Cookies.getJSON('affiliate_tracking').t });
-
-        var mobile_devices = ['iPhone', 'iPad', 'Android'];
-        var date_first_contact = LocalStore.get('date_first_contact') != null ? LocalStore.get('date_first_contact') : toISOFormat(moment());
-        var signup_device = mobile_devices.some(function (item) {
-            return item === navigator.platform;
-        }) ? 'mobile' : 'desktop';
 
         FormManager.init(form, req, true);
     };
