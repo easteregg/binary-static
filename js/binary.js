@@ -3113,7 +3113,8 @@ var Validation = function () {
         var el_all_select = document.querySelectorAll('select:not([multiple]):not([single])');
         el_all_select.forEach(function (el) {
             if (el.id && el.length) {
-                Dropdown('#' + el.id);
+                Dropdown('#' + el.id, !!el.getElementsByTagName('optgroup').length // have to explicitly pass true to enable option groups
+                );
             }
         });
     };
@@ -6797,7 +6798,8 @@ var ViewPopup = function () {
 
         if (current_spot_time) {
             if (window.time && current_spot_time > window.time.unix()) {
-                window.time = moment(current_spot_time).utc();
+                // epoch needs to be 13 digits before turning to moment
+                window.time = moment(+current_spot_time * 1000).utc();
                 updateTimers();
             }
             containerSetText('trade_details_current_date', epochToDateTime(current_spot_time));
@@ -23719,13 +23721,32 @@ var TradingTimesUI = function () {
         }
 
         var date = moment.utc();
-        $date.attr('data-value', toISOFormat(date));
+        var isoFormattedDate = toISOFormat(date);
+        $date.attr('data-value', isoFormattedDate);
         DatePicker.init({
             selector: '#trading-date',
             minDate: 0,
             maxDate: 364
         });
         $date.val(localize('Today'));
+        if ($(window).width() < 480) {
+            // Create a label to be friendlier
+            var $label = $('label[for=trading-date]');
+            $label.append($('<span/>', { class: 'ux-date foot-note' }));
+            if (!$date.val()) {
+                $('span.ux-date').text(localize('Today'));
+                $date.val(isoFormattedDate);
+                $date.attr('value', isoFormattedDate);
+            }
+            $date.change(function () {
+                var diffInDays = moment().diff(moment($date.val()), 'days', true);
+                if (diffInDays < 0 || diffInDays >= 1) {
+                    $('span.ux-date').text('');
+                } else {
+                    $('span.ux-date').text('Today');
+                }
+            });
+        }
         $date.change(function () {
             if (!dateValueChanged(this, 'date')) {
                 return false;
@@ -25850,33 +25871,35 @@ var List = function List(_ref) {
                     key = _ref5[0],
                     submarket = _ref5[1];
 
-                return _react2.default.createElement(
-                    'div',
-                    { className: 'submarket', key: idx_2 },
+                return (// eslint-disable-line no-unused-vars
                     _react2.default.createElement(
                         'div',
-                        { className: 'submarket_name' },
-                        submarket.name
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'symbols' },
-                        Object.entries(submarket.symbols).map(function (_ref6) {
-                            var _ref7 = _slicedToArray(_ref6, 2),
-                                u_code = _ref7[0],
-                                symbol = _ref7[1];
+                        { className: 'submarket', key: idx_2 },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'submarket_name' },
+                            submarket.name
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'symbols' },
+                            Object.entries(submarket.symbols).map(function (_ref6) {
+                                var _ref7 = _slicedToArray(_ref6, 2),
+                                    u_code = _ref7[0],
+                                    symbol = _ref7[1];
 
-                            return _react2.default.createElement(
-                                'div',
-                                {
-                                    className: 'symbol_name ' + (u_code === underlying ? 'active' : ''),
-                                    key: u_code,
-                                    id: u_code,
-                                    onClick: onUnderlyingClick.bind(null, u_code, market_code)
-                                },
-                                symbol.display
-                            );
-                        })
+                                return _react2.default.createElement(
+                                    'div',
+                                    {
+                                        className: 'symbol_name ' + (u_code === underlying ? 'active' : ''),
+                                        key: u_code,
+                                        id: u_code,
+                                        onClick: onUnderlyingClick.bind(null, u_code, market_code)
+                                    },
+                                    symbol.display
+                                );
+                            })
+                        )
                     )
                 );
             })
@@ -30278,7 +30301,8 @@ var MetaTraderUI = function () {
                 _$form.find('#view_1 #btn_next')[error_msg ? 'addClass' : 'removeClass']('button-disabled');
                 _$form.find('#view_1 #btn_cancel').removeClass('invisible');
             });
-            _$form.find('#new_account_no_deposit_bonus_msg').setVisibility(/real_vanuatu_standard/.test(new_acc_type));
+            // uncomment to show No Deposit Bonus note
+            // $form.find('#new_account_no_deposit_bonus_msg').setVisibility(/real_vanuatu_standard/.test(new_acc_type));
         }
     };
 
