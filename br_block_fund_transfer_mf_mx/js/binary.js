@@ -14502,6 +14502,9 @@ var MetaTraderConfig = function () {
     var needsRealMessage = function needsRealMessage() {
         return $messages.find('#msg_' + (Client.hasAccountType('real') ? 'switch' : 'upgrade')).html();
     };
+    var needsFinancialMessage = function needsFinancialMessage() {
+        return $messages.find('#msg_switch_financial').html();
+    };
 
     // currency equivalent to 1 USD
     // or 1 of donor currency if both accounts have the same currency
@@ -14709,8 +14712,10 @@ var MetaTraderConfig = function () {
             },
             prerequisites: function prerequisites() {
                 return new Promise(function (resolve) {
-                    if (Client.get('is_virtual') || /^MX/i.test(Client.get('loginid'))) {
+                    if (Client.get('is_virtual')) {
                         resolve(needsRealMessage());
+                    } else if (Client.get('landing_company_shortcode') === 'iom') {
+                        resolve(needsFinancialMessage());
                     } else {
                         BinarySocket.send({ cashier_password: 1 }).then(function (response) {
                             if (!response.error && response.cashier_password === 1) {
@@ -14741,8 +14746,10 @@ var MetaTraderConfig = function () {
             },
             prerequisites: function prerequisites(acc_type) {
                 return new Promise(function (resolve) {
-                    if (Client.get('is_virtual') || /^MX/i.test(Client.get('loginid'))) {
+                    if (Client.get('is_virtual')) {
                         resolve(needsRealMessage());
+                    } else if (Client.get('landing_company_shortcode') === 'iom') {
+                        resolve(needsFinancialMessage());
                     } else if (accounts_info[acc_type].account_type === 'financial') {
                         BinarySocket.send({ get_account_status: 1 }).then(function () {
                             resolve(!isAuthenticated() ? $messages.find('#msg_authenticate').html() : '');
@@ -14907,6 +14914,7 @@ var MetaTraderConfig = function () {
         fields: fields,
         validations: validations,
         needsRealMessage: needsRealMessage,
+        needsFinancialMessage: needsFinancialMessage,
         hasAccount: hasAccount,
         getCurrency: getCurrency,
         isAuthenticated: isAuthenticated,
@@ -30167,6 +30175,8 @@ var MetaTraderUI = function () {
                 } else if (!Client.get('currency')) {
                     // client should set currency before accessing fund management section
                     msg = $templates.find('#msg_set_currency').html();
+                } else if (Client.get('landing_company_shortcode') === 'iom') {
+                    msg = MetaTraderConfig.needsFinancialMessage();
                 }
                 if (msg) {
                     displayMainMessage(msg, false);
