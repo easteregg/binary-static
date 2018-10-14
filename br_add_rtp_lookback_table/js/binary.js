@@ -3411,7 +3411,6 @@ var GTM = function () {
         if (!isGtmApplicable()) return;
         var is_login = localStorage.getItem('GTM_login') === '1';
         var is_new_account = localStorage.getItem('GTM_new_account') === '1';
-        if (!is_login && !is_new_account) return;
 
         localStorage.removeItem('GTM_login');
         localStorage.removeItem('GTM_new_account');
@@ -3428,10 +3427,10 @@ var GTM = function () {
             bom_country_abbrev: get_settings.country_code,
             bom_email: get_settings.email,
             url: window.location.href,
-            bom_today: Math.floor(Date.now() / 1000),
-            event: is_new_account ? 'new_account' : 'log_in'
+            bom_today: Math.floor(Date.now() / 1000)
         };
         if (is_new_account) {
+            data.event = 'new_account';
             data.bom_date_joined = data.bom_today;
         }
         if (!ClientBase.get('is_virtual')) {
@@ -3442,6 +3441,7 @@ var GTM = function () {
         }
 
         if (is_login) {
+            data.event = 'log_in';
             BinarySocket.wait('mt5_login_list').then(function (response) {
                 (response.mt5_login_list || []).forEach(function (obj) {
                     var acc_type = (ClientBase.getMT5AccountType(obj.group) || '').replace('real_vanuatu', 'financial').replace('vanuatu_', '').replace('costarica', 'gaming'); // i.e. financial_cent, demo_cent, demo_gaming, real_gaming
@@ -14648,6 +14648,9 @@ var MetaTraderConfig = function () {
     var needsRealMessage = function needsRealMessage() {
         return $messages.find('#msg_' + (Client.hasAccountType('real') ? 'switch' : 'upgrade')).html();
     };
+    var needsFinancialMessage = function needsFinancialMessage() {
+        return $messages.find('#msg_switch_financial').html();
+    };
 
     // currency equivalent to 1 USD
     // or 1 of donor currency if both accounts have the same currency
@@ -14857,6 +14860,8 @@ var MetaTraderConfig = function () {
                 return new Promise(function (resolve) {
                     if (Client.get('is_virtual')) {
                         resolve(needsRealMessage());
+                    } else if (Client.get('landing_company_shortcode') === 'iom') {
+                        resolve(needsFinancialMessage());
                     } else {
                         BinarySocket.send({ cashier_password: 1 }).then(function (response) {
                             if (!response.error && response.cashier_password === 1) {
@@ -14889,6 +14894,8 @@ var MetaTraderConfig = function () {
                 return new Promise(function (resolve) {
                     if (Client.get('is_virtual')) {
                         resolve(needsRealMessage());
+                    } else if (Client.get('landing_company_shortcode') === 'iom') {
+                        resolve(needsFinancialMessage());
                     } else if (accounts_info[acc_type].account_type === 'financial') {
                         BinarySocket.send({ get_account_status: 1 }).then(function () {
                             resolve(!isAuthenticated() ? $messages.find('#msg_authenticate').html() : '');
@@ -15053,6 +15060,7 @@ var MetaTraderConfig = function () {
         fields: fields,
         validations: validations,
         needsRealMessage: needsRealMessage,
+        needsFinancialMessage: needsFinancialMessage,
         hasAccount: hasAccount,
         getCurrency: getCurrency,
         isAuthenticated: isAuthenticated,
@@ -30374,6 +30382,8 @@ var MetaTraderUI = function () {
                 } else if (!Client.get('currency')) {
                     // client should set currency before accessing fund management section
                     msg = $templates.find('#msg_set_currency').html();
+                } else if (Client.get('landing_company_shortcode') === 'iom') {
+                    msg = MetaTraderConfig.needsFinancialMessage();
                 }
                 if (msg) {
                     displayMainMessage(msg, false);
@@ -31304,7 +31314,12 @@ var RealityCheckUI = function () {
     var getSummaryAsync = function getSummaryAsync() {
         if (RealityCheckUI.shouldShowPopup()) {
             BinarySocket.send({ reality_check: 1 }).then(function (response) {
-                getAjax(RealityCheckData.summaryData(response.reality_check));
+                if (response.error && !/user\/statementws\.html/.test(window.location.pathname)) {
+                    // don't block statement page for reality check error, but block all other pages
+                    $('#content').empty().html($('<div/>', { class: 'container' }).append($('<p/>', { class: 'notice-msg center-text', text: response.error.message })));
+                } else if (response.reality_check) {
+                    getAjax(RealityCheckData.summaryData(response.reality_check));
+                }
             });
         }
     };
