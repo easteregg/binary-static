@@ -949,7 +949,8 @@ module.exports = Url;
 /* 11 */,
 /* 12 */,
 /* 13 */,
-/* 14 */
+/* 14 */,
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1017,7 +1018,6 @@ module.exports = {
 };
 
 /***/ }),
-/* 15 */,
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1631,7 +1631,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     if (config_app_id) {
         app_id = config_app_id;
@@ -1730,7 +1730,7 @@ var elementTextContent = __webpack_require__(3).elementTextContent;
 var getElementById = __webpack_require__(3).getElementById;
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var toTitleCase = __webpack_require__(14).toTitleCase;
+var toTitleCase = __webpack_require__(15).toTitleCase;
 var Url = __webpack_require__(8);
 var applyToAllElements = __webpack_require__(1).applyToAllElements;
 var createElement = __webpack_require__(1).createElement;
@@ -2643,9 +2643,11 @@ module.exports = commonTrading;
 "use strict";
 
 
+var moment = __webpack_require__(9);
 var Client = __webpack_require__(96);
 var getLanguage = __webpack_require__(21).get;
 var isStorageSupported = __webpack_require__(6).isStorageSupported;
+var LocalStore = __webpack_require__(6).LocalStore;
 var getAppId = __webpack_require__(24).getAppId;
 
 var Login = function () {
@@ -2659,14 +2661,17 @@ var Login = function () {
     var loginUrl = function loginUrl() {
         var server_url = localStorage.getItem('config.server_url');
         var language = getLanguage();
-        return server_url && /qa/.test(server_url) ? 'https://www.' + server_url.split('.')[1] + '.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + language : 'https://oauth.binary.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + language;
+        var signup_device = LocalStore.get('signup_device') || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
+        var date_first_contact = moment(LocalStore.get('date_first_contact'), 'YYYY-mm-dd').valueOf();
+        var marketing_queries = '' + (signup_device && '&signup_device=' + signup_device) + (date_first_contact && '&date_first_contact=' + date_first_contact);
+
+        return server_url && /qa/.test(server_url) ? 'https://www.' + server_url.split('.')[1] + '.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + language : 'https://oauth.binary.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + language + marketing_queries;
     };
 
     var isLoginPages = function isLoginPages() {
         return (/logged_inws|redirect/i.test(window.location.pathname)
         );
     };
-
     var socialLoginUrl = function socialLoginUrl(brand) {
         return loginUrl() + '&social_signup=' + brand;
     };
@@ -3005,7 +3010,7 @@ var getDecimalPlaces = __webpack_require__(7).getDecimalPlaces;
 var Client = __webpack_require__(5);
 var Password = __webpack_require__(246);
 var localize = __webpack_require__(2).localize;
-var compareBigUnsignedInt = __webpack_require__(14).compareBigUnsignedInt;
+var compareBigUnsignedInt = __webpack_require__(15).compareBigUnsignedInt;
 var getHashValue = __webpack_require__(8).getHashValue;
 var cloneObject = __webpack_require__(1).cloneObject;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
@@ -4503,8 +4508,8 @@ var Client = __webpack_require__(5);
 var SocketCache = __webpack_require__(75);
 var getLanguage = __webpack_require__(21).get;
 var localize = __webpack_require__(2).localize;
-var padLeft = __webpack_require__(14).padLeft;
-var toTitleCase = __webpack_require__(14).toTitleCase;
+var padLeft = __webpack_require__(15).padLeft;
+var toTitleCase = __webpack_require__(15).toTitleCase;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
 
 /*
@@ -5678,8 +5683,8 @@ module.exports = TabSelector;
 var moment = __webpack_require__(9);
 var checkInput = __webpack_require__(3).checkInput;
 var localize = __webpack_require__(2).localize;
-var padLeft = __webpack_require__(14).padLeft;
-var toReadableFormat = __webpack_require__(14).toReadableFormat;
+var padLeft = __webpack_require__(15).padLeft;
+var toReadableFormat = __webpack_require__(15).toReadableFormat;
 var clearable = __webpack_require__(1).clearable;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
 
@@ -9657,8 +9662,8 @@ var DatePicker = __webpack_require__(89);
 var CommonFunctions = __webpack_require__(3);
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var toISOFormat = __webpack_require__(14).toISOFormat;
-var toReadableFormat = __webpack_require__(14).toReadableFormat;
+var toISOFormat = __webpack_require__(15).toISOFormat;
+var toReadableFormat = __webpack_require__(15).toReadableFormat;
 var createElement = __webpack_require__(1).createElement;
 var getPropertyValue = __webpack_require__(1).getPropertyValue;
 
@@ -11229,7 +11234,7 @@ var BinarySocket = __webpack_require__(4);
 var Validation = __webpack_require__(52);
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var toTitleCase = __webpack_require__(14).toTitleCase;
+var toTitleCase = __webpack_require__(15).toTitleCase;
 var getPropertyValue = __webpack_require__(1).getPropertyValue;
 
 var MetaTrader = function () {
@@ -12147,7 +12152,7 @@ module.exports = Footer;
 var moment = __webpack_require__(9);
 var DatePicker = __webpack_require__(89);
 var dateValueChanged = __webpack_require__(3).dateValueChanged;
-var toISOFormat = __webpack_require__(14).toISOFormat;
+var toISOFormat = __webpack_require__(15).toISOFormat;
 
 var generateBirthDate = function generateBirthDate() {
     var date_of_birth = '#date_of_birth';
@@ -12175,7 +12180,7 @@ var moment = __webpack_require__(9);
 var DatePicker = __webpack_require__(89);
 var dateValueChanged = __webpack_require__(3).dateValueChanged;
 var localize = __webpack_require__(2).localize;
-var toISOFormat = __webpack_require__(14).toISOFormat;
+var toISOFormat = __webpack_require__(15).toISOFormat;
 
 var getDateToFrom = function getDateToFrom() {
     var date_to_val = $('#date_to').attr('data-value');
@@ -12502,7 +12507,7 @@ module.exports = TrafficSource;
 var moment = __webpack_require__(9);
 var checkInput = __webpack_require__(3).checkInput;
 var localize = __webpack_require__(2).localize;
-var padLeft = __webpack_require__(14).padLeft;
+var padLeft = __webpack_require__(15).padLeft;
 var clearable = __webpack_require__(1).clearable;
 
 var TimePicker = function () {
@@ -13671,7 +13676,7 @@ var BinarySocket = __webpack_require__(4);
 var formatMoney = __webpack_require__(7).formatMoney;
 var CommonFunctions = __webpack_require__(3);
 var localize = __webpack_require__(2).localize;
-var padLeft = __webpack_require__(14).padLeft;
+var padLeft = __webpack_require__(15).padLeft;
 var urlFor = __webpack_require__(8).urlFor;
 var createElement = __webpack_require__(1).createElement;
 var getPropertyValue = __webpack_require__(1).getPropertyValue;
@@ -21208,7 +21213,7 @@ var localize = __webpack_require__(2).localize;
 var LocalStore = __webpack_require__(6).LocalStore;
 var State = __webpack_require__(6).State;
 var scrollToTop = __webpack_require__(87).scrollToTop;
-var toISOFormat = __webpack_require__(14).toISOFormat;
+var toISOFormat = __webpack_require__(15).toISOFormat;
 var Url = __webpack_require__(8);
 var createElement = __webpack_require__(1).createElement;
 __webpack_require__(164);
@@ -21289,6 +21294,9 @@ var Page = function () {
             Menu.init();
             if (!LocalStore.get('date_first_contact')) {
                 LocalStore.set('date_first_contact', toISOFormat(moment()));
+            }
+            if (!LocalStore.get('signup_device')) {
+                LocalStore.set('signup_device', /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'mobile' : 'desktop');
             }
         }
         TrafficSource.setData();
@@ -21509,6 +21517,7 @@ var BinarySocketGeneral = function () {
                             });
                         }
                         LocalStore.remove('date_first_contact');
+                        LocalStore.remove('signup_device');
                     }
                 }
                 break;
@@ -22376,7 +22385,7 @@ var handleVerifyCode = __webpack_require__(97).handleVerifyCode;
 var getElementById = __webpack_require__(3).getElementById;
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var toTitleCase = __webpack_require__(14).toTitleCase;
+var toTitleCase = __webpack_require__(15).toTitleCase;
 var Url = __webpack_require__(8);
 var template = __webpack_require__(1).template;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
@@ -23840,7 +23849,7 @@ var DatePicker = __webpack_require__(89);
 var dateValueChanged = __webpack_require__(3).dateValueChanged;
 var localize = __webpack_require__(2).localize;
 var showLoadingImage = __webpack_require__(1).showLoadingImage;
-var toISOFormat = __webpack_require__(14).toISOFormat;
+var toISOFormat = __webpack_require__(15).toISOFormat;
 
 var TradingTimesUI = function () {
     var $date = void 0,
@@ -26726,7 +26735,7 @@ var Client = __webpack_require__(5);
 var displayNotification = __webpack_require__(27).displayNotification;
 var BinarySocket = __webpack_require__(4);
 var localize = __webpack_require__(2).localize;
-var toTitleCase = __webpack_require__(14).toTitleCase;
+var toTitleCase = __webpack_require__(15).toTitleCase;
 var Url = __webpack_require__(8);
 var showLoadingImage = __webpack_require__(1).showLoadingImage;
 
@@ -27864,7 +27873,7 @@ var Dialog = __webpack_require__(76);
 var FlexTableUI = __webpack_require__(123);
 var FormManager = __webpack_require__(17);
 var localize = __webpack_require__(2).localize;
-var toTitleCase = __webpack_require__(14).toTitleCase;
+var toTitleCase = __webpack_require__(15).toTitleCase;
 
 var APIToken = function () {
     var error_class = 'errorfield';
@@ -28026,7 +28035,7 @@ var FlexTableUI = __webpack_require__(123);
 var elementTextContent = __webpack_require__(3).elementTextContent;
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var toTitleCase = __webpack_require__(14).toTitleCase;
+var toTitleCase = __webpack_require__(15).toTitleCase;
 
 var AuthorisedApps = function () {
     var can_revoke = false;
@@ -29064,7 +29073,7 @@ var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var FormManager = __webpack_require__(17);
 var localize = __webpack_require__(2).localize;
-var toTitleCase = __webpack_require__(14).toTitleCase;
+var toTitleCase = __webpack_require__(15).toTitleCase;
 var getPropertyValue = __webpack_require__(1).getPropertyValue;
 
 var TwoFactorAuthentication = function () {
@@ -29365,7 +29374,7 @@ var Client = __webpack_require__(5);
 var formatCurrency = __webpack_require__(7).formatCurrency;
 var formatMoney = __webpack_require__(7).formatMoney;
 var localize = __webpack_require__(2).localize;
-var toTitleCase = __webpack_require__(14).toTitleCase;
+var toTitleCase = __webpack_require__(15).toTitleCase;
 
 var Statement = function () {
     var getStatementData = function getStatementData(statement, currency) {
@@ -29591,7 +29600,7 @@ var FormManager = __webpack_require__(17);
 var getElementById = __webpack_require__(3).getElementById;
 var localize = __webpack_require__(2).localize;
 var State = __webpack_require__(6).State;
-var toTitleCase = __webpack_require__(14).toTitleCase;
+var toTitleCase = __webpack_require__(15).toTitleCase;
 var urlFor = __webpack_require__(8).urlFor;
 
 var Accounts = function () {
@@ -30592,7 +30601,7 @@ var FormManager = __webpack_require__(17);
 var localize = __webpack_require__(2).localize;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
 var State = __webpack_require__(6).State;
-var toISOFormat = __webpack_require__(14).toISOFormat;
+var toISOFormat = __webpack_require__(15).toISOFormat;
 
 var FinancialAccOpening = function () {
     var form_id = '#financial-form';
@@ -30776,7 +30785,6 @@ module.exports = RealAccOpening;
 
 var SelectMatcher = __webpack_require__(26).select2Matcher;
 var Cookies = __webpack_require__(56);
-var moment = __webpack_require__(9);
 var Client = __webpack_require__(5);
 var BinarySocket = __webpack_require__(4);
 var FormManager = __webpack_require__(17);
@@ -30786,7 +30794,6 @@ var makeOption = __webpack_require__(3).makeOption;
 var localize = __webpack_require__(2).localize;
 var LocalStore = __webpack_require__(6).LocalStore;
 var State = __webpack_require__(6).State;
-var toISOFormat = __webpack_require__(14).toISOFormat;
 var urlFor = __webpack_require__(8).urlFor;
 var getPropertyValue = __webpack_require__(1).getPropertyValue;
 var isEmptyObject = __webpack_require__(1).isEmptyObject;
@@ -30859,14 +30866,14 @@ var VirtualAccOpening = function () {
     var bindValidation = function bindValidation() {
         // Add TrafficSource parameters
         var utm_data = TrafficSource.getData();
-        var signup_device = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
-        var date_first_contact = LocalStore.get('date_first_contact') || toISOFormat(moment());
+        var signup_device = LocalStore.get('signup_device') || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
+        var date_first_contact = LocalStore.get('date_first_contact');
 
-        var req = [{ selector: '#client_password', validations: ['req', 'password'], re_check_field: '#repeat_password' }, { selector: '#repeat_password', validations: ['req', ['compare', { to: '#client_password' }]], exclude_request: 1 }, { selector: '#residence' }, { selector: '#email_consent' }, { request_field: 'utm_source', value: TrafficSource.getSource(utm_data) }, { request_field: 'new_account_virtual', value: 1 }, { request_field: 'signup_device', value: signup_device }, { request_field: 'date_first_contact', value: date_first_contact }];
+        var req = [{ selector: '#client_password', validations: ['req', 'password'], re_check_field: '#repeat_password' }, { selector: '#repeat_password', validations: ['req', ['compare', { to: '#client_password' }]], exclude_request: 1 }, { selector: '#residence' }, { selector: '#email_consent' }, { request_field: 'utm_source', value: TrafficSource.getSource(utm_data) }, { request_field: 'new_account_virtual', value: 1 }, { request_field: 'signup_device', value: signup_device }];
 
         if (utm_data.utm_medium) req.push({ request_field: 'utm_medium', value: utm_data.utm_medium });
         if (utm_data.utm_campaign) req.push({ request_field: 'utm_campaign', value: utm_data.utm_campaign });
-
+        if (date_first_contact) req.push({ request_field: 'date_first_contact', value: date_first_contact });
         var gclid = LocalStore.get('gclid');
         if (gclid) req.push({ request_field: 'gclid_url', value: gclid });
 
@@ -30887,6 +30894,7 @@ var VirtualAccOpening = function () {
             BinarySocket.send({ authorize: new_account.oauth_token }, { forced: true }).then(function (response_auth) {
                 if (!response_auth.error) {
                     LocalStore.remove('date_first_contact');
+                    LocalStore.remove('signup_device');
                     Client.processNewAccount({
                         email: new_account.email,
                         loginid: new_account.client_id,
@@ -30956,7 +30964,7 @@ var Client = __webpack_require__(5);
 var localize = __webpack_require__(2).localize;
 var createElement = __webpack_require__(1).createElement;
 var getElementById = __webpack_require__(3).getElementById;
-var toTitleCase = __webpack_require__(14).toTitleCase;
+var toTitleCase = __webpack_require__(15).toTitleCase;
 var Url = __webpack_require__(8);
 
 var WelcomePage = function () {
