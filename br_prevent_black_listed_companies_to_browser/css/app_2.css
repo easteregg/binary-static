@@ -3845,37 +3845,7 @@ a {
     -webkit-animation: dash 1.5s ease-in-out infinite, colorOrange 6s ease-in-out infinite;
             animation: dash 1.5s ease-in-out infinite, colorOrange 6s ease-in-out infinite; }
 
-.dark .FullPageModal {
-  background-color: rgba(42, 48, 82, 0.8); }
-  .dark .FullPageModal .ModalDialog {
-    background-color: #353b5b;
-    -webkit-box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
-            box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16); }
-    .dark .FullPageModal .ModalDialog p, .dark .FullPageModal .ModalDialog h1 {
-      color: #aaacba; }
-    .dark .FullPageModal .ModalDialog .btn {
-      background-color: #353b5b; }
-      .dark .FullPageModal .ModalDialog .btn:hover {
-        background-color: #60647e; }
-      .dark .FullPageModal .ModalDialog .btn span {
-        color: #fff;
-        font-size: 12px; }
-
-.light .FullPageModal {
-  background-color: rgba(255, 255, 255, 0.8); }
-  .light .FullPageModal .ModalDialog {
-    background-color: #fff;
-    -webkit-box-shadow: 0 2px 8px 0 rgba(42, 48, 82, 0.16);
-            box-shadow: 0 2px 8px 0 rgba(42, 48, 82, 0.16); }
-    .light .FullPageModal .ModalDialog p, .light .FullPageModal .ModalDialog h1 {
-      color: #5c5c5c; }
-    .light .FullPageModal .ModalDialog .btn:hover {
-      background-color: #f4f4f6; }
-    .light .FullPageModal .ModalDialog .btn span {
-      color: #353b5b;
-      font-size: 12px; }
-
-.FullPageModal {
+.full-page-modal {
   width: 100vw;
   height: 100vh;
   display: -webkit-box;
@@ -3898,7 +3868,7 @@ a {
   left: 0;
   right: 0;
   bottom: 0; }
-  .FullPageModal .ModalDialog {
+  .full-page-modal .modal-dialog {
     max-width: 456px;
     height: 190px;
     padding: 16px;
@@ -3917,18 +3887,29 @@ a {
     -webkit-box-align: start;
         -ms-flex-align: start;
             align-items: flex-start; }
-    .FullPageModal .ModalDialog p, .FullPageModal .ModalDialog h1 {
+    .full-page-modal .modal-dialog p, .full-page-modal .modal-dialog h1 {
       text-align: left; }
-    .FullPageModal .ModalDialog h1 {
+    .full-page-modal .modal-dialog h1 {
       font-size: 16px;
       margin: 4px 0 20px;
       padding: 0; }
-    .FullPageModal .ModalDialog p {
+    .full-page-modal .modal-dialog p {
       -webkit-box-flex: 2;
           -ms-flex-positive: 2;
               flex-grow: 2;
       font-size: 12px; }
-    .FullPageModal .ModalDialog .btn {
+    .full-page-modal .modal-dialog .modal-footer {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-pack: justify;
+          -ms-flex-pack: justify;
+              justify-content: space-between;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center;
+      width: 100%; }
+    .full-page-modal .modal-dialog .btn {
       margin: 0;
       -webkit-box-shadow: none;
               box-shadow: none;
@@ -3945,8 +3926,38 @@ a {
       -ms-flex-item-align: end;
           align-self: flex-end; }
 
+.dark .full-page-modal {
+  background-color: rgba(42, 48, 82, 0.8); }
+  .dark .full-page-modal .modal-dialog {
+    background-color: #353b5b;
+    -webkit-box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+            box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16); }
+    .dark .full-page-modal .modal-dialog p, .dark .full-page-modal .modal-dialog h1 {
+      color: #aaacba; }
+    .dark .full-page-modal .modal-dialog .btn {
+      background-color: #353b5b; }
+      .dark .full-page-modal .modal-dialog .btn:hover {
+        background-color: #60647e; }
+      .dark .full-page-modal .modal-dialog .btn span {
+        color: #fff;
+        font-size: 12px; }
+
+.light .full-page-modal {
+  background-color: rgba(255, 255, 255, 0.8); }
+  .light .full-page-modal .modal-dialog {
+    background-color: #fff;
+    -webkit-box-shadow: 0 2px 8px 0 rgba(42, 48, 82, 0.16);
+            box-shadow: 0 2px 8px 0 rgba(42, 48, 82, 0.16); }
+    .light .full-page-modal .modal-dialog p, .light .full-page-modal .modal-dialog h1 {
+      color: #5c5c5c; }
+    .light .full-page-modal .modal-dialog .btn:hover {
+      background-color: #f4f4f6; }
+    .light .full-page-modal .modal-dialog .btn span {
+      color: #353b5b;
+      font-size: 12px; }
+
 @media screen and (max-width: 480px) {
-  .FullPageModal .ModalDialog {
+  .full-page-modal .modal-dialog {
     width: 100vw;
     height: 100vh; } }
 
