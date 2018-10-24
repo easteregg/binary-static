@@ -123,6 +123,7 @@
 
         var lang = href.split('/').slice(3).find(function(language) { return all_languages.indexOf(language.toLowerCase()) > -1 }) || getCookieItem('language');
         if (lang && all_languages.indexOf(lang.toLowerCase()) > -1) {
+            debugger;
             redirect();
         } else {
             var ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1');
@@ -136,6 +137,7 @@
                         lang = getLanguage(response.website_status.clients_country);
                     }
                     ws.close();
+                    debugger;
                     redirect();
                 }
             };
