@@ -87,7 +87,8 @@
         var l = window.location;
 
         // if the url is not related to new app, returns false.
-        var lang_regex_string = '(.*)\/(' + all_languages.join('|') + ')\/app\/(\\w+\\.html)?';
+        var lang_regex_string = '^\/(.*)?('+ all_languages.join('|') +')\/app(\/.*)*(\w+\.html)?';
+
         var rx_result = new RegExp(lang_regex_string).exec(l.pathname)
 
         if (!new RegExp(lang_regex_string).test(l.pathname) || (rx_result[3] && rx_result[3] !== 'index.html')) {
@@ -123,7 +124,6 @@
 
         var lang = href.split('/').slice(3).find(function(language) { return all_languages.indexOf(language.toLowerCase()) > -1 }) || getCookieItem('language');
         if (lang && all_languages.indexOf(lang.toLowerCase()) > -1) {
-            debugger;
             redirect();
         } else {
             var ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1');
@@ -137,7 +137,6 @@
                         lang = getLanguage(response.website_status.clients_country);
                     }
                     ws.close();
-                    debugger;
                     redirect();
                 }
             };
