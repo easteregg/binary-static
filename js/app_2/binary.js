@@ -222,13 +222,19 @@ var _client_base = __webpack_require__(/*! ../../../../../_common/base/client_ba
 
 var _client_base2 = _interopRequireDefault(_client_base);
 
+var _gtm = __webpack_require__(/*! ../../../../../_common/base/gtm */ "./src/javascript/_common/base/gtm.js");
+
+var _gtm2 = _interopRequireDefault(_gtm);
+
+var _socket_cache = __webpack_require__(/*! ../../../../../_common/base/socket_cache */ "./src/javascript/_common/base/socket_cache.js");
+
+var _socket_cache2 = _interopRequireDefault(_socket_cache);
+
 var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
 
 var _Drawer = __webpack_require__(/*! ../../../../Assets/Header/Drawer */ "./src/javascript/app_2/Assets/Header/Drawer/index.js");
 
 var _Services = __webpack_require__(/*! ../../../../Services */ "./src/javascript/app_2/Services/index.js");
-
-var _switch_account = __webpack_require__(/*! ../../../../Services/Helpers/switch_account */ "./src/javascript/app_2/Services/Helpers/switch_account.js");
 
 var _upgrade_button = __webpack_require__(/*! ./upgrade_button.jsx */ "./src/javascript/app_2/App/Components/Elements/AccountSwitcher/upgrade_button.jsx");
 
@@ -273,6 +279,21 @@ var AccountSwitcher = function (_React$Component) {
             _this.wrapper_ref = node;
         };
 
+        _this.switchAccount = function (loginid) {
+            if (!loginid || !_client_base2.default.get('token', loginid)) {
+                return;
+            }
+            sessionStorage.setItem('active_tab', '1');
+            // set local storage
+            _this.props.toggle();
+            _gtm2.default.setLoginFlag();
+            _client_base2.default.set('cashier_confirmed', 0);
+            _client_base2.default.set('accepted_bch', 0);
+            _client_base2.default.set('loginid', loginid);
+            _socket_cache2.default.clear();
+            window.location.reload();
+        };
+
         _this.handleClickOutside = function (event) {
             var accounts_toggle_btn = !event.target.classList.contains('acc-info');
             if (_this.wrapper_ref && !_this.wrapper_ref.contains(event.target) && _this.props.is_visible && accounts_toggle_btn) {
@@ -297,12 +318,6 @@ var AccountSwitcher = function (_React$Component) {
             document.removeEventListener('mousedown', this.handleClickOutside);
         }
     }, {
-        key: 'doSwitch',
-        value: function doSwitch(loginid) {
-            this.props.toggle();
-            (0, _switch_account.switchAccount)(loginid);
-        }
-    }, {
         key: 'render',
         value: function render() {
             var _this2 = this;
@@ -320,9 +335,7 @@ var AccountSwitcher = function (_React$Component) {
                             'div',
                             {
                                 className: (0, _classnames2.default)('acc-switcher-account', account.icon),
-                                onClick: function onClick() {
-                                    return _this2.doSwitch(account.loginid);
-                                }
+                                onClick: _this2.switchAccount.bind(null, account.loginid)
                             },
                             _react2.default.createElement(
                                 'span',
@@ -1837,96 +1850,6 @@ exports.default = TableRow;
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Components/Elements/DenialOfServiceModal/denial_of_service.jsx":
-/*!*************************************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/DenialOfServiceModal/denial_of_service.jsx ***!
-  \*************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
-
-var _url = __webpack_require__(/*! ../../../../../_common/url */ "./src/javascript/_common/url.js");
-
-var _url2 = _interopRequireDefault(_url);
-
-var _full_page_modal = __webpack_require__(/*! ../FullPageModal/full_page_modal.jsx */ "./src/javascript/app_2/App/Components/Elements/FullPageModal/full_page_modal.jsx");
-
-var _full_page_modal2 = _interopRequireDefault(_full_page_modal);
-
-var _client_base = __webpack_require__(/*! ../../../../../_common/base/client_base */ "./src/javascript/_common/base/client_base.js");
-
-var _switch_account = __webpack_require__(/*! ../../../../Services/Helpers/switch_account */ "./src/javascript/app_2/Services/Helpers/switch_account.js");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var onConfirm = function onConfirm() {
-    (0, _switch_account.switchAccount)((0, _client_base.getAccountOfType)('virtual').loginid);
-};
-var onCancel = function onCancel() {
-    window.location.href = _url2.default.urlFor('trading');
-};
-
-var DenialOfServiceModal = function DenialOfServiceModal(_ref) {
-    var show = _ref.show;
-    return _react2.default.createElement(_full_page_modal2.default, {
-        title: (0, _localize.localize)('Whoops!'),
-        body: (0, _localize.localize)('Sorry, Only virtual accounts can access this feature at the moment.'),
-        confirmButtonText: (0, _localize.localize)('Continue with my virtual account'),
-        cancelButtonText: (0, _localize.localize)('Visit main website'),
-        onConfirm: onConfirm,
-        onCancel: onCancel,
-        show: show
-    });
-};
-
-DenialOfServiceModal.propTypes = {
-    show: _propTypes2.default.bool
-};
-exports.default = DenialOfServiceModal;
-
-/***/ }),
-
-/***/ "./src/javascript/app_2/App/Components/Elements/DenialOfServiceModal/index.js":
-/*!************************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/DenialOfServiceModal/index.js ***!
-  \************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = undefined;
-
-var _denial_of_service = __webpack_require__(/*! ./denial_of_service.jsx */ "./src/javascript/app_2/App/Components/Elements/DenialOfServiceModal/denial_of_service.jsx");
-
-var _denial_of_service2 = _interopRequireDefault(_denial_of_service);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _denial_of_service2.default;
-
-/***/ }),
-
 /***/ "./src/javascript/app_2/App/Components/Elements/Drawer/drawer.jsx":
 /*!************************************************************************!*\
   !*** ./src/javascript/app_2/App/Components/Elements/Drawer/drawer.jsx ***!
@@ -2830,104 +2753,6 @@ var _error_component2 = _interopRequireDefault(_error_component);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _error_component2.default;
-
-/***/ }),
-
-/***/ "./src/javascript/app_2/App/Components/Elements/FullPageModal/full_page_modal.jsx":
-/*!****************************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/FullPageModal/full_page_modal.jsx ***!
-  \****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var FullPageModal = function FullPageModal(_ref) {
-    var title = _ref.title,
-        body = _ref.body,
-        onConfirm = _ref.onConfirm,
-        confirmButtonText = _ref.confirmButtonText,
-        onCancel = _ref.onCancel,
-        cancelButtonText = _ref.cancelButtonText,
-        show = _ref.show;
-
-    if (show) {
-        return _react2.default.createElement(
-            'div',
-            { className: 'full-page-modal' },
-            _react2.default.createElement(
-                'div',
-                { className: 'modal-dialog' },
-                _react2.default.createElement(
-                    'h1',
-                    null,
-                    title
-                ),
-                _react2.default.createElement(
-                    'p',
-                    null,
-                    body
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'modal-footer' },
-                    _react2.default.createElement(
-                        'div',
-                        {
-                            className: 'btn flat effect primary',
-                            onClick: onCancel
-                        },
-                        _react2.default.createElement(
-                            'span',
-                            null,
-                            cancelButtonText
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        {
-                            className: 'btn flat effect primary',
-                            onClick: onConfirm
-                        },
-                        _react2.default.createElement(
-                            'span',
-                            null,
-                            confirmButtonText
-                        )
-                    )
-                )
-            )
-        );
-    }
-
-    return _react2.default.createElement(_react2.default.Fragment, null);
-};
-
-FullPageModal.propTypes = {
-    body: _propTypes2.default.string,
-    cancelButtonText: _propTypes2.default.string,
-    confirmButtonText: _propTypes2.default.string,
-    onCancel: _propTypes2.default.func,
-    onConfirm: _propTypes2.default.func,
-    title: _propTypes2.default.string
-};
-
-exports.default = FullPageModal;
 
 /***/ }),
 
@@ -7843,8 +7668,7 @@ var ThemeWrapper = function ThemeWrapper(_ref) {
         is_dark_theme = _ref.is_dark_theme;
 
     var theme_wrapper_class = (0, _classnames2.default)('theme-wrapper', {
-        dark: is_dark_theme,
-        light: !is_dark_theme
+        dark: is_dark_theme
     });
     return _react2.default.createElement(
         'div',
@@ -8328,33 +8152,6 @@ exports.default = (0, _connect.connect)(function (_ref2) {
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Middlewares/is_virtual_account.js":
-/*!********************************************************************!*\
-  !*** ./src/javascript/app_2/App/Middlewares/is_virtual_account.js ***!
-  \********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.isVirtualAccount = undefined;
-
-var _client_base = __webpack_require__(/*! ../../../_common/base/client_base */ "./src/javascript/_common/base/client_base.js");
-
-var _client_base2 = _interopRequireDefault(_client_base);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var isVirtualAccount = exports.isVirtualAccount = function isVirtualAccount() {
-  return !_client_base2.default.isLoggedIn() || _client_base2.default.get('is_virtual');
-};
-
-/***/ }),
-
 /***/ "./src/javascript/app_2/App/app.js":
 /*!*****************************************!*\
   !*** ./src/javascript/app_2/App/app.js ***!
@@ -8450,8 +8247,6 @@ var _base_name2 = _interopRequireDefault(_base_name);
 
 var _connect = __webpack_require__(/*! ../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
 
-var _is_virtual_account = __webpack_require__(/*! ./Middlewares/is_virtual_account */ "./src/javascript/app_2/App/Middlewares/is_virtual_account.js");
-
 var _error_boundary = __webpack_require__(/*! ./Components/Elements/Errors/error_boundary.jsx */ "./src/javascript/app_2/App/Components/Elements/Errors/error_boundary.jsx");
 
 var _error_boundary2 = _interopRequireDefault(_error_boundary);
@@ -8479,10 +8274,6 @@ var _theme_wrapper2 = _interopRequireDefault(_theme_wrapper);
 var _routes = __webpack_require__(/*! ./Containers/Routes/routes.jsx */ "./src/javascript/app_2/App/Containers/Routes/routes.jsx");
 
 var _routes2 = _interopRequireDefault(_routes);
-
-var _DenialOfServiceModal = __webpack_require__(/*! ./Components/Elements/DenialOfServiceModal */ "./src/javascript/app_2/App/Components/Elements/DenialOfServiceModal/index.js");
-
-var _DenialOfServiceModal2 = _interopRequireDefault(_DenialOfServiceModal);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8517,8 +8308,7 @@ var App = function App(_ref) {
                         _react2.default.createElement(_routes2.default, null),
                         _react2.default.createElement(DevTools, null),
                         _react2.default.createElement(_PortfolioDrawer2.default, null)
-                    ),
-                    _react2.default.createElement(_DenialOfServiceModal2.default, { show: !(0, _is_virtual_account.isVirtualAccount)() })
+                    )
                 ),
                 _react2.default.createElement(
                     'footer',
@@ -15889,8 +15679,6 @@ var _fieldset2 = _interopRequireDefault(_fieldset);
 
 var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
 
-var _is_virtual_account = __webpack_require__(/*! ../../../App/Middlewares/is_virtual_account */ "./src/javascript/app_2/App/Middlewares/is_virtual_account.js");
-
 var _contract_info = __webpack_require__(/*! ../Components/Form/Purchase/contract_info.jsx */ "./src/javascript/app_2/Modules/Trading/Components/Form/Purchase/contract_info.jsx");
 
 var _contract_info2 = _interopRequireDefault(_contract_info);
@@ -15921,7 +15709,7 @@ var Purchase = function Purchase(_ref) {
         trade_types = _ref.trade_types;
     return Object.keys(trade_types).map(function (type, idx) {
         var info = proposal_info[type] || {};
-        var is_disabled = !is_purchase_enabled || !is_trade_enabled || !info.id || !(0, _is_virtual_account.isVirtualAccount)();
+        var is_disabled = !is_purchase_enabled || !is_trade_enabled || !info.id;
 
         var purchase_button = _react2.default.createElement(_button2.default, {
             is_disabled: is_disabled,
@@ -17472,58 +17260,6 @@ var data = [{
 }];
 
 exports.default = data;
-
-/***/ }),
-
-/***/ "./src/javascript/app_2/Services/Helpers/switch_account.js":
-/*!*****************************************************************!*\
-  !*** ./src/javascript/app_2/Services/Helpers/switch_account.js ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.switchAccount = undefined;
-
-var _gtm = __webpack_require__(/*! ../../../_common/base/gtm */ "./src/javascript/_common/base/gtm.js");
-
-var _gtm2 = _interopRequireDefault(_gtm);
-
-var _socket_cache = __webpack_require__(/*! ../../../_common/base/socket_cache */ "./src/javascript/_common/base/socket_cache.js");
-
-var SocketCache = _interopRequireWildcard(_socket_cache);
-
-var _client_base = __webpack_require__(/*! ../../../_common/base/client_base */ "./src/javascript/_common/base/client_base.js");
-
-var _client_base2 = _interopRequireDefault(_client_base);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Switch to the given loginid account.
- *
- * @param loginid
- */
-var switchAccount = exports.switchAccount = function switchAccount(loginid) {
-    if (!loginid || !_client_base2.default.get('token', loginid)) {
-        return;
-    }
-    sessionStorage.setItem('active_tab', '1');
-    // set local storage
-    _gtm2.default.setLoginFlag();
-    _client_base2.default.set('cashier_confirmed', 0);
-    _client_base2.default.set('accepted_bch', 0);
-    _client_base2.default.set('loginid', loginid);
-    SocketCache.clear();
-    window.location.reload();
-};
 
 /***/ }),
 
@@ -24832,7 +24568,7 @@ window.addEventListener('pageshow', function (e) {
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     if (config_app_id) {
         app_id = config_app_id;
