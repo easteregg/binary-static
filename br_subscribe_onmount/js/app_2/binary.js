@@ -22091,12 +22091,13 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                                 return this.prepareTradeStore();
 
                             case 2:
+                                this.debouncedProposal();
                                 (0, _mobx.runInAction)(function () {
                                     _this6.is_trade_component_mounted = true;
                                 });
                                 this.updateQueryString();
 
-                            case 4:
+                            case 5:
                             case 'end':
                                 return _context4.stop();
                         }
@@ -22113,6 +22114,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
     }, {
         key: 'onUnmount',
         value: function onUnmount() {
+            _Services.WS.forgetAll('proposal');
             this.is_trade_component_mounted = false;
         }
     }]);
@@ -24563,7 +24565,7 @@ window.addEventListener('pageshow', function (e) {
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     if (config_app_id) {
         app_id = config_app_id;
