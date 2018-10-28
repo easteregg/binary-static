@@ -1859,6 +1859,8 @@ var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-type
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
+var _client_base = __webpack_require__(/*! ../../../../../_common/base/client_base */ "./src/javascript/_common/base/client_base.js");
+
 var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
 
 var _url = __webpack_require__(/*! ../../../../../_common/url */ "./src/javascript/_common/url.js");
@@ -1869,8 +1871,6 @@ var _full_page_modal = __webpack_require__(/*! ../FullPageModal/full_page_modal.
 
 var _full_page_modal2 = _interopRequireDefault(_full_page_modal);
 
-var _client_base = __webpack_require__(/*! ../../../../../_common/base/client_base */ "./src/javascript/_common/base/client_base.js");
-
 var _switch_account = __webpack_require__(/*! ../../../../Services/Helpers/switch_account */ "./src/javascript/app_2/Services/Helpers/switch_account.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1878,25 +1878,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var onConfirm = function onConfirm() {
     (0, _switch_account.switchAccount)((0, _client_base.getAccountOfType)('virtual').loginid);
 };
+
 var onCancel = function onCancel() {
     window.location.href = _url2.default.urlFor('trading');
 };
 
 var DenialOfServiceModal = function DenialOfServiceModal(_ref) {
-    var show = _ref.show;
+    var visible = _ref.visible;
     return _react2.default.createElement(_full_page_modal2.default, {
         title: (0, _localize.localize)('Whoops!'),
         body: (0, _localize.localize)('Sorry, Only virtual accounts can access this feature at the moment.'),
-        confirmButtonText: (0, _localize.localize)('Continue with my virtual account'),
-        cancelButtonText: (0, _localize.localize)('Visit main website'),
+        confirm_button_text: (0, _localize.localize)('Continue with my virtual account'),
+        cancel_button_text: (0, _localize.localize)('Visit main website'),
         onConfirm: onConfirm,
         onCancel: onCancel,
-        show: show
+        visible: visible
     });
 };
 
 DenialOfServiceModal.propTypes = {
-    show: _propTypes2.default.bool
+    visible: _propTypes2.default.bool
 };
 exports.default = DenialOfServiceModal;
 
@@ -2858,15 +2859,15 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var FullPageModal = function FullPageModal(_ref) {
-    var title = _ref.title,
-        body = _ref.body,
+    var body = _ref.body,
+        cancel_button_text = _ref.cancel_button_text,
+        confirm_button_text = _ref.confirm_button_text,
         onConfirm = _ref.onConfirm,
-        confirmButtonText = _ref.confirmButtonText,
         onCancel = _ref.onCancel,
-        cancelButtonText = _ref.cancelButtonText,
-        show = _ref.show;
+        visible = _ref.visible,
+        title = _ref.title;
 
-    if (show) {
+    if (visible) {
         return _react2.default.createElement(
             'div',
             { className: 'full-page-modal' },
@@ -2895,7 +2896,7 @@ var FullPageModal = function FullPageModal(_ref) {
                         _react2.default.createElement(
                             'span',
                             null,
-                            cancelButtonText
+                            cancel_button_text
                         )
                     ),
                     _react2.default.createElement(
@@ -2907,7 +2908,7 @@ var FullPageModal = function FullPageModal(_ref) {
                         _react2.default.createElement(
                             'span',
                             null,
-                            confirmButtonText
+                            confirm_button_text
                         )
                     )
                 )
@@ -2920,11 +2921,12 @@ var FullPageModal = function FullPageModal(_ref) {
 
 FullPageModal.propTypes = {
     body: _propTypes2.default.string,
-    cancelButtonText: _propTypes2.default.string,
-    confirmButtonText: _propTypes2.default.string,
+    cancel_button_text: _propTypes2.default.string,
+    confirm_button_text: _propTypes2.default.string,
     onCancel: _propTypes2.default.func,
     onConfirm: _propTypes2.default.func,
-    title: _propTypes2.default.string
+    title: _propTypes2.default.string,
+    visible: _propTypes2.default.bool
 };
 
 exports.default = FullPageModal;
@@ -8328,10 +8330,10 @@ exports.default = (0, _connect.connect)(function (_ref2) {
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Middlewares/is_virtual_account.js":
-/*!********************************************************************!*\
-  !*** ./src/javascript/app_2/App/Middlewares/is_virtual_account.js ***!
-  \********************************************************************/
+/***/ "./src/javascript/app_2/App/Middlewares/is_client_allowed_to_visit.js":
+/*!****************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Middlewares/is_client_allowed_to_visit.js ***!
+  \****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8341,7 +8343,7 @@ exports.default = (0, _connect.connect)(function (_ref2) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.isVirtualAccount = undefined;
+exports.isClientAllowedToVisit = undefined;
 
 var _client_base = __webpack_require__(/*! ../../../_common/base/client_base */ "./src/javascript/_common/base/client_base.js");
 
@@ -8349,7 +8351,7 @@ var _client_base2 = _interopRequireDefault(_client_base);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var isVirtualAccount = exports.isVirtualAccount = function isVirtualAccount() {
+var isClientAllowedToVisit = exports.isClientAllowedToVisit = function isClientAllowedToVisit() {
   return !_client_base2.default.isLoggedIn() || _client_base2.default.get('is_virtual');
 };
 
@@ -8444,13 +8446,13 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
 
+var _is_client_allowed_to_visit = __webpack_require__(/*! ./Middlewares/is_client_allowed_to_visit */ "./src/javascript/app_2/App/Middlewares/is_client_allowed_to_visit.js");
+
 var _base_name = __webpack_require__(/*! ../Utils/URL/base_name */ "./src/javascript/app_2/Utils/URL/base_name.js");
 
 var _base_name2 = _interopRequireDefault(_base_name);
 
 var _connect = __webpack_require__(/*! ../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
-
-var _is_virtual_account = __webpack_require__(/*! ./Middlewares/is_virtual_account */ "./src/javascript/app_2/App/Middlewares/is_virtual_account.js");
 
 var _error_boundary = __webpack_require__(/*! ./Components/Elements/Errors/error_boundary.jsx */ "./src/javascript/app_2/App/Components/Elements/Errors/error_boundary.jsx");
 
@@ -8518,7 +8520,7 @@ var App = function App(_ref) {
                         _react2.default.createElement(DevTools, null),
                         _react2.default.createElement(_PortfolioDrawer2.default, null)
                     ),
-                    _react2.default.createElement(_DenialOfServiceModal2.default, { show: !(0, _is_virtual_account.isVirtualAccount)() })
+                    _react2.default.createElement(_DenialOfServiceModal2.default, { visible: !(0, _is_client_allowed_to_visit.isClientAllowedToVisit)() })
                 ),
                 _react2.default.createElement(
                     'footer',
@@ -15889,7 +15891,7 @@ var _fieldset2 = _interopRequireDefault(_fieldset);
 
 var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
 
-var _is_virtual_account = __webpack_require__(/*! ../../../App/Middlewares/is_virtual_account */ "./src/javascript/app_2/App/Middlewares/is_virtual_account.js");
+var _is_client_allowed_to_visit = __webpack_require__(/*! ../../../App/Middlewares/is_client_allowed_to_visit */ "./src/javascript/app_2/App/Middlewares/is_client_allowed_to_visit.js");
 
 var _contract_info = __webpack_require__(/*! ../Components/Form/Purchase/contract_info.jsx */ "./src/javascript/app_2/Modules/Trading/Components/Form/Purchase/contract_info.jsx");
 
@@ -15921,7 +15923,7 @@ var Purchase = function Purchase(_ref) {
         trade_types = _ref.trade_types;
     return Object.keys(trade_types).map(function (type, idx) {
         var info = proposal_info[type] || {};
-        var is_disabled = !is_purchase_enabled || !is_trade_enabled || !info.id || !(0, _is_virtual_account.isVirtualAccount)();
+        var is_disabled = !is_purchase_enabled || !is_trade_enabled || !info.id || !(0, _is_client_allowed_to_visit.isClientAllowedToVisit)();
 
         var purchase_button = _react2.default.createElement(_button2.default, {
             is_disabled: is_disabled,

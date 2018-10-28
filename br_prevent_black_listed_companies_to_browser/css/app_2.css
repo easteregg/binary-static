@@ -3869,9 +3869,9 @@ a {
   right: 0;
   bottom: 0; }
   .full-page-modal .modal-dialog {
-    max-width: 456px;
-    height: 190px;
-    padding: 16px;
+    width: 560px;
+    height: 160px;
+    padding: 24px 8px 8px;
     border-radius: 4px;
     -webkit-box-sizing: border-box;
             box-sizing: border-box;
@@ -3888,11 +3888,11 @@ a {
         -ms-flex-align: start;
             align-items: flex-start; }
     .full-page-modal .modal-dialog p, .full-page-modal .modal-dialog h1 {
-      text-align: left; }
+      text-align: left;
+      padding: 0 16px; }
     .full-page-modal .modal-dialog h1 {
       font-size: 16px;
-      margin: 4px 0 20px;
-      padding: 0; }
+      margin: 4px 0; }
     .full-page-modal .modal-dialog p {
       -webkit-box-flex: 2;
           -ms-flex-positive: 2;
@@ -3902,9 +3902,9 @@ a {
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
-      -webkit-box-pack: justify;
-          -ms-flex-pack: justify;
-              justify-content: space-between;
+      -webkit-box-pack: end;
+          -ms-flex-pack: end;
+              justify-content: flex-end;
       -webkit-box-align: center;
           -ms-flex-align: center;
               align-items: center;
@@ -3925,9 +3925,11 @@ a {
               justify-content: center;
       -ms-flex-item-align: end;
           align-self: flex-end; }
+      .full-page-modal .modal-dialog .btn span {
+        font-weight: bold; }
 
 .dark .full-page-modal {
-  background-color: rgba(42, 48, 82, 0.8); }
+  background-color: rgba(31, 36, 61, 0.8); }
   .dark .full-page-modal .modal-dialog {
     background-color: #353b5b;
     -webkit-box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
@@ -3956,7 +3958,7 @@ a {
       color: #353b5b;
       font-size: 12px; }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 560px) {
   .full-page-modal .modal-dialog {
     width: 100vw;
     height: 100vh; } }
