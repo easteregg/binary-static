@@ -17901,6 +17901,11 @@ var EventBus = function () {
             this.eventList[event].forEach(function (listener) {
                 return listener.callback(payload);
             });
+
+            // remove once methods.
+            this.eventList[event] = this.eventList[event].filter(function (listener) {
+                return !listener.once;
+            });
             return true;
         }
     }]);
