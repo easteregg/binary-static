@@ -298,9 +298,9 @@ var AccountSwitcher = function (_React$Component) {
         }
     }, {
         key: 'doSwitch',
-        value: function doSwitch(loginid, client) {
+        value: function doSwitch() {
             this.props.toggle();
-            client.switchAccount(loginid);
+            this.props.client.switchAccount(this.props.loginid);
         }
     }, {
         key: 'render',
@@ -320,9 +320,7 @@ var AccountSwitcher = function (_React$Component) {
                             'div',
                             {
                                 className: (0, _classnames2.default)('acc-switcher-account', account.icon),
-                                onClick: function onClick() {
-                                    return _this2.doSwitch(account.loginid, _this2.props.client);
-                                }
+                                onClick: _this2.doSwitch
                             },
                             _react2.default.createElement(
                                 'span',
@@ -363,16 +361,14 @@ AccountSwitcher.propTypes = {
     client: _propTypes2.default.object,
     is_upgrade_enabled: _propTypes2.default.bool,
     is_visible: _propTypes2.default.bool,
-    modules: _propTypes2.default.object,
     onClickUpgrade: _propTypes2.default.func,
     toggle: _propTypes2.default.func
 };
 
 var account_switcher = (0, _connect.connect)(function (_ref) {
-    var client = _ref.client,
-        modules = _ref.modules;
+    var client = _ref.client;
     return {
-        client: client, modules: modules
+        client: client
     };
 })(AccountSwitcher);
 
@@ -1898,6 +1894,10 @@ var _full_page_modal2 = _interopRequireDefault(_full_page_modal);
 
 var _connect = __webpack_require__(/*! ../../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
 
+var _localize2 = __webpack_require__(/*! ../localize.jsx */ "./src/javascript/app_2/App/Components/Elements/localize.jsx");
+
+var _localize3 = _interopRequireDefault(_localize2);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _onConfirm = function _onConfirm(client) {
@@ -1911,17 +1911,20 @@ var onCancel = function onCancel() {
 var DenialOfServiceModal = function DenialOfServiceModal(_ref) {
     var client = _ref.client,
         show = _ref.show;
-    return _react2.default.createElement(_full_page_modal2.default, {
-        title: (0, _localize.localize)('Whoops!'),
-        body: (0, _localize.localize)('Sorry, Only virtual accounts can access this feature at the moment.'),
-        confirm_button_text: (0, _localize.localize)('Continue with my virtual account'),
-        cancel_button_text: (0, _localize.localize)('Visit main website'),
-        onConfirm: function onConfirm() {
-            return _onConfirm(client);
+    return _react2.default.createElement(
+        _full_page_modal2.default,
+        {
+            title: (0, _localize.localize)('Whoops!'),
+            confirm_button_text: (0, _localize.localize)('Continue with my virtual account'),
+            cancel_button_text: (0, _localize.localize)('Visit main website'),
+            onConfirm: function onConfirm() {
+                return _onConfirm(client);
+            },
+            onCancel: onCancel,
+            show: show
         },
-        onCancel: onCancel,
-        show: show
-    });
+        _react2.default.createElement(_localize3.default, { str: 'Sorry, Only virtual accounts can access this feature at the moment.' })
+    );
 };
 
 DenialOfServiceModal.propTypes = {
@@ -2895,15 +2898,15 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var FullPageModal = function FullPageModal(_ref) {
-    var body = _ref.body,
+    var children = _ref.children,
         cancel_button_text = _ref.cancel_button_text,
         confirm_button_text = _ref.confirm_button_text,
         onConfirm = _ref.onConfirm,
         onCancel = _ref.onCancel,
-        show = _ref.show,
+        is_visible = _ref.is_visible,
         title = _ref.title;
 
-    if (show) {
+    if (is_visible) {
         return _react2.default.createElement(
             'div',
             { className: 'full-page-modal' },
@@ -2918,7 +2921,7 @@ var FullPageModal = function FullPageModal(_ref) {
                 _react2.default.createElement(
                     'p',
                     null,
-                    body
+                    children
                 ),
                 _react2.default.createElement(
                     'div',
@@ -2939,9 +2942,7 @@ var FullPageModal = function FullPageModal(_ref) {
                         'div',
                         {
                             className: 'btn flat effect primary',
-                            onClick: function onClick() {
-                                return onConfirm();
-                            }
+                            onClick: onConfirm
                         },
                         _react2.default.createElement(
                             'span',
@@ -2958,12 +2959,11 @@ var FullPageModal = function FullPageModal(_ref) {
 };
 
 FullPageModal.propTypes = {
-    body: _propTypes2.default.string,
     cancel_button_text: _propTypes2.default.string,
     confirm_button_text: _propTypes2.default.string,
+    is_visible: _propTypes2.default.bool,
     onCancel: _propTypes2.default.func,
     onConfirm: _propTypes2.default.func,
-    show: _propTypes2.default.bool,
     title: _propTypes2.default.string
 };
 
