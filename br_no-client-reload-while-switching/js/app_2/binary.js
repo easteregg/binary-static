@@ -234,6 +234,8 @@ var _upgrade_button = __webpack_require__(/*! ./upgrade_button.jsx */ "./src/jav
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -298,10 +300,30 @@ var AccountSwitcher = function (_React$Component) {
         }
     }, {
         key: 'doSwitch',
-        value: function doSwitch() {
-            this.props.toggle();
-            this.props.client.switchAccount(this.props.loginid);
-        }
+        value: function () {
+            var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(loginid) {
+                return regeneratorRuntime.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                this.props.toggle();
+                                _context.next = 3;
+                                return this.props.client.switchAccount(loginid);
+
+                            case 3:
+                            case 'end':
+                                return _context.stop();
+                        }
+                    }
+                }, _callee, this);
+            }));
+
+            function doSwitch(_x) {
+                return _ref.apply(this, arguments);
+            }
+
+            return doSwitch;
+        }()
     }, {
         key: 'render',
         value: function render() {
@@ -320,7 +342,7 @@ var AccountSwitcher = function (_React$Component) {
                             'div',
                             {
                                 className: (0, _classnames2.default)('acc-switcher-account', account.icon),
-                                onClick: _this2.doSwitch
+                                onClick: _this2.doSwitch.bind(_this2, account.loginid)
                             },
                             _react2.default.createElement(
                                 'span',
@@ -365,8 +387,8 @@ AccountSwitcher.propTypes = {
     toggle: _propTypes2.default.func
 };
 
-var account_switcher = (0, _connect.connect)(function (_ref) {
-    var client = _ref.client;
+var account_switcher = (0, _connect.connect)(function (_ref2) {
+    var client = _ref2.client;
     return {
         client: client
     };
@@ -1910,7 +1932,7 @@ var onCancel = function onCancel() {
 
 var DenialOfServiceModal = function DenialOfServiceModal(_ref) {
     var client = _ref.client,
-        show = _ref.show;
+        is_visible = _ref.is_visible;
     return _react2.default.createElement(
         _full_page_modal2.default,
         {
@@ -1921,7 +1943,7 @@ var DenialOfServiceModal = function DenialOfServiceModal(_ref) {
                 return _onConfirm(client);
             },
             onCancel: onCancel,
-            show: show
+            is_visible: is_visible
         },
         _react2.default.createElement(_localize3.default, { str: 'Sorry, Only virtual accounts can access this feature at the moment.' })
     );
@@ -1934,7 +1956,7 @@ DenialOfServiceModal.propTypes = {
 var denial_of_service = (0, _connect.connect)(function (_ref2) {
     var client = _ref2.client;
     return {
-        show: !client.is_client_allowed_to_visit,
+        is_visible: !client.is_client_allowed_to_visit,
         client: client
     };
 })(DenialOfServiceModal);
