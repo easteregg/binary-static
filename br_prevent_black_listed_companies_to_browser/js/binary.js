@@ -785,7 +785,10 @@ var GTM = function () {
             pageTitle: pageTitle(),
             pjax: State.get('is_loaded_by_pjax'),
             url: document.URL
-        }, ClientBase.isLoggedIn() && { visitorId: ClientBase.get('loginid') });
+        }, ClientBase.isLoggedIn() && {
+            visitorId: ClientBase.get('loginid'),
+            bom_email: ClientBase.get('email')
+        });
     };
 
     var pushDataLayer = function pushDataLayer(data) {
@@ -33022,8 +33025,9 @@ module.exports = ViewPopupUI;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '15034'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
+    var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
         app_id = config_app_id;
     } else if (/staging\.binary\.com/i.test(window.location.hostname)) {
@@ -33034,6 +33038,9 @@ var getAppId = function getAppId() {
         app_id = user_app_id;
     } else if (/localhost/i.test(window.location.hostname)) {
         app_id = 1159;
+    } else if (is_new_app) {
+        window.localStorage.removeItem('config.default_app_id');
+        app_id = 15265;
     } else {
         window.localStorage.removeItem('config.default_app_id');
         app_id = 1;
