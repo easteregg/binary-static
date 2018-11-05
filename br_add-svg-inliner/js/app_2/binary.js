@@ -9071,12 +9071,6 @@ var _routes2 = _interopRequireDefault(_routes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// Conditionally loading mobx only on development builds.
-// see https://github.com/mobxjs/mobx-react-devtools/issues/66
-var Fragment = _react2.default.Fragment;
-
-var DevTools =  true ? __webpack_require__(/*! mobx-react-devtools */ "./node_modules/mobx-react-devtools/index.js").default : undefined;
-
 var App = function App(_ref) {
     var root_store = _ref.root_store;
     return _react2.default.createElement(
@@ -9100,7 +9094,6 @@ var App = function App(_ref) {
                         _app_contents2.default,
                         null,
                         _react2.default.createElement(_routes2.default, null),
-                        _react2.default.createElement(DevTools, null),
                         _react2.default.createElement(_PortfolioDrawer2.default, null),
                         _react2.default.createElement(_toast_message2.default, { position: _ToastMessage.POSITIONS.TOP_RIGHT })
                     )
@@ -17144,23 +17137,19 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
 
-var _url = __webpack_require__(/*! ../../../../../_common/url */ "./src/javascript/_common/url.js");
-
-var _url2 = _interopRequireDefault(_url);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // TODO: use BinaryLink once it supports nested routes
 var MenuItem = function MenuItem(_ref) {
     var title = _ref.title,
+        Icon = _ref.Icon,
         description = _ref.description,
-        svg = _ref.svg,
         path = _ref.path;
 
     var itemContent = _react2.default.createElement(
         _react2.default.Fragment,
         null,
-        _react2.default.createElement('img', { className: 'menu-item__img', src: _url2.default.urlForStatic(svg) }),
+        _react2.default.createElement(Icon, null),
         _react2.default.createElement(
             'div',
             { className: 'menu-item__content' },
@@ -17190,8 +17179,8 @@ var MenuItem = function MenuItem(_ref) {
 
 MenuItem.propTypes = {
     description: _propTypes2.default.string,
+    Icon: _propTypes2.default.func,
     path: _propTypes2.default.string,
-    svg: _propTypes2.default.string,
     title: _propTypes2.default.string
 };
 
@@ -17235,13 +17224,13 @@ var MenuList = function MenuList(_ref) {
         items.map(function (_ref2, i) {
             var title = _ref2.title,
                 description = _ref2.description,
-                svg = _ref2.svg,
+                Icon = _ref2.Icon,
                 path = _ref2.path;
             return _react2.default.createElement(_menu_item2.default, {
                 key: i,
                 title: title,
                 description: description,
-                svg: svg,
+                Icon: Icon,
                 path: path
             });
         })
@@ -17251,8 +17240,8 @@ var MenuList = function MenuList(_ref) {
 MenuList.propTypes = {
     items: _propTypes2.default.arrayOf(_propTypes2.default.shape({
         description: _propTypes2.default.string,
+        Icon: _propTypes2.default.func,
         path: _propTypes2.default.string,
-        svg: _propTypes2.default.string,
         title: _propTypes2.default.string
     }))
 };
@@ -17354,7 +17343,7 @@ var MobileDropdown = function (_React$Component) {
                             var title = _ref2.title,
                                 description = _ref2.description,
                                 path = _ref2.path,
-                                svg = _ref2.svg;
+                                Icon = _ref2.Icon;
                             return _react2.default.createElement(_reactRouterDom.Route, {
                                 key: path,
                                 path: path,
@@ -17362,7 +17351,7 @@ var MobileDropdown = function (_React$Component) {
                                     return _react2.default.createElement(_menu_item2.default, {
                                         title: title,
                                         description: description,
-                                        svg: svg
+                                        Icon: Icon
                                     });
                                 }
                             });
@@ -17385,8 +17374,8 @@ var MobileDropdown = function (_React$Component) {
 MobileDropdown.propTypes = {
     all_items: _propTypes2.default.arrayOf(_propTypes2.default.shape({
         description: _propTypes2.default.string,
+        Icon: _propTypes2.default.func,
         path: _propTypes2.default.string,
-        svg: _propTypes2.default.string,
         title: _propTypes2.default.string
     })),
     children: _propTypes2.default.element
@@ -18066,12 +18055,12 @@ var data = [{
     items: [{
         title: (0, _localize.localize)('Personal Details'),
         description: (0, _localize.localize)('View your personal information.'),
-        svg: _icPersonalDetails2.default,
+        Icon: _icPersonalDetails2.default,
         Component: _personal_details2.default
     }, {
         title: (0, _localize.localize)('Financial Assessment'),
         description: (0, _localize.localize)('View your financial assessment settings'),
-        svg: _icFinancialAssesment2.default,
+        Icon: _icFinancialAssesment2.default,
         Component: _financial_assessment2.default
     }]
 }, {
@@ -18079,37 +18068,37 @@ var data = [{
     items: [{
         title: (0, _localize.localize)('Account Password'),
         description: (0, _localize.localize)('Change your main login password.'),
-        svg: _icAccountPassword2.default,
+        Icon: _icAccountPassword2.default,
         Component: _account_password2.default
     }, {
         title: (0, _localize.localize)('Cashier Password'),
         description: (0, _localize.localize)('Change the password used for deposits and withdrawals'),
-        svg: _icCashierPassword2.default,
+        Icon: _icCashierPassword2.default,
         Component: _cashier_password2.default
     }, {
         title: (0, _localize.localize)('Self Exclusion'),
         description: (0, _localize.localize)('Facility that allows you to set limits on your account.'),
-        svg: _icSelfExclusion2.default,
+        Icon: _icSelfExclusion2.default,
         Component: _self_exclusion2.default
     }, {
         title: (0, _localize.localize)('Limits'),
         description: (0, _localize.localize)('View your trading and withdrawal limits'),
-        svg: _icLimits2.default,
+        Icon: _icLimits2.default,
         Component: _limits2.default
     }, {
         title: (0, _localize.localize)('Login History'),
         description: (0, _localize.localize)('View your login history'),
-        svg: _icLoginHistory2.default,
+        Icon: _icLoginHistory2.default,
         Component: _login_history2.default
     }, {
         title: (0, _localize.localize)('API Token'),
         description: (0, _localize.localize)('API token for third party applications'),
-        svg: _icApiToken2.default,
+        Icon: _icApiToken2.default,
         Component: _api_token2.default
     }, {
         title: (0, _localize.localize)('Authorized Applications'),
         description: (0, _localize.localize)('Manage your authorised applications'),
-        svg: _icAuthorisedApplications2.default,
+        Icon: _icAuthorisedApplications2.default,
         Component: _authorized_applications2.default
     }]
 }];
