@@ -8838,12 +8838,6 @@ var _DenialOfServiceModal2 = _interopRequireDefault(_DenialOfServiceModal);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// Conditionally loading mobx only on development builds.
-// see https://github.com/mobxjs/mobx-react-devtools/issues/66
-var Fragment = _react2.default.Fragment;
-
-var DevTools =  true ? __webpack_require__(/*! mobx-react-devtools */ "./node_modules/mobx-react-devtools/index.js").default : undefined;
-
 var App = function App(_ref) {
     var root_store = _ref.root_store;
     return _react2.default.createElement(
@@ -8867,7 +8861,6 @@ var App = function App(_ref) {
                         _app_contents2.default,
                         null,
                         _react2.default.createElement(_routes2.default, null),
-                        _react2.default.createElement(DevTools, null),
                         _react2.default.createElement(_PortfolioDrawer2.default, null),
                         _react2.default.createElement(_toast_message2.default, { position: _ToastMessage.POSITIONS.TOP_RIGHT })
                     ),
@@ -18957,7 +18950,6 @@ var getDetailsExpiry = exports.getDetailsExpiry = function getDetailsExpiry(stor
     if (!store.is_ended) return {};
 
     var contract_info = store.contract_info,
-        currency = store.currency,
         end_spot = store.end_spot,
         end_spot_time = store.end_spot_time,
         indicative_price = store.indicative_price,
@@ -18967,7 +18959,7 @@ var getDetailsExpiry = exports.getDetailsExpiry = function getDetailsExpiry(stor
     // for user sold contracts sell spot can get updated when the next tick becomes available
     // so we only show end time instead of any spot information
 
-    return _extends({}, is_user_sold ? _defineProperty({}, (0, _localize.localize)('End Time'), contract_info.date_expiry && (0, _Date.toGMTFormat)(+contract_info.date_expiry * 1000)) : (_ref3 = {}, _defineProperty(_ref3, (0, _localize.localize)('Exit Spot'), end_spot ? (0, _currency_base.addComma)(end_spot) : '-'), _defineProperty(_ref3, (0, _localize.localize)('Exit Spot Time'), end_spot_time ? (0, _Date.toGMTFormat)(+end_spot_time * 1000) : '-'), _ref3), _defineProperty({}, (0, _localize.localize)('Payout'), _react2.default.createElement(_money2.default, { amount: indicative_price, currency: currency })));
+    return _extends({}, is_user_sold ? _defineProperty({}, (0, _localize.localize)('End Time'), contract_info.date_expiry && (0, _Date.toGMTFormat)(+contract_info.date_expiry * 1000)) : (_ref3 = {}, _defineProperty(_ref3, (0, _localize.localize)('Exit Spot'), end_spot ? (0, _currency_base.addComma)(end_spot) : '-'), _defineProperty(_ref3, (0, _localize.localize)('Exit Spot Time'), end_spot_time ? (0, _Date.toGMTFormat)(+end_spot_time * 1000) : '-'), _ref3), _defineProperty({}, (0, _localize.localize)('Payout'), _react2.default.createElement(_money2.default, { amount: indicative_price, currency: contract_info.currency })));
 };
 
 /***/ }),
@@ -22534,6 +22526,10 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                                 active_symbols = _context2.sent;
 
 
+                                if (!active_symbols.active_symbols || active_symbols.active_symbols.length === 0) {
+                                    this.root_store.common.showError((0, _localize.localize)('Trading is unavailable at this time.'));
+                                }
+
                                 // Checks for finding out that the current account has access to the defined symbol in quersy string or not.
                                 is_invalid_symbol = !!query_string_values.symbol && !active_symbols.active_symbols.find(function (s) {
                                     return s.symbol === query_string_values.symbol;
@@ -22551,7 +22547,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                                 }
 
                                 if (this.symbol) {
-                                    _context2.next = 11;
+                                    _context2.next = 12;
                                     break;
                                 }
 
@@ -22560,12 +22556,12 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                                     query_string_values = this.updateQueryString();
                                 }
 
-                                _context2.next = 11;
+                                _context2.next = 12;
                                 return this.processNewValuesAsync(_extends({
                                     symbol: (0, _symbol2.pickDefaultSymbol)(active_symbols.active_symbols)
                                 }, query_string_values));
 
-                            case 11:
+                            case 12:
 
                                 if (this.symbol) {
                                     _contract_type2.default.buildContractTypesConfig(query_string_values.symbol || this.symbol).then((0, _mobx.action)(_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -22585,7 +22581,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                                     }))));
                                 }
 
-                            case 12:
+                            case 13:
                             case 'end':
                                 return _context2.stop();
                         }
@@ -23774,7 +23770,7 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _dec2, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
+var _dec, _dec2, _dec3, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
 
 var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
 
@@ -23839,7 +23835,7 @@ function _initializerWarningHelper(descriptor, context) {
     throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
-var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_class = function (_BaseStore) {
+var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, (_class = function (_BaseStore) {
     _inherits(CommonStore, _BaseStore);
 
     function CommonStore() {
@@ -23869,6 +23865,14 @@ var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
                 type: error ? error.type : 'info',
                 message: error ? error.message : ''
             };
+        }
+    }, {
+        key: 'showError',
+        value: function showError(message) {
+            this.setError(true, {
+                message: message,
+                type: 'error'
+            });
         }
     }]);
 
@@ -23911,7 +23915,7 @@ var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
     initializer: function initializer() {
         return false;
     }
-}), _applyDecoratedDescriptor(_class.prototype, 'setIsSocketOpened', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'setIsSocketOpened'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setError', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'setError'), _class.prototype)), _class));
+}), _applyDecoratedDescriptor(_class.prototype, 'setIsSocketOpened', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'setIsSocketOpened'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setError', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'setError'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showError', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'showError'), _class.prototype)), _class));
 exports.default = CommonStore;
 
 /***/ }),
