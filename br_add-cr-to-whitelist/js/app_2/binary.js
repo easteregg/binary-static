@@ -1914,7 +1914,7 @@ var DenialOfServiceModal = function DenialOfServiceModal(_ref) {
             onCancel: onCancel,
             is_visible: is_visible
         },
-        _react2.default.createElement(_localize3.default, { str: 'You\'re not allowed to access this feature with your real money account at the moment' })
+        _react2.default.createElement(_localize3.default, { str: 'You are not allowed to access this feature with your real money account at the moment.' })
     );
 };
 
