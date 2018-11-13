@@ -1681,12 +1681,14 @@ div.dropdown-container {
       vertical-align: middle;
       padding-left: 8px;
       font-weight: 300; }
+    div.dropdown-container .dropdown-display:active, div.dropdown-container .dropdown-display:focus {
+      outline: none; }
     div.dropdown-container .dropdown-display:hover {
       border-color: #2a3052; }
       div.dropdown-container .dropdown-display:hover + .select-arrow {
         color: #2a3052; }
   div.dropdown-container:active, div.dropdown-container:focus, div.dropdown-container.show {
-    outline: 0;
+    outline: none;
     border-radius: 4px; }
     div.dropdown-container:active .select-arrow, div.dropdown-container:focus .select-arrow, div.dropdown-container.show .select-arrow {
       color: #2a3052; }
@@ -1747,8 +1749,8 @@ div.dropdown-container {
           line-height: 32px !important;
           display: inline-block;
           vertical-align: middle; }
-        div.dropdown-container .dropdown-list .list-container .list-item:hover {
-          background-color: #f4f4f6; }
+        div.dropdown-container .dropdown-list .list-container .list-item:hover, div.dropdown-container .dropdown-list .list-container .list-item.highlighted {
+          background-color: #fafafb; }
         div.dropdown-container .dropdown-list .list-container .list-item.selected span {
           background-color: #f4f4f6;
           color: #2a3052;
@@ -1806,8 +1808,8 @@ div.dropdown-container {
       color: #fff;
       font-weight: 600;
       background: #4a4f6c; }
-    .theme-wrapper.dark .dropdown-container .list-container .list-item:hover {
-      background: #4a4f6c; }
+    .theme-wrapper.dark .dropdown-container .list-container .list-item:hover, .theme-wrapper.dark .dropdown-container .list-container .list-item.highlighted {
+      background: #353b5b; }
 
 /* Ant style */
 .btn {
@@ -2709,10 +2711,11 @@ div.contracts-popup-container {
       vertical-align: middle;
       padding: 0;
       font-weight: 300; }
-    div.contracts-popup-container .contracts-popup-display:hover {
-      border-color: #2a3052; }
+    div.contracts-popup-container .contracts-popup-display:hover, div.contracts-popup-container .contracts-popup-display:focus {
+      border-color: #2a3052;
+      outline: none; }
   div.contracts-popup-container:active, div.contracts-popup-container:focus, div.contracts-popup-container.show {
-    outline: 0;
+    outline: none;
     border-radius: 4px; }
   div.contracts-popup-container.show.mobile-only {
     z-index: 99; }
@@ -2887,7 +2890,7 @@ div.contracts-popup-container {
     color: #aaacba; }
   .theme-wrapper.dark div.contracts-popup-container.mobile-only .contracts-modal-list {
     background: #2a3052; }
-  .theme-wrapper.dark div.contracts-popup-container:hover {
+  .theme-wrapper.dark div.contracts-popup-container:hover, .theme-wrapper.dark div.contracts-popup-container:focus, .theme-wrapper.dark div.contracts-popup-container:active {
     border-color: #fff; }
   .theme-wrapper.dark div.contracts-popup-container .list-container {
     border-color: #4a4f6c;

@@ -5403,80 +5403,10 @@ exports.default = _date_picker2.default;
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Components/Form/button.jsx":
-/*!*************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Form/button.jsx ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Button = function Button(_ref) {
-    var children = _ref.children,
-        _ref$className = _ref.className,
-        className = _ref$className === undefined ? '' : _ref$className,
-        has_effect = _ref.has_effect,
-        id = _ref.id,
-        is_disabled = _ref.is_disabled,
-        onClick = _ref.onClick,
-        text = _ref.text,
-        wrapperClassName = _ref.wrapperClassName;
-
-    var classes = 'btn' + (has_effect ? ' effect' : '') + ' ' + className;
-    var button = _react2.default.createElement(
-        'button',
-        { id: id, className: classes, onClick: onClick || undefined, disabled: is_disabled },
-        _react2.default.createElement(
-            'span',
-            null,
-            text
-        ),
-        children
-    );
-    var wrapper = _react2.default.createElement(
-        'div',
-        { className: wrapperClassName },
-        button
-    );
-
-    return wrapperClassName ? wrapper : button;
-};
-
-Button.propTypes = {
-    children: _propTypes2.default.object,
-    className: _propTypes2.default.string,
-    has_effect: _propTypes2.default.bool,
-    id: _propTypes2.default.string,
-    is_disabled: _propTypes2.default.bool,
-    onClick: _propTypes2.default.func,
-    text: _propTypes2.default.string,
-    wrapperClassName: _propTypes2.default.string
-};
-
-exports.default = Button;
-
-/***/ }),
-
-/***/ "./src/javascript/app_2/App/Components/Form/dropdown.jsx":
-/*!***************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Form/dropdown.jsx ***!
-  \***************************************************************/
+/***/ "./src/javascript/app_2/App/Components/Form/DropDown/dropdown.jsx":
+/*!************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Form/DropDown/dropdown.jsx ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5507,7 +5437,9 @@ var _simplebarReact = __webpack_require__(/*! simplebar-react */ "./node_modules
 
 var _simplebarReact2 = _interopRequireDefault(_simplebarReact);
 
-var _Common = __webpack_require__(/*! ../../../Assets/Common */ "./src/javascript/app_2/Assets/Common/index.js");
+var _Common = __webpack_require__(/*! ../../../../Assets/Common */ "./src/javascript/app_2/Assets/Common/index.js");
+
+var _helpers = __webpack_require__(/*! ./helpers */ "./src/javascript/app_2/App/Components/Form/DropDown/helpers.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5525,22 +5457,64 @@ var Dropdown = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (Dropdown.__proto__ || Object.getPrototypeOf(Dropdown)).call(this, props));
 
-        _this.getDisplayText = function (list, value) {
-            var findInArray = function findInArray(arr_list) {
-                return (arr_list.find(function (item) {
-                    return item.value === (typeof item.value === 'number' ? +value : value);
-                }) || {}).text;
-            };
-            var text = '';
-            if ((0, _mobx.isArrayLike)(list)) {
-                text = findInArray(list);
-            } else {
-                Object.keys(list).some(function (key) {
-                    text = findInArray(list[key]);
-                    return text;
-                });
+        _this.onKeyPressed = function (event) {
+            if (event.keyCode === 9) {
+                // Tab is pressed
+                if (_this.state.is_list_visible) {
+                    _this.handleVisibility();
+                }
+                return;
             }
-            return text;
+            event.preventDefault();
+            var index = (0, _helpers.getItemFromValue)(_this.props.list, _this.props.value);
+            var value = (0, _helpers.getValueFromIndex)(_this.props.list, _this.state.curr_index);
+            var handleToggle = function handleToggle() {
+                if (_this.state.is_list_visible && _this.props.value !== value) {
+                    _this.props.onChange({ target: { name: _this.props.name, value: value } });
+                }
+                _this.handleVisibility();
+            };
+            switch (event.keyCode) {
+                case 13: // Enter is pressed
+                case 32:
+                    // Space is pressed
+                    handleToggle();
+                    break;
+                case 38:
+                    // Up Arrow is pressed
+                    if (_this.state.is_list_visible) {
+                        var prev_index = (0, _helpers.getPrevIndex)(_this.state.curr_index, index.length);
+                        _this.setState({ curr_index: prev_index });
+                    }
+                    break;
+                case 40:
+                    // Down Arrow is pressed
+                    if (_this.state.is_list_visible) {
+                        var next_index = (0, _helpers.getNextIndex)(_this.state.curr_index, index.length);
+                        _this.setState({ curr_index: next_index });
+                    }
+                    break;
+                default:
+            }
+
+            // For char presses, we do a search for the item:
+            if (event.key.length === 1) {
+                var char = event.key.toLowerCase();
+                var firstChars = _this.props.list.map(function (x) {
+                    return x.text[0].toLowerCase();
+                });
+                var idx = void 0;
+                // Tapping the same character again jumps to the next match:
+                if (_this.state.curr_index) {
+                    idx = firstChars.indexOf(char, _this.state.curr_index + 1);
+                }
+                if (idx === undefined || idx === -1) {
+                    idx = firstChars.indexOf(char);
+                }
+                if (idx >= 0) {
+                    _this.setState({ curr_index: idx });
+                }
+            }
         };
 
         _this.handleVisibility = _this.handleVisibility.bind(_this);
@@ -5548,7 +5522,8 @@ var Dropdown = function (_React$Component) {
         _this.setWrapperRef = _this.setWrapperRef.bind(_this);
         _this.handleClickOutside = _this.handleClickOutside.bind(_this);
         _this.state = {
-            is_list_visible: false
+            is_list_visible: false,
+            curr_index: (0, _helpers.getItemFromValue)(_this.props.list, _this.props.value).number
         };
         return _this;
     }
@@ -5624,12 +5599,13 @@ var Dropdown = function (_React$Component) {
                     {
                         className: 'dropdown-display ' + (this.state.is_list_visible ? 'clicked' : ''),
                         onClick: this.handleVisibility,
-                        onBlur: this.handleVisibility
+                        tabIndex: '0',
+                        onKeyDown: this.onKeyPressed
                     },
                     _react2.default.createElement(
                         'span',
                         { name: this.props.name, value: this.props.value },
-                        this.getDisplayText(this.props.list, this.props.value)
+                        (0, _helpers.getDisplayText)(this.props.list, this.props.value)
                     )
                 ),
                 _react2.default.createElement(_Common.IconArrow, { className: 'select-arrow' }),
@@ -5651,6 +5627,7 @@ var Dropdown = function (_React$Component) {
                                 _simplebarReact2.default,
                                 { style: { 'height': '100%' } },
                                 (0, _mobx.isArrayLike)(this.props.list) ? _react2.default.createElement(Items, {
+                                    highlightedIdx: this.state.curr_index,
                                     items: this.props.list,
                                     name: this.props.name,
                                     value: this.props.value,
@@ -5669,6 +5646,7 @@ var Dropdown = function (_React$Component) {
                                             )
                                         ),
                                         _react2.default.createElement(Items, {
+                                            highlightedIdx: _this2.state.curr_index,
                                             items: _this2.props.list[key],
                                             name: _this2.props.name,
                                             value: _this2.props.value,
@@ -5691,7 +5669,8 @@ var Items = function Items(_ref) {
     var items = _ref.items,
         name = _ref.name,
         value = _ref.value,
-        handleSelect = _ref.handleSelect;
+        handleSelect = _ref.handleSelect,
+        highlightedIdx = _ref.highlightedIdx;
     return items.map(function (item, idx) {
         return _react2.default.createElement(
             _react2.default.Fragment,
@@ -5699,7 +5678,7 @@ var Items = function Items(_ref) {
             _react2.default.createElement(
                 'div',
                 {
-                    className: 'list-item ' + (value === item.value ? 'selected' : ''),
+                    className: 'list-item ' + (value === item.value ? 'selected' : '') + ' ' + (highlightedIdx === idx ? 'highlighted' : ''),
                     key: idx,
                     name: name,
                     value: item.value,
@@ -5774,6 +5753,182 @@ NativeSelect.propTypes = {
 };
 
 exports.default = (0, _mobxReact.observer)(Dropdown);
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/App/Components/Form/DropDown/helpers.js":
+/*!**********************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Form/DropDown/helpers.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.getNextIndex = exports.getPrevIndex = exports.getValueFromIndex = exports.getItemFromValue = exports.getDisplayText = undefined;
+
+var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
+
+var getDisplayText = exports.getDisplayText = function getDisplayText(list, value) {
+    var findInArray = function findInArray(arr_list) {
+        return (arr_list.find(function (item) {
+            return item.value === value;
+        }) || {}).text;
+    };
+    var text = '';
+    if ((0, _mobx.isArrayLike)(list)) {
+        text = findInArray(list);
+    } else {
+        Object.keys(list).some(function (key) {
+            text = findInArray(list[key]);
+            return text;
+        });
+    }
+    return text;
+};
+
+var getItemFromValue = exports.getItemFromValue = function getItemFromValue(list, value) {
+    var findInArray = function findInArray(arr_list) {
+        return arr_list.findIndex(function (item) {
+            return item.value === value;
+        });
+    };
+    var item = {};
+    if ((0, _mobx.isArrayLike)(list)) {
+        item = { number: findInArray(list), length: list.length };
+    } else {
+        Object.keys(list).some(function (key) {
+            item = { number: findInArray(list[key]), length: list[key].length };
+            return item;
+        });
+    }
+    return item;
+};
+
+var getValueFromIndex = exports.getValueFromIndex = function getValueFromIndex(list, index) {
+    var findInArray = function findInArray(arr_list) {
+        return arr_list[index];
+    };
+    var result = void 0;
+    if ((0, _mobx.isArrayLike)(list)) {
+        result = findInArray(list);
+    } else {
+        Object.keys(list).some(function (key) {
+            result = findInArray(list[key]);
+            return result.value;
+        });
+    }
+    return result.value;
+};
+
+var getPrevIndex = exports.getPrevIndex = function getPrevIndex(index, length) {
+    var prev_index = index - 1 < 0 ? length - 1 : index - 1;
+    return prev_index;
+};
+
+var getNextIndex = exports.getNextIndex = function getNextIndex(index, length) {
+    var next_index = index + 1 === length ? 0 : index + 1;
+    return next_index;
+};
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/App/Components/Form/DropDown/index.js":
+/*!********************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Form/DropDown/index.js ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _dropdown = __webpack_require__(/*! ./dropdown.jsx */ "./src/javascript/app_2/App/Components/Form/DropDown/dropdown.jsx");
+
+var _dropdown2 = _interopRequireDefault(_dropdown);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _dropdown2.default;
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/App/Components/Form/button.jsx":
+/*!*************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Form/button.jsx ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Button = function Button(_ref) {
+    var children = _ref.children,
+        _ref$className = _ref.className,
+        className = _ref$className === undefined ? '' : _ref$className,
+        has_effect = _ref.has_effect,
+        id = _ref.id,
+        is_disabled = _ref.is_disabled,
+        onClick = _ref.onClick,
+        text = _ref.text,
+        wrapperClassName = _ref.wrapperClassName;
+
+    var classes = 'btn' + (has_effect ? ' effect' : '') + ' ' + className;
+    var button = _react2.default.createElement(
+        'button',
+        { id: id, className: classes, onClick: onClick || undefined, disabled: is_disabled },
+        _react2.default.createElement(
+            'span',
+            null,
+            text
+        ),
+        children
+    );
+    var wrapper = _react2.default.createElement(
+        'div',
+        { className: wrapperClassName },
+        button
+    );
+
+    return wrapperClassName ? wrapper : button;
+};
+
+Button.propTypes = {
+    children: _propTypes2.default.object,
+    className: _propTypes2.default.string,
+    has_effect: _propTypes2.default.bool,
+    id: _propTypes2.default.string,
+    is_disabled: _propTypes2.default.bool,
+    onClick: _propTypes2.default.func,
+    text: _propTypes2.default.string,
+    wrapperClassName: _propTypes2.default.string
+};
+
+exports.default = Button;
 
 /***/ }),
 
@@ -8687,7 +8842,7 @@ var _client_base2 = _interopRequireDefault(_client_base);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var isClientAllowedToVisit = exports.isClientAllowedToVisit = function isClientAllowedToVisit() {
-    return !_client_base2.default.isLoggedIn() || _client_base2.default.get('is_virtual') || /^CR/.test(_client_base2.default.get('loginid'));
+    return !_client_base2.default.isLoggedIn() || _client_base2.default.get('is_virtual') || _client_base2.default.get('landing_company_shortcode') === 'costarica';
 };
 
 /***/ }),
@@ -14480,14 +14635,14 @@ var ContractTypeWidget = function (_React$PureComponent) {
                 'div',
                 {
                     ref: this.setWrapperRef,
-                    className: container_classes.join(' ')
+                    className: container_classes.join(' '),
+                    tabIndex: '0'
                 },
                 _react2.default.createElement(
                     'div',
                     {
                         className: 'contracts-popup-display ' + (this.state.is_dialog_open ? 'clicked' : ''),
-                        onClick: this.handleVisibility,
-                        onBlur: this.handleVisibility
+                        onClick: this.handleVisibility
                     },
                     _react2.default.createElement(_Categories.IconTradeCategory, { category: this.props.value }),
                     _react2.default.createElement(
@@ -15270,9 +15425,9 @@ var _currency_base = __webpack_require__(/*! ../../../../../../_common/base/curr
 
 var _localize = __webpack_require__(/*! ../../../../../../_common/localize */ "./src/javascript/_common/localize.js");
 
-var _dropdown = __webpack_require__(/*! ../../../../../App/Components/Form/dropdown.jsx */ "./src/javascript/app_2/App/Components/Form/dropdown.jsx");
+var _DropDown = __webpack_require__(/*! ../../../../../App/Components/Form/DropDown */ "./src/javascript/app_2/App/Components/Form/DropDown/index.js");
 
-var _dropdown2 = _interopRequireDefault(_dropdown);
+var _DropDown2 = _interopRequireDefault(_DropDown);
 
 var _fieldset = __webpack_require__(/*! ../../../../../App/Components/Form/fieldset.jsx */ "./src/javascript/app_2/App/Components/Form/fieldset.jsx");
 
@@ -15330,14 +15485,14 @@ var Amount = function Amount(_ref) {
         _react2.default.createElement(
             'div',
             { className: amount_container_class },
-            _react2.default.createElement(_dropdown2.default, {
+            _react2.default.createElement(_DropDown2.default, {
                 list: basis_list,
                 value: basis,
                 name: 'basis',
                 onChange: onChange,
                 is_nativepicker: is_nativepicker
             }),
-            !has_currency && _react2.default.createElement(_dropdown2.default, {
+            !has_currency && _react2.default.createElement(_DropDown2.default, {
                 list: currencies_list,
                 value: currency,
                 name: 'currency',
@@ -15526,9 +15681,9 @@ var _DatePicker = __webpack_require__(/*! ../../../../../App/Components/Form/Dat
 
 var _DatePicker2 = _interopRequireDefault(_DatePicker);
 
-var _dropdown = __webpack_require__(/*! ../../../../../App/Components/Form/dropdown.jsx */ "./src/javascript/app_2/App/Components/Form/dropdown.jsx");
+var _DropDown = __webpack_require__(/*! ../../../../../App/Components/Form/DropDown */ "./src/javascript/app_2/App/Components/Form/DropDown/index.js");
 
-var _dropdown2 = _interopRequireDefault(_dropdown);
+var _DropDown2 = _interopRequireDefault(_DropDown);
 
 var _fieldset = __webpack_require__(/*! ../../../../../App/Components/Form/fieldset.jsx */ "./src/javascript/app_2/App/Components/Form/fieldset.jsx");
 
@@ -15649,7 +15804,7 @@ var Duration = function Duration(_ref) {
             header: (0, _localize.localize)('Trade Duration'),
             icon: 'trade-duration'
         },
-        _react2.default.createElement(_dropdown2.default, {
+        _react2.default.createElement(_DropDown2.default, {
             list: expiry_list,
             value: expiry_type,
             name: 'expiry_type',
@@ -15681,7 +15836,7 @@ var Duration = function Duration(_ref) {
                     is_nativepicker: is_nativepicker,
                     error_messages: validation_errors.duration || []
                 }),
-                _react2.default.createElement(_dropdown2.default, {
+                _react2.default.createElement(_DropDown2.default, {
                     list: duration_units_list,
                     value: duration_unit,
                     name: 'duration_unit',
@@ -15773,9 +15928,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _localize = __webpack_require__(/*! ../../../../../../_common/localize */ "./src/javascript/_common/localize.js");
 
-var _dropdown = __webpack_require__(/*! ../../../../../App/Components/Form/dropdown.jsx */ "./src/javascript/app_2/App/Components/Form/dropdown.jsx");
+var _DropDown = __webpack_require__(/*! ../../../../../App/Components/Form/DropDown */ "./src/javascript/app_2/App/Components/Form/DropDown/index.js");
 
-var _dropdown2 = _interopRequireDefault(_dropdown);
+var _DropDown2 = _interopRequireDefault(_DropDown);
 
 var _fieldset = __webpack_require__(/*! ../../../../../App/Components/Form/fieldset.jsx */ "./src/javascript/app_2/App/Components/Form/fieldset.jsx");
 
@@ -15812,7 +15967,7 @@ var LastDigit = function LastDigit(_ref) {
             header: (0, _localize.localize)('Last Digit Prediction'),
             icon: 'digits'
         },
-        _react2.default.createElement(_dropdown2.default, {
+        _react2.default.createElement(_DropDown2.default, {
             list: last_digit_numbers,
             value: +last_digit,
             name: 'last_digit',
@@ -15859,9 +16014,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _localize = __webpack_require__(/*! ../../../../../../_common/localize */ "./src/javascript/_common/localize.js");
 
-var _dropdown = __webpack_require__(/*! ../../../../../App/Components/Form/dropdown.jsx */ "./src/javascript/app_2/App/Components/Form/dropdown.jsx");
+var _DropDown = __webpack_require__(/*! ../../../../../App/Components/Form/DropDown */ "./src/javascript/app_2/App/Components/Form/DropDown/index.js");
 
-var _dropdown2 = _interopRequireDefault(_dropdown);
+var _DropDown2 = _interopRequireDefault(_DropDown);
 
 var _fieldset = __webpack_require__(/*! ../../../../../App/Components/Form/fieldset.jsx */ "./src/javascript/app_2/App/Components/Form/fieldset.jsx");
 
@@ -15908,7 +16063,7 @@ var StartDate = function StartDate(_ref) {
             header: (0, _localize.localize)('Start time'),
             icon: 'start-time'
         },
-        _react2.default.createElement(_dropdown2.default, {
+        _react2.default.createElement(_DropDown2.default, {
             name: 'start_date',
             value: start_date,
             list: start_dates_list,
