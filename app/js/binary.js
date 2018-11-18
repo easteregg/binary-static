@@ -3885,7 +3885,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var LanguageDialog = function LanguageDialog(_ref) {
     var hide = _ref.hide,
         is_visible = _ref.is_visible,
-        is_settings_on = _ref.is_settings_on;
+        is_settings_on = _ref.is_settings_on,
+        switchLanguage = _ref.switchLanguage;
 
     var language_dialog_class = (0, _classnames2.default)('language-dialog-container', {
         'show': is_visible && is_settings_on
@@ -3915,8 +3916,10 @@ var LanguageDialog = function LanguageDialog(_ref) {
                         'div',
                         { className: 'language-row' },
                         _react2.default.createElement(
-                            'a',
-                            { href: (0, _Language.getURL)(key) },
+                            'button',
+                            { onClick: function onClick() {
+                                    return switchLanguage(key);
+                                } },
                             _react2.default.createElement('i', { className: 'flag ic-flag-' + key.replace(/(\s|_)/, '-').toLowerCase() }),
                             _react2.default.createElement(
                                 'span',
@@ -7368,10 +7371,15 @@ var _routes_config = __webpack_require__(/*! ../../Constants/routes_config */ ".
 
 var _routes_config2 = _interopRequireDefault(_routes_config);
 
+var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
+var useLanguageOn = function useLanguageOn(path, lang) {
+    return '/' + lang.toLowerCase() + path;
+};
 // TODO: solve circular dependency problem
 // when binary link is imported into components present in routes config
 // or into their descendants
@@ -7380,8 +7388,9 @@ var BinaryLink = function BinaryLink(_ref) {
         children = _ref.children,
         props = _objectWithoutProperties(_ref, ['to', 'children']);
 
-    var path = (0, _helpers.normalizePath)(to);
-    var route = (0, _helpers.findRouteByPath)(path, (0, _routes_config2.default)());
+    var path = useLanguageOn((0, _helpers.normalizePath)(to), props.current_language);
+    var routes_config = (0, _routes_config2.default)(props.current_language.toLowerCase());
+    var route = (0, _helpers.findRouteByPath)(path, routes_config);
 
     if (!route) {
         throw new Error('Route not found: ' + to);
@@ -7403,7 +7412,14 @@ BinaryLink.propTypes = {
     to: _propTypes2.default.string
 };
 
-exports.default = BinaryLink;
+var binary_link = (0, _connect.connect)(function (_ref2) {
+    var common = _ref2.common;
+    return {
+        current_language: common.current_language
+    };
+})(BinaryLink);
+
+exports.default = binary_link;
 
 /***/ }),
 
@@ -7437,9 +7453,9 @@ var _routes_config2 = _interopRequireDefault(_routes_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var BinaryRoutes = function BinaryRoutes() {
-    return (0, _routes_config2.default)().map(function (route, idx) {
-        return _react2.default.createElement(_route_with_sub_routes2.default, _extends({ key: idx }, route));
+var BinaryRoutes = function BinaryRoutes(props) {
+    return (0, _routes_config2.default)(props.match.params.lang.toLowerCase()).map(function (route, idx) {
+        return _react2.default.createElement(_route_with_sub_routes2.default, _extends({ key: idx }, route, props));
     });
 };
 
@@ -7622,7 +7638,7 @@ var RouteWithSubRoutes = function RouteWithSubRoutes(route) {
         _gtm2.default.pushDataLayer({ event: 'page_load' });
         return result;
     };
-
+    route.setLanguage(route.match.params.lang);
     return _react2.default.createElement(_reactRouterDom.Route, {
         exact: route.exact,
         path: route.path,
@@ -7777,7 +7793,17 @@ var _self_exclusion2 = _interopRequireDefault(_self_exclusion);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var initRoutesConfig = function initRoutesConfig() {
-    return [{ path: _Constants.routes.contract, component: _Contract2.default, title: (0, _localize.localize)('Contract Details'), is_authenticated: true }, { path: _Constants.routes.index, component: _reactRouterDom.Redirect, title: '', to: '/trade' }, { path: _Constants.routes.portfolio, component: _Portfolio2.default, title: (0, _localize.localize)('Portfolio'), is_authenticated: true, icon_component: _NavBar.IconPortfolio }, { path: _Constants.routes.root, component: _reactRouterDom.Redirect, title: '', exact: true, to: '/trade' }, { path: _Constants.routes.statement, component: _Statement2.default, title: (0, _localize.localize)('Statement'), is_authenticated: true, icon_component: _NavBar.IconStatement }, { path: _Constants.routes.trade, component: _Trading2.default, title: (0, _localize.localize)('Trade'), exact: true }, {
+    return [{ path: _Constants.routes.contract, component: _Contract2.default, title: (0, _localize.localize)('Contract Details'), is_authenticated: true }, { path: _Constants.routes.index, component: _reactRouterDom.Redirect, title: '', to: '/trade' }, { path: _Constants.routes.portfolio,
+        component: _Portfolio2.default,
+        title: (0, _localize.localize)('Portfolio'),
+        is_authenticated: true,
+        icon_component: _NavBar.IconPortfolio
+    }, { path: _Constants.routes.root, component: _reactRouterDom.Redirect, title: '', exact: true, to: '/trade' }, { path: _Constants.routes.statement,
+        component: _Statement2.default,
+        title: (0, _localize.localize)('Statement'),
+        is_authenticated: true,
+        icon_component: _NavBar.IconStatement
+    }, { path: _Constants.routes.trade, component: _Trading2.default, title: (0, _localize.localize)('Trade'), exact: true }, {
         path: _Constants.routes.settings,
         component: _settings2.default,
         is_authenticated: true,
@@ -7787,11 +7813,25 @@ var initRoutesConfig = function initRoutesConfig() {
 
 // Settings Routes
 
-
-var routes_config = void 0;
-var getRoutesConfig = function getRoutesConfig() {
-    if (!routes_config) {
+var cached_language = void 0,
+    routes_config = void 0;
+var getRoutesConfig = function getRoutesConfig(lang) {
+    if (!lang) {
+        throw new Error('Language is not defined.');
+    }
+    if (!routes_config || cached_language !== lang) {
         routes_config = initRoutesConfig();
+        routes_config = routes_config.map(function (route) {
+            route.path = '/' + lang + route.path;
+
+            if (route.routes && route.routes.length > 0) {
+                route.routes = route.routes.map(function (subRoute) {
+                    subRoute.path = '/' + lang + subRoute.path;
+                    return subRoute;
+                });
+            }
+            return route;
+        });
     }
     return routes_config;
 };
@@ -8306,7 +8346,7 @@ var Routes = function Routes(props) {
         return _react2.default.createElement(_Errors2.default, props.error);
     }
 
-    return _react2.default.createElement(_Routes2.default, null);
+    return _react2.default.createElement(_Routes2.default, props);
 };
 
 Routes.propTypes = {
@@ -8320,7 +8360,8 @@ exports.default = (0, _reactRouter.withRouter)((0, _connect.connect)(function (_
     var common = _ref.common;
     return {
         error: common.error,
-        has_error: common.has_error
+        has_error: common.has_error,
+        setLanguage: common.setLanguage
     };
 })(Routes));
 
@@ -8586,26 +8627,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var LanguageSettings = function LanguageSettings(_ref) {
     var hide = _ref.hide,
         is_visible = _ref.is_visible,
-        is_settings_on = _ref.is_settings_on;
+        is_settings_on = _ref.is_settings_on,
+        switchLanguage = _ref.switchLanguage;
     return _react2.default.createElement(_language_dialog2.default, {
         hide: hide,
         is_visible: is_visible,
-        is_settings_on: is_settings_on
+        is_settings_on: is_settings_on,
+        switchLanguage: switchLanguage
     });
 };
 
 LanguageSettings.propTypes = {
     hide: _propTypes2.default.func,
     is_settings_on: _propTypes2.default.bool,
-    is_visible: _propTypes2.default.bool
+    is_visible: _propTypes2.default.bool,
+    switchLanguage: _propTypes2.default.func
 };
 
 exports.default = (0, _connect.connect)(function (_ref2) {
-    var ui = _ref2.ui;
+    var ui = _ref2.ui,
+        common = _ref2.common;
     return {
         hide: ui.hideLanguageDialog,
         is_settings_on: ui.is_settings_dialog_on,
-        is_visible: ui.is_language_dialog_on
+        is_visible: ui.is_language_dialog_on,
+        switchLanguage: common.switchLanguage
     };
 })(LanguageSettings);
 
@@ -8993,29 +9039,33 @@ var App = function App(_ref) {
             _connect.MobxProvider,
             { store: root_store },
             _react2.default.createElement(
-                _theme_wrapper2.default,
-                null,
+                _reactRouterDom.Route,
+                { path: '/:lang/' },
                 _react2.default.createElement(
-                    'div',
-                    { id: 'header' },
-                    _react2.default.createElement(_header2.default, null)
-                ),
-                _react2.default.createElement(
-                    _error_boundary2.default,
+                    _theme_wrapper2.default,
                     null,
                     _react2.default.createElement(
-                        _app_contents2.default,
-                        null,
-                        _react2.default.createElement(_routes2.default, null),
-                        _react2.default.createElement(_PortfolioDrawer2.default, null),
-                        _react2.default.createElement(_toast_message2.default, { position: _ToastMessage.POSITIONS.TOP_RIGHT })
+                        'div',
+                        { id: 'header' },
+                        _react2.default.createElement(_header2.default, null)
                     ),
-                    _react2.default.createElement(_DenialOfServiceModal2.default, { is_visible: !(0, _is_client_allowed_to_visit.isClientAllowedToVisit)() })
-                ),
-                _react2.default.createElement(
-                    'footer',
-                    { id: 'footer' },
-                    _react2.default.createElement(_footer2.default, null)
+                    _react2.default.createElement(
+                        _error_boundary2.default,
+                        null,
+                        _react2.default.createElement(
+                            _app_contents2.default,
+                            null,
+                            _react2.default.createElement(_routes2.default, null),
+                            _react2.default.createElement(_PortfolioDrawer2.default, null),
+                            _react2.default.createElement(_toast_message2.default, { position: _ToastMessage.POSITIONS.TOP_RIGHT })
+                        ),
+                        _react2.default.createElement(_DenialOfServiceModal2.default, { is_visible: !(0, _is_client_allowed_to_visit.isClientAllowedToVisit)() })
+                    ),
+                    _react2.default.createElement(
+                        'footer',
+                        { id: 'footer' },
+                        _react2.default.createElement(_footer2.default, null)
+                    )
                 )
             )
         )
@@ -23729,7 +23779,7 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _dec2, _dec3, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
 
 var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
 
@@ -23739,11 +23789,15 @@ var _moment2 = _interopRequireDefault(_moment);
 
 var _Language = __webpack_require__(/*! ../Utils/Language */ "./src/javascript/app_2/Utils/Language/index.js");
 
+var _language = __webpack_require__(/*! ../../_common/language */ "./src/javascript/_common/language.js");
+
 var _base_store = __webpack_require__(/*! ./base_store */ "./src/javascript/app_2/Stores/base_store.js");
 
 var _base_store2 = _interopRequireDefault(_base_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _initDefineProp(target, property, descriptor, context) {
     if (!descriptor) return;
@@ -23794,21 +23848,32 @@ function _initializerWarningHelper(descriptor, context) {
     throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
-var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, (_class = function (_BaseStore) {
+var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, _dec5 = _mobx.action.bound, _dec6 = _mobx.action.bound, _dec7 = _mobx.action.bound, (_class = function (_BaseStore) {
     _inherits(CommonStore, _BaseStore);
 
     function CommonStore() {
-        var _ref;
-
-        var _temp, _this, _ret;
-
         _classCallCheck(this, CommonStore);
 
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
-        }
+        var _this = _possibleConstructorReturn(this, (CommonStore.__proto__ || Object.getPrototypeOf(CommonStore)).call(this));
 
-        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = CommonStore.__proto__ || Object.getPrototypeOf(CommonStore)).call.apply(_ref, [this].concat(args))), _this), _initDefineProp(_this, 'server_time', _descriptor, _this), _initDefineProp(_this, 'current_language', _descriptor2, _this), _initDefineProp(_this, 'has_error', _descriptor3, _this), _initDefineProp(_this, 'error', _descriptor4, _this), _initDefineProp(_this, 'network_status', _descriptor5, _this), _initDefineProp(_this, 'is_network_online', _descriptor6, _this), _initDefineProp(_this, 'is_socket_opened', _descriptor7, _this), _temp), _possibleConstructorReturn(_this, _ret);
+        _initDefineProp(_this, 'server_time', _descriptor, _this);
+
+        _initDefineProp(_this, 'current_language', _descriptor2, _this);
+
+        _initDefineProp(_this, 'has_error', _descriptor3, _this);
+
+        _initDefineProp(_this, 'error', _descriptor4, _this);
+
+        _initDefineProp(_this, 'network_status', _descriptor5, _this);
+
+        _initDefineProp(_this, 'is_network_online', _descriptor6, _this);
+
+        _initDefineProp(_this, 'is_socket_opened', _descriptor7, _this);
+
+        _initDefineProp(_this, 'languages', _descriptor8, _this);
+
+        _this.bootLanguage();
+        return _this;
     }
 
     _createClass(CommonStore, [{
@@ -23831,6 +23896,81 @@ var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
             this.setError(true, {
                 message: message,
                 type: 'error'
+            });
+        }
+    }, {
+        key: 'setLanguage',
+        value: function setLanguage(lang) {
+            this.current_language = lang;
+        }
+    }, {
+        key: 'switchLanguage',
+        value: function () {
+            var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(lang) {
+                var _this2 = this;
+
+                var body;
+                return regeneratorRuntime.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                _context.next = 2;
+                                return this.fetchNewLanguage(lang);
+
+                            case 2:
+                                this.fetchNewLanguage(lang);
+                                (0, _mobx.runInAction)(function () {
+                                    _this2.current_language = lang;
+                                });
+                                body = document.querySelector('body');
+
+                                body.classList.remove(this.current_language.toUpperCase());
+                                body.classList.add(lang);
+                                history.pushState({}, 'Switching language', (0, _language.urlFor)(lang));
+
+                            case 8:
+                            case 'end':
+                                return _context.stop();
+                        }
+                    }
+                }, _callee, this);
+            }));
+
+            function switchLanguage(_x) {
+                return _ref.apply(this, arguments);
+            }
+
+            return switchLanguage;
+        }()
+    }, {
+        key: 'bootLanguage',
+        value: function bootLanguage() {
+            this.languages[_Language.currentLanguage] = texts_json[_Language.currentLanguage];
+        }
+    }, {
+        key: 'fetchNewLanguage',
+        value: function fetchNewLanguage(lang) {
+            var _this3 = this;
+
+            return new Promise(function (resolve, reject) {
+                if (!_this3.languages[lang]) {
+                    var language = document.createElement('script');
+                    language.src = '/app/js/texts/' + lang.toLowerCase() + '.js';
+                    language.async = true;
+                    document.querySelector('body').appendChild(language);
+
+                    language.addEventListener('load', function () {
+                        _this3.isLoaded = true;
+                        resolve(language);
+                    });
+
+                    language.addEventListener('error', function () {
+                        reject(new Error(_this3.src + ' failed to load.'));
+                    });
+                }
+                resolve({
+                    'message': 'Already loaded.'
+                });
             });
         }
     }]);
@@ -23874,7 +24014,12 @@ var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
     initializer: function initializer() {
         return false;
     }
-}), _applyDecoratedDescriptor(_class.prototype, 'setIsSocketOpened', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'setIsSocketOpened'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setError', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'setError'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showError', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'showError'), _class.prototype)), _class));
+}), _descriptor8 = _applyDecoratedDescriptor(_class.prototype, 'languages', [_mobx.observable], {
+    enumerable: true,
+    initializer: function initializer() {
+        return {};
+    }
+}), _applyDecoratedDescriptor(_class.prototype, 'setIsSocketOpened', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'setIsSocketOpened'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setError', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'setError'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showError', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'showError'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setLanguage', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'setLanguage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'switchLanguage', [_dec5], Object.getOwnPropertyDescriptor(_class.prototype, 'switchLanguage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'bootLanguage', [_dec6], Object.getOwnPropertyDescriptor(_class.prototype, 'bootLanguage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'fetchNewLanguage', [_dec7], Object.getOwnPropertyDescriptor(_class.prototype, 'fetchNewLanguage'), _class.prototype)), _class));
 exports.default = CommonStore;
 
 /***/ }),
@@ -24759,10 +24904,9 @@ var getPropFromStores = function getPropFromStores(prop) {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
-
-var _language = __webpack_require__(/*! ../../../_common/language */ "./src/javascript/_common/language.js");
+// import { getAll as getAllLanguages } from '_common/language';
 
 /*
  * Retrieves basename from current url
@@ -24770,14 +24914,16 @@ var _language = __webpack_require__(/*! ../../../_common/language */ "./src/java
  * @return {string} returns the basename of current url
  */
 var getBaseName = function getBaseName() {
-    var regex_string = '(.*app/(' + Object.keys((0, _language.getAll)()).join('|') + ')(/index\\.html)?).*';
-    var basename = new RegExp(regex_string, 'ig').exec(window.location.pathname);
+  return (
+    // const regex_string = `(.*app/(${Object.keys(getAllLanguages()).join('|')})(/index\\.html)?).*`;
+    // const basename = new RegExp(regex_string, 'ig').exec(window.location.pathname);
+    //
+    // if (basename && basename.length) {
+    //     return basename[1];
+    // }
 
-    if (basename && basename.length) {
-        return basename[1];
-    }
-
-    return '/app/en/';
+    '/app/'
+  );
 };
 
 exports.default = getBaseName;
