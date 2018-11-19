@@ -7755,7 +7755,7 @@ var _onConfirm = function () {
                 switch (_context.prev = _context.next) {
                     case 0:
                         _context.next = 2;
-                        return client.switchAccount(client.getAccountOfType('virtual').loginid);
+                        return client.switchAccount(client.virtual_account_loginid);
 
                     case 2:
                     case 'end':
@@ -7789,12 +7789,13 @@ var DenialOfServiceModal = function DenialOfServiceModal(_ref2) {
             onCancel: onCancel,
             is_visible: is_visible
         },
-        _react2.default.createElement(_localize3.default, { str: 'Sorry, Only virtual accounts can access this feature at the moment.' })
+        _react2.default.createElement(_localize3.default, { str: 'You are not allowed to access this feature with your real money account at the moment.' })
     );
 };
 
 DenialOfServiceModal.propTypes = {
-    show: _propTypes2.default.bool
+    client: _propTypes2.default.object,
+    is_visible: _propTypes2.default.bool
 };
 
 var denial_of_service = (0, _connect.connect)(function (_ref3) {
@@ -23684,13 +23685,9 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _dec2, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4;
+var _dec, _dec2, _dec3, _dec4, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5;
 
 var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
-
-var _client_base = __webpack_require__(/*! ../../_common/base/client_base */ "./src/javascript/_common/base/client_base.js");
-
-var _client_base2 = _interopRequireDefault(_client_base);
 
 var _gtm = __webpack_require__(/*! ../../_common/base/gtm */ "./src/javascript/_common/base/gtm.js");
 
@@ -23707,6 +23704,8 @@ var _socket_base2 = _interopRequireDefault(_socket_base);
 var _event_bus = __webpack_require__(/*! ../Services/event_bus */ "./src/javascript/app_2/Services/event_bus.js");
 
 var _event_bus2 = _interopRequireDefault(_event_bus);
+
+var _storage = __webpack_require__(/*! ../../_common/storage */ "./src/javascript/_common/storage.js");
 
 var _base_store = __webpack_require__(/*! ./base_store */ "./src/javascript/app_2/Stores/base_store.js");
 
@@ -23777,7 +23776,7 @@ var types_map = {
     financial: 'Investment'
 };
 
-var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_class = function (_BaseStore) {
+var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, (_class = function (_BaseStore) {
     _inherits(ClientStore, _BaseStore);
 
     function ClientStore() {
@@ -23793,12 +23792,75 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
 
         _initDefineProp(_this, 'balance', _descriptor4, _this);
 
-        _client_base2.default.init();
+        _initDefineProp(_this, 'storage_key', _descriptor5, _this);
+
+        _this.getBasicUpgradeInfo = function () {
+            var upgradeable_landing_companies = _storage.State.getResponse('authorize.upgradeable_landing_companies');
+
+            var can_open_multi = false;
+            var type = void 0,
+                can_upgrade_to = void 0;
+
+            if ((upgradeable_landing_companies || []).length) {
+                can_open_multi = upgradeable_landing_companies.indexOf(_this.current_account.landing_company_shortcode) !== -1;
+                // only show upgrade message to landing companies other than current
+                var canUpgrade = function canUpgrade() {
+                    for (var _len = arguments.length, landing_companies = Array(_len), _key = 0; _key < _len; _key++) {
+                        landing_companies[_key] = arguments[_key];
+                    }
+
+                    return landing_companies.find(function (landing_company) {
+                        return landing_company !== _this.current_account.landing_company_shortcode && upgradeable_landing_companies.indexOf(landing_company) !== -1;
+                    });
+                };
+
+                can_upgrade_to = canUpgrade('costarica', 'iom', 'malta', 'maltainvest');
+                if (can_upgrade_to) {
+                    type = can_upgrade_to === 'maltainvest' ? 'financial' : 'real';
+                }
+            }
+
+            return {
+                type: type,
+                can_upgrade: !!can_upgrade_to,
+                can_upgrade_to: can_upgrade_to,
+                can_open_multi: can_open_multi
+            };
+        };
+
         _this.init();
         return _this;
     }
 
+    /**
+     * Temporary property. should be removed once we are fully migrated from the old app.
+     *
+     * @returns {boolean}
+     */
+
+
+    /**
+     * Burrowed from `Client_base::getBasicUpgradeInfo()`
+     * @returns {{type: *, can_upgrade: boolean, can_upgrade_to: *, can_open_multi: boolean}}
+     */
+
+
     _createClass(ClientStore, [{
+        key: 'resetLocalStorageValues',
+        value: function resetLocalStorageValues(loginid) {
+            this.accounts[loginid].cashier_confirmed = 0;
+            this.accounts[loginid].accepted_bch = 0;
+            _storage.LocalStore.setObject(this.storage_key, this.accounts);
+            _storage.LocalStore.set('active_loginid', loginid);
+        }
+
+        /**
+         * Switch to the given loginid account.
+         *
+         * @param {string} loginid
+         */
+
+    }, {
         key: 'switchAccount',
         value: function () {
             var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(loginid) {
@@ -23806,35 +23868,9 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
                     while (1) {
                         switch (_context.prev = _context.next) {
                             case 0:
-                                if (!(!loginid || !this.getAccount(loginid).token)) {
-                                    _context.next = 2;
-                                    break;
-                                }
-
-                                return _context.abrupt('return');
-
-                            case 2:
-                                sessionStorage.setItem('active_tab', '1');
-                                // set local storage
-                                _gtm2.default.setLoginFlag();
-                                _client_base2.default.set('cashier_confirmed', 0);
-                                _client_base2.default.set('accepted_bch', 0);
-                                _client_base2.default.set('loginid', loginid);
                                 this.loginid = loginid;
-                                SocketCache.clear();
-                                _context.next = 11;
-                                return _socket_base2.default.send({ 'authorize': this.getAccount(loginid).token }, { forced: true });
 
-                            case 11:
-                                _context.next = 13;
-                                return this.init();
-
-                            case 13:
-                                _event_bus2.default.dispatch('ClientAccountHasSwitched', {
-                                    loginid: loginid
-                                });
-
-                            case 14:
+                            case 1:
                             case 'end':
                                 return _context.stop();
                         }
@@ -23848,14 +23884,30 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
 
             return switchAccount;
         }()
+
+        /**
+         * We initially fetch things from local storage, and then do everything inside the store.
+         * This will probably be the only place we are fetching data from Client_base.
+         */
+
     }, {
         key: 'init',
         value: function init() {
-            this.loginid = _client_base2.default.get('loginid');
-            this.upgrade_info = _client_base2.default.getBasicUpgradeInfo();
-            this.accounts = _client_base2.default.getAllAccountsObject();
+            this.loginid = _storage.LocalStore.get('active_loginid');
+            this.accounts = _storage.LocalStore.getObject(this.storage_key);
+            this.upgrade_info = this.getBasicUpgradeInfo();
             this.balance = this.current_account && this.current_account.balance ? this.current_account.balance.toString() : '';
+
+            this.registerReactions();
         }
+
+        /**
+         * Check if account is disabled or not
+         *
+         * @param loginid
+         * @returns {string}
+         */
+
     }, {
         key: 'isDisabled',
         value: function isDisabled() {
@@ -23863,6 +23915,14 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
 
             return this.getAccount(loginid).is_disabled;
         }
+
+        /**
+         * Get accounts token from given login id.
+         *
+         * @param loginid
+         * @returns {string}
+         */
+
     }, {
         key: 'getToken',
         value: function getToken() {
@@ -23870,6 +23930,14 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
 
             return this.getAccount(loginid).token;
         }
+
+        /**
+         * Get account object from given login id
+         *
+         * @param loginid
+         * @returns {object}
+         */
+
     }, {
         key: 'getAccount',
         value: function getAccount() {
@@ -23877,6 +23945,14 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
 
             return this.accounts[loginid];
         }
+
+        /**
+         * Burrowed from `Client_base::getAccountTitle()`
+         *
+         * @param {string} loginid || current login id
+         * @returns {string}
+         */
+
     }, {
         key: 'getAccountTitle',
         value: function getAccountTitle() {
@@ -23884,6 +23960,14 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
 
             return types_map[this.getAccountType(loginid)] || 'Real';
         }
+
+        /**
+         * Burrowed from `Client_base::getAccountType()`
+         *
+         * @param {string} loginid || current login id
+         * @returns {string}
+         */
+
     }, {
         key: 'getAccountType',
         value: function getAccountType() {
@@ -23893,15 +23977,33 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
             if (/^VR/.test(loginid)) account_type = 'virtual';else if (/^MF/.test(loginid)) account_type = 'financial';else if (/^MLT|MX/.test(loginid)) account_type = 'gaming';
             return account_type;
         }
+
+        /**
+         * Burrowed from `Client_base::getAccountOfType()`
+         * @param type
+         * @param only_enabled
+         * @returns {*}
+         */
+
     }, {
         key: 'getAccountOfType',
-        value: function getAccountOfType(type, only_enabled) {
+        value: function getAccountOfType(type) {
             var _this2 = this;
+
+            var only_enabled = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
             return this.getAccount(this.all_loginids.find(function (loginid) {
                 return _this2.isAccountOfType(type, loginid, only_enabled);
             }));
         }
+
+        /**
+         * Get information required by account switcher
+         *
+         * @param loginid
+         * @returns {{loginid: *, is_virtual: (number|number|*), icon: string, title: *}}
+         */
+
     }, {
         key: 'getAccountInfo',
         value: function getAccountInfo() {
@@ -23919,6 +24021,16 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
                 title: account_type.toLowerCase() === 'virtual' ? (0, _localize.localize)('DEMO') : account_type
             };
         }
+
+        /**
+         * Burrowed from `Client_base::isAccountOfType()`
+         *
+         * @param type
+         * @param loginid
+         * @param only_enabled
+         * @returns {boolean}
+         */
+
     }, {
         key: 'isAccountOfType',
         value: function isAccountOfType(type) {
@@ -23927,6 +24039,59 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
 
             var this_type = this.getAccountType(loginid);
             return (type === 'virtual' && this_type === 'virtual' || type === 'real' && this_type !== 'virtual' || type === this_type) && (only_enabled ? !this.isDisabled(loginid) : true);
+        }
+    }, {
+        key: 'registerReactions',
+        value: function registerReactions() {
+            var _this3 = this;
+
+            // Switch account reactions.
+            (0, _mobx.reaction)(function () {
+                return _this3.loginid;
+            }, function () {
+                var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(params, reactionHandler) {
+                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                        while (1) {
+                            switch (_context2.prev = _context2.next) {
+                                case 0:
+                                    if (!(!_this3.loginid || !_this3.getToken())) {
+                                        _context2.next = 2;
+                                        break;
+                                    }
+
+                                    return _context2.abrupt('return');
+
+                                case 2:
+                                    sessionStorage.setItem('active_tab', '1');
+                                    // set local storage
+                                    _gtm2.default.setLoginFlag();
+                                    _this3.resetLocalStorageValues(_this3.loginid);
+                                    SocketCache.clear();
+                                    _context2.next = 8;
+                                    return _socket_base2.default.send({ 'authorize': _this3.getToken() }, { forced: true });
+
+                                case 8:
+                                    _context2.next = 10;
+                                    return _this3.init();
+
+                                case 10:
+                                    _event_bus2.default.dispatch('ClientAccountHasSwitched', { loginid: _this3.loginid });
+                                    reactionHandler.dispose();
+
+                                case 12:
+                                case 'end':
+                                    return _context2.stop();
+                            }
+                        }
+                    }, _callee2, _this3);
+                }));
+
+                return function (_x11, _x12) {
+                    return _ref2.apply(this, arguments);
+                };
+            }(), {
+                name: 'accountSwitchedReaction'
+            });
         }
     }, {
         key: 'is_client_allowed_to_visit',
@@ -23941,16 +24106,9 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
             });
         }
     }, {
-        key: 'valid_accounts',
-        get: function get() {
-            return this.active_accounts.filter(function (account) {
-                return account.token;
-            });
-        }
-    }, {
         key: 'current_account',
         get: function get() {
-            return this.accounts[this.loginid];
+            return this.accounts[this.loginid] || {};
         }
     }, {
         key: 'all_loginids',
@@ -23993,13 +24151,22 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
         }
 
         /**
-         * Switch to the given loginid account.
+         * Store Values relevant to the loginid to local storage.
          *
          * @param loginid
-         * @param client
-         * @param modules
          */
 
+    }, {
+        key: 'virtual_account_loginid',
+        get: function get() {
+            var _this4 = this;
+
+            return this.all_loginids.filter(function (loginid) {
+                return !!_this4.accounts[loginid].is_virtual;
+            }).reduce(function (loginid) {
+                return loginid;
+            });
+        }
     }]);
 
     return ClientStore;
@@ -24015,7 +24182,12 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, (_clas
 }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'balance', [_mobx.observable], {
     enumerable: true,
     initializer: null
-}), _applyDecoratedDescriptor(_class.prototype, 'is_client_allowed_to_visit', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_client_allowed_to_visit'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'active_accounts', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'active_accounts'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'valid_accounts', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'valid_accounts'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'current_account', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'current_account'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'all_loginids', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'all_loginids'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'account_type', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'account_type'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'currency', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'currency'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_valid_login', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_valid_login'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_logged_in', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_logged_in'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_virtual', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_virtual'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'can_upgrade', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'can_upgrade'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'switchAccount', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'switchAccount'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'init', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype)), _class));
+}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'storage_key', [_mobx.observable], {
+    enumerable: true,
+    initializer: function initializer() {
+        return 'client.accounts';
+    }
+}), _applyDecoratedDescriptor(_class.prototype, 'is_client_allowed_to_visit', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_client_allowed_to_visit'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'active_accounts', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'active_accounts'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'current_account', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'current_account'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'all_loginids', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'all_loginids'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'account_type', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'account_type'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'currency', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'currency'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_valid_login', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_valid_login'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_logged_in', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_logged_in'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_virtual', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_virtual'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'can_upgrade', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'can_upgrade'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'resetLocalStorageValues', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'resetLocalStorageValues'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'switchAccount', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'switchAccount'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'init', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'virtual_account_loginid', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'virtual_account_loginid'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'registerReactions', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'registerReactions'), _class.prototype)), _class));
 exports.default = ClientStore;
 
 /***/ }),
@@ -24986,7 +25158,7 @@ var _language = __webpack_require__(/*! ../../../_common/language */ "./src/java
 var currentLanguage = exports.currentLanguage = (0, _language.get)();
 
 var getAllowedLanguages = exports.getAllowedLanguages = function getAllowedLanguages() {
-    var exclude_languages = ['JA', 'ACH'];
+    var exclude_languages = ['ACH'];
     var language_list = Object.keys((0, _language.getAll)()).filter(function (key) {
         return !exclude_languages.includes(key);
     }).reduce(function (obj, key) {
@@ -25787,14 +25959,37 @@ window.addEventListener('pageshow', function (e) {
  * git update-index --assume-unchanged src/javascript/config.js
  *
  */
+var domain_app_ids = { // these domains also being used in '_common/url.js' as supported "production domains"
+    'binary.com': 1,
+    'binary.me': 15284
+};
+
+var getCurrentBinaryDomain = function getCurrentBinaryDomain() {
+    return Object.keys(domain_app_ids).find(function (domain) {
+        return new RegExp('.' + domain + '$', 'i').test(window.location.hostname);
+    });
+};
+
+var isProduction = function isProduction() {
+    var all_domains = Object.keys(domain_app_ids).map(function (domain) {
+        return 'www\\.' + domain.replace('.', '\\.');
+    });
+    return new RegExp('^(' + all_domains.join('|') + ')$', 'i').test(window.location.hostname);
+};
+
+var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
         app_id = config_app_id;
+    } else if (/desktop-app/i.test(window.location.href) || window.localStorage.getItem('config.is_desktop_app')) {
+        window.localStorage.removeItem('config.default_app_id');
+        window.localStorage.setItem('config.is_desktop_app', 1);
+        app_id = binary_desktop_app_id;
     } else if (/staging\.binary\.com/i.test(window.location.hostname)) {
         window.localStorage.removeItem('config.default_app_id');
         app_id = 1098;
@@ -25808,9 +26003,13 @@ var getAppId = function getAppId() {
         app_id = 15265;
     } else {
         window.localStorage.removeItem('config.default_app_id');
-        app_id = 1;
+        app_id = domain_app_ids[getCurrentBinaryDomain()] || 1;
     }
     return app_id;
+};
+
+var isBinaryApp = function isBinaryApp() {
+    return +getAppId() === binary_desktop_app_id;
 };
 
 var getSocketURL = function getSocketURL() {
@@ -25846,10 +26045,9 @@ var getSocketURL = function getSocketURL() {
 
         // TODO: in order to use connection_setup config, uncomment the above section and remove next lines
 
-        var is_production = /www\.binary\.com/i.test(window.location.hostname);
         var loginid = window.localStorage.getItem('active_loginid');
         var is_real = loginid && !/^VRT/.test(loginid);
-        var server = is_production && is_real ? 'green' : 'blue';
+        var server = isProduction() && is_real ? 'green' : 'blue';
 
         server_url = server + '.binaryws.com';
     }
@@ -25857,7 +26055,10 @@ var getSocketURL = function getSocketURL() {
 };
 
 module.exports = {
+    getCurrentBinaryDomain: getCurrentBinaryDomain,
+    isProduction: isProduction,
     getAppId: getAppId,
+    isBinaryApp: isBinaryApp,
     getSocketURL: getSocketURL
 };
 
