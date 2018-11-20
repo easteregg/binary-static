@@ -189,6 +189,56 @@ webpackContext.id = "./node_modules/moment/locale sync recursive ja";
 
 /***/ }),
 
+/***/ "./src/javascript/app_2/App/Components/Elements/AccountSwitcher/upgrade_button.jsx":
+/*!*****************************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Elements/AccountSwitcher/upgrade_button.jsx ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.UpgradeButton = undefined;
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
+
+var _button = __webpack_require__(/*! ../../Form/button.jsx */ "./src/javascript/app_2/App/Components/Form/button.jsx");
+
+var _button2 = _interopRequireDefault(_button);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var UpgradeButton = function UpgradeButton(_ref) {
+    var onClick = _ref.onClick;
+    return _react2.default.createElement(_button2.default, {
+        id: 'acc-balance-btn',
+        className: 'primary orange',
+        has_effect: true,
+        text: (0, _localize.localize)('Upgrade'),
+        onClick: onClick
+    });
+};
+
+UpgradeButton.propTypes = {
+    onClick: _propTypes2.default.func
+};
+
+exports.UpgradeButton = UpgradeButton;
+
+/***/ }),
+
 /***/ "./src/javascript/app_2/App/Components/Elements/Calendar/calendar.jsx":
 /*!****************************************************************************!*\
   !*** ./src/javascript/app_2/App/Components/Elements/Calendar/calendar.jsx ***!
@@ -7474,7 +7524,7 @@ var _Services = __webpack_require__(/*! ../../../Services */ "./src/javascript/a
 
 var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
 
-var _upgrade_button = __webpack_require__(/*! ./upgrade_button.jsx */ "./src/javascript/app_2/App/Containers/AccountSwitcher/upgrade_button.jsx");
+var _upgrade_button = __webpack_require__(/*! ../../Components/Elements/AccountSwitcher/upgrade_button.jsx */ "./src/javascript/app_2/App/Components/Elements/AccountSwitcher/upgrade_button.jsx");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7655,56 +7705,6 @@ Object.keys(_account_switcher).forEach(function (key) {
     }
   });
 });
-
-/***/ }),
-
-/***/ "./src/javascript/app_2/App/Containers/AccountSwitcher/upgrade_button.jsx":
-/*!********************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Containers/AccountSwitcher/upgrade_button.jsx ***!
-  \********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.UpgradeButton = undefined;
-
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-var _localize = __webpack_require__(/*! ../../../../_common/localize */ "./src/javascript/_common/localize.js");
-
-var _button = __webpack_require__(/*! ../../Components/Form/button.jsx */ "./src/javascript/app_2/App/Components/Form/button.jsx");
-
-var _button2 = _interopRequireDefault(_button);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var UpgradeButton = function UpgradeButton(_ref) {
-    var onClick = _ref.onClick;
-    return _react2.default.createElement(_button2.default, {
-        id: 'acc-balance-btn',
-        className: 'primary orange',
-        has_effect: true,
-        text: (0, _localize.localize)('Upgrade'),
-        onClick: onClick
-    });
-};
-
-UpgradeButton.propTypes = {
-    onClick: _propTypes2.default.func
-};
-
-exports.UpgradeButton = UpgradeButton;
 
 /***/ }),
 
@@ -22623,7 +22623,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
 
         if (_this.root_store.client.is_logged_in) {
             _this.processNewValuesAsync({
-                currency: _this.root_store.client.accounts[_this.root_store.client.loginid].currency
+                currency: _this.currency
             });
         }
 
@@ -22844,7 +22844,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                             case 0:
                                 // Sets the default value to Amount when Currency has changed from Fiat to Crypto and vice versa.
                                 // The source of default values is the website_status response.
-                                if (is_changed_by_user && /\bcurrency\b/.test(Object.keys(obj_new_values)) && (0, _currency_base.isCryptocurrency)(obj_new_values.currency) !== (0, _currency_base.isCryptocurrency)(this.root_store.client.accounts[this.root_store.client.loginid].currency)) {
+                                if (is_changed_by_user && /\bcurrency\b/.test(Object.keys(obj_new_values)) && (0, _currency_base.isCryptocurrency)(obj_new_values.currency) !== (0, _currency_base.isCryptocurrency)(this.currency)) {
                                     obj_new_values.amount = obj_new_values.amount || (0, _currency_base.getMinPayout)(obj_new_values.currency);
                                 }
 
@@ -23693,7 +23693,7 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4;
 
 var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
 
@@ -23800,9 +23800,9 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
 
         _initDefineProp(_this, 'accounts', _descriptor3, _this);
 
-        _initDefineProp(_this, 'storage_key', _descriptor4, _this);
+        _this.storage_key = 'client.accounts';
 
-        _initDefineProp(_this, 'switched', _descriptor5, _this);
+        _initDefineProp(_this, 'switched', _descriptor4, _this);
 
         _this.getBasicUpgradeInfo = function () {
             var upgradeable_landing_companies = _storage.State.getResponse('authorize.upgradeable_landing_companies');
@@ -23843,7 +23843,7 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
     }
 
     /**
-     * Burrowed from `Client_base::getBasicUpgradeInfo()`
+     * Borrowed from `Client_base::getBasicUpgradeInfo()`
      * @returns {{type: *, can_upgrade: boolean, can_upgrade_to: *, can_open_multi: boolean}}
      */
 
@@ -23977,7 +23977,7 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
         }
 
         /**
-         * Burrowed from `Client_base::getAccountTitle()`
+         * Borrowed from `Client_base::getAccountTitle()`
          *
          * @param {string} loginid || current login id
          * @returns {string}
@@ -23992,7 +23992,7 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
         }
 
         /**
-         * Burrowed from `Client_base::getAccountType()`
+         * Borrowed from `Client_base::getAccountType()`
          *
          * @param {string} loginid || current login id
          * @returns {string}
@@ -24009,7 +24009,7 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
         }
 
         /**
-         * Burrowed from `Client_base::getAccountOfType()`
+         * Borrowed from `Client_base::getAccountOfType()`
          * @param type
          * @param only_enabled
          * @returns {*}
@@ -24053,7 +24053,7 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
         }
 
         /**
-         * Burrowed from `Client_base::isAccountOfType()`
+         * Borrowed from `Client_base::isAccountOfType()`
          *
          * @param type
          * @param loginid
@@ -24217,12 +24217,7 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
 }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'accounts', [_mobx.observable], {
     enumerable: true,
     initializer: null
-}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'storage_key', [_mobx.observable], {
-    enumerable: true,
-    initializer: function initializer() {
-        return 'client.accounts';
-    }
-}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'switched', [_mobx.observable], {
+}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'switched', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return '';
