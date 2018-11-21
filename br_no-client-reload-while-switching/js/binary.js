@@ -493,17 +493,12 @@ var ClientBase = function () {
 
     var getBasicUpgradeInfo = function getBasicUpgradeInfo() {
         var upgradeable_landing_companies = State.getResponse('authorize.upgradeable_landing_companies');
-
         var can_open_multi = false;
         var type = void 0,
             can_upgrade_to = void 0;
-
         if ((upgradeable_landing_companies || []).length) {
             var current_landing_company = get('landing_company_shortcode');
-
             can_open_multi = upgradeable_landing_companies.indexOf(current_landing_company) !== -1;
-
-            // only show upgrade message to landing companies other than current
             var canUpgrade = function canUpgrade() {
                 for (var _len = arguments.length, landing_companies = Array(_len), _key = 0; _key < _len; _key++) {
                     landing_companies[_key] = arguments[_key];
@@ -513,7 +508,6 @@ var ClientBase = function () {
                     return landing_company !== current_landing_company && upgradeable_landing_companies.indexOf(landing_company) !== -1;
                 });
             };
-
             can_upgrade_to = canUpgrade('costarica', 'iom', 'malta', 'maltainvest');
             if (can_upgrade_to) {
                 type = can_upgrade_to === 'maltainvest' ? 'financial' : 'real';
