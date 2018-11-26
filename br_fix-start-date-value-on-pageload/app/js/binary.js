@@ -6064,7 +6064,7 @@ var Dropdown = function (_React$Component) {
                     },
                     _react2.default.createElement(
                         'span',
-                        { className: this.props.name, value: this.props.value },
+                        { name: this.props.name, value: this.props.value },
                         (0, _helpers.getDisplayText)(this.props.list, this.props.value)
                     )
                 ),
@@ -6236,7 +6236,7 @@ var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module
 var getDisplayText = exports.getDisplayText = function getDisplayText(list, value) {
     var findInArray = function findInArray(arr_list) {
         return (arr_list.find(function (item) {
-            return item.value === parseInt(value);
+            return item.value === value;
         }) || {}).text;
     };
     var text = '';
@@ -6995,7 +6995,7 @@ TimePicker.propTypes = {
     padding: _propTypes2.default.string,
     placeholder: _propTypes2.default.string,
     sessions: _mobxReact.PropTypes.arrayOrObservableArray,
-    start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+    start_date: _propTypes2.default.number,
     value: _propTypes2.default.string
 };
 
@@ -16525,7 +16525,7 @@ var StartDate = function StartDate(_ref) {
         },
         _react2.default.createElement(_DropDown2.default, {
             name: 'start_date',
-            value: start_date,
+            value: parseInt(start_date),
             list: start_dates_list,
             onChange: onChange,
             is_nativepicker: is_nativepicker
@@ -16539,7 +16539,7 @@ var StartDate = function StartDate(_ref) {
                 name: 'start_time',
                 value: start_time,
                 placeholder: '12:00',
-                start_date: start_date,
+                start_date: parseInt(start_date),
                 sessions: sessions,
                 is_clearable: false,
                 is_nativepicker: is_nativepicker
@@ -25993,7 +25993,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
