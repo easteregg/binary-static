@@ -13973,8 +13973,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var EmptyStatementMessage = function (_Component) {
-    _inherits(EmptyStatementMessage, _Component);
+var EmptyStatementMessage = function (_PureComponent) {
+    _inherits(EmptyStatementMessage, _PureComponent);
 
     function EmptyStatementMessage(props) {
         _classCallCheck(this, EmptyStatementMessage);
@@ -14025,7 +14025,7 @@ var EmptyStatementMessage = function (_Component) {
     }]);
 
     return EmptyStatementMessage;
-}(_react.Component);
+}(_react.PureComponent);
 
 EmptyStatementMessage.propTypes = {
     has_selected_date: _propTypes2.default.bool
