@@ -20823,7 +20823,7 @@ var StatementStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _de
         value: function onMount() {
             var _this3 = this;
 
-            this.accountSwitcherDisposer = (0, _mobx.reaction)(function () {
+            this.accountSwitcherDisposer = (0, _mobx.when)(function () {
                 return _this3.root_store.client.switch_broadcast;
             }, function () {
                 _this3.clearTable();
@@ -22920,7 +22920,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                     while (1) {
                         switch (_context5.prev = _context5.next) {
                             case 0:
-                                this.accountSwitcherDisposer = (0, _mobx.reaction)(function () {
+                                this.accountSwitcherDisposer = (0, _mobx.when)(function () {
                                     return _this6.root_store.client.switch_broadcast;
                                 }, _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
                                     return regeneratorRuntime.wrap(function _callee4$(_context4) {
@@ -23687,6 +23687,7 @@ function _initializerWarningHelper(descriptor, context) {
     throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
+var storage_key = 'client.accounts';
 var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, _dec5 = _mobx.action.bound, _dec6 = _mobx.action.bound, _dec7 = _mobx.action.bound, _dec8 = _mobx.action.bound, _dec9 = _mobx.action.bound, _dec10 = _mobx.action.bound, _dec11 = _mobx.action.bound, _dec12 = _mobx.action.bound, (_class = function (_BaseStore) {
     _inherits(ClientStore, _BaseStore);
 
@@ -23701,8 +23702,6 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
 
         _initDefineProp(_this, 'accounts', _descriptor3, _this);
 
-        _this.storage_key = 'client.accounts';
-
         _initDefineProp(_this, 'switched', _descriptor4, _this);
 
         _initDefineProp(_this, 'switch_broadcast', _descriptor5, _this);
@@ -23716,7 +23715,7 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
         value: function resetLocalStorageValues(loginid) {
             this.accounts[loginid].cashier_confirmed = 0;
             this.accounts[loginid].accepted_bch = 0;
-            _storage.LocalStore.setObject(this.storage_key, this.accounts);
+            _storage.LocalStore.setObject(storage_key, this.accounts);
             _storage.LocalStore.set('active_loginid', loginid);
         }
     }, {
@@ -23805,7 +23804,7 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
         key: 'init',
         value: function init() {
             this.loginid = _storage.LocalStore.get('active_loginid');
-            this.accounts = _storage.LocalStore.getObject(this.storage_key);
+            this.accounts = _storage.LocalStore.getObject(storage_key);
             this.upgrade_info = this.getBasicUpgradeInfo();
             this.switched = '';
 
@@ -23892,50 +23891,43 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
             var _this4 = this;
 
             // Switch account reactions.
-            (0, _mobx.reaction)(function () {
+            (0, _mobx.when)(function () {
                 return _this4.switched;
-            }, function () {
-                var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(switched, reactionHandler) {
-                    return regeneratorRuntime.wrap(function _callee$(_context) {
-                        while (1) {
-                            switch (_context.prev = _context.next) {
-                                case 0:
-                                    if (!(!switched || !switched.length || !_this4.getAccount(switched).token)) {
-                                        _context.next = 2;
-                                        break;
-                                    }
+            }, _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+                return regeneratorRuntime.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                if (!(!_this4.switched || !_this4.switched.length || !_this4.getAccount(_this4.switched).token)) {
+                                    _context.next = 2;
+                                    break;
+                                }
 
-                                    return _context.abrupt('return');
+                                return _context.abrupt('return');
 
-                                case 2:
-                                    sessionStorage.setItem('active_tab', '1');
-                                    // set local storage
-                                    _gtm2.default.setLoginFlag();
-                                    _this4.resetLocalStorageValues(switched);
-                                    SocketCache.clear();
-                                    _context.next = 8;
-                                    return _socket_base2.default.send({ 'authorize': _this4.getToken() }, { forced: true });
+                            case 2:
+                                sessionStorage.setItem('active_tab', '1');
+                                // set local storage
+                                _gtm2.default.setLoginFlag();
+                                _this4.resetLocalStorageValues(_this4.switched);
+                                SocketCache.clear();
+                                _context.next = 8;
+                                return _socket_base2.default.send({ 'authorize': _this4.getToken() }, { forced: true });
 
-                                case 8:
-                                    _context.next = 10;
-                                    return _this4.init();
+                            case 8:
+                                _context.next = 10;
+                                return _this4.init();
 
-                                case 10:
-                                    _this4.broadcastAccountChange();
-                                    reactionHandler.dispose();
+                            case 10:
+                                _this4.broadcastAccountChange();
 
-                                case 12:
-                                case 'end':
-                                    return _context.stop();
-                            }
+                            case 11:
+                            case 'end':
+                                return _context.stop();
                         }
-                    }, _callee, _this4);
-                }));
-
-                return function (_x5, _x6) {
-                    return _ref.apply(this, arguments);
-                };
-            }(), {
+                    }
+                }, _callee, _this4);
+            })), {
                 name: 'accountSwitchedReaction'
             });
         }
@@ -25852,7 +25844,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
