@@ -9337,6 +9337,10 @@ var _network_monitor = __webpack_require__(/*! ../Services/network_monitor */ ".
 
 var _network_monitor2 = _interopRequireDefault(_network_monitor);
 
+var _outdated_browser = __webpack_require__(/*! ../Services/outdated_browser */ "./src/javascript/app_2/Services/outdated_browser.js");
+
+var _outdated_browser2 = _interopRequireDefault(_outdated_browser);
+
 var _Stores = __webpack_require__(/*! ../Stores */ "./src/javascript/app_2/Stores/index.js");
 
 var _Stores2 = _interopRequireDefault(_Stores);
@@ -9359,6 +9363,7 @@ var initApp = function initApp() {
     var root_store = new _Stores2.default();
 
     _network_monitor2.default.init(root_store);
+    _outdated_browser2.default.init(root_store);
     root_store.modules.trade.init();
 
     var app = document.getElementById('binary_app');
@@ -13943,8 +13948,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
@@ -13967,65 +13970,31 @@ var _Constants = __webpack_require__(/*! ../../../Constants */ "./src/javascript
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var EmptyStatementMessage = function (_PureComponent) {
-    _inherits(EmptyStatementMessage, _PureComponent);
-
-    function EmptyStatementMessage(props) {
-        _classCallCheck(this, EmptyStatementMessage);
-
-        var _this = _possibleConstructorReturn(this, (EmptyStatementMessage.__proto__ || Object.getPrototypeOf(EmptyStatementMessage)).call(this, props));
-
-        _this.render = function () {
-            return _react2.default.createElement(
-                _react2.default.Fragment,
-                null,
-                _this.renderRedirect(),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'statement-empty' },
-                    _react2.default.createElement(_NavBar.IconStatement, { className: 'statement-empty__icon' }),
-                    _react2.default.createElement(
-                        'span',
-                        { className: 'statement-empty__text' },
-                        !_this.props.has_selected_date ? (0, _localize.localize)('Your account has no trading activity.') : (0, _localize.localize)('Your account has no trading activity for the selected period.')
-                    ),
-                    !_this.props.has_selected_date && _react2.default.createElement(_button2.default, {
-                        className: 'secondary orange',
-                        text: (0, _localize.localize)('Trade now'),
-                        onClick: _this.setRedirect.bind(_this)
-                    })
-                )
-            );
-        };
-
-        _this.state = {
-            redirect: false
-        };
-        return _this;
-    }
-
-    _createClass(EmptyStatementMessage, [{
-        key: 'setRedirect',
-        value: function setRedirect() {
-            this.setState({
-                redirect: true
-            });
-        }
-    }, {
-        key: 'renderRedirect',
-        value: function renderRedirect() {
-            return this.state.redirect && _react2.default.createElement(_reactRouterDom.Redirect, { to: _Constants.routes.trade });
-        }
-    }]);
-
-    return EmptyStatementMessage;
-}(_react.PureComponent);
+var EmptyStatementMessage = function EmptyStatementMessage(_ref) {
+    var has_selected_date = _ref.has_selected_date;
+    return _react2.default.createElement(
+        _react2.default.Fragment,
+        null,
+        _react2.default.createElement(
+            'div',
+            { className: 'statement-empty' },
+            _react2.default.createElement(_NavBar.IconStatement, { className: 'statement-empty__icon' }),
+            _react2.default.createElement(
+                'span',
+                { className: 'statement-empty__text' },
+                !has_selected_date ? (0, _localize.localize)('Your account has no trading activity.') : (0, _localize.localize)('Your account has no trading activity for the selected period.')
+            ),
+            !has_selected_date && _react2.default.createElement(
+                _reactRouterDom.Link,
+                { to: _Constants.routes.trade },
+                _react2.default.createElement(_button2.default, {
+                    className: 'secondary orange',
+                    text: (0, _localize.localize)('Trade now')
+                })
+            )
+        )
+    );
+};
 
 EmptyStatementMessage.propTypes = {
     has_selected_date: _propTypes2.default.bool
@@ -18725,6 +18694,64 @@ var NetworkMonitor = function () {
 }();
 
 exports.default = NetworkMonitor;
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/Services/outdated_browser.js":
+/*!***********************************************************!*\
+  !*** ./src/javascript/app_2/Services/outdated_browser.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
+
+var _localize = __webpack_require__(/*! ../../_common/localize */ "./src/javascript/_common/localize.js");
+
+var common_store = void 0;
+
+var OutdatedBrowser = function () {
+    var init = function init(store) {
+        common_store = store.common;
+
+        var src = '//browser-update.org/update.min.js';
+        if (document.querySelector('script[src*="' + src + '"]')) return;
+        window.$buoop = {
+            vs: { i: 11, f: -4, o: -4, s: 9, c: -4 },
+            api: 4,
+            url: 'https://whatbrowser.org/',
+            noclose: true, // Do not show the 'ignore' button to close the notification
+            reminder: 0, // show all the time
+            onshow: updateStore,
+            nomessage: true,
+            insecure: true
+        };
+        if (document.body) {
+            var script = document.createElement('script');
+            script.setAttribute('src', src);
+            document.body.appendChild(script);
+        }
+    };
+
+    var updateStore = (0, _mobx.action)('showError', function () {
+        if (common_store) {
+            common_store.showError((0, _localize.localize)('Your web browser is out of date and may affect your trading experience. Proceed at your own risk.'));
+        }
+    });
+
+    return {
+        init: init
+    };
+}();
+
+exports.default = OutdatedBrowser;
 
 /***/ }),
 
