@@ -7005,7 +7005,7 @@ TimePickerDropdown.propTypes = {
     onChange: _propTypes2.default.func,
     preClass: _propTypes2.default.string,
     sessions: _mobxReact.PropTypes.arrayOrObservableArray,
-    start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+    start_date: _propTypes2.default.number,
     toggle: _propTypes2.default.func,
     value: _propTypes2.default.string,
     value_split: _propTypes2.default.bool
@@ -9337,6 +9337,10 @@ var _network_monitor = __webpack_require__(/*! ../Services/network_monitor */ ".
 
 var _network_monitor2 = _interopRequireDefault(_network_monitor);
 
+var _outdated_browser = __webpack_require__(/*! ../Services/outdated_browser */ "./src/javascript/app_2/Services/outdated_browser.js");
+
+var _outdated_browser2 = _interopRequireDefault(_outdated_browser);
+
 var _Stores = __webpack_require__(/*! ../Stores */ "./src/javascript/app_2/Stores/index.js");
 
 var _Stores2 = _interopRequireDefault(_Stores);
@@ -9359,6 +9363,7 @@ var initApp = function initApp() {
     var root_store = new _Stores2.default();
 
     _network_monitor2.default.init(root_store);
+    _outdated_browser2.default.init(root_store);
     root_store.modules.trade.init();
 
     var app = document.getElementById('binary_app');
@@ -16525,7 +16530,7 @@ var StartDate = function StartDate(_ref) {
         },
         _react2.default.createElement(_DropDown2.default, {
             name: 'start_date',
-            value: parseInt(start_date),
+            value: start_date,
             list: start_dates_list,
             onChange: onChange,
             is_nativepicker: is_nativepicker
@@ -16539,7 +16544,7 @@ var StartDate = function StartDate(_ref) {
                 name: 'start_time',
                 value: start_time,
                 placeholder: '12:00',
-                start_date: parseInt(start_date),
+                start_date: start_date,
                 sessions: sessions,
                 is_clearable: false,
                 is_nativepicker: is_nativepicker
@@ -16553,7 +16558,7 @@ StartDate.propTypes = {
     is_nativepicker: _propTypes2.default.bool,
     onChange: _propTypes2.default.func,
     sessions: _mobxReact.PropTypes.arrayOrObservableArray,
-    start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+    start_date: _propTypes2.default.number,
     start_dates_list: _mobxReact.PropTypes.arrayOrObservableArray,
     start_time: _propTypes2.default.string
 };
@@ -18674,6 +18679,64 @@ var NetworkMonitor = function () {
 }();
 
 exports.default = NetworkMonitor;
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/Services/outdated_browser.js":
+/*!***********************************************************!*\
+  !*** ./src/javascript/app_2/Services/outdated_browser.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
+
+var _localize = __webpack_require__(/*! ../../_common/localize */ "./src/javascript/_common/localize.js");
+
+var common_store = void 0;
+
+var OutdatedBrowser = function () {
+    var init = function init(store) {
+        common_store = store.common;
+
+        var src = '//browser-update.org/update.min.js';
+        if (document.querySelector('script[src*="' + src + '"]')) return;
+        window.$buoop = {
+            vs: { i: 11, f: -4, o: -4, s: 9, c: -4 },
+            api: 4,
+            url: 'https://whatbrowser.org/',
+            noclose: true, // Do not show the 'ignore' button to close the notification
+            reminder: 0, // show all the time
+            onshow: updateStore,
+            nomessage: true,
+            insecure: true
+        };
+        if (document.body) {
+            var script = document.createElement('script');
+            script.setAttribute('src', src);
+            document.body.appendChild(script);
+        }
+    };
+
+    var updateStore = (0, _mobx.action)('showError', function () {
+        if (common_store) {
+            common_store.showError((0, _localize.localize)('Your web browser is out of date and may affect your trading experience. Proceed at your own risk.'));
+        }
+    });
+
+    return {
+        init: init
+    };
+}();
+
+exports.default = OutdatedBrowser;
 
 /***/ }),
 
@@ -22747,7 +22810,7 @@ var buildForwardStartingConfig = exports.buildForwardStartingConfig = function b
     if ((contract.forward_starting_options || []).length) {
         contract.forward_starting_options.forEach(function (option) {
             var duplicated_option = forward_starting_config.find(function (opt) {
-                return opt.value === option.date;
+                return opt.value === parseInt(option.date);
             });
             var current_session = { open: _moment2.default.unix(option.open).utc(), close: _moment2.default.unix(option.close).utc() };
             if (duplicated_option) {
@@ -22755,7 +22818,7 @@ var buildForwardStartingConfig = exports.buildForwardStartingConfig = function b
             } else {
                 forward_starting_config.push({
                     text: _moment2.default.unix(option.date).format('ddd - DD MMM, YYYY'),
-                    value: option.date,
+                    value: parseInt(option.date),
                     sessions: [current_session]
                 });
             }
@@ -25993,7 +26056,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '15034'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
