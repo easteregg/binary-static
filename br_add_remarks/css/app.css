@@ -2569,3 +2569,10 @@ a.previous-wrapper {
 .paymentagent_note {
   height: 4em;
   width: 206px; }
+
+#statement-table td.desc {
+  font-size: smaller; }
+
+#statement-table td.date {
+  font-size: smaller;
+  min-width: 101px; }
