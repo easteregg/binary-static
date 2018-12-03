@@ -13956,28 +13956,43 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _localize = __webpack_require__(/*! ../../../../_common/localize */ "./src/javascript/_common/localize.js");
+var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
 
-var _NavBar = __webpack_require__(/*! ../../../Assets/Header/NavBar */ "./src/javascript/app_2/Assets/Header/NavBar/index.js");
+var _localize = __webpack_require__(/*! ../../../../_common/localize */ "./src/javascript/_common/localize.js");
 
 var _button = __webpack_require__(/*! ../../../App/Components/Form/button.jsx */ "./src/javascript/app_2/App/Components/Form/button.jsx");
 
 var _button2 = _interopRequireDefault(_button);
+
+var _NavBar = __webpack_require__(/*! ../../../Assets/Header/NavBar */ "./src/javascript/app_2/Assets/Header/NavBar/index.js");
+
+var _Constants = __webpack_require__(/*! ../../../Constants */ "./src/javascript/app_2/Constants/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var EmptyStatementMessage = function EmptyStatementMessage(_ref) {
     var has_selected_date = _ref.has_selected_date;
     return _react2.default.createElement(
-        'div',
-        { className: 'statement-empty' },
-        _react2.default.createElement(_NavBar.IconStatement, { className: 'statement-empty__icon' }),
+        _react2.default.Fragment,
+        null,
         _react2.default.createElement(
-            'span',
-            { className: 'statement-empty__text' },
-            !has_selected_date ? (0, _localize.localize)('Your account has no trading activity.') : (0, _localize.localize)('Your account has no trading activity for the selected period.')
-        ),
-        !has_selected_date && _react2.default.createElement(_button2.default, { className: 'secondary orange', text: (0, _localize.localize)('Trade now') })
+            'div',
+            { className: 'statement-empty' },
+            _react2.default.createElement(_NavBar.IconStatement, { className: 'statement-empty__icon' }),
+            _react2.default.createElement(
+                'span',
+                { className: 'statement-empty__text' },
+                !has_selected_date ? (0, _localize.localize)('Your account has no trading activity.') : (0, _localize.localize)('Your account has no trading activity for the selected period.')
+            ),
+            !has_selected_date && _react2.default.createElement(
+                _reactRouterDom.Link,
+                { to: _Constants.routes.trade },
+                _react2.default.createElement(_button2.default, {
+                    className: 'secondary orange',
+                    text: (0, _localize.localize)('Trade now')
+                })
+            )
+        )
     );
 };
 
@@ -26056,7 +26071,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '15034'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
