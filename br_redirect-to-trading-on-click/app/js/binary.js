@@ -2116,12 +2116,9 @@ var DataTable = function (_React$PureComponent) {
                 { className: 'table' },
                 _react2.default.createElement(
                     'div',
-                    {
-                        className: 'table__head',
-                        ref: function ref(el) {
+                    { className: 'table__head', ref: function ref(el) {
                             _this2.el_table_head = el;
-                        }
-                    },
+                        } },
                     _react2.default.createElement(_table_row2.default, { columns: columns, is_header: true })
                 ),
                 _react2.default.createElement(
@@ -18548,7 +18545,7 @@ var switchAccount = exports.switchAccount = function switchAccount(loginid) {
     }
     sessionStorage.setItem('active_tab', '1');
     // set local storage
-    _gtm2.default.setLoginFlag();
+    _gtm2.default.setLoginFlag('account_switch');
     _client_base2.default.set('cashier_confirmed', 0);
     _client_base2.default.set('accepted_bch', 0);
     _client_base2.default.set('loginid', loginid);
@@ -26074,7 +26071,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
