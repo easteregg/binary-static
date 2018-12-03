@@ -189,6 +189,466 @@ webpackContext.id = "./node_modules/moment/locale sync recursive ja";
 
 /***/ }),
 
+/***/ "./src/images/app_2/header/symbol.svg":
+/*!********************************************!*\
+  !*** ./src/images/app_2/header/symbol.svg ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+function _objectWithoutProperties(obj, keys) {
+  var target = {};for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+  }return target;
+}
+
+exports.default = function (_ref) {
+  var _ref$styles = _ref.styles,
+      styles = _ref$styles === undefined ? {} : _ref$styles,
+      props = _objectWithoutProperties(_ref, ["styles"]);
+
+  return _react2.default.createElement("svg", _extends({ xmlns: "http://www.w3.org/2000/svg", width: "46", height: "46", viewBox: "0 0 60.47 60.47" }, props), _react2.default.createElement("path", { fill: "#fff", d: "M51.61 8.85a30.24 30.24 0 1 0 0 42.77 30.26 30.26 0 0 0 0-42.77z" }), _react2.default.createElement("path", { fill: "#2a3052", d: "M21.8 38.17A5.51 5.51 0 0 0 24.33 42l-.58-1.08s1.11-2.92-1.95-2.75z" }), _react2.default.createElement("path", { fill: "#2a3052", d: "M50.08 10.38a28.08 28.08 0 1 0 0 39.72 28.1 28.1 0 0 0 0-39.72zm-2.9 36.81l-.92.87c-6.75 5.5-11.94 2.76-12 2.76-3.52-.7-5.27-.71-6.26-1.37-.25-.17-1-.59-1.23-.49a2.25 2.25 0 0 1-2.72-.16l-.25-.23a1.93 1.93 0 0 1-.37-2.67c.26-.26-.2-1-.2-1s-1.32-2-2.22-3.15a8.79 8.79 0 0 1-1.14-3.91 10.46 10.46 0 0 1-1.46-2.14 5.55 5.55 0 0 0-.78-.94 5 5 0 0 1-.47-.51.21.21 0 0 1 0-.16 5.65 5.65 0 0 1 1.55-2c.32-.21 1.68-1 1.68-1a2.71 2.71 0 0 1 2.08-1.21 9.93 9.93 0 0 1 3.93.6l.84.27c1.42.45 2.67 1 3.66 1.42a16.55 16.55 0 0 0 2 .79c1.75.46 4.85-1 5.5-1.56 1.07-1 1.53-1.63 1.54-2.16a1.2 1.2 0 0 0-.43-.88c-.16-.14-.36-.42-.62-.67a1.12 1.12 0 0 0-.14-.12c-3-3.15-2.46-5.13-2.45-5.16.13-1.42-.69-2.33-1.56-3.27l-.14-.18a1 1 0 0 1-.1-.11 37.8 37.8 0 0 0 4.59 1 8.79 8.79 0 0 0 2.08.11c1.54 0 2.77-.18 2.85-.54a21.27 21.27 0 0 1-4.11-1.21 65.92 65.92 0 0 0-2.72-1c-1.24-.42-2.58-1-2.58-1 5.35 1.4 7.1 2 9.54 2A7.68 7.68 0 0 0 46 18c.35-.06 1.43-.31 1.55-.68a8.74 8.74 0 0 1-3-.48c-6.24-2.06-6.77-3.09-10.23-4.44a31.17 31.17 0 0 0-5.25-1.67 10.13 10.13 0 0 0-4.54 0c-4.73-1.11-5.81-1-7.2-.69a24 24 0 0 1 29.86 3.23 24.46 24.46 0 0 1 2.92 3.54l.11.17a24 24 0 0 1-3 30.19zM31.46 20.13a5.51 5.51 0 0 1 3.1 3.34c-3 .68-2.36-2.37-2.36-2.37z" }));
+};
+
+/***/ }),
+
+/***/ "./src/images/app_2/settings/ic-account-password.svg":
+/*!***********************************************************!*\
+  !*** ./src/images/app_2/settings/ic-account-password.svg ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+function _objectWithoutProperties(obj, keys) {
+  var target = {};for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+  }return target;
+}
+
+exports.default = function (_ref) {
+  var _ref$styles = _ref.styles,
+      styles = _ref$styles === undefined ? {} : _ref$styles,
+      props = _objectWithoutProperties(_ref, ["styles"]);
+
+  return _react2.default.createElement("svg", _extends({ xmlns: "http://www.w3.org/2000/svg", width: "32", height: "32" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { d: "M0 0h32v32H0z" }), _react2.default.createElement("path", { fill: "#333", fillRule: "nonzero", d: "M8 19.02v4.96h16v-4.96H8zM8 18h16c.55 0 1 .46 1 1.02v4.96A1.01 1.01 0 0 1 24 25H8c-.55 0-1-.46-1-1.02v-4.96c0-.56.45-1.02 1-1.02zm12.5 2.8l.65-.65a.5.5 0 0 1 .7.7l-.64.65.64.65a.5.5 0 0 1-.7.7l-.65-.64-.65.64a.5.5 0 0 1-.7-.7l.64-.65-.64-.65a.5.5 0 0 1 .7-.7l.65.64zm-4.5 0l.65-.65a.5.5 0 0 1 .7.7l-.64.65.64.65a.5.5 0 0 1-.7.7l-.65-.64-.65.64a.5.5 0 0 1-.7-.7l.64-.65-.64-.65a.5.5 0 0 1 .7-.7l.65.64zm-4.5 0l.65-.65a.5.5 0 0 1 .7.7l-.64.65.64.65a.5.5 0 0 1-.7.7l-.65-.64-.65.64a.5.5 0 0 1-.7-.7l.64-.65-.64-.65a.5.5 0 0 1 .7-.7l.65.64zM18 9.97v-.92c0-1.13-.9-2.04-2-2.04s-2 .91-2 2.04v.92h4zM16 6c1.66 0 3 1.37 3 3.06V11h-6V9.06A3.03 3.03 0 0 1 16 6zm-4 5.02v4.96h8v-4.96h-8zM12 10h8c.55 0 1 .46 1 1.02v4.96A1.01 1.01 0 0 1 20 17h-8c-.55 0-1-.46-1-1.02v-4.96c0-.56.45-1.02 1-1.02zm3.5 3.87a1 1 0 1 1 1 0v.63a.5.5 0 1 1-1 0v-.63z" })));
+};
+
+/***/ }),
+
+/***/ "./src/images/app_2/settings/ic-api-token.svg":
+/*!****************************************************!*\
+  !*** ./src/images/app_2/settings/ic-api-token.svg ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+function _objectWithoutProperties(obj, keys) {
+  var target = {};for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+  }return target;
+}
+
+exports.default = function (_ref) {
+  var _ref$styles = _ref.styles,
+      styles = _ref$styles === undefined ? {} : _ref$styles,
+      props = _objectWithoutProperties(_ref, ["styles"]);
+
+  return _react2.default.createElement("svg", _extends({ xmlns: "http://www.w3.org/2000/svg", width: "32", height: "32" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { d: "M0 0h32v32H0z" }), _react2.default.createElement("path", { fill: "#333", fillRule: "nonzero", d: "M7 19v5h18v-5H7zm0-1h18a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1zm13.5 2.8l.65-.65a.5.5 0 0 1 .7.7l-.64.65.64.65a.5.5 0 0 1-.7.7l-.65-.64-.65.64a.5.5 0 0 1-.7-.7l.64-.65-.64-.65a.5.5 0 0 1 .7-.7l.65.64zm-4.5 0l.65-.65a.5.5 0 0 1 .7.7l-.64.65.64.65a.5.5 0 0 1-.7.7l-.65-.64-.65.64a.5.5 0 0 1-.7-.7l.64-.65-.64-.65a.5.5 0 0 1 .7-.7l.65.64zm-4.5 0l.65-.65a.5.5 0 0 1 .7.7l-.64.65.64.65a.5.5 0 0 1-.7.7l-.65-.64-.65.64a.5.5 0 0 1-.7-.7l.64-.65-.64-.65a.5.5 0 0 1 .7-.7l.65.64zM16 11c1.14 0 2-.72 2-1.5S17.14 8 16 8c-1.14 0-2 .72-2 1.5s.86 1.5 2 1.5zm0 1c-1.66 0-3-1.12-3-2.5S14.34 7 16 7s3 1.12 3 2.5-1.34 2.5-3 2.5zm0-1a.5.5 0 0 1 .5.5v5a.5.5 0 1 1-1 0v-5a.5.5 0 0 1 .5-.5zm0 5h2a.5.5 0 1 1 0 1h-2a.5.5 0 1 1 0-1zm0-2h1a.5.5 0 1 1 0 1h-1a.5.5 0 1 1 0-1z" })));
+};
+
+/***/ }),
+
+/***/ "./src/images/app_2/settings/ic-authorised-applications.svg":
+/*!******************************************************************!*\
+  !*** ./src/images/app_2/settings/ic-authorised-applications.svg ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+function _objectWithoutProperties(obj, keys) {
+  var target = {};for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+  }return target;
+}
+
+exports.default = function (_ref) {
+  var _ref$styles = _ref.styles,
+      styles = _ref$styles === undefined ? {} : _ref$styles,
+      props = _objectWithoutProperties(_ref, ["styles"]);
+
+  return _react2.default.createElement("svg", _extends({ xmlns: "http://www.w3.org/2000/svg", width: "32", height: "32" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { d: "M0 0h32v32H0z" }), _react2.default.createElement("path", { fill: "#333", fillRule: "nonzero", d: "M9 14v2h14v-2H9zm0-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm0 7v2h5v-2H9zm0-1h5a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm9 1v2h5v-2h-5zm0-1h5a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zM7 7v18h18V7H7zm0-1h18a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm-1 4h20v1H6v-1zm17.5-1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm-2 0a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm-2 0a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" })));
+};
+
+/***/ }),
+
+/***/ "./src/images/app_2/settings/ic-cashier-password.svg":
+/*!***********************************************************!*\
+  !*** ./src/images/app_2/settings/ic-cashier-password.svg ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+function _objectWithoutProperties(obj, keys) {
+  var target = {};for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+  }return target;
+}
+
+exports.default = function (_ref) {
+  var _ref$styles = _ref.styles,
+      styles = _ref$styles === undefined ? {} : _ref$styles,
+      props = _objectWithoutProperties(_ref, ["styles"]);
+
+  return _react2.default.createElement("svg", _extends({ xmlns: "http://www.w3.org/2000/svg", width: "32", height: "32" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { d: "M0 0h32v32H0z" }), _react2.default.createElement("path", { fill: "#333", fillRule: "nonzero", d: "M7 7v10h15V7H7zm16 7h-1v3h-5v1H7a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1v7zM6 8h17v2H6V8zm3 4h6v1H9v-1zm0 2h6v1H9v-1zm9.5 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm.5 4h4v-1a2 2 0 1 0-4 0v1zm2-4a3 3 0 0 1 3 3v2h-6v-2a3 3 0 0 1 3-3zm-4 5v5h8v-5h-8zm0-1h8a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1zm3.5 3.87a1 1 0 1 1 1 0v.63a.5.5 0 1 1-1 0v-.63z" })));
+};
+
+/***/ }),
+
+/***/ "./src/images/app_2/settings/ic-financial-assesment.svg":
+/*!**************************************************************!*\
+  !*** ./src/images/app_2/settings/ic-financial-assesment.svg ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+function _objectWithoutProperties(obj, keys) {
+  var target = {};for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+  }return target;
+}
+
+exports.default = function (_ref) {
+  var _ref$styles = _ref.styles,
+      styles = _ref$styles === undefined ? {} : _ref$styles,
+      props = _objectWithoutProperties(_ref, ["styles"]);
+
+  return _react2.default.createElement("svg", _extends({ xmlns: "http://www.w3.org/2000/svg", width: "32", height: "32" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { d: "M0 0h32v32H0z" }), _react2.default.createElement("path", { fill: "#333", fillRule: "nonzero", d: "M9 25h13.59L24 23.59V7H10a1 1 0 0 0-1 1v17zm1-19h15v18l-2 2H8V8a2 2 0 0 1 2-2zm6.5 10h5a.5.5 0 1 1 0 1h-5a.5.5 0 1 1 0-1zm0 2h5a.5.5 0 1 1 0 1h-5a.5.5 0 1 1 0-1zm-5.35 4.85a.5.5 0 0 1 .7-.7l1 1a.5.5 0 0 1-.7.7l-1-1zm1.7 1a.5.5 0 0 1-.7-.7l2-2a.5.5 0 0 1 .7.7l-2 2zM16.5 21h5a.5.5 0 1 1 0 1h-5a.5.5 0 1 1 0-1zm0 2h5a.5.5 0 1 1 0 1h-5a.5.5 0 1 1 0-1zm-5.35-5.15a.5.5 0 0 1 .7-.7l1 1a.5.5 0 0 1-.7.7l-1-1zm1.7 1a.5.5 0 0 1-.7-.7l2-2a.5.5 0 0 1 .7.7l-2 2zm4.54-6.4a.63.63 0 0 0-.16-.44c-.1-.1-.28-.21-.53-.3a6.23 6.23 0 0 1-.64-.28 2.05 2.05 0 0 1-.46-.32 1.28 1.28 0 0 1-.3-.42 1.42 1.42 0 0 1-.11-.58c0-.39.12-.7.37-.95.24-.24.57-.39.98-.43V8h.55v.74c.4.06.71.23.94.5.23.29.34.65.34 1.1h-.98c0-.28-.06-.49-.17-.62a.56.56 0 0 0-.46-.2c-.18 0-.33.05-.43.15a.6.6 0 0 0-.15.44c0 .18.05.31.15.42.1.1.28.21.55.32.28.11.5.21.68.31.17.1.32.2.44.33a1.28 1.28 0 0 1 .37.96c0 .39-.12.7-.36.94s-.57.39-1 .43v.68h-.54v-.68a1.64 1.64 0 0 1-1.08-.5A1.6 1.6 0 0 1 15 12.2h.99c0 .27.06.48.2.63.12.14.3.21.55.21.2 0 .36-.05.47-.15a.55.55 0 0 0 .18-.43z" })));
+};
+
+/***/ }),
+
+/***/ "./src/images/app_2/settings/ic-limits.svg":
+/*!*************************************************!*\
+  !*** ./src/images/app_2/settings/ic-limits.svg ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+function _objectWithoutProperties(obj, keys) {
+  var target = {};for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+  }return target;
+}
+
+exports.default = function (_ref) {
+  var _ref$styles = _ref.styles,
+      styles = _ref$styles === undefined ? {} : _ref$styles,
+      props = _objectWithoutProperties(_ref, ["styles"]);
+
+  return _react2.default.createElement("svg", _extends({ xmlns: "http://www.w3.org/2000/svg", width: "32", height: "32" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { d: "M0 0h32v32H0z" }), _react2.default.createElement("path", { fill: "#333", fillRule: "nonzero", d: "M16 18a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0-1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-6 5.7a8.97 8.97 0 0 0 6 2.3 8.97 8.97 0 0 0 6-2.3l-.85-.85a.5.5 0 0 1 .7-.7l.86.85a8.96 8.96 0 0 0 2.28-5.5H24a.5.5 0 1 1 0-1h.99A8.96 8.96 0 0 0 22.7 10l-.86.85a.5.5 0 0 1-.7-.7l.85-.86a8.96 8.96 0 0 0-5.5-2.28V8a.5.5 0 1 1-1 0v-.99A8.96 8.96 0 0 0 10 9.3l.85.86a.5.5 0 0 1-.7.7L9.29 10a8.96 8.96 0 0 0-2.28 5.5H8a.5.5 0 1 1 0 1h-.99A8.96 8.96 0 0 0 9.3 22l.86-.85a.5.5 0 0 1 .7.7l-.85.86zm6 3.3a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm-3.85-13.15a.5.5 0 0 1 .7-.7l2.12 2.12a.5.5 0 1 1-.7.7l-2.12-2.12z" })));
+};
+
+/***/ }),
+
+/***/ "./src/images/app_2/settings/ic-login-history.svg":
+/*!********************************************************!*\
+  !*** ./src/images/app_2/settings/ic-login-history.svg ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+function _objectWithoutProperties(obj, keys) {
+  var target = {};for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+  }return target;
+}
+
+exports.default = function (_ref) {
+  var _ref$styles = _ref.styles,
+      styles = _ref$styles === undefined ? {} : _ref$styles,
+      props = _objectWithoutProperties(_ref, ["styles"]);
+
+  return _react2.default.createElement("svg", _extends({ xmlns: "http://www.w3.org/2000/svg", width: "32", height: "32" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { d: "M0 0h32v32H0z" }), _react2.default.createElement("path", { fill: "#333", fillRule: "nonzero", d: "M9 14v3h5v-3H9zm0-1h5a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1zm3.5-.5a1 1 0 0 0-2 0h2zm-1-2a2 2 0 0 1 2 2v1h-4v-1a2 2 0 0 1 2-2zM7 8v13h18V8H7zm0-1h18a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1zm5 14h1v4h-1v-4zm7 0h1v4h-1v-4zm-8.5 3h11a.5.5 0 1 1 0 1h-11a.5.5 0 1 1 0-1zM6 19h20v1H6v-1zm11-9v1h6v-1h-6zm0-1h6a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1zm0 5v1h6v-1h-6zm0-1h6a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1zm-.5 4h1a.5.5 0 1 1 0 1h-1a.5.5 0 1 1 0-1zm3 0a.5.5 0 1 1 0 1 .5.5 0 1 1 0-1zm2 0a.5.5 0 1 1 0 1 .5.5 0 1 1 0-1z" })));
+};
+
+/***/ }),
+
+/***/ "./src/images/app_2/settings/ic-personal-details.svg":
+/*!***********************************************************!*\
+  !*** ./src/images/app_2/settings/ic-personal-details.svg ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+function _objectWithoutProperties(obj, keys) {
+  var target = {};for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+  }return target;
+}
+
+exports.default = function (_ref) {
+  var _ref$styles = _ref.styles,
+      styles = _ref$styles === undefined ? {} : _ref$styles,
+      props = _objectWithoutProperties(_ref, ["styles"]);
+
+  return _react2.default.createElement("svg", _extends({ xmlns: "http://www.w3.org/2000/svg", width: "32", height: "32" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { d: "M0 0h32v32H0z" }), _react2.default.createElement("path", { fill: "#333", fillRule: "nonzero", d: "M22.02 20.61l-1.54-.31-.96-1.67a8.25 8.25 0 0 0 1.53-3.22.4.4 0 0 0 0-.1v-.45c.74-.55.96-2.5 1-2.93a6.1 6.1 0 0 0-1.85-4.26A5.04 5.04 0 0 0 16.63 6h-.28c-.04 0-4.43.22-5.27 4.62a4.37 4.37 0 0 0 .9 3.97v.66a.4.4 0 0 0 0 .1 7.67 7.67 0 0 0 1.64 3.32l-1.18 1.63-1.46.3a5.06 5.06 0 0 0-3.97 5c0 .22.18.4.4.4h18.2a.4.4 0 0 0 .4-.4 5.04 5.04 0 0 0-3.98-4.99zm-6.8 1.74a3.1 3.1 0 0 1-2.06-1.67l1.02-1.45a3.7 3.7 0 0 0 1.9.83l-.68 2.33a.38.38 0 0 0-.18-.05zm1.3-.95l1.32 3.75h-2.4l1.08-3.75zm.4-1.29a3.66 3.66 0 0 0 2-.9l.83 1.44a3.1 3.1 0 0 1-2.06 1.67l-.77-2.2zm-5.07-9.29a4.88 4.88 0 0 1 4.5-3.99h.26a4.41 4.41 0 0 1 3.05 1.39 5.27 5.27 0 0 1 1.64 3.64 8.9 8.9 0 0 1-.22 1.25v-.5a.5.5 0 0 0-.07-.26c-.15-.21-.38-.25-1.01-.34a10.7 10.7 0 0 1-3.28-.88 5.79 5.79 0 0 1-2.17-2.3.4.4 0 0 0-.35-.2.43.43 0 0 0-.35.2C13.15 10 12 12.1 12 12.6v.58a4.23 4.23 0 0 1-.14-2.37zm.94 1.84a19.12 19.12 0 0 1 1.39-2.81 5.97 5.97 0 0 0 2.17 1.98 11.4 11.4 0 0 0 3.52.96l.4.05v2.36c-.41 1.62-1.43 4.12-3.75 4.12-1.93 0-3.28-2.12-3.73-4.1v-2.56zm-1.64 8.76l1.3-.27a3.84 3.84 0 0 0 2.6 2.02h.14l-.58 1.98H7.85a4.24 4.24 0 0 1 3.32-3.76l-.02.03zm7.54 3.73l-.72-2.07a3.88 3.88 0 0 0 2.46-1.98l1.44.29c1.8.37 3.15 1.9 3.33 3.76h-6.51zM24 28l4-4 2 2-4 4h-2v-2zm5-5l1-1 2 2-1 1-2-2z" })));
+};
+
+/***/ }),
+
+/***/ "./src/images/app_2/settings/ic-self-exclusion.svg":
+/*!*********************************************************!*\
+  !*** ./src/images/app_2/settings/ic-self-exclusion.svg ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+function _objectWithoutProperties(obj, keys) {
+  var target = {};for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+  }return target;
+}
+
+exports.default = function (_ref) {
+  var _ref$styles = _ref.styles,
+      styles = _ref$styles === undefined ? {} : _ref$styles,
+      props = _objectWithoutProperties(_ref, ["styles"]);
+
+  return _react2.default.createElement("svg", _extends({ xmlns: "http://www.w3.org/2000/svg", width: "32", height: "32" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { d: "M0 0h32v32H0z" }), _react2.default.createElement("path", { stroke: "#333", d: "M10.27 23.5h.23v-4.33l-2.05-2.74a.73.73 0 0 0-1.1-.08 1.46 1.46 0 0 0-.27 1.69l1.34 2.68a.5.5 0 0 0 .03.05l1.82 2.73z" }), _react2.default.createElement("path", { fill: "#333", fillRule: "nonzero", d: "M11 16v8a1 1 0 0 0 1 1h9v-9H11zm0-1h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9a2 2 0 0 1-2-2v-8a1 1 0 0 1 1-1zm9 0h2v-4a1 1 0 0 0-2 0v4zm1-6a2 2 0 0 1 2 2v5h-4v-5a2 2 0 0 1 2-2zm-4 6h2v-5a1 1 0 0 0-2 0v5zm1-7a2 2 0 0 1 2 2v6h-4v-6a2 2 0 0 1 2-2zm-4 7h2V8a1 1 0 0 0-2 0v7zm1-9a2 2 0 0 1 2 2v8h-4V8a2 2 0 0 1 2-2zm-4 9h2V9a1 1 0 0 0-2 0v6zm1-8a2 2 0 0 1 2 2v7h-4V9a2 2 0 0 1 2-2z" }), _react2.default.createElement("path", { fill: "#FFF", d: "M22 16v10h-5V16h-6v-1h11v1z" }), _react2.default.createElement("path", { fill: "#333", d: "M13 7.5h1v8a.5.5 0 1 1-1 0v-8zm3 1h1v7a.5.5 0 1 1-1 0v-7zm3 1h1v6a.5.5 0 1 1-1 0v-6z" }), _react2.default.createElement("path", { fill: "#333", fillRule: "nonzero", d: "M21.5 20.8l.65-.65a.5.5 0 0 1 .7.7l-.64.65.64.65a.5.5 0 0 1-.7.7l-.65-.64-.65.64a.5.5 0 0 1-.7-.7l.64-.65-.64-.65a.5.5 0 0 1 .7-.7l.65.64zm0 4.2a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm0 1a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z" })));
+};
+
+/***/ }),
+
 /***/ "./src/javascript/app_2/App/Components/Elements/AccountSwitcher/account_switcher.jsx":
 /*!*******************************************************************************************!*\
   !*** ./src/javascript/app_2/App/Components/Elements/AccountSwitcher/account_switcher.jsx ***!
@@ -3885,8 +4345,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var LanguageDialog = function LanguageDialog(_ref) {
     var hide = _ref.hide,
         is_visible = _ref.is_visible,
-        is_settings_on = _ref.is_settings_on,
-        switchLanguage = _ref.switchLanguage;
+        is_settings_on = _ref.is_settings_on;
 
     var language_dialog_class = (0, _classnames2.default)('language-dialog-container', {
         'show': is_visible && is_settings_on
@@ -3916,10 +4375,8 @@ var LanguageDialog = function LanguageDialog(_ref) {
                         'div',
                         { className: 'language-row' },
                         _react2.default.createElement(
-                            'button',
-                            { onClick: function onClick() {
-                                    return switchLanguage(key);
-                                } },
+                            'a',
+                            { href: (0, _Language.getURL)(key) },
                             _react2.default.createElement('i', { className: 'flag ic-flag-' + key.replace(/(\s|_)/, '-').toLowerCase() }),
                             _react2.default.createElement(
                                 'span',
@@ -7196,9 +7653,9 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _url = __webpack_require__(/*! ../../../../../_common/url */ "./src/javascript/_common/url.js");
+var _symbol = __webpack_require__(/*! ../../../../../../images/app_2/header/symbol.svg */ "./src/images/app_2/header/symbol.svg");
 
-var _url2 = _interopRequireDefault(_url);
+var _symbol2 = _interopRequireDefault(_symbol);
 
 var _InkBar = __webpack_require__(/*! ../../Elements/InkBar */ "./src/javascript/app_2/App/Components/Elements/InkBar/index.js");
 
@@ -7216,7 +7673,7 @@ var MenuLinks = function MenuLinks(_ref) {
         _react2.default.createElement(
             'div',
             { className: 'navbar-icons binary-logo' },
-            _react2.default.createElement('img', { className: 'logo-img', src: _url2.default.urlForStatic('images/header/symbol.svg'), alt: 'Binary.com' })
+            _react2.default.createElement(_symbol2.default, { width: '30px', height: '30px' })
         ),
         !!items.length && _react2.default.createElement(
             _InkBar2.default,
@@ -7371,15 +7828,10 @@ var _routes_config = __webpack_require__(/*! ../../Constants/routes_config */ ".
 
 var _routes_config2 = _interopRequireDefault(_routes_config);
 
-var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
-var useLanguageOn = function useLanguageOn(path, lang) {
-    return '/' + lang.toLowerCase() + path;
-};
 // TODO: solve circular dependency problem
 // when binary link is imported into components present in routes config
 // or into their descendants
@@ -7388,9 +7840,8 @@ var BinaryLink = function BinaryLink(_ref) {
         children = _ref.children,
         props = _objectWithoutProperties(_ref, ['to', 'children']);
 
-    var path = useLanguageOn((0, _helpers.normalizePath)(to), props.current_language);
-    var routes_config = (0, _routes_config2.default)(props.current_language.toLowerCase());
-    var route = (0, _helpers.findRouteByPath)(path, routes_config);
+    var path = (0, _helpers.normalizePath)(to);
+    var route = (0, _helpers.findRouteByPath)(path, (0, _routes_config2.default)());
 
     if (!route) {
         throw new Error('Route not found: ' + to);
@@ -7412,14 +7863,7 @@ BinaryLink.propTypes = {
     to: _propTypes2.default.string
 };
 
-var binary_link = (0, _connect.connect)(function (_ref2) {
-    var common = _ref2.common;
-    return {
-        current_language: common.current_language
-    };
-})(BinaryLink);
-
-exports.default = binary_link;
+exports.default = BinaryLink;
 
 /***/ }),
 
@@ -7453,9 +7897,9 @@ var _routes_config2 = _interopRequireDefault(_routes_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var BinaryRoutes = function BinaryRoutes(props) {
-    return (0, _routes_config2.default)(props.match.params.lang.toLowerCase()).map(function (route, idx) {
-        return _react2.default.createElement(_route_with_sub_routes2.default, _extends({ key: idx }, route, props));
+var BinaryRoutes = function BinaryRoutes() {
+    return (0, _routes_config2.default)().map(function (route, idx) {
+        return _react2.default.createElement(_route_with_sub_routes2.default, _extends({ key: idx }, route));
     });
 };
 
@@ -7638,7 +8082,7 @@ var RouteWithSubRoutes = function RouteWithSubRoutes(route) {
         _gtm2.default.pushDataLayer({ event: 'page_load' });
         return result;
     };
-    route.setLanguage(route.match.params.lang);
+
     return _react2.default.createElement(_reactRouterDom.Route, {
         exact: route.exact,
         path: route.path,
@@ -7793,17 +8237,7 @@ var _self_exclusion2 = _interopRequireDefault(_self_exclusion);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var initRoutesConfig = function initRoutesConfig() {
-    return [{ path: _Constants.routes.contract, component: _Contract2.default, title: (0, _localize.localize)('Contract Details'), is_authenticated: true }, { path: _Constants.routes.index, component: _reactRouterDom.Redirect, title: '', to: '/trade' }, { path: _Constants.routes.portfolio,
-        component: _Portfolio2.default,
-        title: (0, _localize.localize)('Portfolio'),
-        is_authenticated: true,
-        icon_component: _NavBar.IconPortfolio
-    }, { path: _Constants.routes.root, component: _reactRouterDom.Redirect, title: '', exact: true, to: '/trade' }, { path: _Constants.routes.statement,
-        component: _Statement2.default,
-        title: (0, _localize.localize)('Statement'),
-        is_authenticated: true,
-        icon_component: _NavBar.IconStatement
-    }, { path: _Constants.routes.trade, component: _Trading2.default, title: (0, _localize.localize)('Trade'), exact: true }, {
+    return [{ path: _Constants.routes.contract, component: _Contract2.default, title: (0, _localize.localize)('Contract Details'), is_authenticated: true }, { path: _Constants.routes.index, component: _reactRouterDom.Redirect, title: '', to: '/trade' }, { path: _Constants.routes.portfolio, component: _Portfolio2.default, title: (0, _localize.localize)('Portfolio'), is_authenticated: true, icon_component: _NavBar.IconPortfolio }, { path: _Constants.routes.root, component: _reactRouterDom.Redirect, title: '', exact: true, to: '/trade' }, { path: _Constants.routes.statement, component: _Statement2.default, title: (0, _localize.localize)('Statement'), is_authenticated: true, icon_component: _NavBar.IconStatement }, { path: _Constants.routes.trade, component: _Trading2.default, title: (0, _localize.localize)('Trade'), exact: true }, {
         path: _Constants.routes.settings,
         component: _settings2.default,
         is_authenticated: true,
@@ -7813,25 +8247,11 @@ var initRoutesConfig = function initRoutesConfig() {
 
 // Settings Routes
 
-var cached_language = void 0,
-    routes_config = void 0;
-var getRoutesConfig = function getRoutesConfig(lang) {
-    if (!lang) {
-        throw new Error('Language is not defined.');
-    }
-    if (!routes_config || cached_language !== lang) {
-        routes_config = initRoutesConfig();
-        routes_config = routes_config.map(function (route) {
-            route.path = '/' + lang + route.path;
 
-            if (route.routes && route.routes.length > 0) {
-                route.routes = route.routes.map(function (subRoute) {
-                    subRoute.path = '/' + lang + subRoute.path;
-                    return subRoute;
-                });
-            }
-            return route;
-        });
+var routes_config = void 0;
+var getRoutesConfig = function getRoutesConfig() {
+    if (!routes_config) {
+        routes_config = initRoutesConfig();
     }
     return routes_config;
 };
@@ -8346,7 +8766,7 @@ var Routes = function Routes(props) {
         return _react2.default.createElement(_Errors2.default, props.error);
     }
 
-    return _react2.default.createElement(_Routes2.default, props);
+    return _react2.default.createElement(_Routes2.default, null);
 };
 
 Routes.propTypes = {
@@ -8360,8 +8780,7 @@ exports.default = (0, _reactRouter.withRouter)((0, _connect.connect)(function (_
     var common = _ref.common;
     return {
         error: common.error,
-        has_error: common.has_error,
-        setLanguage: common.setLanguage
+        has_error: common.has_error
     };
 })(Routes));
 
@@ -8627,31 +9046,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var LanguageSettings = function LanguageSettings(_ref) {
     var hide = _ref.hide,
         is_visible = _ref.is_visible,
-        is_settings_on = _ref.is_settings_on,
-        switchLanguage = _ref.switchLanguage;
+        is_settings_on = _ref.is_settings_on;
     return _react2.default.createElement(_language_dialog2.default, {
         hide: hide,
         is_visible: is_visible,
-        is_settings_on: is_settings_on,
-        switchLanguage: switchLanguage
+        is_settings_on: is_settings_on
     });
 };
 
 LanguageSettings.propTypes = {
     hide: _propTypes2.default.func,
     is_settings_on: _propTypes2.default.bool,
-    is_visible: _propTypes2.default.bool,
-    switchLanguage: _propTypes2.default.func
+    is_visible: _propTypes2.default.bool
 };
 
 exports.default = (0, _connect.connect)(function (_ref2) {
-    var ui = _ref2.ui,
-        common = _ref2.common;
+    var ui = _ref2.ui;
     return {
         hide: ui.hideLanguageDialog,
         is_settings_on: ui.is_settings_dialog_on,
-        is_visible: ui.is_language_dialog_on,
-        switchLanguage: common.switchLanguage
+        is_visible: ui.is_language_dialog_on
     };
 })(LanguageSettings);
 
@@ -8923,6 +9337,10 @@ var _network_monitor = __webpack_require__(/*! ../Services/network_monitor */ ".
 
 var _network_monitor2 = _interopRequireDefault(_network_monitor);
 
+var _outdated_browser = __webpack_require__(/*! ../Services/outdated_browser */ "./src/javascript/app_2/Services/outdated_browser.js");
+
+var _outdated_browser2 = _interopRequireDefault(_outdated_browser);
+
 var _Stores = __webpack_require__(/*! ../Stores */ "./src/javascript/app_2/Stores/index.js");
 
 var _Stores2 = _interopRequireDefault(_Stores);
@@ -8945,6 +9363,7 @@ var initApp = function initApp() {
     var root_store = new _Stores2.default();
 
     _network_monitor2.default.init(root_store);
+    _outdated_browser2.default.init(root_store);
     root_store.modules.trade.init();
 
     var app = document.getElementById('binary_app');
@@ -9039,33 +9458,29 @@ var App = function App(_ref) {
             _connect.MobxProvider,
             { store: root_store },
             _react2.default.createElement(
-                _reactRouterDom.Route,
-                { path: '/:lang/' },
+                _theme_wrapper2.default,
+                null,
                 _react2.default.createElement(
-                    _theme_wrapper2.default,
+                    'div',
+                    { id: 'header' },
+                    _react2.default.createElement(_header2.default, null)
+                ),
+                _react2.default.createElement(
+                    _error_boundary2.default,
                     null,
                     _react2.default.createElement(
-                        'div',
-                        { id: 'header' },
-                        _react2.default.createElement(_header2.default, null)
-                    ),
-                    _react2.default.createElement(
-                        _error_boundary2.default,
+                        _app_contents2.default,
                         null,
-                        _react2.default.createElement(
-                            _app_contents2.default,
-                            null,
-                            _react2.default.createElement(_routes2.default, null),
-                            _react2.default.createElement(_PortfolioDrawer2.default, null),
-                            _react2.default.createElement(_toast_message2.default, { position: _ToastMessage.POSITIONS.TOP_RIGHT })
-                        ),
-                        _react2.default.createElement(_DenialOfServiceModal2.default, { is_visible: !(0, _is_client_allowed_to_visit.isClientAllowedToVisit)() })
+                        _react2.default.createElement(_routes2.default, null),
+                        _react2.default.createElement(_PortfolioDrawer2.default, null),
+                        _react2.default.createElement(_toast_message2.default, { position: _ToastMessage.POSITIONS.TOP_RIGHT })
                     ),
-                    _react2.default.createElement(
-                        'footer',
-                        { id: 'footer' },
-                        _react2.default.createElement(_footer2.default, null)
-                    )
+                    _react2.default.createElement(_DenialOfServiceModal2.default, { is_visible: !(0, _is_client_allowed_to_visit.isClientAllowedToVisit)() })
+                ),
+                _react2.default.createElement(
+                    'footer',
+                    { id: 'footer' },
+                    _react2.default.createElement(_footer2.default, null)
                 )
             )
         )
@@ -17103,23 +17518,19 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
 
-var _url = __webpack_require__(/*! ../../../../../_common/url */ "./src/javascript/_common/url.js");
-
-var _url2 = _interopRequireDefault(_url);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // TODO: use BinaryLink once it supports nested routes
 var MenuItem = function MenuItem(_ref) {
     var title = _ref.title,
+        Icon = _ref.Icon,
         description = _ref.description,
-        img_src = _ref.img_src,
         path = _ref.path;
 
     var itemContent = _react2.default.createElement(
         _react2.default.Fragment,
         null,
-        _react2.default.createElement('img', { className: 'menu-item__img', src: _url2.default.urlForStatic(img_src) }),
+        _react2.default.createElement(Icon, null),
         _react2.default.createElement(
             'div',
             { className: 'menu-item__content' },
@@ -17149,7 +17560,7 @@ var MenuItem = function MenuItem(_ref) {
 
 MenuItem.propTypes = {
     description: _propTypes2.default.string,
-    img_src: _propTypes2.default.string,
+    Icon: _propTypes2.default.element,
     path: _propTypes2.default.string,
     title: _propTypes2.default.string
 };
@@ -17194,13 +17605,13 @@ var MenuList = function MenuList(_ref) {
         items.map(function (_ref2, i) {
             var title = _ref2.title,
                 description = _ref2.description,
-                img_src = _ref2.img_src,
+                Icon = _ref2.Icon,
                 path = _ref2.path;
             return _react2.default.createElement(_menu_item2.default, {
                 key: i,
                 title: title,
                 description: description,
-                img_src: img_src,
+                Icon: Icon,
                 path: path
             });
         })
@@ -17210,7 +17621,7 @@ var MenuList = function MenuList(_ref) {
 MenuList.propTypes = {
     items: _propTypes2.default.arrayOf(_propTypes2.default.shape({
         description: _propTypes2.default.string,
-        img_src: _propTypes2.default.string,
+        Icon: _propTypes2.default.element,
         path: _propTypes2.default.string,
         title: _propTypes2.default.string
     }))
@@ -17313,7 +17724,7 @@ var MobileDropdown = function (_React$Component) {
                             var title = _ref2.title,
                                 description = _ref2.description,
                                 path = _ref2.path,
-                                img_src = _ref2.img_src;
+                                Icon = _ref2.Icon;
                             return _react2.default.createElement(_reactRouterDom.Route, {
                                 key: path,
                                 path: path,
@@ -17321,7 +17732,7 @@ var MobileDropdown = function (_React$Component) {
                                     return _react2.default.createElement(_menu_item2.default, {
                                         title: title,
                                         description: description,
-                                        img_src: img_src
+                                        Icon: Icon
                                     });
                                 }
                             });
@@ -17344,7 +17755,7 @@ var MobileDropdown = function (_React$Component) {
 MobileDropdown.propTypes = {
     all_items: _propTypes2.default.arrayOf(_propTypes2.default.shape({
         description: _propTypes2.default.string,
-        img_src: _propTypes2.default.string,
+        Icon: _propTypes2.default.element,
         path: _propTypes2.default.string,
         title: _propTypes2.default.string
     })),
@@ -17946,6 +18357,42 @@ Object.defineProperty(exports, "__esModule", {
 
 var _localize = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js");
 
+var _icPersonalDetails = __webpack_require__(/*! ../../../../images/app_2/settings/ic-personal-details.svg */ "./src/images/app_2/settings/ic-personal-details.svg");
+
+var _icPersonalDetails2 = _interopRequireDefault(_icPersonalDetails);
+
+var _icFinancialAssesment = __webpack_require__(/*! ../../../../images/app_2/settings/ic-financial-assesment.svg */ "./src/images/app_2/settings/ic-financial-assesment.svg");
+
+var _icFinancialAssesment2 = _interopRequireDefault(_icFinancialAssesment);
+
+var _icAccountPassword = __webpack_require__(/*! ../../../../images/app_2/settings/ic-account-password.svg */ "./src/images/app_2/settings/ic-account-password.svg");
+
+var _icAccountPassword2 = _interopRequireDefault(_icAccountPassword);
+
+var _icCashierPassword = __webpack_require__(/*! ../../../../images/app_2/settings/ic-cashier-password.svg */ "./src/images/app_2/settings/ic-cashier-password.svg");
+
+var _icCashierPassword2 = _interopRequireDefault(_icCashierPassword);
+
+var _icSelfExclusion = __webpack_require__(/*! ../../../../images/app_2/settings/ic-self-exclusion.svg */ "./src/images/app_2/settings/ic-self-exclusion.svg");
+
+var _icSelfExclusion2 = _interopRequireDefault(_icSelfExclusion);
+
+var _icLimits = __webpack_require__(/*! ../../../../images/app_2/settings/ic-limits.svg */ "./src/images/app_2/settings/ic-limits.svg");
+
+var _icLimits2 = _interopRequireDefault(_icLimits);
+
+var _icLoginHistory = __webpack_require__(/*! ../../../../images/app_2/settings/ic-login-history.svg */ "./src/images/app_2/settings/ic-login-history.svg");
+
+var _icLoginHistory2 = _interopRequireDefault(_icLoginHistory);
+
+var _icApiToken = __webpack_require__(/*! ../../../../images/app_2/settings/ic-api-token.svg */ "./src/images/app_2/settings/ic-api-token.svg");
+
+var _icApiToken2 = _interopRequireDefault(_icApiToken);
+
+var _icAuthorisedApplications = __webpack_require__(/*! ../../../../images/app_2/settings/ic-authorised-applications.svg */ "./src/images/app_2/settings/ic-authorised-applications.svg");
+
+var _icAuthorisedApplications2 = _interopRequireDefault(_icAuthorisedApplications);
+
 var _account_password = __webpack_require__(/*! ./sections/account_password.jsx */ "./src/javascript/app_2/Modules/settings/sections/account_password.jsx");
 
 var _account_password2 = _interopRequireDefault(_account_password);
@@ -17989,12 +18436,12 @@ var data = [{
     items: [{
         title: (0, _localize.localize)('Personal Details'),
         description: (0, _localize.localize)('View your personal information.'),
-        img_src: 'images/settings/ic-personal-details.svg',
+        Icon: _icPersonalDetails2.default,
         Component: _personal_details2.default
     }, {
         title: (0, _localize.localize)('Financial Assessment'),
         description: (0, _localize.localize)('View your financial assessment settings'),
-        img_src: 'images/settings/ic-financial-assesment.svg',
+        Icon: _icFinancialAssesment2.default,
         Component: _financial_assessment2.default
     }]
 }, {
@@ -18002,37 +18449,37 @@ var data = [{
     items: [{
         title: (0, _localize.localize)('Account Password'),
         description: (0, _localize.localize)('Change your main login password.'),
-        img_src: 'images/settings/ic-account-password.svg',
+        Icon: _icAccountPassword2.default,
         Component: _account_password2.default
     }, {
         title: (0, _localize.localize)('Cashier Password'),
         description: (0, _localize.localize)('Change the password used for deposits and withdrawals'),
-        img_src: 'images/settings/ic-cashier-password.svg',
+        Icon: _icCashierPassword2.default,
         Component: _cashier_password2.default
     }, {
         title: (0, _localize.localize)('Self Exclusion'),
         description: (0, _localize.localize)('Facility that allows you to set limits on your account.'),
-        img_src: 'images/settings/ic-self-exclusion.svg',
+        Icon: _icSelfExclusion2.default,
         Component: _self_exclusion2.default
     }, {
         title: (0, _localize.localize)('Limits'),
         description: (0, _localize.localize)('View your trading and withdrawal limits'),
-        img_src: 'images/settings/ic-limits.svg',
+        Icon: _icLimits2.default,
         Component: _limits2.default
     }, {
         title: (0, _localize.localize)('Login History'),
         description: (0, _localize.localize)('View your login history'),
-        img_src: 'images/settings/ic-login-history.svg',
+        Icon: _icLoginHistory2.default,
         Component: _login_history2.default
     }, {
         title: (0, _localize.localize)('API Token'),
         description: (0, _localize.localize)('API token for third party applications'),
-        img_src: 'images/settings/ic-api-token.svg',
+        Icon: _icApiToken2.default,
         Component: _api_token2.default
     }, {
         title: (0, _localize.localize)('Authorized Applications'),
         description: (0, _localize.localize)('Manage your authorised applications'),
-        img_src: 'images/settings/ic-authorised-applications.svg',
+        Icon: _icAuthorisedApplications2.default,
         Component: _authorized_applications2.default
     }]
 }];
@@ -18083,7 +18530,7 @@ var switchAccount = exports.switchAccount = function switchAccount(loginid) {
     }
     sessionStorage.setItem('active_tab', '1');
     // set local storage
-    _gtm2.default.setLoginFlag();
+    _gtm2.default.setLoginFlag('account_switch');
     _client_base2.default.set('cashier_confirmed', 0);
     _client_base2.default.set('accepted_bch', 0);
     _client_base2.default.set('loginid', loginid);
@@ -18232,6 +18679,64 @@ var NetworkMonitor = function () {
 }();
 
 exports.default = NetworkMonitor;
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/Services/outdated_browser.js":
+/*!***********************************************************!*\
+  !*** ./src/javascript/app_2/Services/outdated_browser.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
+
+var _localize = __webpack_require__(/*! ../../_common/localize */ "./src/javascript/_common/localize.js");
+
+var common_store = void 0;
+
+var OutdatedBrowser = function () {
+    var init = function init(store) {
+        common_store = store.common;
+
+        var src = '//browser-update.org/update.min.js';
+        if (document.querySelector('script[src*="' + src + '"]')) return;
+        window.$buoop = {
+            vs: { i: 11, f: -4, o: -4, s: 9, c: -4 },
+            api: 4,
+            url: 'https://whatbrowser.org/',
+            noclose: true, // Do not show the 'ignore' button to close the notification
+            reminder: 0, // show all the time
+            onshow: updateStore,
+            nomessage: true,
+            insecure: true
+        };
+        if (document.body) {
+            var script = document.createElement('script');
+            script.setAttribute('src', src);
+            document.body.appendChild(script);
+        }
+    };
+
+    var updateStore = (0, _mobx.action)('showError', function () {
+        if (common_store) {
+            common_store.showError((0, _localize.localize)('Your web browser is out of date and may affect your trading experience. Proceed at your own risk.'));
+        }
+    });
+
+    return {
+        init: init
+    };
+}();
+
+exports.default = OutdatedBrowser;
 
 /***/ }),
 
@@ -23779,7 +24284,7 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
+var _dec, _dec2, _dec3, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
 
 var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
 
@@ -23789,15 +24294,11 @@ var _moment2 = _interopRequireDefault(_moment);
 
 var _Language = __webpack_require__(/*! ../Utils/Language */ "./src/javascript/app_2/Utils/Language/index.js");
 
-var _language = __webpack_require__(/*! ../../_common/language */ "./src/javascript/_common/language.js");
-
 var _base_store = __webpack_require__(/*! ./base_store */ "./src/javascript/app_2/Stores/base_store.js");
 
 var _base_store2 = _interopRequireDefault(_base_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _initDefineProp(target, property, descriptor, context) {
     if (!descriptor) return;
@@ -23848,32 +24349,21 @@ function _initializerWarningHelper(descriptor, context) {
     throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
-var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, _dec5 = _mobx.action.bound, _dec6 = _mobx.action.bound, _dec7 = _mobx.action.bound, (_class = function (_BaseStore) {
+var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, (_class = function (_BaseStore) {
     _inherits(CommonStore, _BaseStore);
 
     function CommonStore() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
         _classCallCheck(this, CommonStore);
 
-        var _this = _possibleConstructorReturn(this, (CommonStore.__proto__ || Object.getPrototypeOf(CommonStore)).call(this));
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
 
-        _initDefineProp(_this, 'server_time', _descriptor, _this);
-
-        _initDefineProp(_this, 'current_language', _descriptor2, _this);
-
-        _initDefineProp(_this, 'has_error', _descriptor3, _this);
-
-        _initDefineProp(_this, 'error', _descriptor4, _this);
-
-        _initDefineProp(_this, 'network_status', _descriptor5, _this);
-
-        _initDefineProp(_this, 'is_network_online', _descriptor6, _this);
-
-        _initDefineProp(_this, 'is_socket_opened', _descriptor7, _this);
-
-        _initDefineProp(_this, 'languages', _descriptor8, _this);
-
-        _this.bootLanguage();
-        return _this;
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = CommonStore.__proto__ || Object.getPrototypeOf(CommonStore)).call.apply(_ref, [this].concat(args))), _this), _initDefineProp(_this, 'server_time', _descriptor, _this), _initDefineProp(_this, 'current_language', _descriptor2, _this), _initDefineProp(_this, 'has_error', _descriptor3, _this), _initDefineProp(_this, 'error', _descriptor4, _this), _initDefineProp(_this, 'network_status', _descriptor5, _this), _initDefineProp(_this, 'is_network_online', _descriptor6, _this), _initDefineProp(_this, 'is_socket_opened', _descriptor7, _this), _temp), _possibleConstructorReturn(_this, _ret);
     }
 
     _createClass(CommonStore, [{
@@ -23896,81 +24386,6 @@ var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
             this.setError(true, {
                 message: message,
                 type: 'error'
-            });
-        }
-    }, {
-        key: 'setLanguage',
-        value: function setLanguage(lang) {
-            this.current_language = lang;
-        }
-    }, {
-        key: 'switchLanguage',
-        value: function () {
-            var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(lang) {
-                var _this2 = this;
-
-                var body;
-                return regeneratorRuntime.wrap(function _callee$(_context) {
-                    while (1) {
-                        switch (_context.prev = _context.next) {
-                            case 0:
-                                _context.next = 2;
-                                return this.fetchNewLanguage(lang);
-
-                            case 2:
-                                this.fetchNewLanguage(lang);
-                                (0, _mobx.runInAction)(function () {
-                                    _this2.current_language = lang;
-                                });
-                                body = document.querySelector('body');
-
-                                body.classList.remove(this.current_language.toUpperCase());
-                                body.classList.add(lang);
-                                history.pushState({}, 'Switching language', (0, _language.urlFor)(lang));
-
-                            case 8:
-                            case 'end':
-                                return _context.stop();
-                        }
-                    }
-                }, _callee, this);
-            }));
-
-            function switchLanguage(_x) {
-                return _ref.apply(this, arguments);
-            }
-
-            return switchLanguage;
-        }()
-    }, {
-        key: 'bootLanguage',
-        value: function bootLanguage() {
-            this.languages[_Language.currentLanguage] = texts_json[_Language.currentLanguage];
-        }
-    }, {
-        key: 'fetchNewLanguage',
-        value: function fetchNewLanguage(lang) {
-            var _this3 = this;
-
-            return new Promise(function (resolve, reject) {
-                if (!_this3.languages[lang]) {
-                    var language = document.createElement('script');
-                    language.src = '/app/js/texts/' + lang.toLowerCase() + '.js';
-                    language.async = true;
-                    document.querySelector('body').appendChild(language);
-
-                    language.addEventListener('load', function () {
-                        _this3.isLoaded = true;
-                        resolve(language);
-                    });
-
-                    language.addEventListener('error', function () {
-                        reject(new Error(_this3.src + ' failed to load.'));
-                    });
-                }
-                resolve({
-                    'message': 'Already loaded.'
-                });
             });
         }
     }]);
@@ -24014,12 +24429,7 @@ var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
     initializer: function initializer() {
         return false;
     }
-}), _descriptor8 = _applyDecoratedDescriptor(_class.prototype, 'languages', [_mobx.observable], {
-    enumerable: true,
-    initializer: function initializer() {
-        return {};
-    }
-}), _applyDecoratedDescriptor(_class.prototype, 'setIsSocketOpened', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'setIsSocketOpened'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setError', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'setError'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showError', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'showError'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setLanguage', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'setLanguage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'switchLanguage', [_dec5], Object.getOwnPropertyDescriptor(_class.prototype, 'switchLanguage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'bootLanguage', [_dec6], Object.getOwnPropertyDescriptor(_class.prototype, 'bootLanguage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'fetchNewLanguage', [_dec7], Object.getOwnPropertyDescriptor(_class.prototype, 'fetchNewLanguage'), _class.prototype)), _class));
+}), _applyDecoratedDescriptor(_class.prototype, 'setIsSocketOpened', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'setIsSocketOpened'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setError', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'setError'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showError', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'showError'), _class.prototype)), _class));
 exports.default = CommonStore;
 
 /***/ }),
@@ -24904,9 +25314,10 @@ var getPropFromStores = function getPropFromStores(prop) {
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
-// import { getAll as getAllLanguages } from '_common/language';
+
+var _language = __webpack_require__(/*! ../../../_common/language */ "./src/javascript/_common/language.js");
 
 /*
  * Retrieves basename from current url
@@ -24914,16 +25325,14 @@ Object.defineProperty(exports, "__esModule", {
  * @return {string} returns the basename of current url
  */
 var getBaseName = function getBaseName() {
-  return (
-    // const regex_string = `(.*app/(${Object.keys(getAllLanguages()).join('|')})(/index\\.html)?).*`;
-    // const basename = new RegExp(regex_string, 'ig').exec(window.location.pathname);
-    //
-    // if (basename && basename.length) {
-    //     return basename[1];
-    // }
+    var regex_string = '(.*app/(' + Object.keys((0, _language.getAll)()).join('|') + ')(/index\\.html)?).*';
+    var basename = new RegExp(regex_string, 'ig').exec(window.location.pathname);
 
-    '/app/'
-  );
+    if (basename && basename.length) {
+        return basename[1];
+    }
+
+    return '/app/en/';
 };
 
 exports.default = getBaseName;
