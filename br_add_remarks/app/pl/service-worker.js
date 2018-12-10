@@ -37,7 +37,7 @@
 /* eslint-disable indent, no-unused-vars, no-multiple-empty-lines, max-nested-callbacks, space-before-function-paren, quotes, comma-spacing */
 'use strict';
 
-var precacheConfig = [["/br_add_remarks/app/js/binary.js","42dcfa636079ebf9bc28a6e441a5f424"],["/br_add_remarks/app/js/binary_common.min.js","406998e16e2fd01af4c480f19aefe1c6"],["/br_add_remarks/app/js/react_mobx.min.js","3cc436a41fb7b3e317603b80ab04523d"],["/br_add_remarks/app/js/smartcharts.min.js","cc1bececf6371ce7370185729164e94e"],["/br_add_remarks/app/js/vendor.min.js","e7d2f5379bb1b2bf7108ce299787533f"]];
+var precacheConfig = [["/br_add_remarks/app/js/binary.js","4bad5f9e5576c3ddda7a28af01e86d12"],["/br_add_remarks/app/js/binary_common.min.js","406998e16e2fd01af4c480f19aefe1c6"],["/br_add_remarks/app/js/react_mobx.min.js","3cc436a41fb7b3e317603b80ab04523d"],["/br_add_remarks/app/js/smartcharts.min.js","cc1bececf6371ce7370185729164e94e"],["/br_add_remarks/app/js/vendor.min.js","e7d2f5379bb1b2bf7108ce299787533f"]];
 var cacheName = 'sw-precache-v3-sw-precache-webpack-plugin-' + (self.registration ? self.registration.scope : '');
 
 
