@@ -23022,10 +23022,6 @@ var _lodash2 = _interopRequireDefault(_lodash);
 
 var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
 
-var _client_base = __webpack_require__(/*! ../../../../_common/base/client_base */ "./src/javascript/_common/base/client_base.js");
-
-var _client_base2 = _interopRequireDefault(_client_base);
-
 var _currency_base = __webpack_require__(/*! ../../../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js");
 
 var _socket_base = __webpack_require__(/*! ../../../../_common/base/socket_base */ "./src/javascript/_common/base/socket_base.js");
@@ -23035,6 +23031,10 @@ var _socket_base2 = _interopRequireDefault(_socket_base);
 var _localize = __webpack_require__(/*! ../../../../_common/localize */ "./src/javascript/_common/localize.js");
 
 var _utility = __webpack_require__(/*! ../../../../_common/utility */ "./src/javascript/_common/utility.js");
+
+var _client_base = __webpack_require__(/*! ../../../../_common/base/client_base */ "./src/javascript/_common/base/client_base.js");
+
+var _client_base2 = _interopRequireDefault(_client_base);
 
 var _Services = __webpack_require__(/*! ../../../Services */ "./src/javascript/app_2/Services/index.js");
 
@@ -23380,7 +23380,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                         throw new Error('Proposal ID does not match.');
                     }
                     if (response.buy) {
-                        var contract_data = _extends({}, _this3.π[type], _this3.proposal_info[type], {
+                        var contract_data = _extends({}, _this3.proposal_requests[type], _this3.proposal_info[type], {
                             buy_price: response.buy.buy_price
                         });
                         _gtm2.default.pushPurchaseData(contract_data, _this3.root_store);
