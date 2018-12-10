@@ -2565,14 +2565,3 @@ a.previous-wrapper {
                 padding: 5px;
                 margin: 0 0 10px;
                 font-weight: normal; } }
-
-.paymentagent_description {
-  height: 4em;
-  width: 206px; }
-
-#statement-table td.desc {
-  font-size: smaller; }
-
-#statement-table td.date {
-  font-size: smaller;
-  min-width: 101px; }

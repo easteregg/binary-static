@@ -1,0 +1,9 @@
+{
+  "binary.js": "/br_add_remarks/app/js/binary.js",
+  "binary.js.map": "/br_add_remarks/app/js/binary.js.map",
+  "binary_common.js": "/br_add_remarks/app/js/binary_common.min.js",
+  "binary_common.js.map": "/br_add_remarks/app/js/binary_common.min.js.map",
+  "react_mobx.js": "/br_add_remarks/app/js/react_mobx.min.js",
+  "smartcharts.js": "/br_add_remarks/app/js/smartcharts.min.js",
+  "vendor.js": "/br_add_remarks/app/js/vendor.min.js"
+}
