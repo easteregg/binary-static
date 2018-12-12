@@ -37,7 +37,7 @@
 /* eslint-disable indent, no-unused-vars, no-multiple-empty-lines, max-nested-callbacks, space-before-function-paren, quotes, comma-spacing */
 'use strict';
 
-var precacheConfig = [["/br_no-client-reload-while-switching/app/js/binary.js","75f5c4a53f9f867b4f3a592c5563596f"],["/br_no-client-reload-while-switching/app/js/binary_common.min.js","b1369795be06388b02e62e79b7753383"],["/br_no-client-reload-while-switching/app/js/react_mobx.min.js","3cc436a41fb7b3e317603b80ab04523d"],["/br_no-client-reload-while-switching/app/js/smartcharts.min.js","cc1bececf6371ce7370185729164e94e"],["/br_no-client-reload-while-switching/app/js/vendor.min.js","e7d2f5379bb1b2bf7108ce299787533f"]];
+var precacheConfig = [["/br_no-client-reload-while-switching/app/js/binary.js","5adb46862dad333fbf07c873b60d1d7f"],["/br_no-client-reload-while-switching/app/js/binary_common.min.js","b1369795be06388b02e62e79b7753383"],["/br_no-client-reload-while-switching/app/js/react_mobx.min.js","3cc436a41fb7b3e317603b80ab04523d"],["/br_no-client-reload-while-switching/app/js/smartcharts.min.js","cc1bececf6371ce7370185729164e94e"],["/br_no-client-reload-while-switching/app/js/vendor.min.js","e7d2f5379bb1b2bf7108ce299787533f"]];
 var cacheName = 'sw-precache-v3-sw-precache-webpack-plugin-' + (self.registration ? self.registration.scope : '');
 
 

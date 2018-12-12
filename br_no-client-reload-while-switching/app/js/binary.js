@@ -7111,15 +7111,17 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactTransitionGroup = __webpack_require__(/*! react-transition-group */ "./node_modules/react-transition-group/index.js");
 
-var _AccountSwitcher = __webpack_require__(/*! ../../../Containers/AccountSwitcher */ "./src/javascript/app_2/App/Containers/AccountSwitcher/index.js");
-
-var _Common = __webpack_require__(/*! ../../../../Assets/Common */ "./src/javascript/app_2/Assets/Common/index.js");
-
 var _localize = __webpack_require__(/*! ../../Elements/localize.jsx */ "./src/javascript/app_2/App/Components/Elements/localize.jsx");
 
 var _localize2 = _interopRequireDefault(_localize);
 
+var _AccountSwitcher = __webpack_require__(/*! ../../../Containers/AccountSwitcher */ "./src/javascript/app_2/App/Containers/AccountSwitcher/index.js");
+
+var _Common = __webpack_require__(/*! ../../../../Assets/Common */ "./src/javascript/app_2/Assets/Common/index.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// todo fix absolute path
 
 var AccountInfo = function AccountInfo(_ref) {
     var balance = _ref.balance,
@@ -7650,13 +7652,13 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _route_with_sub_routes = __webpack_require__(/*! ./route_with_sub_routes.jsx */ "./src/javascript/app_2/App/Components/Routes/route_with_sub_routes.jsx");
-
-var _route_with_sub_routes2 = _interopRequireDefault(_route_with_sub_routes);
-
 var _routes_config = __webpack_require__(/*! ../../Constants/routes_config */ "./src/javascript/app_2/App/Constants/routes_config.js");
 
 var _routes_config2 = _interopRequireDefault(_routes_config);
+
+var _route_with_sub_routes = __webpack_require__(/*! ./route_with_sub_routes.jsx */ "./src/javascript/app_2/App/Components/Routes/route_with_sub_routes.jsx");
+
+var _route_with_sub_routes2 = _interopRequireDefault(_route_with_sub_routes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8192,7 +8194,6 @@ AccountSwitcher.propTypes = {
     toggle: _propTypes2.default.func
 };
 
-// TODO connect only computed method.
 var account_switcher = (0, _connect.connect)(function (_ref3) {
     var client = _ref3.client;
     return {
@@ -8266,11 +8267,11 @@ var _full_page_modal = __webpack_require__(/*! ../../Components/Elements/FullPag
 
 var _full_page_modal2 = _interopRequireDefault(_full_page_modal);
 
-var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
-
 var _localize2 = __webpack_require__(/*! ../../Components/Elements/localize.jsx */ "./src/javascript/app_2/App/Components/Elements/localize.jsx");
 
 var _localize3 = _interopRequireDefault(_localize2);
+
+var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8386,7 +8387,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _localize = __webpack_require__(/*! ../../../../_common/localize */ "./src/javascript/_common/localize.js");
 
-var _Drawer = __webpack_require__(/*! ../../../Assets/Header/Drawer */ "./src/javascript/app_2/Assets/Header/Drawer/index.js");
+var _Drawer = __webpack_require__(/*! ../../Components/Elements/Drawer */ "./src/javascript/app_2/App/Components/Elements/Drawer/index.js");
+
+var _Drawer2 = __webpack_require__(/*! ../../../Assets/Header/Drawer */ "./src/javascript/app_2/Assets/Header/Drawer/index.js");
 
 var _NavBar = __webpack_require__(/*! ../../../Assets/Header/NavBar */ "./src/javascript/app_2/Assets/Header/NavBar/index.js");
 
@@ -8397,8 +8400,6 @@ var _routes2 = _interopRequireDefault(_routes);
 var _Services = __webpack_require__(/*! ../../../Services */ "./src/javascript/app_2/Services/index.js");
 
 var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
-
-var _Drawer2 = __webpack_require__(/*! ../../Components/Elements/Drawer */ "./src/javascript/app_2/App/Components/Elements/Drawer/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8420,28 +8421,28 @@ var MenuDrawer = function MenuDrawer(_ref) {
             is_mobile && _react2.default.createElement(
                 _react2.default.Fragment,
                 null,
-                _react2.default.createElement(_Drawer2.DrawerItem, {
+                _react2.default.createElement(_Drawer.DrawerItem, {
                     text: (0, _localize.localize)('Trade'),
                     icon: _react2.default.createElement(_NavBar.IconTrade, { className: 'drawer-icon' }),
                     link_to: _routes2.default.trade
                 }),
-                _react2.default.createElement(_Drawer2.DrawerItem, {
+                _react2.default.createElement(_Drawer.DrawerItem, {
                     text: (0, _localize.localize)('Portfolio'),
                     icon: _react2.default.createElement(_NavBar.IconPortfolio, { className: 'drawer-icon' }),
                     link_to: _routes2.default.portfolio
                 }),
-                _react2.default.createElement(_Drawer2.DrawerItem, {
+                _react2.default.createElement(_Drawer.DrawerItem, {
                     text: (0, _localize.localize)('Statement'),
                     icon: _react2.default.createElement(_NavBar.IconStatement, { className: 'drawer-icon' }),
                     link_to: _routes2.default.statement
                 }),
                 _react2.default.createElement('hr', null),
-                _react2.default.createElement(_Drawer2.DrawerToggle, {
+                _react2.default.createElement(_Drawer.DrawerToggle, {
                     text: (0, _localize.localize)('Dark Mode'),
                     toggle: toggleDarkMode,
                     to_toggle: is_dark_mode
                 }),
-                _react2.default.createElement(_Drawer2.DrawerToggle, {
+                _react2.default.createElement(_Drawer.DrawerToggle, {
                     text: (0, _localize.localize)('Purchase Lock'),
                     toggle: togglePurchaseLock,
                     to_toggle: is_purchase_locked
@@ -8451,8 +8452,8 @@ var MenuDrawer = function MenuDrawer(_ref) {
         !!(is_logged_in && is_mobile) && _react2.default.createElement(
             'div',
             { className: 'drawer-footer' },
-            _react2.default.createElement(_Drawer2.DrawerItem, {
-                icon: _react2.default.createElement(_Drawer.IconLogout, { className: 'drawer-icon' }),
+            _react2.default.createElement(_Drawer.DrawerItem, {
+                icon: _react2.default.createElement(_Drawer2.IconLogout, { className: 'drawer-icon' }),
                 text: (0, _localize.localize)('Logout'),
                 custom_action: function custom_action() {
                     if (is_portfolio_drawer_on) {
@@ -8479,8 +8480,8 @@ MenuDrawer.propTypes = {
 };
 
 exports.default = (0, _connect.connect)(function (_ref2) {
-    var ui = _ref2.ui,
-        client = _ref2.client;
+    var client = _ref2.client,
+        ui = _ref2.ui;
     return {
         is_logged_in: client.is_logged_in,
         is_dark_mode: ui.is_dark_mode_on,
@@ -8673,13 +8674,13 @@ var _reactRouter = __webpack_require__(/*! react-router */ "./node_modules/react
 
 var _currency_base = __webpack_require__(/*! ../../../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js");
 
-var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
-
 var _Header = __webpack_require__(/*! ../../Components/Layout/Header */ "./src/javascript/app_2/App/Components/Layout/Header/index.js");
 
 var _header_links = __webpack_require__(/*! ../../Constants/header_links */ "./src/javascript/app_2/App/Constants/header_links.js");
 
 var _header_links2 = _interopRequireDefault(_header_links);
+
+var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8775,8 +8776,8 @@ Header.propTypes = {
 // need to wrap withRouter around connect
 // to prevent updates on <MenuLinks /> from being blocked
 exports.default = (0, _reactRouter.withRouter)((0, _connect.connect)(function (_ref2) {
-    var ui = _ref2.ui,
-        client = _ref2.client;
+    var client = _ref2.client,
+        ui = _ref2.ui;
     return {
         account_type: client.account_title,
         balance: client.balance,
@@ -8885,8 +8886,6 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = __webpack_require__(/*! react-router */ "./node_modules/react-router/es/index.js");
 
-var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
-
 var _Errors = __webpack_require__(/*! ../../Components/Elements/Errors */ "./src/javascript/app_2/App/Components/Elements/Errors/index.js");
 
 var _Errors2 = _interopRequireDefault(_Errors);
@@ -8894,6 +8893,8 @@ var _Errors2 = _interopRequireDefault(_Errors);
 var _Routes = __webpack_require__(/*! ../../Components/Routes */ "./src/javascript/app_2/App/Components/Routes/index.js");
 
 var _Routes2 = _interopRequireDefault(_Routes);
+
+var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8914,12 +8915,12 @@ Routes.propTypes = {
 // need to wrap withRouter around connect
 // to prevent updates on <BinaryRoutes /> from being blocked
 exports.default = (0, _reactRouter.withRouter)((0, _connect.connect)(function (_ref) {
-    var common = _ref.common,
-        client = _ref.client;
+    var client = _ref.client,
+        common = _ref.common;
     return {
+        is_logged_in: client.is_logged_in,
         error: common.error,
-        has_error: common.has_error,
-        is_logged_in: client.is_logged_in
+        has_error: common.has_error
     };
 })(Routes));
 
@@ -17101,12 +17102,13 @@ Purchase.propTypes = {
 };
 
 exports.default = (0, _connect.connect)(function (_ref2) {
-    var modules = _ref2.modules,
-        ui = _ref2.ui,
-        client = _ref2.client;
+    var client = _ref2.client,
+        modules = _ref2.modules,
+        ui = _ref2.ui;
     return {
-        barrier_count: modules.trade.barrier_count,
         currency: client.currency,
+        is_client_allowed_to_visit: client.is_client_allowed_to_visit,
+        barrier_count: modules.trade.barrier_count,
         is_purchase_enabled: modules.trade.is_purchase_enabled,
         is_trade_enabled: modules.trade.is_trade_enabled,
         onClickPurchase: modules.trade.onPurchase,
@@ -17117,8 +17119,7 @@ exports.default = (0, _connect.connect)(function (_ref2) {
         trade_types: modules.trade.trade_types,
         is_purchase_confirm_on: ui.is_purchase_confirm_on,
         is_purchase_locked: ui.is_purchase_lock_on,
-        togglePurchaseLock: ui.togglePurchaseLock,
-        is_client_allowed_to_visit: client.is_client_allowed_to_visit
+        togglePurchaseLock: ui.togglePurchaseLock
     };
 })(Purchase);
 
@@ -17524,14 +17525,14 @@ TradeParams.propTypes = {
 };
 
 exports.default = (0, _connect.connect)(function (_ref3) {
-    var common = _ref3.common,
-        modules = _ref3.modules,
-        client = _ref3.client;
+    var client = _ref3.client,
+        common = _ref3.common,
+        modules = _ref3.modules;
     return {
+        client_store: client,
         server_time: common.server_time,
         form_components: modules.trade.form_components,
-        trade_store: modules.trade,
-        client_store: client
+        trade_store: modules.trade
     };
 })(TradeParams);
 
@@ -18906,12 +18907,12 @@ var BinarySocketGeneral = function () {
                         _ws_methods2.default.getAccountStatus();
                         _ws_methods2.default.payoutCurrencies();
                         _ws_methods2.default.mt5LoginList();
-                        setResidence(response.authorize.country || client_store.current_account.residence);
+                        setResidence(response.authorize.country || client_store.accounts[client_store.loginid].residence);
                         if (!client_store.is_virtual) {
                             _ws_methods2.default.getSelfExclusion();
                         }
                         _socket_base2.default.sendBuffered();
-                        if (/bch/i.test(response.authorize.currency) && !client_store.current_account.accepted_bch) {
+                        if (/bch/i.test(response.authorize.currency) && !client_store.accounts[client_store.loginid].accepted_bch) {
                             // showPopup({
                             //     url        : urlFor('user/warning'),
                             //     popup_id   : 'warning_popup',
@@ -20439,9 +20440,13 @@ var PortfolioStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _de
     }, {
         key: 'accountSwitcherListener',
         value: function accountSwitcherListener() {
-            if (this.data.length === 0) {
-                this.initializePortfolio();
-            }
+            var _this3 = this;
+
+            return new Promise(function (resolve) {
+                if (_this3.data.length === 0) {
+                    resolve(_this3.initializePortfolio());
+                }
+            });
         }
     }, {
         key: 'onMount',
@@ -20482,10 +20487,10 @@ var PortfolioStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _de
     }, {
         key: 'active_positions',
         get: function get() {
-            var _this3 = this;
+            var _this4 = this;
 
             return this.data.filter(function (portfolio_pos) {
-                var server_epoch = _this3.root_store.common.server_time.unix();
+                var server_epoch = _this4.root_store.common.server_time.unix();
                 return portfolio_pos.expiry_time > server_epoch;
             });
         }
@@ -20515,15 +20520,15 @@ var PortfolioStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _de
 }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'initializePortfolio', [_dec], {
     enumerable: true,
     initializer: function initializer() {
-        var _this4 = this;
+        var _this5 = this;
 
         return function () {
-            if (!_this4.root_store.client.is_logged_in) return;
-            _this4.is_loading = true;
+            if (!_this5.root_store.client.is_logged_in) return;
+            _this5.is_loading = true;
 
-            _Services.WS.portfolio().then(_this4.portfolioHandler);
-            _Services.WS.subscribeProposalOpenContract(null, _this4.proposalOpenContractHandler, false);
-            _Services.WS.subscribeTransaction(_this4.transactionHandler, false);
+            _Services.WS.portfolio().then(_this5.portfolioHandler);
+            _Services.WS.subscribeProposalOpenContract(null, _this5.proposalOpenContractHandler, false);
+            _Services.WS.subscribeTransaction(_this5.transactionHandler, false);
         };
     }
 }), _applyDecoratedDescriptor(_class.prototype, 'clearTable', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'clearTable'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'portfolioHandler', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'portfolioHandler'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'transactionHandler', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'transactionHandler'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'proposalOpenContractHandler', [_dec5], Object.getOwnPropertyDescriptor(_class.prototype, 'proposalOpenContractHandler'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'pushNewPosition', [_dec6], Object.getOwnPropertyDescriptor(_class.prototype, 'pushNewPosition'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removePositionById', [_dec7], Object.getOwnPropertyDescriptor(_class.prototype, 'removePositionById'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'accountSwitcherListener', [_dec8], Object.getOwnPropertyDescriptor(_class.prototype, 'accountSwitcherListener'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onMount', [_dec9], Object.getOwnPropertyDescriptor(_class.prototype, 'onMount'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onUnmount', [_dec10], Object.getOwnPropertyDescriptor(_class.prototype, 'onUnmount'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'totals', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'totals'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'active_positions', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'active_positions'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_empty', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_empty'), _class.prototype)), _class));
@@ -21433,26 +21438,18 @@ var batch_size = 100; // request response limit
 var StatementStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, _dec5 = _mobx.action.bound, _dec6 = _mobx.action.bound, _dec7 = _mobx.action.bound, _dec8 = _mobx.action.bound, _dec9 = _mobx.action.bound, (_class = function (_BaseStore) {
     _inherits(StatementStore, _BaseStore);
 
-    function StatementStore(_ref) {
-        var root_store = _ref.root_store;
+    function StatementStore() {
+        var _ref;
+
+        var _temp, _this, _ret;
 
         _classCallCheck(this, StatementStore);
 
-        var _this = _possibleConstructorReturn(this, (StatementStore.__proto__ || Object.getPrototypeOf(StatementStore)).call(this, { root_store: root_store }));
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
 
-        _initDefineProp(_this, 'data', _descriptor, _this);
-
-        _initDefineProp(_this, 'is_loading', _descriptor2, _this);
-
-        _initDefineProp(_this, 'has_loaded_all', _descriptor3, _this);
-
-        _initDefineProp(_this, 'date_from', _descriptor4, _this);
-
-        _initDefineProp(_this, 'date_to', _descriptor5, _this);
-
-        _initDefineProp(_this, 'error', _descriptor6, _this);
-
-        return _this;
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = StatementStore.__proto__ || Object.getPrototypeOf(StatementStore)).call.apply(_ref, [this].concat(args))), _this), _initDefineProp(_this, 'data', _descriptor, _this), _initDefineProp(_this, 'is_loading', _descriptor2, _this), _initDefineProp(_this, 'has_loaded_all', _descriptor3, _this), _initDefineProp(_this, 'date_from', _descriptor4, _this), _initDefineProp(_this, 'date_to', _descriptor5, _this), _initDefineProp(_this, 'error', _descriptor6, _this), _temp), _possibleConstructorReturn(_this, _ret);
     }
 
     _createClass(StatementStore, [{
@@ -21553,18 +21550,28 @@ var StatementStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _de
         }
     }, {
         key: 'accountSwitcherListener',
+        value: function accountSwitcherListener() {
+            var _this3 = this;
+
+            return new Promise(function (resolve) {
+                _this3.clearTable();
+                _this3.clearDateFilter();
+                return resolve(_this3.fetchNextBatch());
+            });
+        }
+    }, {
+        key: 'onMount',
         value: function () {
             var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
                 return regeneratorRuntime.wrap(function _callee2$(_context2) {
                     while (1) {
                         switch (_context2.prev = _context2.next) {
                             case 0:
-                                this.clearTable();
-                                this.clearDateFilter();
-                                _context2.next = 4;
+                                this.onSwitchAccount(this.accountSwitcherListener);
+                                _context2.next = 3;
                                 return this.fetchNextBatch();
 
-                            case 4:
+                            case 3:
                             case 'end':
                                 return _context2.stop();
                         }
@@ -21572,34 +21579,8 @@ var StatementStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _de
                 }, _callee2, this);
             }));
 
-            function accountSwitcherListener() {
-                return _ref3.apply(this, arguments);
-            }
-
-            return accountSwitcherListener;
-        }()
-    }, {
-        key: 'onMount',
-        value: function () {
-            var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-                return regeneratorRuntime.wrap(function _callee3$(_context3) {
-                    while (1) {
-                        switch (_context3.prev = _context3.next) {
-                            case 0:
-                                this.onSwitchAccount(this.accountSwitcherListener);
-                                _context3.next = 3;
-                                return this.fetchNextBatch();
-
-                            case 3:
-                            case 'end':
-                                return _context3.stop();
-                        }
-                    }
-                }, _callee3, this);
-            }));
-
             function onMount() {
-                return _ref4.apply(this, arguments);
+                return _ref3.apply(this, arguments);
             }
 
             return onMount;
@@ -23018,6 +22999,10 @@ var _currency_base = __webpack_require__(/*! ../../../../_common/base/currency_b
 
 var _Services = __webpack_require__(/*! ../../../Services */ "./src/javascript/app_2/Services/index.js");
 
+var _base_store = __webpack_require__(/*! ../../base_store */ "./src/javascript/app_2/Stores/base_store.js");
+
+var _base_store2 = _interopRequireDefault(_base_store);
+
 var _gtm = __webpack_require__(/*! ../../../Utils/gtm */ "./src/javascript/app_2/Utils/gtm.js");
 
 var _gtm2 = _interopRequireDefault(_gtm);
@@ -23051,10 +23036,6 @@ var _process = __webpack_require__(/*! ./Helpers/process */ "./src/javascript/ap
 var _proposal = __webpack_require__(/*! ./Helpers/proposal */ "./src/javascript/app_2/Stores/Modules/Trading/Helpers/proposal.js");
 
 var _symbol2 = __webpack_require__(/*! ./Helpers/symbol */ "./src/javascript/app_2/Stores/Modules/Trading/Helpers/symbol.js");
-
-var _base_store = __webpack_require__(/*! ../../base_store */ "./src/javascript/app_2/Stores/base_store.js");
-
-var _base_store2 = _interopRequireDefault(_base_store);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -23590,56 +23571,58 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
         }
     }, {
         key: 'accountSwitcherListener',
-        value: function () {
-            var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-                return regeneratorRuntime.wrap(function _callee4$(_context4) {
-                    while (1) {
-                        switch (_context4.prev = _context4.next) {
-                            case 0:
-                                _context4.next = 2;
-                                return this.refresh();
+        value: function accountSwitcherListener() {
+            var _this6 = this;
 
-                            case 2:
-                                _context4.next = 4;
-                                return this.prepareTradeStore();
+            return new Promise(function () {
+                var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(resolve) {
+                    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                        while (1) {
+                            switch (_context4.prev = _context4.next) {
+                                case 0:
+                                    _context4.next = 2;
+                                    return _this6.refresh();
 
-                            case 4:
-                                this.debouncedProposal();
+                                case 2:
+                                    _context4.next = 4;
+                                    return _this6.prepareTradeStore();
 
-                            case 5:
-                            case 'end':
-                                return _context4.stop();
+                                case 4:
+                                    return _context4.abrupt('return', resolve(_this6.debouncedProposal()));
+
+                                case 5:
+                                case 'end':
+                                    return _context4.stop();
+                            }
                         }
-                    }
-                }, _callee4, this);
-            }));
+                    }, _callee4, _this6);
+                }));
 
-            function accountSwitcherListener() {
-                return _ref5.apply(this, arguments);
-            }
-
-            return accountSwitcherListener;
-        }()
+                return function (_x3) {
+                    return _ref5.apply(this, arguments);
+                };
+            }());
+        }
     }, {
         key: 'onMount',
         value: function () {
             var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-                var _this6 = this;
+                var _this7 = this;
 
                 return regeneratorRuntime.wrap(function _callee5$(_context5) {
                     while (1) {
                         switch (_context5.prev = _context5.next) {
                             case 0:
-                                this.onSwitchAccount(this.accountSwitcherListener);
-                                _context5.next = 3;
+                                _context5.next = 2;
                                 return this.prepareTradeStore();
 
-                            case 3:
+                            case 2:
                                 this.debouncedProposal();
                                 (0, _mobx.runInAction)(function () {
-                                    _this6.is_trade_component_mounted = true;
+                                    _this7.is_trade_component_mounted = true;
                                 });
                                 this.updateQueryString();
+                                this.onSwitchAccount(this.accountSwitcherListener);
 
                             case 6:
                             case 'end':
@@ -23816,7 +23799,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
 }), _descriptor31 = _applyDecoratedDescriptor(_class.prototype, 'init', [_dec], {
     enumerable: true,
     initializer: function initializer() {
-        var _this7 = this;
+        var _this8 = this;
 
         return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
             return regeneratorRuntime.wrap(function _callee6$(_context6) {
@@ -23831,7 +23814,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                             return _context6.stop();
                     }
                 }
-            }, _callee6, _this7);
+            }, _callee6, _this8);
         }));
     }
 }), _applyDecoratedDescriptor(_class.prototype, 'refresh', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'refresh'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'prepareTradeStore', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'prepareTradeStore'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onChange', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'onChange'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onHoverPurchase', [_dec5], Object.getOwnPropertyDescriptor(_class.prototype, 'onHoverPurchase'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onPurchase', [_dec6], Object.getOwnPropertyDescriptor(_class.prototype, 'onPurchase'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onClickNewTrade', [_dec7], Object.getOwnPropertyDescriptor(_class.prototype, 'onClickNewTrade'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateStore', [_dec8], Object.getOwnPropertyDescriptor(_class.prototype, 'updateStore'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'requestProposal', [_dec9], Object.getOwnPropertyDescriptor(_class.prototype, 'requestProposal'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onProposalResponse', [_dec10], Object.getOwnPropertyDescriptor(_class.prototype, 'onProposalResponse'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onChartBarrierChange', [_dec11], Object.getOwnPropertyDescriptor(_class.prototype, 'onChartBarrierChange'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateQueryString', [_dec12], Object.getOwnPropertyDescriptor(_class.prototype, 'updateQueryString'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'changeDurationValidationRules', [_dec13], Object.getOwnPropertyDescriptor(_class.prototype, 'changeDurationValidationRules'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'accountSwitcherListener', [_dec14], Object.getOwnPropertyDescriptor(_class.prototype, 'accountSwitcherListener'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onMount', [_dec15], Object.getOwnPropertyDescriptor(_class.prototype, 'onMount'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onUnmount', [_dec16], Object.getOwnPropertyDescriptor(_class.prototype, 'onUnmount'), _class.prototype)), _class));
@@ -24257,33 +24240,42 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
                     while (1) {
                         switch (_context.prev = _context.next) {
                             case 0:
-                                if (!(_this8.root_store.client.switch_broadcast === false)) {
-                                    _context.next = 2;
+                                _context.prev = 0;
+                                result = _this8.switch_account_listener();
+
+                                if (!(result && result.then && typeof result.then === 'function')) {
+                                    _context.next = 6;
                                     break;
                                 }
 
-                                return _context.abrupt('return');
-
-                            case 2:
-                                result = _this8.switch_account_listener();
-
-                                if (result && typeof result.then === 'function') {
-                                    result.then(function () {
-                                        _this8.root_store.client.switchEndSignal();
-                                        _this8.onSwitchAccount(_this8.switch_account_listener);
-                                    });
-                                } else {
+                                result.then(function () {
                                     _this8.root_store.client.switchEndSignal();
-                                    setTimeout(_this8.onSwitchAccount.bind(null, _this8.switch_account_listener), 1000);
-                                }
+                                    _this8.onSwitchAccount(_this8.switch_account_listener);
+                                });
+                                _context.next = 7;
+                                break;
 
-                            case 4:
+                            case 6:
+                                throw new Error('Switching account listeners are required to return a promise.');
+
+                            case 7:
+                                _context.next = 11;
+                                break;
+
+                            case 9:
+                                _context.prev = 9;
+                                _context.t0 = _context['catch'](0);
+
+                            case 11:
                             case 'end':
                                 return _context.stop();
                         }
                     }
-                }, _callee, _this8);
-            })));
+                }, _callee, _this8, [[0, 9]]);
+            }))
+            // there is no listener currently active. so we can just ignore the error raised from treating
+            // a null object as a function.
+            );
             this.switch_account_listener = listener;
         }
     }, {
@@ -24335,13 +24327,15 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _dec15, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
 
 var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
 
 var _moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 
 var _moment2 = _interopRequireDefault(_moment);
+
+var _Services = __webpack_require__(/*! ../Services */ "./src/javascript/app_2/Services/index.js");
 
 var _client_base = __webpack_require__(/*! ../../_common/base/client_base */ "./src/javascript/_common/base/client_base.js");
 
@@ -24366,8 +24360,6 @@ var _base_store = __webpack_require__(/*! ./base_store */ "./src/javascript/app_
 var _base_store2 = _interopRequireDefault(_base_store);
 
 var _currency = __webpack_require__(/*! ./Modules/Trading/Helpers/currency */ "./src/javascript/app_2/Stores/Modules/Trading/Helpers/currency.js");
-
-var _Services = __webpack_require__(/*! ../Services */ "./src/javascript/app_2/Services/index.js");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -24425,7 +24417,7 @@ function _initializerWarningHelper(descriptor, context) {
 }
 
 var storage_key = 'client.accounts';
-var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, _dec5 = _mobx.action.bound, _dec6 = _mobx.action.bound, _dec7 = _mobx.action.bound, _dec8 = _mobx.action.bound, _dec9 = _mobx.action.bound, _dec10 = _mobx.action.bound, _dec11 = _mobx.action.bound, _dec12 = _mobx.action.bound, _dec13 = _mobx.action.bound, _dec14 = _mobx.action.bound, (_class = function (_BaseStore) {
+var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, _dec5 = _mobx.action.bound, _dec6 = _mobx.action.bound, _dec7 = _mobx.action.bound, _dec8 = _mobx.action.bound, _dec9 = _mobx.action.bound, _dec10 = _mobx.action.bound, _dec11 = _mobx.action.bound, _dec12 = _mobx.action.bound, _dec13 = _mobx.action.bound, _dec14 = _mobx.action.bound, _dec15 = _mobx.action.bound, (_class = function (_BaseStore) {
     _inherits(ClientStore, _BaseStore);
 
     function ClientStore(root_store) {
@@ -24664,50 +24656,88 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
             this.switch_broadcast = true;
         }
     }, {
-        key: 'registerReactions',
-        value: function registerReactions() {
-            var _this4 = this;
+        key: 'switchAccountHandler',
+        value: function () {
+            var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+                var _this4 = this;
 
-            // Switch account reactions.
-            (0, _mobx.when)(function () {
-                return _this4.switched;
-            }, _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
                 return regeneratorRuntime.wrap(function _callee2$(_context2) {
                     while (1) {
                         switch (_context2.prev = _context2.next) {
                             case 0:
-                                if (!(!_this4.switched || !_this4.switched.length || !_this4.getAccount(_this4.switched).token)) {
-                                    _context2.next = 2;
+                                if (!(!this.switched || !this.switched.length || !this.getAccount(this.switched).token)) {
+                                    _context2.next = 9;
                                     break;
                                 }
 
+                                // Send a toast message to let the user know we can't switch his account.
+                                this.root_store.ui.addToastMessage({
+                                    message: (0, _localize.localize)('Switching to default account.'),
+                                    type: 'info'
+                                });
+
+                                // Logout if the switched_account doesn't belong to any loginid.
+
+                                if (!(!this.all_loginids.some(function (id) {
+                                    return id !== _this4.switched;
+                                }) || this.switched === this.loginid)) {
+                                    _context2.next = 5;
+                                    break;
+                                }
+
+                                // request a logout
+                                (0, _Services.requestLogout)();
                                 return _context2.abrupt('return');
 
-                            case 2:
+                            case 5:
+
+                                // switch to default account.
+                                this.switchAccount(this.all_loginids[0]);
+                                _context2.next = 8;
+                                return this.switchAccountHandler();
+
+                            case 8:
+                                return _context2.abrupt('return');
+
+                            case 9:
                                 sessionStorage.setItem('active_tab', '1');
                                 // set local storage
                                 _gtm2.default.setLoginFlag();
-                                _this4.resetLocalStorageValues(_this4.switched);
+                                this.resetLocalStorageValues(this.switched);
                                 SocketCache.clear();
-                                _context2.next = 8;
-                                return _socket_base2.default.send({ 'authorize': _this4.getToken() }, { forced: true });
+                                _context2.next = 15;
+                                return _socket_base2.default.send({ 'authorize': this.getToken() }, { forced: true });
 
-                            case 8:
-                                _context2.next = 10;
-                                return _this4.init();
+                            case 15:
+                                _context2.next = 17;
+                                return this.init();
 
-                            case 10:
-                                _this4.broadcastAccountChange();
+                            case 17:
+                                this.broadcastAccountChange();
 
-                            case 11:
+                            case 18:
                             case 'end':
                                 return _context2.stop();
                         }
                     }
-                }, _callee2, _this4);
-            })), {
-                name: 'accountSwitchedReaction'
-            });
+                }, _callee2, this);
+            }));
+
+            function switchAccountHandler() {
+                return _ref2.apply(this, arguments);
+            }
+
+            return switchAccountHandler;
+        }()
+    }, {
+        key: 'registerReactions',
+        value: function registerReactions() {
+            var _this5 = this;
+
+            // Switch account reactions.
+            (0, _mobx.when)(function () {
+                return _this5.switched;
+            }, this.switchAccountHandler);
         }
     }, {
         key: 'setBalance',
@@ -24750,10 +24780,10 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
     }, {
         key: 'account_list',
         get: function get() {
-            var _this5 = this;
+            var _this6 = this;
 
             return this.all_loginids.map(function (id) {
-                return id !== _this5.loginid && !_this5.isDisabled(id) && _this5.getToken(id) ? _this5.getAccountInfo(id) : undefined;
+                return id !== _this6.loginid && !_this6.isDisabled(id) && _this6.getToken(id) ? _this6.getAccountInfo(id) : undefined;
             }).filter(function (account) {
                 return account;
             });
@@ -24797,9 +24827,9 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
         key: 'is_valid_login',
         get: function get() {
             if (!this.is_logged_in) return true;
-            var valid_login_ids = new RegExp('^(MX|MF|VRTC|MLT|CR|FOG)[0-9]+$', 'i');
+            var valid_login_ids_regex = new RegExp('^(MX|MF|VRTC|MLT|CR|FOG)[0-9]+$', 'i');
             return this.all_loginids.every(function (id) {
-                return valid_login_ids.test(id);
+                return valid_login_ids_regex.test(id);
             });
         }
     }, {
@@ -24820,10 +24850,10 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
     }, {
         key: 'virtual_account_loginid',
         get: function get() {
-            var _this6 = this;
+            var _this7 = this;
 
             return this.all_loginids.filter(function (loginid) {
-                return !!_this6.accounts[loginid].is_virtual;
+                return !!_this7.accounts[loginid].is_virtual;
             }).reduce(function (loginid) {
                 return loginid;
             });
@@ -24831,10 +24861,10 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
     }, {
         key: 'is_single_currency',
         get: function get() {
-            var _this7 = this;
+            var _this8 = this;
 
             return Object.keys(this.currencies_list).map(function (type) {
-                return Object.values(_this7.currencies_list[type]).length;
+                return Object.values(_this8.currencies_list[type]).length;
             }).reduce(function (acc, cur) {
                 return acc + cur;
             }, 0) === 1;
@@ -24878,7 +24908,7 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
     initializer: function initializer() {
         return '';
     }
-}), _applyDecoratedDescriptor(_class.prototype, 'balance', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'balance'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_client_allowed_to_visit', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_client_allowed_to_visit'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'account_list', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'account_list'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'active_accounts', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'active_accounts'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'all_loginids', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'all_loginids'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'account_title', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'account_title'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'currency', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'currency'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'default_currency', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'default_currency'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_valid_login', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_valid_login'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_logged_in', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_logged_in'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_virtual', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_virtual'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'can_upgrade', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'can_upgrade'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'virtual_account_loginid', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'virtual_account_loginid'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_single_currency', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_single_currency'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'resetLocalStorageValues', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'resetLocalStorageValues'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'getBasicUpgradeInfo', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'getBasicUpgradeInfo'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'responsePayoutCurrencies', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'responsePayoutCurrencies'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'responseAuthorize', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'responseAuthorize'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateAccountList', [_dec5], Object.getOwnPropertyDescriptor(_class.prototype, 'updateAccountList'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'switchAccount', [_dec6], Object.getOwnPropertyDescriptor(_class.prototype, 'switchAccount'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'switchEndSignal', [_dec7], Object.getOwnPropertyDescriptor(_class.prototype, 'switchEndSignal'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'init', [_dec8], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'broadcastAccountChange', [_dec9], Object.getOwnPropertyDescriptor(_class.prototype, 'broadcastAccountChange'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'registerReactions', [_dec10], Object.getOwnPropertyDescriptor(_class.prototype, 'registerReactions'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setBalance', [_dec11], Object.getOwnPropertyDescriptor(_class.prototype, 'setBalance'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'selectCurrency', [_dec12], Object.getOwnPropertyDescriptor(_class.prototype, 'selectCurrency'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setResidence', [_dec13], Object.getOwnPropertyDescriptor(_class.prototype, 'setResidence'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setEmail', [_dec14], Object.getOwnPropertyDescriptor(_class.prototype, 'setEmail'), _class.prototype)), _class));
+}), _applyDecoratedDescriptor(_class.prototype, 'balance', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'balance'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_client_allowed_to_visit', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_client_allowed_to_visit'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'account_list', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'account_list'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'active_accounts', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'active_accounts'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'all_loginids', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'all_loginids'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'account_title', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'account_title'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'currency', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'currency'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'default_currency', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'default_currency'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_valid_login', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_valid_login'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_logged_in', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_logged_in'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_virtual', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_virtual'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'can_upgrade', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'can_upgrade'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'virtual_account_loginid', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'virtual_account_loginid'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_single_currency', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_single_currency'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'resetLocalStorageValues', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'resetLocalStorageValues'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'getBasicUpgradeInfo', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'getBasicUpgradeInfo'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'responsePayoutCurrencies', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'responsePayoutCurrencies'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'responseAuthorize', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'responseAuthorize'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateAccountList', [_dec5], Object.getOwnPropertyDescriptor(_class.prototype, 'updateAccountList'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'switchAccount', [_dec6], Object.getOwnPropertyDescriptor(_class.prototype, 'switchAccount'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'switchEndSignal', [_dec7], Object.getOwnPropertyDescriptor(_class.prototype, 'switchEndSignal'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'init', [_dec8], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'broadcastAccountChange', [_dec9], Object.getOwnPropertyDescriptor(_class.prototype, 'broadcastAccountChange'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'switchAccountHandler', [_dec10], Object.getOwnPropertyDescriptor(_class.prototype, 'switchAccountHandler'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'registerReactions', [_dec11], Object.getOwnPropertyDescriptor(_class.prototype, 'registerReactions'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setBalance', [_dec12], Object.getOwnPropertyDescriptor(_class.prototype, 'setBalance'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'selectCurrency', [_dec13], Object.getOwnPropertyDescriptor(_class.prototype, 'selectCurrency'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setResidence', [_dec14], Object.getOwnPropertyDescriptor(_class.prototype, 'setResidence'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setEmail', [_dec15], Object.getOwnPropertyDescriptor(_class.prototype, 'setEmail'), _class.prototype)), _class));
 exports.default = ClientStore;
 
 /***/ }),
@@ -26801,7 +26831,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '15034'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
