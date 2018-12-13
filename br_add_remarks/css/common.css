@@ -1328,11 +1328,8 @@ table {
     padding-left: 5px !important;
     padding-right: 5px !important; } }
 
-.table-container #statement-table td, .table-container #statement-table tr div .td, .table-container tr div #statement-table .td {
-  font-size: smaller; }
-
 .table-container #statement-table td.date, .table-container #statement-table tr div .date.td, .table-container tr div #statement-table .date.td {
-  min-width: 101px; }
+  max-width: 136px; }
 
 .table-container #statement-table tr > th.details, .table-container #statement-table tr > td.details, .table-container #statement-table tr div tr > .details.td, .table-container tr div #statement-table tr > .details.td, .table-container #profit-table tr > th.details, .table-container #profit-table tr > td.details, .table-container #profit-table tr div tr > .details.td, .table-container tr div #profit-table tr > .details.td {
   display: none !important; }
@@ -1341,7 +1338,7 @@ table {
   overflow: initial; }
 
 .table-container #statement-table tr td.desc, .table-container #statement-table tr div .desc.td, .table-container #profit-table tr td.desc, .table-container #profit-table tr div .desc.td {
-  max-width: 30em;
+  max-width: 120px;
   overflow-wrap: break-word; }
 
 @media (max-width: 600px) {
