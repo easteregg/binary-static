@@ -1328,9 +1328,6 @@ table {
     padding-left: 5px !important;
     padding-right: 5px !important; } }
 
-.table-container #statement-table td.desc, .table-container #statement-table tr div .desc.td, .table-container tr div #statement-table .desc.td {
-  font-size: smaller; }
-
 .table-container #statement-table td.date, .table-container #statement-table tr div .date.td, .table-container tr div #statement-table .date.td {
   min-width: 101px; }
 
