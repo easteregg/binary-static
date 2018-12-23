@@ -741,8 +741,22 @@ var getMinWithdrawal = function getMinWithdrawal(currency) {
     return isCryptocurrency(currency) ? getPropertyValue(CryptoConfig.get(), [currency, 'min_withdrawal']) || 0.002 : 1;
 };
 
+// returns in a string format, e.g. '0.00000001'
 var getMinTransfer = function getMinTransfer(currency) {
-    return getPropertyValue(currencies_config, [currency, 'limits', 'transfer_between_accounts', 'min']) || getMinWithdrawal(currency);
+    var min_transfer = getPropertyValue(currencies_config, [currency, 'transfer_between_accounts', 'limits', 'min']) || getMinWithdrawal(currency);
+    var decimals = getDecimalPlaces(currency);
+    return min_transfer.toFixed(decimals); // we need toFixed() so that it doesn't display in scientific notation, e.g. 1e-8 for currencies with 8 decimal places
+};
+
+var getTransferFee = function getTransferFee(currency_from, currency_to) {
+    var transfer_fee = getPropertyValue(currencies_config, [currency_from, 'transfer_between_accounts', 'fees', currency_to]);
+    return (typeof transfer_fee === 'undefined' ? '1' : transfer_fee) + '%';
+};
+
+// returns in a string format, e.g. '0.00000001'
+var getMinimumTransferFee = function getMinimumTransferFee(currency) {
+    var decimals = getDecimalPlaces(currency);
+    return currency + ' ' + (1 / Math.pow(10, decimals)).toFixed(decimals); // we need toFixed() so that it doesn't display in scientific notation, e.g. 1e-8 for currencies with 8 decimal places
 };
 
 // @param {String} limit = max|min
@@ -771,6 +785,8 @@ module.exports = {
     getCurrencyName: getCurrencyName,
     getMinWithdrawal: getMinWithdrawal,
     getMinTransfer: getMinTransfer,
+    getTransferFee: getTransferFee,
+    getMinimumTransferFee: getMinimumTransferFee,
     getMinPayout: getMinPayout,
     getPaWithdrawalLimit: getPaWithdrawalLimit,
     getCurrencies: function getCurrencies() {
@@ -802,7 +818,7 @@ var Elevio = function () {
         if (!window._elev) return; // eslint-disable-line no-underscore-dangle
         window._elev.on('load', function (elev) {
             // eslint-disable-line no-underscore-dangle
-            var available_elev_languages = ['id', 'ru'];
+            var available_elev_languages = ['es', 'id', 'pt', 'ru'];
             var current_language = getLanguage().toLowerCase();
             if (available_elev_languages.indexOf(current_language) !== -1) {
                 window._elev.setLanguage(current_language); // eslint-disable-line no-underscore-dangle
@@ -896,7 +912,7 @@ var getAppId = __webpack_require__(/*! ../../config */ "./src/javascript/config.
 
 var GTM = function () {
     var isGtmApplicable = function isGtmApplicable() {
-        return (/^(1|1098|14473)$/.test(getAppId())
+        return (/^(1|1098|14473|15284)$/.test(getAppId())
         );
     };
 
@@ -7363,6 +7379,30 @@ if (!('includes' in Array.prototype)) {
 
 /***/ }),
 
+/***/ "./src/javascript/_common/lib/polyfills/element.closest.js":
+/*!*****************************************************************!*\
+  !*** ./src/javascript/_common/lib/polyfills/element.closest.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+if (!Element.prototype.closest) {
+    Element.prototype.closest = function (s) {
+        var el = this;
+        if (!document.documentElement.contains(el)) return null;
+        do {
+            if (el.matches(s)) return el;
+            el = el.parentElement || el.parentNode;
+        } while (el !== null && el.nodeType === 1);
+        return null;
+    };
+}
+
+/***/ }),
+
 /***/ "./src/javascript/_common/lib/polyfills/element.matches.js":
 /*!*****************************************************************!*\
   !*** ./src/javascript/_common/lib/polyfills/element.matches.js ***!
@@ -9042,6 +9082,8 @@ module.exports = {
 "use strict";
 
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var BinaryPjax = __webpack_require__(/*! ./binary_pjax */ "./src/javascript/app/base/binary_pjax.js");
 var pages_config = __webpack_require__(/*! ./binary_pages */ "./src/javascript/app/base/binary_pages.js");
 var Client = __webpack_require__(/*! ./client */ "./src/javascript/app/base/client.js");
@@ -9108,10 +9150,10 @@ var BinaryLoader = function () {
         GTM.pushDataLayer({ event: 'page_load' });
 
         var this_page = e.detail.getAttribute('data-page');
-        if (this_page in pages_config) {
-            loadHandler(pages_config[this_page]);
+        if (Object.prototype.hasOwnProperty.call(pages_config, this_page)) {
+            loadHandler(this_page);
         } else if (/\/get-started\//i.test(window.location.pathname)) {
-            loadHandler(pages_config['get-started']);
+            loadHandler('get-started');
         }
 
         ContentVisibility.init();
@@ -9133,7 +9175,8 @@ var BinaryLoader = function () {
         }
     };
 
-    var loadHandler = function loadHandler(config) {
+    var loadHandler = function loadHandler(this_page) {
+        var config = _extends({}, pages_config[this_page]);
         active_script = config.module;
         if (config.is_authenticated) {
             if (!Client.isLoggedIn()) {
@@ -9152,7 +9195,11 @@ var BinaryLoader = function () {
                 });
             }
         } else if (config.not_authenticated && Client.isLoggedIn()) {
-            handleNotAuthenticated();
+            if (this_page === 'home') {
+                BinaryPjax.load(Client.defaultRedirectUrl(), true);
+            } else {
+                handleNotAuthenticated();
+            }
         } else {
             loadActiveScript(config);
         }
@@ -9194,12 +9241,16 @@ var BinaryLoader = function () {
     };
 
     var handleNotAuthenticated = function handleNotAuthenticated() {
-        var content = container.querySelector('#content .container');
+        var content = container.querySelector('#content');
         if (!content) {
             return;
         }
+        content.classList.add('container');
 
-        var outer_container = createElement('div', { class: 'logged_out_title_container', html: content.getElementsByTagName('h1')[0] });
+        var outer_container = createElement('div', { class: 'logged_out_title_container' });
+        outer_container.appendChild(container.querySelector('#page_info'));
+        outer_container.appendChild(container.getElementsByTagName('h1')[0]);
+
         var rowDiv = function rowDiv(element) {
             var row_element = createElement('div', { class: 'gr-padding-10' });
             row_element.appendChild(element);
@@ -9291,7 +9342,7 @@ var TNCApproval = __webpack_require__(/*! ../pages/user/tnc_approval */ "./src/j
 var VideoFacility = __webpack_require__(/*! ../pages/user/video_facility */ "./src/javascript/app/pages/user/video_facility.js");
 
 // ==================== static ====================
-var Charity = __webpack_require__(/*! ../../static/pages/charity */ "./src/javascript/static/pages/charity.js");
+// const Charity            = require('../../static/pages/charity');
 var Contact = __webpack_require__(/*! ../../static/pages/contact */ "./src/javascript/static/pages/contact.js");
 var Contact2 = __webpack_require__(/*! ../../static/pages/contact_2 */ "./src/javascript/static/pages/contact_2.js");
 var GetStarted = __webpack_require__(/*! ../../static/pages/get_started */ "./src/javascript/static/pages/get_started.js");
@@ -9316,7 +9367,7 @@ var pages_config = {
     cashier: { module: Cashier },
     cashier_passwordws: { module: CashierPassword, is_authenticated: true, only_real: true },
     change_passwordws: { module: ChangePassword, is_authenticated: true },
-    charity: { module: Charity },
+    // charity                  : { module: Charity },
     contact: { module: Contact },
     detailsws: { module: PersonalDetails, is_authenticated: true, needs_currency: true },
     economic_calendar: { module: EconomicCalendar },
@@ -9496,6 +9547,8 @@ var BinaryPjax = function () {
         // check if url is not same as current or if url has `anchor` query
         if (location.href !== url || Url.paramsHash().anchor) {
             processUrl(url);
+        } else {
+            $.scrollTo('body', 500);
         }
 
         // workaround to remove non-error notification msg for chrome bug where users logout from different browser window
@@ -9714,6 +9767,9 @@ var Client = function () {
         if (response.logout !== 1) return;
         removeCookies('login', 'loginid', 'loginid_list', 'email', 'residence', 'settings'); // backward compatibility
         removeCookies('reality_check', 'affiliate_token', 'affiliate_tracking');
+        // clear elev.io session storage
+        sessionStorage.removeItem('_elevaddon-6app');
+        sessionStorage.removeItem('_elevaddon-6create');
         ClientBase.clearAllAccounts();
         ClientBase.set('loginid', '');
         SocketCache.clear();
@@ -11545,15 +11601,18 @@ var toISOFormat = __webpack_require__(/*! ../../../_common/string_util */ "./src
 
 var generateBirthDate = function generateBirthDate() {
     var date_of_birth = '#date_of_birth';
-    DatePicker.init({
-        selector: date_of_birth,
-        minDate: -100 * 365,
-        maxDate: -18 * 365 - 5,
-        yearRange: '-100:-18'
-    });
-    $(date_of_birth).attr('data-value', toISOFormat(moment())).change(function () {
-        return dateValueChanged(this, 'date');
-    }).val('');
+
+    if (!$(date_of_birth).val()) {
+        DatePicker.init({
+            selector: date_of_birth,
+            minDate: -100 * 365,
+            maxDate: -18 * 365 - 5,
+            yearRange: '-100:-18'
+        });
+        $(date_of_birth).attr('data-value', toISOFormat(moment())).change(function () {
+            return dateValueChanged(this, 'date');
+        }).val('');
+    }
 };
 
 module.exports = generateBirthDate;
@@ -13895,6 +13954,8 @@ var AccountTransfer = function () {
         el_transfer_to = void 0,
         el_reset_transfer = void 0,
         el_transfer_fee = void 0,
+        el_fee_amount = void 0,
+        el_fee_minimum = void 0,
         el_transfer_info = void 0,
         el_success_form = void 0,
         client_balance = void 0,
@@ -13914,6 +13975,7 @@ var AccountTransfer = function () {
         accounts.forEach(function (account) {
             if (Client.canTransferFunds(account)) {
                 var option = document.createElement('option');
+                option.setAttribute('data-currency', account.currency);
                 option.appendChild(document.createTextNode('' + account.loginid + (account.currency ? ' (' + account.currency + ')' : '')));
                 fragment_transfer_to.appendChild(option);
             }
@@ -13925,8 +13987,16 @@ var AccountTransfer = function () {
         }
         if (fragment_transfer_to.childElementCount > 1) {
             el_transfer_to.innerHTML = fragment_transfer_to.innerHTML;
+            el_transfer_to.onchange = function () {
+                var to_currency = el_transfer_to.options[el_transfer_to.selectedIndex].getAttribute('data-currency');
+                el_transfer_info.setVisibility(client_currency !== to_currency);
+                setTransferFeeAmount();
+            };
         } else {
-            var label = createElement('label', { 'data-value': fragment_transfer_to.innerText });
+            var label = createElement('label', {
+                'data-value': fragment_transfer_to.innerText,
+                'data-currency': fragment_transfer_to.firstChild.getAttribute('data-currency')
+            });
             label.appendChild(document.createTextNode(fragment_transfer_to.innerText));
             label.id = 'transfer_to';
 
@@ -13937,10 +14007,17 @@ var AccountTransfer = function () {
         showForm();
 
         if (Client.hasCurrencyType('crypto') && Client.hasCurrencyType('fiat')) {
+            setTransferFeeAmount();
+            elementTextContent(el_fee_minimum, Currency.getMinimumTransferFee(client_currency));
             el_transfer_fee.setVisibility(1);
         } else {
-            el_transfer_info.setVisibility(1);
+            var to_currency = el_transfer_to.getAttribute('data-currency');
+            el_transfer_info.setVisibility(client_currency !== to_currency);
         }
+    };
+
+    var setTransferFeeAmount = function setTransferFeeAmount() {
+        elementTextContent(el_fee_amount, Currency.getTransferFee(client_currency, (el_transfer_to.value || el_transfer_to.getAttribute('data-value') || '').match(/\((\w+)\)/)[1]));
     };
 
     var hasError = function hasError(response) {
@@ -14027,6 +14104,8 @@ var AccountTransfer = function () {
         }
 
         el_transfer_fee = getElementById('transfer_fee');
+        el_fee_amount = getElementById('transfer_fee_amount');
+        el_fee_minimum = getElementById('transfer_fee_minimum');
         el_transfer_info = getElementById('transfer_info');
         el_success_form = getElementById('success_form');
         el_reset_transfer = getElementById('reset_transfer');
@@ -14036,7 +14115,7 @@ var AccountTransfer = function () {
             client_balance = +getPropertyValue(response, ['balance', 'balance']);
             client_currency = Client.get('currency');
             var min_amount = Currency.getMinTransfer(client_currency);
-            if (!client_balance || client_balance < min_amount) {
+            if (!client_balance || client_balance < +min_amount) {
                 getElementById(messages.parent).setVisibility(1);
                 if (client_currency) {
                     elementTextContent(getElementById('min_required_amount'), client_currency + ' ' + min_amount);
@@ -14063,7 +14142,7 @@ var AccountTransfer = function () {
                         return;
                     }
                     withdrawal_limit = +response_limits.get_limits.remainder;
-                    if (withdrawal_limit < min_amount) {
+                    if (withdrawal_limit < +min_amount) {
                         getElementById(messages.limit).setVisibility(1);
                         getElementById(messages.parent).setVisibility(1);
                         return;
@@ -14135,8 +14214,7 @@ var Cashier = function () {
         BinarySocket.wait('authorize').then(function () {
             $('.cashier_note').setVisibility(Client.isLoggedIn() && // only show to logged-in clients
             !Client.get('is_virtual') && // only show to real accounts
-            !isCryptocurrency(Client.get('currency')) && // only show to fiat currencies
-            /^(vn|ng|lk|id)$/.test(Client.get('residence')) // only show to Vietnam, Nigeria, Sri Lanka, Indonesia
+            !isCryptocurrency(Client.get('currency')) // only show to fiat currencies
             );
         });
     };
@@ -20227,12 +20305,6 @@ var getSelectedOption = function getSelectedOption($selector) {
     return $selected_option;
 };
 
-var showAssetOpenHours = function showAssetOpenHours($selector) {
-    var $selected_option = $selector ? getSelectedOption($selector) : '';
-    var sessions = $selected_option ? $selected_option.attr('data-sessions') : '';
-    $('#asset_open_hours').text(sessions || '').parent().setVisibility(!!sessions);
-};
-
 module.exports = {
     displayPriceMovement: displayPriceMovement,
     countDecimalPlaces: countDecimalPlaces,
@@ -20241,7 +20313,6 @@ module.exports = {
     getSelectedOption: getSelectedOption,
     getMinMaxTimeStart: getMinMaxTimeStart,
     getMinMaxTimeEnd: getMinMaxTimeEnd,
-    showAssetOpenHours: showAssetOpenHours,
     getStartDateNode: getElement,
     getTradingTimes: function getTradingTimes() {
         return trading_times;
@@ -21912,8 +21983,6 @@ var TradingEvents = function () {
         if (date_start_element) {
             date_start_element.addEventListener('change', function (e) {
                 Defaults.set('date_start', e.target.value);
-                // don't show asset open hours if value is now because there is no time picker
-                CommonIndependent.showAssetOpenHours(e.target.value === 'now' ? '' : $(e.target));
                 initTimePicker();
                 var r = Durations.onStartDateChange(e.target.value);
                 Process.displayEquals();
@@ -22621,6 +22690,7 @@ var Markets = (_temp = _class = function (_React$Component) {
                             type: 'text',
                             maxLength: 20,
                             onInput: searchSymbols,
+                            onChange: searchSymbols,
                             placeholder: (0, _localize.localize)('Search...'),
                             value: query
                         }),
@@ -24378,12 +24448,11 @@ var StartDates = function () {
                     day = date_open.format('ddd - DD MMM, YYYY');
                     $duplicated_option = $(fragment).find('option:contains(' + day + ')');
                     if ($duplicated_option.length) {
-                        $duplicated_option.attr('data-sessions', $duplicated_option.attr('data-sessions') + ', ' + date_open.format('HH:mm') + '-' + date_close.format('HH:mm'));
                         if (+date_close.unix() > +$duplicated_option.attr('data-end')) {
                             $duplicated_option.attr('data-end', date_close.unix());
                         }
                     } else {
-                        option = createElement('option', { value: date_open.unix(), 'data-end': date_close.unix(), 'data-sessions': date_open.format('HH:mm') + '-' + date_close.format('HH:mm'), text: day });
+                        option = createElement('option', { value: date_open.unix(), 'data-end': date_close.unix(), text: day });
                         if (option.value >= default_start && !selected) {
                             selected = true;
                             option.setAttribute('selected', 'selected');
@@ -24399,7 +24468,6 @@ var StartDates = function () {
                 target.appendChild(fragment);
                 Dropdown('#date_start');
                 Defaults.set('date_start', target.value);
-                CommonIndependent.showAssetOpenHours(target.value === 'now' ? '' : $(target));
                 $('#time_start_row').setVisibility(target.value !== 'now');
             }
             State.set('is_start_dates_displayed', true);
@@ -28092,7 +28160,7 @@ var PersonalDetails = function () {
             el_id = '' + (should_show_label ? 'lbl_' : '') + key;
             el_key = CommonFunctions.getElementById(el_id);
             if (el_key) {
-                editable_fields[key] = get_settings[key];
+                editable_fields[key] = get_settings[key] !== null ? get_settings[key] : '';
                 if (populate) {
                     should_update_value = /select|text/i.test(el_key.type);
                     if (has_label) {
@@ -28202,10 +28270,15 @@ var PersonalDetails = function () {
                     $('#msg_main').setVisibility(1);
                     return;
                 }
-                getDetailsResponse(get_settings);
+                if (additionalCheck(get_settings)) {
+                    getDetailsResponse(get_settings);
+                    showFormMessage(localize('Your settings have been updated successfully.'), true);
+                }
             });
+        } else {
+            // is_error
+            showFormMessage(getPropertyValue(response, ['error', 'message']) || localize('Sorry, an error occurred while processing your account.'), false);
         }
-        showFormMessage(is_error ? getPropertyValue(response, ['error', 'message']) || localize('Sorry, an error occurred while processing your account.') : localize('Your settings have been updated successfully.'), !is_error);
     };
 
     var showFormMessage = function showFormMessage(localized_text, is_success) {
@@ -30703,8 +30776,9 @@ module.exports = MetaTrader;
 
 var MetaTraderConfig = __webpack_require__(/*! ./metatrader.config */ "./src/javascript/app/pages/user/metatrader/metatrader.config.js");
 var Client = __webpack_require__(/*! ../../../base/client */ "./src/javascript/app/base/client.js");
-var formatMoney = __webpack_require__(/*! ../../../common/currency */ "./src/javascript/app/common/currency.js").formatMoney;
+var Currency = __webpack_require__(/*! ../../../common/currency */ "./src/javascript/app/common/currency.js");
 var Validation = __webpack_require__(/*! ../../../common/form_validation */ "./src/javascript/app/common/form_validation.js");
+var getTransferFee = __webpack_require__(/*! ../../../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js").getTransferFee;
 var localize = __webpack_require__(/*! ../../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 var State = __webpack_require__(/*! ../../../../_common/storage */ "./src/javascript/_common/storage.js").State;
 var urlForStatic = __webpack_require__(/*! ../../../../_common/url */ "./src/javascript/_common/url.js").urlForStatic;
@@ -30857,7 +30931,7 @@ var MetaTraderUI = function () {
                 $list.find('#acc_group_real').setVisibility(1);
             }
             if (acc_type === Client.get('mt5_account')) {
-                var mt_balance = formatMoney(MetaTraderConfig.getCurrency(acc_type), +accounts_info[acc_type].info.balance);
+                var mt_balance = Currency.formatMoney(MetaTraderConfig.getCurrency(acc_type), +accounts_info[acc_type].info.balance);
                 $acc_item.find('.mt-balance').html(mt_balance);
                 $action.find('.mt5-balance').html(mt_balance);
             }
@@ -30889,7 +30963,7 @@ var MetaTraderUI = function () {
                 var info = accounts_info[acc_type].info[key];
                 var mapping = {
                     balance: function balance() {
-                        return isNaN(info) ? '' : formatMoney(MetaTraderConfig.getCurrency(acc_type), +info);
+                        return isNaN(info) ? '' : Currency.formatMoney(MetaTraderConfig.getCurrency(acc_type), +info);
                     },
                     leverage: function leverage() {
                         return '1:' + info;
@@ -30989,14 +31063,21 @@ var MetaTraderUI = function () {
             var mt_currency = MetaTraderConfig.getCurrency(acc_type);
             cloneForm();
             _$form.find('.binary-account').text('' + localize('[_1] Account [_2]', ['Binary', Client.get('loginid')]));
-            _$form.find('.binary-balance').html('' + formatMoney(client_currency, Client.get('balance')));
+            _$form.find('.binary-balance').html('' + Currency.formatMoney(client_currency, Client.get('balance')));
             _$form.find('.mt5-account').text('' + localize('[_1] Account [_2]', [accounts_info[acc_type].title, accounts_info[acc_type].info.login]));
-            _$form.find('.mt5-balance').html('' + formatMoney(mt_currency, accounts_info[acc_type].info.balance));
+            _$form.find('.mt5-balance').html('' + Currency.formatMoney(mt_currency, accounts_info[acc_type].info.balance));
             _$form.find('.symbols.mt-currency').addClass(mt_currency.toLowerCase());
             _$form.find('label[for="txt_amount_deposit"]').append(' ' + client_currency);
             _$form.find('label[for="txt_amount_withdrawal"]').append(' ' + mt_currency);
 
-            _$form.find('#txt_amount_deposit, #txt_amount_withdrawal').siblings('.hint').setVisibility(client_currency !== mt_currency);
+            var should_show_transfer_fee = client_currency !== mt_currency;
+            if (should_show_transfer_fee) {
+                $('#transfer_fee_amount_to').text(getTransferFee(client_currency, mt_currency));
+                $('#transfer_fee_minimum_to').text(Currency.getMinimumTransferFee(client_currency));
+                $('#transfer_fee_amount_from').text(getTransferFee(mt_currency, client_currency));
+                $('#transfer_fee_minimum_from').text(Currency.getMinimumTransferFee(mt_currency));
+            }
+            _$form.find('#txt_amount_deposit, #txt_amount_withdrawal').siblings('.hint').setVisibility(should_show_transfer_fee);
 
             ['deposit', 'withdrawal'].forEach(function (act) {
                 actions_info[act].prerequisites(acc_type).then(function (error_msg) {
@@ -31410,16 +31491,16 @@ var FinancialAccOpening = function () {
             Object.keys(get_settings).forEach(function (key) {
                 $element = $('#' + key);
                 value = get_settings[key];
-                if (key === 'date_of_birth') {
+                if (key === 'date_of_birth' && value) {
                     var moment_val = moment.utc(value * 1000);
                     get_settings[key] = moment_val.format('DD MMM, YYYY');
                     $element.attr({
                         'data-value': toISOFormat(moment_val),
+                        'value': toISOFormat(moment_val),
                         'type': 'text'
                     });
                     $('.input-disabled').attr('disabled', 'disabled');
-                }
-                if (value) $element.val(value);
+                } else if (value) $element.val(value);
             });
         });
 
@@ -32192,6 +32273,7 @@ module.exports = ResetPassword;
 "use strict";
 
 
+var getCurrencies = __webpack_require__(/*! ./get_currency */ "./src/javascript/app/pages/user/get_currency.js").getCurrencies;
 var BinaryPjax = __webpack_require__(/*! ../../base/binary_pjax */ "./src/javascript/app/base/binary_pjax.js");
 var Client = __webpack_require__(/*! ../../base/client */ "./src/javascript/app/base/client.js");
 var Header = __webpack_require__(/*! ../../base/header */ "./src/javascript/app/base/header.js");
@@ -32226,11 +32308,15 @@ var SetCurrency = function () {
             return;
         }
 
-        BinarySocket.wait('payout_currencies').then(function (response) {
-            var payout_currencies = response.payout_currencies;
+        BinarySocket.wait('payout_currencies', 'landing_company').then(function () {
+            var landing_company = State.getResponse('landing_company');
+            var currencies = State.getResponse('payout_currencies');
+            if (Client.get('landing_company_shortcode') === 'costarica') {
+                currencies = getCurrencies(landing_company);
+            }
             var $fiat_currencies = $('<div/>');
             var $cryptocurrencies = $('<div/>');
-            payout_currencies.forEach(function (c) {
+            currencies.forEach(function (c) {
                 (isCryptocurrency(c) ? $cryptocurrencies : $fiat_currencies).append($('<div/>', { class: 'gr-2 gr-3-m currency_wrapper', id: c }).append($('<div/>').append($('<img/>', { src: Url.urlForStatic('images/pages/set_currency/' + c.toLowerCase() + '.svg') }))).append($('<div/>', { class: 'currency-name', html: isCryptocurrency(c) ? getCurrencyName(c) + '<br />(' + c + ')' : c })));
             });
             var fiat_currencies = $fiat_currencies.html();
@@ -33666,6 +33752,7 @@ window.$ = window.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jqu
 __webpack_require__(/*! babel-polyfill */ "./node_modules/babel-polyfill/lib/index.js");
 __webpack_require__(/*! promise-polyfill */ "./node_modules/promise-polyfill/promise.js");
 __webpack_require__(/*! ./_common/lib/polyfills/nodelist.foreach */ "./src/javascript/_common/lib/polyfills/nodelist.foreach.js");
+__webpack_require__(/*! ./_common/lib/polyfills/element.closest */ "./src/javascript/_common/lib/polyfills/element.closest.js");
 
 __webpack_require__(/*! @binary-com/binary-style */ "./node_modules/@binary-com/binary-style/binary.js");
 __webpack_require__(/*! @binary-com/binary-style/binary.more */ "./node_modules/@binary-com/binary-style/binary.more.js");
@@ -33687,50 +33774,6 @@ $(window).on('pageshow', function (e) {
         BinaryLoader.init();
     }
 });
-
-/***/ }),
-
-/***/ "./src/javascript/static/pages/charity.js":
-/*!************************************************!*\
-  !*** ./src/javascript/static/pages/charity.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Charity = function () {
-    var interval = null;
-
-    var onLoad = function onLoad() {
-        var $gallery = $('.gallery');
-
-        var images = void 0;
-        var switchPicture = function switchPicture() {
-            images = $gallery.find('img');
-            if (images.length > 1) {
-                images.eq(images.length - 1).prependTo($gallery);
-            }
-        };
-
-        interval = setInterval(switchPicture, 5000);
-    };
-
-    var onUnload = function onUnload() {
-        if (interval) {
-            clearInterval(interval);
-            interval = null;
-        }
-    };
-
-    return {
-        onLoad: onLoad,
-        onUnload: onUnload
-    };
-}();
-
-module.exports = Charity;
 
 /***/ }),
 
@@ -33947,6 +33990,8 @@ module.exports = {
 "use strict";
 
 
+var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+var GTM = __webpack_require__(/*! ../../_common/base/gtm */ "./src/javascript/_common/base/gtm.js");
 var Login = __webpack_require__(/*! ../../_common/base/login */ "./src/javascript/_common/base/login.js");
 var localize = __webpack_require__(/*! ../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 var State = __webpack_require__(/*! ../../_common/storage */ "./src/javascript/_common/storage.js").State;
@@ -34000,15 +34045,29 @@ var Home = function () {
     };
 
     var handler = function handler(response) {
-        var error = response.error;
-        if (error) {
-            $('#signup_error').setVisibility(1).text(error.message);
-        } else if (isBinaryApp()) {
-            BinaryPjax.load(urlFor('new_account/virtualws'));
-        } else {
-            $('.signup-box div').replaceWith($('<p/>', { text: localize('Thank you for signing up! Please check your email to complete the registration process.'), class: 'gr-10 gr-centered center-text' }));
-            $('#social-signup').setVisibility(0);
+        if (response.error) {
+            $('#signup_error').setVisibility(1).text(response.error.message);
+            return;
         }
+        BinarySocket.wait('time').then(function (_ref) {
+            var time = _ref.time;
+
+            var is_binary_app = isBinaryApp();
+
+            GTM.pushDataLayer({
+                event: 'email_submit',
+                email_submit_input: response.echo_req.verify_email,
+                email_submit_days_passed: moment(time * 1000).utc().diff(moment.utc(localStorage.getItem('date_first_contact')), 'days'),
+                email_submit_source: is_binary_app ? 'desktop app' : 'binary.com'
+            });
+
+            if (is_binary_app) {
+                BinaryPjax.load(urlFor('new_account/virtualws'));
+            } else {
+                $('.signup-box div').replaceWith($('<p/>', { text: localize('Thank you for signing up! Please check your email to complete the registration process.'), class: 'gr-10 gr-centered center-text' }));
+                $('#social-signup').setVisibility(0);
+            }
+        });
     };
 
     var onUnload = function onUnload() {
