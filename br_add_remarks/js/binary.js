@@ -497,7 +497,6 @@ var ClientBase = function () {
         var can_open_multi = false;
         var type = void 0,
             can_upgrade_to = void 0;
-
         if ((upgradeable_landing_companies || []).length) {
             var current_landing_company = get('landing_company_shortcode');
 
@@ -621,6 +620,7 @@ var ClientBase = function () {
         setNewAccount: setNewAccount,
         currentLandingCompany: currentLandingCompany,
         shouldCompleteTax: shouldCompleteTax,
+        getAllAccountsObject: getAllAccountsObject,
         getMT5AccountType: getMT5AccountType,
         getBasicUpgradeInfo: getBasicUpgradeInfo,
         getLandingCompanyValue: getLandingCompanyValue,
