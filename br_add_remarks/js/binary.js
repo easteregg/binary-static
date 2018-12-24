@@ -14783,6 +14783,7 @@ var PaymentAgentWithdraw = function () {
             var max = getPaWithdrawalLimit(currency, 'max');
 
             $(form_id).find('label[for="txtAmount"]').text(localize('Amount') + ' ' + currency);
+            trimDescriptionContent();
             FormManager.init(form_id, [{ selector: field_ids.ddl_agents, validations: ['req'], request_field: 'paymentagent_loginid' }, { selector: field_ids.txt_amount, validations: ['req', ['number', { type: 'float', decimals: getDecimalPlaces(currency), min: min, max: max }], ['custom', { func: function func() {
                         return +Client.get('balance') >= +$(field_ids.txt_amount).val();
                     }, message: localize('Insufficient balance.') }]], request_field: 'amount' }, { selector: field_ids.txt_desc, validations: ['general'], request_field: 'description' }, { request_field: 'currency', value: currency }, { request_field: 'paymentagent_withdraw', value: 1 }, { request_field: 'dry_run', value: 1 }], true);
@@ -14794,6 +14795,13 @@ var PaymentAgentWithdraw = function () {
                 enable_button: true
             });
         }
+    };
+
+    // Remove multiline and excess whitespaces from description text.
+    var trimDescriptionContent = function trimDescriptionContent() {
+        document.getElementById('txtDescription').addEventListener('change', function (e) {
+            e.srcElement.value = e.target.value.replace(/\s+/g, ' ');
+        });
     };
 
     var insertListOption = function insertListOption($ddl_object, item_text, item_value) {
@@ -26130,6 +26138,7 @@ var PaymentAgentTransfer = function () {
         });
     };
 
+    // Remove multiline and excess whitespaces from description text.
     var trimDescriptionContent = function trimDescriptionContent() {
         document.getElementById('description').addEventListener('change', function (e) {
             e.srcElement.value = e.target.value.replace(/\s+/g, ' ');
