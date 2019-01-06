@@ -1953,6 +1953,7 @@ a.previous-wrapper {
     position: absolute;
     margin-top: 8px;
     top: 0;
+    left: 0;
     z-index: 5; }
   .digit-ticker .mask {
     font-size: 10px;
@@ -1976,6 +1977,24 @@ a.previous-wrapper {
     margin: auto;
     font-weight: bold;
     font-size: 20px; }
+  .digit-ticker .peek-box.digit-losing {
+    background-color: #c03;
+    color: #fff; }
+  .digit-ticker .peek.digit-losing {
+    color: #c03; }
+  .digit-ticker .peek.digit-running {
+    color: #44484c; }
+  .digit-ticker .peek-box.digit-running {
+    color: #fff;
+    background-color: #44484c; }
+  .digit-ticker .peek-box.digit-winning {
+    background-color: #56c660;
+    color: #fff; }
+  .digit-ticker .peek.digit-winning {
+    color: #2e8836; }
+  .digit-ticker .digit.digit-winning {
+    background-color: #a2e0a8;
+    color: #56c660; }
   .digit-ticker .digits {
     display: -webkit-box;
     display: -ms-flexbox;

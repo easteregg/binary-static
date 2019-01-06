@@ -21038,145 +21038,129 @@ module.exports = Defaults;
 "use strict";
 
 
-var DIGIT_BLOCK_SIZE = 36;
-var DIGIT_BLOCK_CORRECTION = 2;
-
 var DigitTicker = function () {
     var $container = void 0,
+        $peek = void 0,
+        $peek_box = void 0,
+        $mask = void 0,
         total_tick_count = void 0,
-        _status = void 0,
-        _digit = void 0;
-    var digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    var init = function init(container_id, contract_type, barrier, tick_count, status) {
-        total_tick_count = tick_count;
-        $container = $('#' + container_id);
-        _digit = '-';
-        _status = status;
-        $container.empty();
-        $container.append($('<div />', { class: 'peek-box' }).append($('<div />', { class: 'mask', text: '0/0' })).append($('<div />', { class: 'peek' }))).append($('<div />', {
-            class: 'digits', html: digits.map(function (digit) {
-                return '<div class=\'digit digit-' + digit + '\'>' + digit + '</div>';
-            }).join('')
-        }));
-        colorWinningBoxes(winningNumbers(contract_type, barrier));
-        observeResize();
+        contract_status = void 0,
+        current_spot = void 0;
+
+    var digit_block_size = 36;
+    var array_of_digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    var style_offset_correction = 2;
+
+    // Calculate left margin of the peek-box against the "width" of the container
+    var calculateLeftMargin = function calculateLeftMargin(width) {
+        return (width - digit_block_size * 10) / 2;
     };
 
-    var winningNumbers = function winningNumbers(contract_type, barrier) {
-        switch (contract_type) {
-            case 'DIGITOVER':
-                return digits.filter(function (digit) {
-                    return +digit > +barrier;
-                });
-            case 'DIGITUNDER':
-                return digits.filter(function (digit) {
-                    return +digit < +barrier;
-                });
-            case 'DIGITMATCH':
-                return digits.filter(function (digit) {
-                    return +digit === +barrier;
-                });
-            case 'DIGITDIFF':
-                return digits.filter(function (digit) {
-                    return +digit !== +barrier;
-                });
-            case 'DIGITODD':
-                return digits.filter(function (digit) {
-                    return +digit % 2 !== 0;
-                });
-            case 'DIGITEVEN':
-                return digits.filter(function (digit) {
-                    return +digit % 2 === 0;
-                });
-            default:
-                throw new Error('Cannot Determine Winning numbers.');
-        }
-    };
-
-    var colorWinningBoxes = function colorWinningBoxes(winning_numbers) {
-        winning_numbers.forEach(function (digit) {
-            $('.digit-' + digit).css({
-                backgroundColor: '#9ddfcb', color: '#67b9a0'
-            });
-        });
-    };
-
+    // Calculate peek-box left offset.
     var calculateOffset = function calculateOffset() {
-        var left_offset = calculateLeftMargin($container.width());
-        return +_digit * DIGIT_BLOCK_SIZE + left_offset - DIGIT_BLOCK_CORRECTION;
-    };
-
-    var getTotal = function getTotal() {
-        return total_tick_count;
-    };
-
-    var success = function success() {
-        var peekBox = $('.peek-box');
-        var peek = $('.peek');
-        peekBox.css({
-            backgroundColor: '#077453', color: '#ffffff'
-        });
-        peek.css({
-            color: '#077453'
-        });
+        var left_offset = calculateLeftMargin($container.offsetWidth);
+        return +current_spot * digit_block_size + left_offset - style_offset_correction;
     };
 
     var fail = function fail() {
-        var peekBox = $('.peek-box');
-        var peek = $('.peek');
-
-        peekBox.css({
-            backgroundColor: '#cb0433',
-            color: '#fffff'
-        });
-        peek.css({
-            color: '#cb0433'
-        });
+        $peek.classList.remove('digit-winning', 'digit-running');
+        $peek_box.classList.remove('digit-winning', 'digit-running');
+        $peek.classList.add('digit-losing');
+        $peek_box.classList.add('digit-losing');
     };
 
-    var update = function update(current_tick, _ref) {
-        var quote = _ref.quote;
-
-        $container.removeClass('invisible');
-        var peekBox = $('.peek-box');
-        var peek = $('.peek');
-        var mask = $('.peek-box > .mask');
-
-        peekBox.addClass('running');
-        _digit = quote.substr(-1);
-
-        mask.text(current_tick + '/' + getTotal());
-
-        peek.text(_digit);
-
-        peekBox.css({
-            left: calculateOffset(_digit) + 'px',
-            color: '#ffffff',
-            backgroundColor: '#454545'
-        });
-        peekBox.css({
-            backgroundColor: '#454545',
-            color: '#fffff'
-        });
-        peek.css({
-            color: '#454545'
-        });
-        if (_status === 'won') {
-            success();
-        }
-        if (_status === 'lost') {
-            fail();
-        }
-    };
-
-    var calculateLeftMargin = function calculateLeftMargin(width) {
-        return (width - 360) / 2;
+    var init = function init(container_id, contract_type, barrier, tick_count, status) {
+        total_tick_count = tick_count;
+        current_spot = '-';
+        contract_status = status;
+        $container = document.querySelector('#' + container_id);
+        $container.innerHTML = '\n            <div class=\'peek-box\'>\n                <div class=\'mask\'>0/0</div>\n                <div class=\'peek\'></div>\n            </div>\n            <div class=\'digits\'>\n                ' + array_of_digits.map(function (digit) {
+            return '<div class=\'digit digit-' + digit + '\'>' + digit + '</div>';
+        }).join('') + '\n            </div>\n        ';
+        paintWinningNumbers(winningNumbers(contract_type, barrier));
+        observeResize();
     };
 
     var observeResize = function observeResize() {
         window.onresize = function () {
             calculateOffset();
         };
+    };
+
+    var paintWinningNumbers = function paintWinningNumbers(winning_numbers) {
+        winning_numbers.forEach(function (digit) {
+            var element = document.querySelector('.digit-' + digit);
+            element.classList.remove('digit-losing');
+            element.classList.add('digit-winning');
+        });
+    };
+
+    var success = function success() {
+        $peek_box.classList.remove('digit-losing', 'digit-running');
+        $peek.classList.remove('digit-losing', 'digit-running');
+        $peek_box.classList.add('digit-winning');
+        $peek.classList.add('digit-winning');
+    };
+
+    var queryDom = function queryDom() {
+        $peek = $container.querySelector('.peek');
+        $peek_box = $container.querySelector('.peek-box');
+        $mask = $peek_box.querySelector('.peek-box > .mask');
+    };
+
+    var update = function update(current_tick_count, _ref) {
+        var quote = _ref.quote;
+
+        queryDom();
+        $container.classList.remove('invisible');
+        current_spot = quote.substr(-1);
+
+        $mask.innerText = current_tick_count + '/' + total_tick_count;
+        $peek.innerText = current_spot;
+
+        $peek_box.classList.add('digit-running');
+        $peek.classList.add('digit-running');
+
+        $peek_box.setAttribute('style', 'transform: translateX(' + calculateOffset() + 'px)');
+
+        if (contract_status === 'won') {
+            success();
+        }
+        if (contract_status === 'lost') {
+            fail();
+        }
+    };
+
+    // Detect winning numbers against the barrier with the given contract type.
+    var winningNumbers = function winningNumbers(contract_type, barrier) {
+        switch (contract_type) {
+            case 'DIGITOVER':
+                return array_of_digits.filter(function (digit) {
+                    return +digit > +barrier;
+                });
+            case 'DIGITUNDER':
+                return array_of_digits.filter(function (digit) {
+                    return +digit < +barrier;
+                });
+            case 'DIGITMATCH':
+                return array_of_digits.filter(function (digit) {
+                    return +digit === +barrier;
+                });
+            case 'DIGITDIFF':
+                return array_of_digits.filter(function (digit) {
+                    return +digit !== +barrier;
+                });
+            case 'DIGITODD':
+                return array_of_digits.filter(function (digit) {
+                    return +digit % 2 !== 0;
+                });
+            case 'DIGITEVEN':
+                return array_of_digits.filter(function (digit) {
+                    return +digit % 2 === 0;
+                });
+            default:
+                throw new Error('Cannot Determine Winning numbers.');
+        }
     };
 
     return {
@@ -21219,27 +21203,32 @@ var DigitDisplay = function () {
         contract = proposal_open_contract;
 
         $container = $('#' + id_render);
-        $container.addClass('normal-font').html($('<h5 />', { text: contract.display_name, class: 'center-text' })).append($('<div />', { class: 'gr-6 gr-centered' }).append($('<div />', { class: 'gr-row', id: 'table_digits' }).append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') })))).append($('<div />', { class: 'digit-ticker invisible', id: 'digit-ticker-container' }));
+        $container.addClass('normal-font').html($('<h5 />', { text: contract.display_name, class: 'center-text' })).append($('<div />', { class: 'gr-6 gr-centered' }).append($('<div />', { class: 'gr-row', id: 'table_digits' }).append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') })))).append($('<div />', { class: 'digit-ticker invisible', id: 'digit_ticker_container' }));
+
+        DigitTicker.init('digit_ticker_container', contract.contract_type, contract.barrier, contract.tick_count, contract.status);
 
         var request = {
             ticks_history: contract.underlying,
             start: contract.date_start
         };
+
+        // Subscribe if contract is still ongoing/running.
         if (contract.current_spot_time < contract.date_expiry) {
             request.subscribe = 1;
             request.end = 'latest';
         } else {
             request.end = contract.date_expiry;
         }
-        DigitTicker.init('digit-ticker-container', contract.contract_type, contract.barrier, contract.tick_count, contract.status);
+
         BinarySocket.send(request, { callback: update });
     };
 
     var updateTable = function updateTable(spot, time) {
-        $container.find('#table_digits').append($('<p />', { class: 'gr-3', text: tick_count })).append($('<p />', { class: 'gr-3 gray', html: tick_count === contract.tick_count ? spot.slice(0, spot.length - 1) + '<strong>' + spot.slice(-1) + '</strong>' : spot })).append($('<p />', { class: 'gr-6 gray digit-spot-time no-underline', text: moment(+time * 1000).utc().format('YYYY-MM-DD HH:mm:ss') }));
+        var last_digit = spot.slice(-1);
+        $container.find('#table_digits').append($('<p />', { class: 'gr-3', text: tick_count })).append($('<p />', { class: 'gr-3 gray', html: tick_count === contract.tick_count ? spot.slice(0, spot.length - 1) + '<strong>' + last_digit + '</strong>' : spot })).append($('<p />', { class: 'gr-6 gray digit-spot-time no-underline', text: moment(+time * 1000).utc().format('YYYY-MM-DD HH:mm:ss') }));
 
         DigitTicker.update(tick_count, {
-            quote: spot.slice(-1)
+            quote: last_digit
         });
     };
 
@@ -21267,15 +21256,9 @@ var DigitDisplay = function () {
         showLocalTimeOnHover('.digit-spot-time');
     };
 
-    var end = function end(proposal_open_contract) {
-        contract = proposal_open_contract;
-        // here we need to highlight won/lost
-    };
-
     return {
         init: init,
-        update: update,
-        end: end
+        update: update
     };
 }();
 
@@ -24379,7 +24362,7 @@ var Purchase = function () {
         }
 
         if (tick_config.is_digit) {
-            DigitTicker.init('digit-ticker-table', passthrough.contract_type, passthrough.barrier, passthrough.duration, status);
+            DigitTicker.init('digit_ticker_table', passthrough.contract_type, passthrough.barrier, passthrough.duration, status);
         }
 
         if (show_chart && has_chart) {
