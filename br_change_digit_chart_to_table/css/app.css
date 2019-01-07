@@ -2061,7 +2061,50 @@ a.previous-wrapper {
 
 .row.digit-trade .col {
   font-size: 42px;
-  color: #dedede; }
+  color: #dedede;
+  position: relative;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center; }
+  .row.digit-trade .col .quote {
+    width: auto; }
+  .row.digit-trade .col .digit-tick-epoch {
+    position: absolute;
+    top: 14px;
+    font-size: 14px;
+    line-height: 14px;
+    color: #44484c;
+    padding-left: 14px;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    -webkit-transition: height 350ms ease-in-out, opacity 750ms ease-in-out, top 500ms ease-in;
+    transition: height 350ms ease-in-out, opacity 750ms ease-in-out, top 500ms ease-in; }
+    .row.digit-trade .col .digit-tick-epoch:before {
+      content: '';
+      width: 14px;
+      height: 14px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>'); }
+  .row.digit-trade .col .digit-tick-epoch.is-visible {
+    height: auto;
+    opacity: 1;
+    top: 0; }
   .row.digit-trade .col strong {
     color: #000; }
 

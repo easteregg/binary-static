@@ -21056,7 +21056,7 @@ var DigitTicker = function () {
         current_spot = '-';
         contract_status = status;
         el_container = document.querySelector('#' + container_id);
-        el_container.innerHTML = '\n            <div class=\'peek-box\'>\n                <div class=\'mask\'>0/0</div>\n                <div class=\'peek\'></div>\n            </div>\n            <div class=\'digits\'>\n                ' + array_of_digits.map(function (digit) {
+        el_container.innerHTML = '\n            <div class=\'epoch\'></div>\n            <div class=\'peek-box\'>\n                <div class=\'mask\'>0/0</div>\n                <div class=\'peek\'></div>\n            </div>\n            <div class=\'digits\'>\n                ' + array_of_digits.map(function (digit) {
             return '<div class=\'digit digit-' + digit + '\'>' + digit + '</div>';
         }).join('') + '\n            </div>\n        ';
         highlightWinningNumbers(getWinningNumbers(contract_type, barrier));
@@ -21157,9 +21157,10 @@ var DigitTicker = function () {
     };
 
     var update = function update(current_tick_count, _ref) {
-        var quote = _ref.quote;
+        var quote = _ref.quote,
+            epoch = _ref.epoch;
 
-        setElements();
+        setElements(epoch);
         el_container.classList.remove('invisible');
         adjustBoxSizes();
         current_spot = quote.substr(-1);
@@ -21173,10 +21174,10 @@ var DigitTicker = function () {
         el_peek_box.setAttribute('style', 'transform: translateX(' + calculateOffset() + 'px)');
 
         if (contract_status === 'won') {
-            markAsWon();
+            markAsWon(epoch);
         }
         if (contract_status === 'lost') {
-            markAsLost();
+            markAsLost(epoch);
         }
     };
 
@@ -24446,9 +24447,13 @@ var Purchase = function () {
                         status = contract.status;
                         profit_value = contract.profit;
                         TickDisplay.setStatus(contract);
+                        if (contract.exit_tick_time && /^digit/i.test(contract.contract_type)) {
+                            digitShowExitTime(contract.exit_tick_time);
+                        }
                         if (contract.exit_tick_time && +contract.exit_tick_time < contract.date_expiry) {
                             TickDisplay.updateChart({ is_sold: true }, contract);
                         }
+
                         // force to sell the expired contract, in order to get the final status
                         if (+contract.is_settleable === 1 && !contract.is_sold) {
                             BinarySocket.send({ sell_expired: 1 });
@@ -24551,11 +24556,19 @@ var Purchase = function () {
                     fragment.appendChild(el2);
                 }
 
-                var tick = tick_config.is_tick_high || tick_config.is_tick_low ? tick_d.quote : tick_d.quote.replace(/\d$/, makeBold);
+                var tick = tick_config.is_tick_high || tick_config.is_tick_low ? tick_d.quote : '<div class=\'quote\'>' + tick_d.quote.replace(/\d$/, makeBold) + '</div>';
                 var el3 = createElement('div', { class: 'col' });
 
                 CommonFunctions.elementInnerHtml(el3, tick);
                 if (tick_config.is_digit) {
+                    var el_epoch = document.createElement('div');
+                    el_epoch.className = 'digit-tick-epoch';
+                    el_epoch.style.right = (el3.offsetWidth - tick.offsetWidth) / 2;
+                    var el_epoch_content = document.createTextNode(new Date(tick_d.epoch * 1000).toTimeString().slice(0, 8));
+                    el_epoch.appendChild(el_epoch_content);
+                    fragment.appendChild(el_epoch);
+                    el3.insertBefore(el_epoch, el3.childNodes[0]);
+
                     replaceElement(fragment, el3);
                     replaceElement(spots, fragment);
                     DigitTicker.update(current_tick_count, tick_d);
@@ -24581,6 +24594,13 @@ var Purchase = function () {
                 }
             }
         }
+    };
+
+    var digitShowExitTime = function digitShowExitTime() {
+        var el_container = CommonFunctions.getElementById('contract_purchase_spots');
+        var el_epoch = Array.from(el_container.querySelectorAll('.digit-tick-epoch')).pop();
+        el_epoch.classList.add('is-visible');
+        el_epoch.setAttribute('style', 'position: absolute; right: ' + (el_epoch.parentElement.offsetWidth - el_epoch.nextSibling.offsetWidth) / 2 + 'px');
     };
 
     return {
