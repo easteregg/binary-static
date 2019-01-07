@@ -21039,100 +21039,39 @@ module.exports = Defaults;
 
 
 var DigitTicker = function () {
-    var $container = void 0,
-        $peek = void 0,
-        $peek_box = void 0,
-        $mask = void 0,
+    var el_container = void 0,
+        el_peek = void 0,
+        el_peek_box = void 0,
+        el_mask = void 0,
         total_tick_count = void 0,
         contract_status = void 0,
         current_spot = void 0;
-
     var digit_block_size = 36;
+
     var array_of_digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     var style_offset_correction = 2;
-
-    // Calculate left margin of the peek-box against the "width" of the container
-    var calculateLeftMargin = function calculateLeftMargin(width) {
-        return (width - digit_block_size * 10) / 2;
-    };
-
-    // Calculate peek-box left offset.
-    var calculateOffset = function calculateOffset() {
-        var left_offset = calculateLeftMargin($container.offsetWidth);
-        return +current_spot * digit_block_size + left_offset - style_offset_correction;
-    };
-
-    var fail = function fail() {
-        $peek.classList.remove('digit-winning', 'digit-running');
-        $peek_box.classList.remove('digit-winning', 'digit-running');
-        $peek.classList.add('digit-losing');
-        $peek_box.classList.add('digit-losing');
-    };
 
     var init = function init(container_id, contract_type, barrier, tick_count, status) {
         total_tick_count = tick_count;
         current_spot = '-';
         contract_status = status;
-        $container = document.querySelector('#' + container_id);
-        $container.innerHTML = '\n            <div class=\'peek-box\'>\n                <div class=\'mask\'>0/0</div>\n                <div class=\'peek\'></div>\n            </div>\n            <div class=\'digits\'>\n                ' + array_of_digits.map(function (digit) {
+        el_container = document.querySelector('#' + container_id);
+        el_container.innerHTML = '\n            <div class=\'peek-box\'>\n                <div class=\'mask\'>0/0</div>\n                <div class=\'peek\'></div>\n            </div>\n            <div class=\'digits\'>\n                ' + array_of_digits.map(function (digit) {
             return '<div class=\'digit digit-' + digit + '\'>' + digit + '</div>';
         }).join('') + '\n            </div>\n        ';
-        paintWinningNumbers(winningNumbers(contract_type, barrier));
+        highlightWinningNumbers(getWinningNumbers(contract_type, barrier));
         observeResize();
     };
 
-    var observeResize = function observeResize() {
-        window.onresize = function () {
-            calculateOffset();
-        };
-    };
-
-    var paintWinningNumbers = function paintWinningNumbers(winning_numbers) {
-        winning_numbers.forEach(function (digit) {
-            var element = document.querySelector('.digit-' + digit);
-            element.classList.remove('digit-losing');
-            element.classList.add('digit-winning');
-        });
-    };
-
-    var success = function success() {
-        $peek_box.classList.remove('digit-losing', 'digit-running');
-        $peek.classList.remove('digit-losing', 'digit-running');
-        $peek_box.classList.add('digit-winning');
-        $peek.classList.add('digit-winning');
-    };
-
-    var queryDom = function queryDom() {
-        $peek = $container.querySelector('.peek');
-        $peek_box = $container.querySelector('.peek-box');
-        $mask = $peek_box.querySelector('.peek-box > .mask');
-    };
-
-    var update = function update(current_tick_count, _ref) {
-        var quote = _ref.quote;
-
-        queryDom();
-        $container.classList.remove('invisible');
-        current_spot = quote.substr(-1);
-
-        $mask.innerText = current_tick_count + '/' + total_tick_count;
-        $peek.innerText = current_spot;
-
-        $peek_box.classList.add('digit-running');
-        $peek.classList.add('digit-running');
-
-        $peek_box.setAttribute('style', 'transform: translateX(' + calculateOffset() + 'px)');
-
-        if (contract_status === 'won') {
-            success();
-        }
-        if (contract_status === 'lost') {
-            fail();
+    // adjust box sizes for mobile
+    var adjustBoxSizes = function adjustBoxSizes() {
+        if (el_container.offsetWidth < 360) {
+            digit_block_size = 28;
         }
     };
 
     // Detect winning numbers against the barrier with the given contract type.
-    var winningNumbers = function winningNumbers(contract_type, barrier) {
+    var getWinningNumbers = function getWinningNumbers(contract_type, barrier) {
         switch (contract_type) {
             case 'DIGITOVER':
                 return array_of_digits.filter(function (digit) {
@@ -21163,11 +21102,94 @@ var DigitTicker = function () {
         }
     };
 
+    var highlightWinningNumbers = function highlightWinningNumbers(winning_numbers) {
+        winning_numbers.forEach(function (digit) {
+            var element = el_container.querySelector('.digit-' + digit);
+            element.classList.remove('digit-losing');
+            element.classList.add('digit-winning');
+        });
+    };
+
+    var observeResize = function observeResize() {
+        window.onresize = function () {
+            if (el_peek_box) {
+                adjustBoxSizes();
+                el_peek_box.setAttribute('style', 'transform: translateX(' + calculateOffset() + 'px)');
+            }
+        };
+    };
+
+    // Calculate left margin of the peek-box against the "width" of the container
+    var calculateLeftMargin = function calculateLeftMargin(width) {
+        return (width - digit_block_size * 10) / 2;
+    };
+
+    // Calculate peek-box left offset.
+    var calculateOffset = function calculateOffset() {
+        var left_offset = calculateLeftMargin(el_container.offsetWidth);
+        return +current_spot * digit_block_size + left_offset - style_offset_correction;
+    };
+
+    var markAsLost = function markAsLost() {
+        if (!el_peek_box || !el_peek) {
+            setElements();
+        }
+        el_peek.classList.remove('digit-winning', 'digit-running');
+        el_peek_box.classList.remove('digit-winning', 'digit-running');
+        el_peek.classList.add('digit-losing');
+        el_peek_box.classList.add('digit-losing');
+    };
+
+    var markAsWon = function markAsWon() {
+        if (!el_peek_box || !el_peek) {
+            setElements();
+        }
+        el_peek_box.classList.remove('digit-losing', 'digit-running');
+        el_peek_box.classList.add('digit-winning');
+        el_peek.classList.remove('digit-losing', 'digit-running');
+        el_peek.classList.add('digit-winning');
+    };
+
+    var setElements = function setElements() {
+        el_peek = el_container.querySelector('.peek');
+        el_peek_box = el_container.querySelector('.peek-box');
+        el_mask = el_peek_box.querySelector('.peek-box > .mask');
+    };
+
+    var update = function update(current_tick_count, _ref) {
+        var quote = _ref.quote;
+
+        setElements();
+        el_container.classList.remove('invisible');
+        adjustBoxSizes();
+        current_spot = quote.substr(-1);
+
+        el_mask.innerText = current_tick_count + '/' + total_tick_count;
+        el_peek.innerText = current_spot;
+
+        el_peek_box.classList.add('digit-running');
+        el_peek.classList.add('digit-running');
+
+        el_peek_box.setAttribute('style', 'transform: translateX(' + calculateOffset() + 'px)');
+
+        if (contract_status === 'won') {
+            markAsWon();
+        }
+        if (contract_status === 'lost') {
+            markAsLost();
+        }
+    };
+
+    var remove = function remove() {
+        window.onresize = null;
+    };
+
     return {
         init: init,
         update: update,
-        success: success,
-        fail: fail
+        markAsWon: markAsWon,
+        markAsLost: markAsLost,
+        remove: remove
     };
 }();
 
@@ -21203,7 +21225,7 @@ var DigitDisplay = function () {
         contract = proposal_open_contract;
 
         $container = $('#' + id_render);
-        $container.addClass('normal-font').html($('<h5 />', { text: contract.display_name, class: 'center-text' })).append($('<div />', { class: 'gr-6 gr-centered' }).append($('<div />', { class: 'gr-row', id: 'table_digits' }).append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') })))).append($('<div />', { class: 'digit-ticker invisible', id: 'digit_ticker_container' }));
+        $container.addClass('normal-font').html($('<h5 />', { text: contract.display_name, class: 'center-text' })).append($('<div />', { class: 'gr-6 gr-centered gr-12-m' }).append($('<div />', { class: 'gr-row', id: 'table_digits' }).append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') })))).append($('<div />', { class: 'digit-ticker invisible', id: 'digit_ticker_container' }));
 
         DigitTicker.init('digit_ticker_container', contract.contract_type, contract.barrier, contract.tick_count, contract.status);
 
@@ -21256,7 +21278,16 @@ var DigitDisplay = function () {
         showLocalTimeOnHover('.digit-spot-time');
     };
 
+    var end = function end(proposal_open_contract) {
+        if (proposal_open_contract.status === 'won') {
+            DigitTicker.markAsWon();
+        } else {
+            DigitTicker.markAsLost();
+        }
+    };
+
     return {
+        end: end,
         init: init,
         update: update
     };
@@ -22341,6 +22372,7 @@ var TradingEvents = function () {
                 e.preventDefault();
                 CommonTrading.hideOverlayContainer();
                 Price.processPriceRequest();
+                Purchase.onclose();
             }
         });
 
@@ -24434,6 +24466,10 @@ var Purchase = function () {
         return Header.loginOnClick(e);
     };
 
+    var onclose = function onclose() {
+        DigitTicker.remove();
+    };
+
     var updateSpotList = function updateSpotList() {
         var $spots = $('#contract_purchase_spots');
         if (!$spots.length || $spots.is(':hidden')) {
@@ -24448,9 +24484,9 @@ var Purchase = function () {
                 }
                 if (status === 'won') {
                     updateValues.updatePurchaseStatus(payout_value, cost_value, profit_value, localize('This contract won'));
-                    if (tick_config.is_digit) DigitTicker.success();
+                    if (tick_config.is_digit) DigitTicker.markAsWon();
                 } else if (status === 'lost') {
-                    if (tick_config.is_digit) DigitTicker.fail();
+                    if (tick_config.is_digit) DigitTicker.markAsLost();
                     updateValues.updatePurchaseStatus(0, -cost_value, profit_value, localize('This contract lost'));
                 }
                 if (tick_config.is_tick_high || tick_config.is_tick_low) {
@@ -24549,6 +24585,7 @@ var Purchase = function () {
 
     return {
         display: display,
+        onclose: onclose,
         updateSpotList: updateSpotList
     };
 }();
@@ -33719,6 +33756,7 @@ module.exports = ViewPopup;
 var setExternalTimer = __webpack_require__(/*! ../../../base/clock */ "./src/javascript/app/base/clock.js").setExternalTimer;
 var BinarySocket = __webpack_require__(/*! ../../../base/socket */ "./src/javascript/app/base/socket.js");
 var getHighestZIndex = __webpack_require__(/*! ../../../../_common/utility */ "./src/javascript/_common/utility.js").getHighestZIndex;
+var removeDigitTicker = __webpack_require__(/*! ../../trade/digit_ticker */ "./src/javascript/app/pages/trade/digit_ticker.js").remove;
 
 var ViewPopupUI = function () {
     var $container = void 0,
@@ -33744,6 +33782,7 @@ var ViewPopupUI = function () {
                 cleanup(true);
                 $(document).off('keydown');
                 $(window).off('popstate', onClose);
+                removeDigitTicker();
             };
             $con.find('a.close').on('click', onClose);
             $(document).on('keydown', function (e) {

@@ -1948,13 +1948,17 @@ a.previous-wrapper {
     -ms-flex-line-pack: center;
         align-content: center;
     justify-items: center;
-    -webkit-transition: all 0.3s ease;
-    transition: all 0.3s ease;
+    -webkit-transition: all 0.9s ease;
+    transition: all 0.9s ease;
     position: absolute;
     margin-top: 8px;
     top: 0;
     left: 0;
     z-index: 5; }
+    @media screen and (max-width: 480px) {
+      .digit-ticker .peek-box {
+        margin-top: 10px;
+        min-width: 32px; } }
   .digit-ticker .mask {
     font-size: 10px;
     height: 20px;
@@ -1977,6 +1981,12 @@ a.previous-wrapper {
     margin: auto;
     font-weight: bold;
     font-size: 20px; }
+    @media screen and (max-width: 480px) {
+      .digit-ticker .peek {
+        height: 30px;
+        max-height: 28px;
+        width: 26px;
+        margin-top: 3px; } }
   .digit-ticker .peek-box.digit-losing {
     background-color: #c03;
     color: #fff; }
@@ -2011,6 +2021,9 @@ a.previous-wrapper {
     margin: 0 0 3px 0px;
     border-radius: 4px;
     overflow: hidden; }
+    @media screen and (max-width: 480px) {
+      .digit-ticker .digits {
+        min-width: 280px; } }
   .digit-ticker .digit {
     height: 36px;
     width: 36px;
@@ -2034,6 +2047,10 @@ a.previous-wrapper {
     border-right: 1px solid #dedede;
     border-top: 1px solid #dedede;
     border-bottom: 1px solid #dedede; }
+    @media screen and (max-width: 480px) {
+      .digit-ticker .digit {
+        height: 28px;
+        width: 28px; } }
     .digit-ticker .digit:first-child {
       border-left: 1px solid #dedede;
       border-top-left-radius: 4px;
