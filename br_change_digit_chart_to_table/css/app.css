@@ -1120,9 +1120,10 @@ a.previous-wrapper {
       -ms-flex-pack: center;
           justify-content: center;
   position: relative;
-  margin-left: auto; }
+  margin-left: auto;
+  margin-bottom: 30px; }
   .digit-ticker .peek-box {
-    min-width: 44px;
+    width: 44px;
     height: 60px;
     background-color: transparent;
     display: grid;
@@ -1183,8 +1184,10 @@ a.previous-wrapper {
       background-color: #cb0433; }
     @media screen and (max-width: 480px) {
       .digit-ticker .peek-box {
-        margin-top: 10px;
-        min-width: 32px; } }
+        margin-top: 6px;
+        min-width: initial;
+        width: 35px;
+        grid-template-rows: 4px 19px 30px 4px; } }
   .digit-ticker .mask {
     grid-area: mask;
     font-size: 10px;
@@ -1194,8 +1197,7 @@ a.previous-wrapper {
     color: #fff; }
   .digit-ticker .peek {
     grid-area: peek;
-    max-height: 30px;
-    height: 30px;
+    height: 24px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -1205,19 +1207,23 @@ a.previous-wrapper {
     -webkit-box-pack: center;
         -ms-flex-pack: center;
             justify-content: center;
-    font-weight: bold;
+    font-weight: 700;
     font-size: 20px;
-    border-radius: 7px;
+    border-radius: 8px;
     -webkit-box-sizing: content-box;
             box-sizing: content-box;
-    width: 100%;
-    margin: -3 0 0; }
+    width: 22px;
+    margin: 2px;
+    -webkit-transform: scale(1.3, 1.2);
+            transform: scale(1.3, 1.2); }
     @media screen and (max-width: 480px) {
       .digit-ticker .peek {
-        height: 30px;
-        max-height: 28px;
-        width: 26px;
-        margin-top: 3px; } }
+        height: 19px;
+        max-height: initial;
+        width: 18px;
+        margin-top: 2px;
+        -webkit-transform: scale(1.4, 1.2);
+                transform: scale(1.4, 1.2); } }
   .digit-ticker .peek-box.digit-running .mask {
     background-color: #454545; }
   .digit-ticker .peek-box.digit-running .topright {
@@ -1237,7 +1243,7 @@ a.previous-wrapper {
   .digit-ticker .peek-box.digit-running .bottomright {
     background-color: #454545; }
   .digit-ticker .peek-box.digit-running .peek {
-    border: 4px solid #454545; }
+    border: 5px solid #454545; }
   .digit-ticker .peek-box.digit-running .mask {
     border: 1px solid #454545; }
   .digit-ticker .peek-box.digit-losing .mask {
@@ -1259,7 +1265,7 @@ a.previous-wrapper {
   .digit-ticker .peek-box.digit-losing .bottomright {
     background-color: #cb0433; }
   .digit-ticker .peek-box.digit-losing .peek {
-    border: 4px solid #cb0433; }
+    border: 5px solid #cb0433; }
   .digit-ticker .peek-box.digit-losing .mask {
     border: 1px solid #cb0433; }
   .digit-ticker .peek-box.digit-winning .mask {
@@ -1281,7 +1287,7 @@ a.previous-wrapper {
   .digit-ticker .peek-box.digit-winning .bottomright {
     background-color: #077453; }
   .digit-ticker .peek-box.digit-winning .peek {
-    border: 4px solid #077453; }
+    border: 5px solid #077453; }
   .digit-ticker .peek-box.digit-winning .mask {
     border: 1px solid #077453; }
   .digit-ticker .digits {
@@ -1363,7 +1369,10 @@ a.previous-wrapper {
       -ms-flex-pack: center;
           justify-content: center; }
   .row.digit-trade .col .quote {
-    width: auto; }
+    width: auto;
+    color: #c2c2c2;
+    font-weight: 100;
+    margin-top: 2px; }
   .row.digit-trade .col .digit-tick-epoch {
     position: absolute;
     top: 14px;
@@ -1389,9 +1398,9 @@ a.previous-wrapper {
   .row.digit-trade .col .digit-tick-epoch.is-visible {
     height: auto;
     opacity: 1;
-    top: 0; }
+    top: -4px; }
   .row.digit-trade .col strong {
-    color: #000; }
+    color: #454545; }
 
 .won .row.digit-trade .col {
   color: #454545; }

@@ -21047,9 +21047,9 @@ var DigitTicker = function () {
         contract_status = void 0,
         current_spot = void 0;
     var digit_block_size = 36;
+    var style_offset_correction = 5;
 
     var array_of_digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    var style_offset_correction = 5;
 
     var init = function init(container_id, contract_type, barrier, tick_count) {
         var status = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'open';
@@ -21135,6 +21135,7 @@ var DigitTicker = function () {
     var adjustBoxSizes = function adjustBoxSizes() {
         if (el_container.offsetWidth < 360) {
             digit_block_size = 28;
+            style_offset_correction = 6;
         }
     };
 
@@ -24673,8 +24674,9 @@ var Purchase = function () {
     var digitShowExitTime = function digitShowExitTime(contract_status, last_tick_quote) {
         var el_container = CommonFunctions.getElementById('contract_purchase_spots');
         var el_epoch = Array.from(el_container.querySelectorAll('.digit-tick-epoch')).pop();
+        var adjustment = 5;
         el_epoch.classList.add('is-visible');
-        el_epoch.setAttribute('style', 'position: absolute; right: ' + (el_epoch.parentElement.offsetWidth - el_epoch.nextSibling.offsetWidth) / 2 + 'px');
+        el_epoch.setAttribute('style', 'position: absolute; right: ' + ((el_epoch.parentElement.offsetWidth - el_epoch.nextSibling.offsetWidth) / 2 + adjustment) + 'px');
         if (contract_status === 'won') {
             DigitTicker.markAsWon();
             DigitTicker.markDigitAsWon(last_tick_quote.slice(-1));
