@@ -21049,12 +21049,14 @@ var DigitTicker = function () {
     var digit_block_size = 36;
 
     var array_of_digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    var style_offset_correction = 2;
+    var style_offset_correction = 5;
 
-    var init = function init(container_id, contract_type, barrier, tick_count, status) {
+    var init = function init(container_id, contract_type, barrier, tick_count) {
+        var status = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'open';
+
+        contract_status = status;
         total_tick_count = tick_count;
         current_spot = '-';
-        contract_status = status;
         el_container = document.querySelector('#' + container_id);
         populateContainer(el_container);
         highlightWinningNumbers(getWinningNumbers(contract_type, barrier));
@@ -21071,6 +21073,13 @@ var DigitTicker = function () {
         temp_epoch_el.classList.add('epoch');
         var temp_peek_box_el = document.createElement('div');
         temp_peek_box_el.classList.add('peek-box');
+        if (contract_status === 'won') {
+            temp_peek_box_el.classList.add('digit-winning');
+        }
+        if (contract_status === 'lost') {
+            temp_peek_box_el.classList.add('digit-losing');
+        }
+
         var temp_digits_el = document.createElement('div');
         temp_digits_el.classList.add('digits');
         array_of_digits.forEach(function (digit) {
@@ -21086,9 +21095,34 @@ var DigitTicker = function () {
 
         var temp_peek_el = document.createElement('div');
         temp_peek_el.classList.add('peek');
-
+        // grid peek-box element definition
+        var topleft_el = document.createElement('div');
+        topleft_el.classList.add('topleft');
+        var top_el = document.createElement('div');
+        top_el.classList.add('top');
+        var topright_el = document.createElement('div');
+        topright_el.classList.add('topright');
+        var left_el = document.createElement('div');
+        left_el.classList.add('left');
+        var right_el = document.createElement('div');
+        right_el.classList.add('right');
+        var bottomleft_el = document.createElement('div');
+        bottomleft_el.classList.add('bottomleft');
+        var bottom_el = document.createElement('div');
+        bottom_el.classList.add('bottom');
+        var bottomright_el = document.createElement('div');
+        bottomright_el.classList.add('bottomright');
+        temp_peek_box_el.appendChild(topleft_el);
+        temp_peek_box_el.appendChild(top_el);
+        temp_peek_box_el.appendChild(topright_el);
+        temp_peek_box_el.appendChild(left_el);
+        temp_peek_box_el.appendChild(right_el);
+        temp_peek_box_el.appendChild(bottomright_el);
+        temp_peek_box_el.appendChild(bottomleft_el);
+        temp_peek_box_el.appendChild(bottom_el);
         temp_peek_box_el.appendChild(temp_mask_el);
         temp_peek_box_el.appendChild(temp_peek_el);
+
         var fragment = document.createDocumentFragment();
         fragment.appendChild(temp_epoch_el);
         fragment.appendChild(temp_peek_box_el);
@@ -21174,6 +21208,14 @@ var DigitTicker = function () {
         el_peek_box.classList.add('digit-losing');
     };
 
+    var markDigitAsWon = function markDigitAsWon(digit) {
+        el_container.querySelector('.digit-' + digit).classList.add('digit-won');
+    };
+
+    var markDigitAsLost = function markDigitAsLost(digit) {
+        el_container.querySelector('.digit-' + digit).classList.add('digit-lost');
+    };
+
     var markAsWon = function markAsWon() {
         if (!el_peek_box || !el_peek) {
             setElements();
@@ -21199,20 +21241,13 @@ var DigitTicker = function () {
         adjustBoxSizes();
         current_spot = quote.substr(-1);
 
-        el_mask.innerText = current_tick_count + '/' + total_tick_count;
-        el_peek.innerText = current_spot;
+        el_mask.innerText = current_tick_count + ' / ' + total_tick_count;
+        // el_peek.innerText = current_spot;
 
         el_peek_box.classList.add('digit-running');
         el_peek.classList.add('digit-running');
 
         el_peek_box.setAttribute('style', 'transform: translateX(' + calculateOffset() + 'px)');
-
-        if (contract_status === 'won') {
-            markAsWon(epoch);
-        }
-        if (contract_status === 'lost') {
-            markAsLost(epoch);
-        }
     };
 
     var remove = function remove() {
@@ -21224,6 +21259,8 @@ var DigitTicker = function () {
         update: update,
         markAsWon: markAsWon,
         markAsLost: markAsLost,
+        markDigitAsLost: markDigitAsLost,
+        markDigitAsWon: markDigitAsWon,
         remove: remove
     };
 }();
@@ -21307,8 +21344,10 @@ var DigitDisplay = function () {
                 return tick_count > contract.tick_count;
             });
         } else if (response.tick) {
-            updateTable(response.tick.quote, response.tick.epoch);
-            tick_count += 1;
+            if (tick_count <= contract.tick_count) {
+                updateTable(response.tick.quote, response.tick.epoch);
+                tick_count += 1;
+            }
         }
         showLocalTimeOnHover('.digit-spot-time');
     };
@@ -21316,8 +21355,11 @@ var DigitDisplay = function () {
     var end = function end(proposal_open_contract) {
         if (proposal_open_contract.status === 'won') {
             DigitTicker.markAsWon();
-        } else {
+            DigitTicker.markDigitAsWon(proposal_open_contract.exit_tick.slice(-1));
+        }
+        if (proposal_open_contract.status === 'lost') {
             DigitTicker.markAsLost();
+            DigitTicker.markDigitAsLost(proposal_open_contract.exit_tick.slice(-1));
         }
     };
 
@@ -24482,7 +24524,7 @@ var Purchase = function () {
                         profit_value = contract.profit;
                         TickDisplay.setStatus(contract);
                         if (contract.exit_tick_time && /^digit/i.test(contract.contract_type)) {
-                            digitShowExitTime(contract.exit_tick_time);
+                            digitShowExitTime(contract.status, contract.exit_tick);
                         }
                         if (contract.exit_tick_time && +contract.exit_tick_time < contract.date_expiry) {
                             TickDisplay.updateChart({ is_sold: true }, contract);
@@ -24523,9 +24565,7 @@ var Purchase = function () {
                 }
                 if (status === 'won') {
                     updateValues.updatePurchaseStatus(payout_value, cost_value, profit_value, localize('This contract won'));
-                    if (tick_config.is_digit) DigitTicker.markAsWon();
                 } else if (status === 'lost') {
-                    if (tick_config.is_digit) DigitTicker.markAsLost();
                     updateValues.updatePurchaseStatus(0, -cost_value, profit_value, localize('This contract lost'));
                 }
                 if (tick_config.is_tick_high || tick_config.is_tick_low) {
@@ -24630,11 +24670,19 @@ var Purchase = function () {
         }
     };
 
-    var digitShowExitTime = function digitShowExitTime() {
+    var digitShowExitTime = function digitShowExitTime(contract_status, last_tick_quote) {
         var el_container = CommonFunctions.getElementById('contract_purchase_spots');
         var el_epoch = Array.from(el_container.querySelectorAll('.digit-tick-epoch')).pop();
         el_epoch.classList.add('is-visible');
         el_epoch.setAttribute('style', 'position: absolute; right: ' + (el_epoch.parentElement.offsetWidth - el_epoch.nextSibling.offsetWidth) / 2 + 'px');
+        if (contract_status === 'won') {
+            DigitTicker.markAsWon();
+            DigitTicker.markDigitAsWon(last_tick_quote.slice(-1));
+        }
+        if (contract_status === 'lost') {
+            DigitTicker.markAsLost();
+            DigitTicker.markDigitAsLost(last_tick_quote.slice(-1));
+        }
     };
 
     return {
@@ -34057,7 +34105,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
