@@ -21243,7 +21243,6 @@ var DigitTicker = function () {
         current_spot = quote.substr(-1);
 
         el_mask.innerText = current_tick_count + ' / ' + total_tick_count;
-        // el_peek.innerText = current_spot;
 
         el_peek_box.classList.add('digit-running');
         el_peek.classList.add('digit-running');
@@ -21255,9 +21254,44 @@ var DigitTicker = function () {
         window.onresize = null;
     };
 
+    var countDecimals = function countDecimals(value) {
+        if (Math.floor(value) !== value) return value.toString().split('.')[1].length || 0;
+        return 0;
+    };
+
+    var calculateDistance = function calculateDistance(old_digit, new_digit) {
+        return Math.abs(old_digit - new_digit);
+    };
+
+    var countUp = function countUp(start, end, duration, element, render) {
+        var decimal_points = countDecimals(start);
+        var range = calculateDistance(start, end);
+        var step = Math.abs(range / 60);
+        var increment = end > start ? 1 * step : -1 * step;
+        var current = start;
+        var i = 0;
+
+        var renderTick = function renderTick() {
+            i++;
+            current += increment;
+
+            element.innerHTML = render(current.toFixed(decimal_points));
+
+            if (i <= 15) {
+                requestAnimationFrame(renderTick);
+            } else {
+                current = end;
+                element.innerHTML = render(current.toFixed(decimal_points));
+            }
+        };
+
+        requestAnimationFrame(renderTick);
+    };
+
     return {
         init: init,
         update: update,
+        countUp: countUp,
         markAsWon: markAsWon,
         markAsLost: markAsLost,
         markDigitAsLost: markDigitAsLost,
@@ -24339,7 +24373,20 @@ var Purchase = function () {
         container.querySelectorAll('.row').forEach(function (item) {
             return item.classList.add('invisible');
         });
-        container.append(child);
+        // Count up to the number instead of just replacing it.
+        if (Array.from(container.querySelectorAll('.row.digit-trade')).length > 0) {
+            var this_quote_el = child.querySelector('.quote');
+            container.append(child);
+            if (this_quote_el.parentElement.parentElement.previousSibling) {
+                var prev_quote_el = this_quote_el.parentElement.parentElement.previousSibling.querySelector('.quote');
+                var prev_quote = prev_quote_el.innerText;
+                DigitTicker.countUp(parseFloat(prev_quote), parseFloat(this_quote_el.innerText), 700, this_quote_el, function (content) {
+                    return '<div class=\'quote\'>' + content.replace(/\d$/, makeBold) + '</div>';
+                });
+            }
+        } else {
+            container.append(child);
+        }
     };
 
     var display = function display(details) {
