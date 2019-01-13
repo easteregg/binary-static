@@ -2155,67 +2155,108 @@ module.exports = Crowdin;
 
 /* global google */
 var scriptjs = __webpack_require__(/*! scriptjs */ "./node_modules/scriptjs/dist/script.js");
-var localize = __webpack_require__(/*! ./localize */ "./src/javascript/_common/localize.js").localize;
+var getElementById = __webpack_require__(/*! ./common_functions */ "./src/javascript/_common/common_functions.js").getElementById;
 var applyToAllElements = __webpack_require__(/*! ./utility */ "./src/javascript/_common/utility.js").applyToAllElements;
-var createElement = __webpack_require__(/*! ./utility */ "./src/javascript/_common/utility.js").createElement;
 var Client = __webpack_require__(/*! ../app/base/client */ "./src/javascript/app/base/client.js");
 
 var Geocoder = function () {
     var el_btn_validate = void 0,
-        el_error = void 0;
+        el_error = void 0,
+        el_geocode_status = void 0,
+        el_loader = void 0,
+        el_postcode_row = void 0,
+        el_success = void 0,
+        is_states_el_select = void 0;
     var validated = false;
 
     var init = function init(form_id) {
+        // TODO: We should store the Google API key in an unstaged file so it doesn't get committed to the public repository
         scriptjs('https://maps.googleapis.com/maps/api/js?key=AIzaSyAEha6-HeZuI95L9JWmX3m6o-AxQr_oFqU&libraries=places', 'gMaps');
 
-        var form = document.getElementById(form_id.split('#')[1]);
+        var form = getElementById(form_id.split('#')[1]);
         var addr_1 = '#address_line_1';
         var addr_2 = '#address_line_2';
         var city = '#address_city';
         var state = '#address_state';
         var postcode = '#address_postcode';
-        var residence = Client.get('residence');
+        var residence = Client.get('residence').toUpperCase();
 
-        var getValue = function getValue(id) {
-            return document.getElementById(id.split('#')[1]).value || '';
-        };
+        is_states_el_select = form.querySelector(state).tagName === 'SELECT';
+
         var getAddress = function getAddress() {
-            return getValue(addr_1) + ' ' + getValue(addr_2) + ', ' + getValue(city) + ', ' + getValue(state) + ' ' + getValue(postcode) + ', ' + residence;
+            return getValue(addr_1) + ', ' + getValue(addr_2) + ', ' + getValue(city) + ', ' + getValue(postcode) + ' ' + (is_states_el_select ? getStateText(state) : getValue(state)) + ', ' + residence + ' ';
         };
 
-        form.querySelector(city).addEventListener('change', function () {
-            if (getValue(addr_1).length && getValue(city).length && !validated) {
+        el_btn_validate = form.querySelector('#geocode_validate');
+        el_geocode_status = form.querySelector('#geocode_status');
+        el_error = form.querySelector('#geocode_error');
+        el_postcode_row = form.querySelector('.postcode-form-row');
+        el_success = form.querySelector('#geocode_success');
+        el_loader = form.querySelector('.barspinner');
+
+        if (el_btn_validate) {
+            applyToAllElements(addr_1 + ', ' + addr_2 + ', ' + postcode + ', ' + (!is_states_el_select ? state : undefined) + ' ,' + city, function (element) {
+                // List of fields that will trigger event onChange but will allow empty values as they are non-required fields
+                var non_required_fields = ['addr_2', 'postcode', '' + (!is_states_el_select ? 'state' : undefined)];
+
+                element.addEventListener('keyup', function () {
+                    var value = element.value;
+                    // Check if address_line_1, address_state and address city have values
+                    var has_met_conditions = getValue(city).trim().length > 0 && getValue(addr_1).trim().length > 0;
+
+                    if (value.length > 0 && !non_required_fields.includes(element.id) && has_met_conditions) {
+                        el_btn_validate.classList.remove('geocode-btn-disabled');
+                    } else if (!non_required_fields.includes(element.id) && has_met_conditions) {
+                        el_btn_validate.classList.remove('geocode-btn-disabled');
+                    } else {
+                        el_btn_validate.classList.add('geocode-btn-disabled');
+                    }
+                });
+            }, '', form);
+
+            el_btn_validate.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (el_btn_validate.classList.contains('geocode-btn-disabled')) {
+                    return;
+                }
                 validator(getAddress()).then(function () {
                     validated = true;
                 });
-            }
-        });
-
-        el_error = form.querySelector('#geocode_error');
-        applyToAllElements(addr_1 + ', ' + addr_2 + ', ' + city + ', ' + postcode, function (element) {
-            element.addEventListener('keyup', function () {
-                if (!validated && !el_btn_validate) {
-                    el_btn_validate = createElement('button', {
-                        id: 'geocode_validate',
-                        class: 'button-secondary',
-                        text: localize('Validate address')
-                    });
-                    el_btn_validate.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        validator(getAddress()).then(function () {
-                            validated = true;
-                        });
-                    });
-                    el_error.parentNode.appendChild(el_btn_validate);
-                }
-                if (el_btn_validate) el_btn_validate.setVisibility(1);
-                el_error.setVisibility(0);
             });
-        }, '', form);
+
+            // using jQuery here because for some reason vanilla javascript eventListener isn't working for select input onChange events
+            $(state).on('change', function () {
+                if (getValue(city).length > 0 && getValue(addr_1).length > 0) {
+                    el_btn_validate.classList.remove('geocode-btn-disabled');
+                } else {
+                    el_btn_validate.classList.add('geocode-btn-disabled');
+                }
+            });
+
+            el_btn_validate.setVisibility(1);
+
+            if (validated || !getValue(addr_1).length || !getValue(state)) {
+                el_btn_validate.classList.add('geocode-btn-disabled');
+            }
+        }
+
+        el_postcode_row.parentNode.appendChild(el_geocode_status);
+
+        if (el_error) {
+            el_error.setVisibility(0);
+        }
 
         return {
             address: getAddress()
         };
+    };
+
+    var getValue = function getValue(selector) {
+        return getElementById(selector.split('#')[1]).value || '';
+    };
+    var getStateText = function getStateText(selector) {
+        var states_list_el = getElementById(selector.split('#')[1]);
+        return states_list_el.options[states_list_el.selectedIndex].text;
     };
 
     var validate = function validate(form_id) {
@@ -2229,26 +2270,76 @@ var Geocoder = function () {
         return new Promise(function (resolve) {
             scriptjs.ready('gMaps', function () {
                 var geocoder = new google.maps.Geocoder();
+                el_btn_validate.classList.add('geocode-btn-disabled');
+                el_success.setVisibility(0);
+                el_error.setVisibility(0);
+                el_loader.setVisibility(1);
                 geocoder.geocode({
-                    address: address
+                    address: address,
+                    // Restrict Geolocation to client's country of residence and state
+                    componentRestrictions: {
+                        country: Client.get('residence').toUpperCase(),
+                        administrativeArea: is_states_el_select ? getStateText('#address_state') : getValue('#address_state')
+                    }
                 }, function (result, status) {
                     // Geocoding status reference:
                     // https://developers.google.com/maps/documentation/javascript/geocoding#GeocodingStatusCodes
-                    handleResponse(status);
-                    resolve(status);
+                    var data = { result: result, status: status };
+                    handleResponse(data);
+                    resolve(data);
                 });
             });
         });
     };
 
-    var handleResponse = function handleResponse(status) {
-        if (/ZERO_RESULTS|INVALID_REQUEST/.test(status)) {
+    var isAddressFound = function isAddressFound(user_address, user_city, geoloc_address) {
+        var result = void 0;
+        var trimSpaces = function trimSpaces(string) {
+            return string.replace(/^\s+|\s+$/g, '');
+        };
+
+        if (geoloc_address.length && getValue('#address_city')) {
+            var item_idx = geoloc_address.length - 1;
+
+            var country_longname = getElementById('country').innerHTML;
+            var input_city = trimSpaces(user_city).toLowerCase();
+            var user_address_str = trimSpaces(user_address);
+            var arr_input_address = user_address_str.replace(/[\s]-[\s]|\/\w+/g, ' ').toLowerCase().split(', ');
+
+            var arr_address_components = geoloc_address[item_idx].address_components;
+            var arr_address_list = [];
+
+            // Create address dictionary string based on returned long and short named address components by Geolocation API
+            arr_address_components.filter(function (address) {
+                arr_address_list.push(address.long_name.replace(/ - /g, ' '));
+                arr_address_list.push(address.short_name.replace(/ - /g, ' '));
+            });
+
+            // Filter out duplicates in address components
+            var address_list_dictionary = arr_address_list.filter(function (elem, pos, arr) {
+                return arr.indexOf(elem) === pos;
+            }).join(' ').toLowerCase();
+
+            // Check if city exists, if true, check if first line of address exists
+            if (address_list_dictionary.indexOf(input_city) !== -1 && user_address.toLowerCase() !== country_longname.toLowerCase()) {
+                result = arr_input_address.some(function (address) {
+                    return address_list_dictionary.includes(address);
+                });
+            }
+        }
+        return result;
+    };
+
+    var handleResponse = function handleResponse(data) {
+        var is_address_found = isAddressFound(getValue('#address_line_1'), getValue('#address_city'), data.result);
+        if (/ZERO_RESULTS|INVALID_REQUEST|UNKNOWN_ERROR/.test(data.status) || !is_address_found) {
             el_error.setVisibility(1);
-            if (el_btn_validate) el_btn_validate.setVisibility(0);
+            el_success.setVisibility(0);
         } else {
             el_error.setVisibility(0);
-            if (el_btn_validate) el_btn_validate.setVisibility(0);
+            el_success.setVisibility(1);
         }
+        el_loader.setVisibility(0);
     };
 
     return {
@@ -11206,7 +11297,6 @@ var AccountOpening = function () {
         if (getPropertyValue(landing_company, ['financial_company', 'shortcode']) === 'maltainvest') {
             professionalClient.init(is_financial, false);
         }
-        Geocoder.init(form_id);
     };
 
     var getResidence = function getResidence(form_id, getValidations) {
@@ -11359,6 +11449,7 @@ var AccountOpening = function () {
             if (form_id && typeof getValidations === 'function') {
                 FormManager.init(form_id, getValidations());
             }
+            Geocoder.init(form_id);
         });
     };
     var handleNewAccount = function handleNewAccount(response, message_type) {
@@ -28670,9 +28761,6 @@ var PersonalDetails = function () {
             fnc_additional_check: additionalCheck,
             enable_button: true
         });
-        if (!is_virtual) {
-            Geocoder.validate(form_id);
-        }
         showHideMissingDetails();
     };
 
@@ -28821,6 +28909,7 @@ var PersonalDetails = function () {
                 if (additionalCheck(get_settings)) {
                     getDetailsResponse(get_settings);
                     showFormMessage(localize('Your settings have been updated successfully.'), true);
+                    Geocoder.validate(form_id);
                 }
             });
         } else {
@@ -28932,6 +29021,9 @@ var PersonalDetails = function () {
                             BinarySocket.send({ states_list: residence }).then(function (response_state) {
                                 populateStates(response_state).then(function () {
                                     getDetailsResponse(get_settings_data, response.residence_list);
+                                    if (!is_virtual) {
+                                        Geocoder.validate(form_id);
+                                    }
                                 });
                             });
                         } else {
