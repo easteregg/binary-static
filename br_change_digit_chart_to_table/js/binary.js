@@ -18070,6 +18070,10 @@ var TradingAnalysis = function () {
                 image1: 'stays-between.svg',
                 image2: 'goes-outside.svg'
             },
+            digits: {
+                image1: 'matches.svg',
+                image2: 'differs.svg'
+            },
             evenodd: {
                 image1: 'even.svg',
                 image2: 'odd.svg'
@@ -34659,7 +34663,7 @@ module.exports = {
     },
     BinaryOptionsForMT5: {
         onLoad: function onLoad() {
-            MenuSelector.init(['what-are-binary-options', 'how-to-trade-binary']);
+            MenuSelector.init(['what-are-binary-options', 'how-to-trade-binary', 'types-of-trades']);
         },
         onUnload: function onUnload() {
             MenuSelector.clean();
