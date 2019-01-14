@@ -1137,25 +1137,25 @@ a.previous-wrapper {
     -webkit-transition: all 0.9s ease;
     transition: all 0.9s ease;
     position: absolute;
-    top: 3px;
+    top: 2px;
     left: 0;
     z-index: 5; }
     .digit-ticker .peek-box .bottomright {
       grid-area: bottomright;
       border-bottom-right-radius: 4px;
       width: 4px;
-      height: 4px;
+      height: 5px;
       background-color: #cb0433; }
     .digit-ticker .peek-box .bottom {
       grid-area: bottom;
-      height: 4px;
+      height: 5px;
       width: 100%;
       background-color: #cb0433; }
     .digit-ticker .peek-box .bottomleft {
       grid-area: bottomleft;
       border-bottom-left-radius: 4px;
       width: 4px;
-      height: 4px;
+      height: 5px;
       background-color: #cb0433; }
     .digit-ticker .peek-box .left {
       grid-area: left;
