@@ -21200,7 +21200,7 @@ var DigitTicker = function () {
 
     var populateContainer = function populateContainer(container_element) {
         // remove previous elements and start fresh.
-        while (container_element.firstChild) {
+        while (container_element && container_element.firstChild) {
             container_element.removeChild(container_element.firstChild);
         }
 
@@ -21381,6 +21381,10 @@ var DigitTicker = function () {
 
     var remove = function remove() {
         window.onresize = null;
+        while (el_container && el_container.firstChild) {
+            el_container.removeChild(el_container.firstChild);
+        }
+        if (el_container) el_container.classList.add('invisible');
     };
 
     var countDecimals = function countDecimals(value) {
@@ -24479,6 +24483,7 @@ module.exports = Process;
 "use strict";
 
 
+var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 var Contract = __webpack_require__(/*! ./contract */ "./src/javascript/app/pages/trade/contract.js");
 var getLookBackFormula = __webpack_require__(/*! ./lookback */ "./src/javascript/app/pages/trade/lookback.js").getFormula;
 var isLookback = __webpack_require__(/*! ./lookback */ "./src/javascript/app/pages/trade/lookback.js").isLookback;
@@ -24635,22 +24640,22 @@ var Purchase = function () {
             }
 
             CommonFunctions.elementTextContent(CommonFunctions.getElementById('contract_highlowtick'), '');
+            var arr_shortcode = purchase_data.buy.shortcode.split('_');
+            tick_config = {
+                is_tick_high: /^tickhigh$/i.test(contract_type),
+                is_tick_low: /^ticklow$/i.test(contract_type),
+                is_digit: /^digit/i.test(contract_type),
+                selected_tick_number: arr_shortcode[arr_shortcode.length - 1],
+                winning_tick_quote: '',
+                winning_tick_number: ''
+            };
+
             if (has_chart) {
                 spots.hide();
             } else {
                 CommonFunctions.elementTextContent(spots, '');
                 spots.className = '';
                 spots.show();
-
-                var arr_shortcode = purchase_data.buy.shortcode.split('_');
-                tick_config = {
-                    is_tick_high: /^tickhigh$/i.test(contract_type),
-                    is_tick_low: /^ticklow$/i.test(contract_type),
-                    is_digit: /^digit/i.test(contract_type),
-                    selected_tick_number: arr_shortcode[arr_shortcode.length - 1],
-                    winning_tick_quote: '',
-                    winning_tick_number: ''
-                };
             }
 
             if (has_chart && !show_chart) {
@@ -24666,6 +24671,8 @@ var Purchase = function () {
 
         if (tick_config.is_digit) {
             DigitTicker.init('digit_ticker_table', passthrough.contract_type, passthrough.barrier, passthrough.duration, status);
+        } else {
+            DigitTicker.remove();
         }
 
         if (show_chart && has_chart) {
@@ -24832,7 +24839,7 @@ var Purchase = function () {
                     var el_epoch = document.createElement('div');
                     el_epoch.className = 'digit-tick-epoch';
                     el_epoch.style.right = (el3.offsetWidth - tick.offsetWidth) / 2;
-                    var el_epoch_content = document.createTextNode(new Date(tick_d.epoch * 1000).toTimeString().slice(0, 8));
+                    var el_epoch_content = document.createTextNode(moment(new Date(tick_d.epoch * 1000)).utc().format('HH:mm:ss'));
                     el_epoch.appendChild(el_epoch_content);
                     fragment.appendChild(el_epoch);
                     el3.insertBefore(el_epoch, el3.childNodes[0]);
