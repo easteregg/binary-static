@@ -21190,7 +21190,7 @@ var DigitTicker = function () {
     var array_of_digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
     var isBarrierMissing = function isBarrierMissing(contract_type, barrier) {
-        return contract_type !== 'DIGITDIFF' && contract_type !== 'DIGITMATCH' && !barrier;
+        return contract_type !== 'DIGITEVEN' && contract_type !== 'DIGITODD' && !barrier;
     };
 
     var init = function init(container_id, contract_type, barrier, tick_count) {
