@@ -21444,6 +21444,7 @@ var DigitTicker = function () {
         init: init,
         update: update,
         countUp: countUp,
+        isBarrierMissing: isBarrierMissing,
         markAsWon: markAsWon,
         markAsLost: markAsLost,
         markDigitAsLost: markDigitAsLost,
@@ -21489,7 +21490,9 @@ var DigitDisplay = function () {
         $container = $('#' + id_render);
         $container.addClass('normal-font').html($('<h5 />', { text: contract.display_name, class: 'center-text' })).append($('<div />', { class: 'gr-8 gr-centered gr-12-m' }).append($('<div />', { class: 'gr-row', id: 'table_digits' }).append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') })))).append($('<div />', { class: 'digit-ticker invisible', id: 'digit_ticker_container' }));
 
-        DigitTicker.init('digit_ticker_container', contract.contract_type, contract.barrier, contract.tick_count, contract.status);
+        if (!DigitTicker.isBarrierMissing(contract.contract_type, contract.barrier)) {
+            DigitTicker.init('digit_ticker_container', contract.contract_type, contract.barrier, contract.tick_count, contract.status);
+        }
 
         var request = {
             ticks_history: contract.underlying,
@@ -24691,7 +24694,7 @@ var Purchase = function () {
             }
         }
 
-        if (tick_config.is_digit) {
+        if (tick_config.is_digit && !DigitTicker.isBarrierMissing(passthrough.contract_type, passthrough.barrier)) {
             DigitTicker.init('digit_ticker_table', passthrough.contract_type, passthrough.barrier, passthrough.duration, status);
         } else {
             DigitTicker.remove();
