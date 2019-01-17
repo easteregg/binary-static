@@ -24672,7 +24672,8 @@ var Purchase = function () {
                 is_digit: /^digit/i.test(contract_type),
                 selected_tick_number: arr_shortcode[arr_shortcode.length - 1],
                 winning_tick_quote: '',
-                winning_tick_number: ''
+                winning_tick_number: '',
+                exit_tick_time: false
             };
 
             if (has_chart) {
@@ -24751,6 +24752,7 @@ var Purchase = function () {
                         TickDisplay.setStatus(contract);
                         if (/^digit/i.test(contract.contract_type)) {
                             if (contract.status !== 'open') {
+                                tick_config.exit_tick_time = +contract.exit_tick_time;
                                 digitShowExitTime(contract.status, contract.exit_tick);
                             }
                         }
@@ -24810,6 +24812,7 @@ var Purchase = function () {
         }
 
         var duration = +getPropertyValue(purchase_data, ['echo_req', 'passthrough', 'duration']);
+
         if (!duration) {
             return;
         }
@@ -24818,6 +24821,12 @@ var Purchase = function () {
         var epoches = Object.keys(spots2).sort(function (a, b) {
             return a - b;
         });
+
+        // I've added this part to prevent race condition.
+        if (tick_config.is_digit && epoches.length > duration) {
+            epoches = epoches.slice(+getPropertyValue(purchase_data, ['echo_req', 'passthrough', 'duration']));
+        }
+
         CommonFunctions.elementTextContent(spots, '');
         for (var s = 0; s < epoches.length; s++) {
             var tick_d = {
@@ -24860,7 +24869,7 @@ var Purchase = function () {
                 var el3 = createElement('div', { class: 'col' });
                 CommonFunctions.elementInnerHtml(el3, tick);
 
-                if (tick_config.is_digit) {
+                if (tick_config.is_digit && tick_config.exit_tick_time === false) {
                     DigitTicker.update(current_tick_count, tick_d);
                     var el_epoch = document.createElement('div');
                     el_epoch.className = 'digit-tick-epoch';
@@ -34381,7 +34390,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '15034'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
