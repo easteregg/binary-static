@@ -24672,8 +24672,7 @@ var Purchase = function () {
                 is_digit: /^digit/i.test(contract_type),
                 selected_tick_number: arr_shortcode[arr_shortcode.length - 1],
                 winning_tick_quote: '',
-                winning_tick_number: '',
-                exit_tick_time: false
+                winning_tick_number: ''
             };
 
             if (has_chart) {
@@ -24752,7 +24751,6 @@ var Purchase = function () {
                         TickDisplay.setStatus(contract);
                         if (/^digit/i.test(contract.contract_type)) {
                             if (contract.status !== 'open') {
-                                tick_config.exit_tick_time = +contract.exit_tick_time;
                                 digitShowExitTime(contract.status, contract.exit_tick);
                             }
                         }
@@ -24862,7 +24860,7 @@ var Purchase = function () {
                 var el3 = createElement('div', { class: 'col' });
                 CommonFunctions.elementInnerHtml(el3, tick);
 
-                if (tick_config.is_digit && tick_config.exit_tick_time === false) {
+                if (tick_config.is_digit) {
                     DigitTicker.update(current_tick_count, tick_d);
                     var el_epoch = document.createElement('div');
                     el_epoch.className = 'digit-tick-epoch';
