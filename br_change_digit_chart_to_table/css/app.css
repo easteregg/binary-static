@@ -1872,8 +1872,6 @@ a.previous-wrapper {
                 flex-direction: column;
         line-height: 1.4em;
         padding: 0 10px; }
-        #trading_socket_container #contract_prices_container #contract_purchase_profit_list > div > p {
-          margin: auto 0 0; }
     #trading_socket_container #contract_prices_container #contract_purchase_spots {
       overflow: hidden;
       padding-top: 10px;
