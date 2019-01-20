@@ -24558,14 +24558,22 @@ var Purchase = function () {
                 spots.show();
 
                 var arr_shortcode = purchase_data.buy.shortcode.split('_');
+
                 tick_config = {
                     is_tick_high: /^tickhigh$/i.test(contract_type),
                     is_tick_low: /^ticklow$/i.test(contract_type),
+                    is_run_high: /^runhigh$/i.test(contract_type),
+                    is_run_low: /^runlow$/i.test(contract_type),
                     selected_tick_number: arr_shortcode[arr_shortcode.length - 1],
                     winning_tick_quote: '',
-                    winning_tick_number: ''
+                    winning_tick_number: '',
+                    previous_tick_quote: '',
+                    losing_tick_number: '',
+                    is_runs: false
                 };
             }
+
+            tick_config.is_runs = tick_config.is_run_high || tick_config.is_run_low;
 
             if (has_chart && !show_chart) {
                 CommonFunctions.elementTextContent(button, localize('View'));
@@ -24662,15 +24670,24 @@ var Purchase = function () {
                 } else if (status === 'lost') {
                     updateValues.updatePurchaseStatus(0, -cost_value, profit_value, localize('This contract lost'));
                 }
-                if (tick_config.is_tick_high || tick_config.is_tick_low) {
-                    var is_won = +tick_config.selected_tick_number === +tick_config.winning_tick_number;
+                if (tick_config.is_runs && +tick_config.losing_tick_number > 1) {
                     var localized_text = void 0;
-                    if (tick_config.is_tick_high) {
-                        localized_text = is_won ? localizeKeepPlaceholders('Tick [_1] is the highest tick') : localizeKeepPlaceholders('Tick [_1] is not the highest tick');
+                    if (tick_config.is_run_high) {
+                        localized_text = localizeKeepPlaceholders('Tick [_1] is not consecutively higher');
                     } else {
-                        localized_text = is_won ? localizeKeepPlaceholders('Tick [_1] is the lowest tick') : localizeKeepPlaceholders('Tick [_1] is not the lowest tick');
+                        localized_text = localizeKeepPlaceholders('Tick [_1] is not consecutively lower than the previous one');
                     }
                     CommonFunctions.elementTextContent(CommonFunctions.getElementById('contract_highlowtick'), template(localized_text, [tick_config.selected_tick_number]));
+                }
+                if (tick_config.is_tick_high || tick_config.is_tick_low) {
+                    var is_won = +tick_config.selected_tick_number === +tick_config.winning_tick_number;
+                    var _localized_text = void 0;
+                    if (tick_config.is_tick_high) {
+                        _localized_text = is_won ? localizeKeepPlaceholders('Tick [_1] is the highest tick') : localizeKeepPlaceholders('Tick [_1] is not the highest tick');
+                    } else {
+                        _localized_text = is_won ? localizeKeepPlaceholders('Tick [_1] is the lowest tick') : localizeKeepPlaceholders('Tick [_1] is not the lowest tick');
+                    }
+                    CommonFunctions.elementTextContent(CommonFunctions.getElementById('contract_highlowtick'), template(_localized_text, [tick_config.selected_tick_number]));
                 }
             }
         }
@@ -24706,6 +24723,19 @@ var Purchase = function () {
                     }
                 }
 
+                var is_losing_tick = false;
+                if (tick_config.is_runs) {
+                    var _$winning_row = $spots.find('.winning-tick-row');
+                    if (current_tick_count > 1 && tick_config.is_run_high && +tick_d.quote < tick_config.previous_tick_quote || current_tick_count > 1 && tick_config.is_run_low && +tick_d.quote > tick_config.previous_tick_quote) {
+                        is_losing_tick = true;
+                        tick_config.previous_tick_quote = tick_d.quote;
+                        tick_config.losing_tick_number = current_tick_count;
+                        _$winning_row.removeClass('winning-tick-row');
+                    } else {
+                        tick_config.previous_tick_quote = tick_d.quote;
+                    }
+                }
+
                 var fragment = createElement('div', { class: 'row' + (is_winning_tick ? ' winning-tick-row' : '') });
 
                 var el1 = createElement('div', { class: 'col', text: localize('Tick') + ' ' + current_tick_count });
@@ -24719,7 +24749,7 @@ var Purchase = function () {
                 CommonFunctions.elementTextContent(el2, [hours, minutes, seconds].join(':'));
                 fragment.appendChild(el2);
 
-                var tick = tick_config.is_tick_high || tick_config.is_tick_low ? tick_d.quote : tick_d.quote.replace(/\d$/, makeBold);
+                var tick = tick_config.is_tick_high || tick_config.is_tick_low || tick_config.is_runs ? tick_d.quote : tick_d.quote.replace(/\d$/, makeBold);
                 var el3 = createElement('div', { class: 'col' });
                 CommonFunctions.elementInnerHtml(el3, tick);
                 fragment.appendChild(el3);
@@ -24735,6 +24765,10 @@ var Purchase = function () {
                     if (lost_on_selected_tick || lost_after_selected_tick) {
                         duration = 0; // no need to keep drawing ticks
                     }
+                }
+
+                if (tick_config.is_runs && is_losing_tick) {
+                    duration = 0; // no need to keep drawing ticks
                 }
 
                 if (!duration) {
@@ -25313,7 +25347,7 @@ var TickDisplay = function () {
         display_symbol = data.display_symbol;
         contract_start_ms = parseInt(data.contract_start) * 1000;
         contract_category = data.contract_category;
-        should_set_barrier = !contract_category.match('digits');
+        should_set_barrier = !contract_category.match('digits|runs');
         barrier = data.barrier;
         display_decimals = data.display_decimals || 2;
         show_contract_result = data.show_contract_result;
@@ -25415,6 +25449,11 @@ var TickDisplay = function () {
                 label: localize('Exit Spot'),
                 id: 'exit_tick',
                 dashStyle: 'Dash'
+            };
+        } else if (contract_category.match('runs')) {
+            ticks_needed = number_of_ticks + 1;
+            x_indicators = {
+                _0: { label: localize('Entry Spot'), id: 'entry_tick' }
             };
         } else {
             x_indicators = {};
@@ -32973,6 +33012,7 @@ var BinaryPjax = __webpack_require__(/*! ../../base/binary_pjax */ "./src/javasc
 var Client = __webpack_require__(/*! ../../base/client */ "./src/javascript/app/base/client.js");
 var Header = __webpack_require__(/*! ../../base/header */ "./src/javascript/app/base/header.js");
 var BinarySocket = __webpack_require__(/*! ../../base/socket */ "./src/javascript/app/base/socket.js");
+var Dialog = __webpack_require__(/*! ../../common/attach_dom/dialog */ "./src/javascript/app/common/attach_dom/dialog.js");
 var getCurrencyName = __webpack_require__(/*! ../../common/currency */ "./src/javascript/app/common/currency.js").getCurrencyName;
 var isCryptocurrency = __webpack_require__(/*! ../../common/currency */ "./src/javascript/app/common/currency.js").isCryptocurrency;
 var localize = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
@@ -33006,6 +33046,7 @@ var SetCurrency = function () {
         BinarySocket.wait('payout_currencies', 'landing_company').then(function () {
             var landing_company = State.getResponse('landing_company');
             var currencies = State.getResponse('payout_currencies');
+
             if (Client.get('landing_company_shortcode') === 'costarica') {
                 currencies = getCurrencies(landing_company);
             }
@@ -33029,15 +33070,9 @@ var SetCurrency = function () {
             $('#set_currency, .select_currency').setVisibility(1);
 
             var $currency_list = $('.currency_list');
-            $('.currency_wrapper').on('click', function () {
-                $currency_list.find('> div').removeClass('selected');
-                $(this).addClass('selected');
-            });
+            var $error = $('#set_currency').find('.error-msg');
 
-            var $form = $('#frm_set_currency');
-            var $error = $form.find('.error-msg');
-            $form.on('submit', function (evt) {
-                evt.preventDefault();
+            var onConfirm = function onConfirm() {
                 $error.setVisibility(0);
                 var $selected_currency = $currency_list.find('.selected');
                 if ($selected_currency.length) {
@@ -33079,6 +33114,32 @@ var SetCurrency = function () {
                 } else {
                     $error.text(localize('Please choose a currency')).setVisibility(1);
                 }
+            };
+
+            $('.currency_wrapper').on('click', function () {
+                var $clicked_currency = $(this);
+                var currency = $clicked_currency.attr('id');
+                var localized_message = '';
+                $error.setVisibility(0);
+                $currency_list.find('> div').removeClass('selected');
+                $clicked_currency.addClass('selected');
+                if (isCryptocurrency(currency)) {
+                    localized_message = localize('You have chosen [_1] as the currency for this account. You cannot change this later. You can have more than one cryptocurrency account.', '<strong>' + getCurrencyName(currency) + ' (' + currency + ')</strong>');
+                } else {
+                    localized_message = localize('You have chosen [_1] as the currency for this account. You cannot change this later. You can have one fiat currency account only.', '<strong>' + currency + '</strong>');
+                }
+
+                Dialog.confirm({
+                    id: 'set_currency_popup_container',
+                    ok_text: localize('Confirm'),
+                    cancel_text: localize('Back'),
+                    localized_title: localize('Are you sure?'),
+                    localized_message: localized_message,
+                    onConfirm: onConfirm,
+                    onAbort: function onAbort() {
+                        return $currency_list.find('> div').removeClass('selected');
+                    }
+                });
             });
         });
     };
@@ -34352,7 +34413,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '15034'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
