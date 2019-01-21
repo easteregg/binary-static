@@ -21793,6 +21793,16 @@ var DigitDisplay = function () {
         tick_count = void 0,
         spot_times = void 0;
 
+    var subscribe = function subscribe(request) {
+        // Subscribe if contract is still ongoing/running.
+        if (contract.current_spot_time < contract.date_expiry) {
+            request.subscribe = 1;
+            request.end = 'latest';
+        } else {
+            request.end = contract.date_expiry;
+        }
+    };
+
     var init = function init(id_render, proposal_open_contract) {
         tick_count = 1;
         contract = proposal_open_contract;
@@ -21807,13 +21817,7 @@ var DigitDisplay = function () {
             start: contract.date_start
         };
 
-        // Subscribe if contract is still ongoing/running.
-        if (contract.current_spot_time < contract.date_expiry) {
-            request.subscribe = 1;
-            request.end = 'latest';
-        } else {
-            request.end = contract.date_expiry;
-        }
+        subscribe(request);
 
         BinarySocket.send(request, { callback: update });
     };
@@ -21834,9 +21838,8 @@ var DigitDisplay = function () {
         $container.find('#table_digits').append($('<p />', { class: 'gr-3', text: tick_count })).append($('<p />', { class: 'gr-3 gray', html: tick_count === contract.tick_count ? csv_spot.slice(0, csv_spot.length - 1) + '<strong>' + csv_spot.substr(-1) + '</strong>' : csv_spot })).append($('<p />', { class: 'gr-6 gray digit-spot-time no-underline', text: moment(+time * 1000).utc().format('YYYY-MM-DD HH:mm:ss') }));
 
         DigitTicker.update(tick_count, {
-            quote: spot,
-            epoch: contract.current_spot,
-            date_expiry: contract.date_expiry
+            quote: contract.status !== 'open' ? contract.exit_tick : spot,
+            epoch: contract.status !== 'open' ? contract.exit_tick_time : contract.date_expiry
         });
     };
 
@@ -21858,7 +21861,7 @@ var DigitDisplay = function () {
                 return tick_count > contract.tick_count;
             });
         } else if (response.tick) {
-            if (tick_count <= contract.tick_count) {
+            if (tick_count <= contract.tick_count && +response.tick.epoch <= +contract.date_expiry && +response.tick.epoch >= +contract.entry_tick_time) {
                 updateTable(response.tick.quote, response.tick.epoch);
                 tick_count += 1;
             }
@@ -21867,6 +21870,21 @@ var DigitDisplay = function () {
     };
 
     var end = function end(proposal_open_contract) {
+        if (proposal_open_contract.status !== 'open') {
+            DigitTicker.update(proposal_open_contract.tick_count, {
+                quote: proposal_open_contract.exit_tick,
+                epoch: proposal_open_contract.exit_tick_time
+            });
+            if ($container.find('#digit_table').length < proposal_open_contract.tick_count) {
+                var request = {
+                    ticks_history: contract.underlying,
+                    start: contract.entry_tick_time,
+                    end: contract.exit_tick_time
+                };
+                // force rerender the table by sending the history
+                BinarySocket.send(request, { callback: update });
+            }
+        }
         if (proposal_open_contract.status === 'won') {
             DigitTicker.markAsWon();
             DigitTicker.markDigitAsWon(proposal_open_contract.exit_tick.slice(-1));
@@ -34874,7 +34892,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
