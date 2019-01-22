@@ -21897,7 +21897,7 @@ var DigitDisplay = function () {
                 quote: proposal_open_contract.exit_tick,
                 epoch: proposal_open_contract.exit_tick_time
             });
-            if ($container.find('#digit_table').length < proposal_open_contract.tick_count) {
+            if ($container.find('#digit_table').length !== proposal_open_contract.tick_count) {
                 var request = {
                     ticks_history: contract.underlying,
                     start: contract.entry_tick_time,
