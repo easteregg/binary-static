@@ -21890,7 +21890,7 @@ var DigitDisplay = function () {
                 return tick_count > contract.tick_count;
             });
         } else if (response.tick) {
-            if (tick_count <= contract.tick_count && +response.tick.epoch >= +contract.entry_tick_time && +response.tick.epoch <= +contract.exit_tick_time) {
+            if (tick_count <= contract.tick_count && +response.tick.epoch >= +contract.entry_tick_time) {
                 updateTable(response.tick.quote, response.tick.epoch);
                 tick_count += 1;
             }
