@@ -21828,6 +21828,12 @@ var DigitDisplay = function () {
         })) {
             return;
         }
+        if (spot_times.filter(function (spot_time) {
+            return spot_time.spot === spot && spot_time.time === time;
+        }).length !== 0) {
+            return;
+        }
+
         spot_times.push({
             spot: spot,
             time: time
@@ -21849,9 +21855,10 @@ var DigitDisplay = function () {
             return;
         }
         $container.find('#table_digits').empty();
+        $container.find('#table_digits').append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') }));
 
         response.history.times.some(function (time, idx) {
-            if (+time >= +contract.entry_tick_time && +contract.exit_tick_time) {
+            if (+time >= +contract.entry_tick_time && time <= +contract.exit_tick_time) {
                 var spot = response.history.prices[idx];
                 var csv_spot = addComma(spot);
 
@@ -21883,7 +21890,7 @@ var DigitDisplay = function () {
                 return tick_count > contract.tick_count;
             });
         } else if (response.tick) {
-            if (tick_count <= contract.tick_count && +response.tick.epoch >= +contract.entry_tick_time) {
+            if (tick_count <= contract.tick_count && +response.tick.epoch >= +contract.entry_tick_time && +response.tick.epoch <= +contract.exit_tick_time) {
                 updateTable(response.tick.quote, response.tick.epoch);
                 tick_count += 1;
             }
@@ -21897,16 +21904,15 @@ var DigitDisplay = function () {
                 quote: proposal_open_contract.exit_tick,
                 epoch: proposal_open_contract.exit_tick_time
             });
-            if ($container.find('#digit_table').length !== proposal_open_contract.tick_count) {
-                var request = {
-                    ticks_history: contract.underlying,
-                    start: contract.entry_tick_time,
-                    end: contract.exit_tick_time
-                };
 
-                // force rerender the table by sending the history
-                BinarySocket.send(request, { callback: redrawFromHistory });
-            }
+            var request = {
+                ticks_history: contract.underlying,
+                start: contract.entry_tick_time,
+                end: contract.exit_tick_time
+            };
+
+            // force rerender the table by sending the history
+            BinarySocket.send(request, { callback: redrawFromHistory });
         }
         if (proposal_open_contract.status === 'won') {
             DigitTicker.markAsWon();
