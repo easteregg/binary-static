@@ -24553,6 +24553,7 @@ var Purchase = function () {
             }
 
             CommonFunctions.elementTextContent(CommonFunctions.getElementById('contract_highlowtick'), '');
+
             if (has_chart) {
                 spots.hide();
             } else {
@@ -24561,22 +24562,14 @@ var Purchase = function () {
                 spots.show();
 
                 var arr_shortcode = purchase_data.buy.shortcode.split('_');
-
                 tick_config = {
                     is_tick_high: /^tickhigh$/i.test(contract_type),
                     is_tick_low: /^ticklow$/i.test(contract_type),
-                    is_run_high: /^runhigh$/i.test(contract_type),
-                    is_run_low: /^runlow$/i.test(contract_type),
                     selected_tick_number: arr_shortcode[arr_shortcode.length - 1],
                     winning_tick_quote: '',
-                    winning_tick_number: '',
-                    previous_tick_quote: '',
-                    losing_tick_number: '',
-                    is_runs: false
+                    winning_tick_number: ''
                 };
             }
-
-            tick_config.is_runs = tick_config.is_run_high || tick_config.is_run_low;
 
             if (has_chart && !show_chart) {
                 CommonFunctions.elementTextContent(button, localize('View'));
@@ -24673,29 +24666,21 @@ var Purchase = function () {
                 } else if (status === 'lost') {
                     updateValues.updatePurchaseStatus(0, -cost_value, profit_value, localize('This contract lost'));
                 }
-                if (tick_config.is_runs && +tick_config.losing_tick_number > 1) {
-                    var localized_text = void 0;
-                    if (tick_config.is_run_high) {
-                        localized_text = localizeKeepPlaceholders('Tick [_1] is not consecutively higher');
-                    } else {
-                        localized_text = localizeKeepPlaceholders('Tick [_1] is not consecutively lower than the previous one');
-                    }
-                    CommonFunctions.elementTextContent(CommonFunctions.getElementById('contract_highlowtick'), template(localized_text, [tick_config.selected_tick_number]));
-                }
                 if (tick_config.is_tick_high || tick_config.is_tick_low) {
                     var is_won = +tick_config.selected_tick_number === +tick_config.winning_tick_number;
-                    var _localized_text = void 0;
+                    var localized_text = void 0;
                     if (tick_config.is_tick_high) {
-                        _localized_text = is_won ? localizeKeepPlaceholders('Tick [_1] is the highest tick') : localizeKeepPlaceholders('Tick [_1] is not the highest tick');
+                        localized_text = is_won ? localizeKeepPlaceholders('Tick [_1] is the highest tick') : localizeKeepPlaceholders('Tick [_1] is not the highest tick');
                     } else {
-                        _localized_text = is_won ? localizeKeepPlaceholders('Tick [_1] is the lowest tick') : localizeKeepPlaceholders('Tick [_1] is not the lowest tick');
+                        localized_text = is_won ? localizeKeepPlaceholders('Tick [_1] is the lowest tick') : localizeKeepPlaceholders('Tick [_1] is not the lowest tick');
                     }
-                    CommonFunctions.elementTextContent(CommonFunctions.getElementById('contract_highlowtick'), template(_localized_text, [tick_config.selected_tick_number]));
+                    CommonFunctions.elementTextContent(CommonFunctions.getElementById('contract_highlowtick'), template(localized_text, [tick_config.selected_tick_number]));
                 }
             }
         }
 
         var duration = +getPropertyValue(purchase_data, ['echo_req', 'passthrough', 'duration']);
+
         if (!duration) {
             return;
         }
@@ -24726,19 +24711,6 @@ var Purchase = function () {
                     }
                 }
 
-                var is_losing_tick = false;
-                if (tick_config.is_runs) {
-                    var _$winning_row = $spots.find('.winning-tick-row');
-                    if (current_tick_count > 1 && tick_config.is_run_high && +tick_d.quote < tick_config.previous_tick_quote || current_tick_count > 1 && tick_config.is_run_low && +tick_d.quote > tick_config.previous_tick_quote) {
-                        is_losing_tick = true;
-                        tick_config.previous_tick_quote = tick_d.quote;
-                        tick_config.losing_tick_number = current_tick_count;
-                        _$winning_row.removeClass('winning-tick-row');
-                    } else {
-                        tick_config.previous_tick_quote = tick_d.quote;
-                    }
-                }
-
                 var fragment = createElement('div', { class: 'row' + (is_winning_tick ? ' winning-tick-row' : '') });
 
                 var el1 = createElement('div', { class: 'col', text: localize('Tick') + ' ' + current_tick_count });
@@ -24752,7 +24724,7 @@ var Purchase = function () {
                 CommonFunctions.elementTextContent(el2, [hours, minutes, seconds].join(':'));
                 fragment.appendChild(el2);
 
-                var tick = tick_config.is_tick_high || tick_config.is_tick_low || tick_config.is_runs ? tick_d.quote : tick_d.quote.replace(/\d$/, makeBold);
+                var tick = tick_config.is_tick_high || tick_config.is_tick_low ? tick_d.quote : tick_d.quote.replace(/\d$/, makeBold);
                 var el3 = createElement('div', { class: 'col' });
                 CommonFunctions.elementInnerHtml(el3, tick);
                 fragment.appendChild(el3);
@@ -24768,10 +24740,6 @@ var Purchase = function () {
                     if (lost_on_selected_tick || lost_after_selected_tick) {
                         duration = 0; // no need to keep drawing ticks
                     }
-                }
-
-                if (tick_config.is_runs && is_losing_tick) {
-                    duration = 0; // no need to keep drawing ticks
                 }
 
                 if (!duration) {
@@ -25364,7 +25332,6 @@ var TickDisplay = function () {
             price = parseFloat(data.price);
             payout = parseFloat(data.payout);
         }
-
         setXIndicators();
         requireHighstock(function (Highstock) {
             Highcharts = Highstock;
@@ -25675,6 +25642,7 @@ var TickDisplay = function () {
                 } else if (/^(runhigh|runlow)/i.test(contract.shortcode)) {
                     category = 'runs';
                 }
+
                 initialize({
                     symbol: contract.underlying,
                     number_of_ticks: contract.tick_count,
@@ -25690,6 +25658,7 @@ var TickDisplay = function () {
                 return;
             }
         }
+
         if (data.tick) {
             spots2 = Tick.spots();
             epoches = Object.keys(spots2).sort(function (a, b) {
@@ -25700,6 +25669,9 @@ var TickDisplay = function () {
         }
 
         var has_finished = applicable_ticks && ticks_needed && applicable_ticks.length >= ticks_needed;
+        if (contract_category.match('run')) {
+            has_finished = applicable_ticks.length && contract.exit_tick_time || false;
+        }
         var has_sold = contract && contract.exit_tick_time && applicable_ticks && applicable_ticks.find(function (_ref) {
             var epoch = _ref.epoch;
             return +epoch === +contract.exit_tick_time;
@@ -25849,7 +25821,6 @@ var TickDisplay = function () {
             label: localize('Exit Spot'),
             dashStyle: 'Dash'
         };
-
         add(x_indicators[indicator_key]);
     };
 
@@ -25887,6 +25858,9 @@ var TickDisplay = function () {
                 subscribe = 'true';
             } else if (!/^(tickhigh|ticklow)_/i.test(contract.shortcode) && contract.exit_tick_time && +contract.exit_tick_time < +contract.date_expiry) {
                 request.end = contract.exit_tick_time;
+            } else if (!/^(runhigh|runlow)$/i.test(contract.contract_category)) {
+                request.subscribe = 1;
+                request.end = contract.exit_tick_time || 'latest';
             } else {
                 request.end = contract.date_expiry;
             }
@@ -33506,7 +33480,9 @@ var ViewPopup = function () {
                 CALLSPREAD: localize('Call Spread'),
                 PUTSPREAD: localize('Put Spread'),
                 TICKHIGH: localize('High Tick'),
-                TICKLOW: localize('Low Tick')
+                TICKLOW: localize('Low Tick'),
+                RUNHIGH: localize('Run High'),
+                RUNLOW: localize('Run Low')
             };
         };
 
@@ -33818,7 +33794,7 @@ var ViewPopup = function () {
         'reset': 'reset',
         '(call|put)spread': 'callputspread',
         'tick(high|low)': 'highlowticks',
-        'runs': 'runs',
+        'run(high|low)': 'runs',
         'call|put': function callPut() {
             return +contract.entry_tick === +contract.barrier ? 'risefall' : 'higherlower';
         }
