@@ -49,6 +49,7 @@
                 var is_logged_in = client_info && client_info['token'];
                 var base = 'https:' +
                     window.location.href.substring(window.location.protocol.length).replace(window.location.search, '');
+                debugger;
                 window.location.href = base + (/\/app\//.test(window.location.pathname) ? '' : 'app/') + (lang || 'en').toLowerCase() + '/trade' + window.location.search;
                 // window.location.href = (/\/app\//.test(window.location.pathname) ? '' : 'app/') + (lang || 'en').toLowerCase() + '/trade' + window.location.search;
             }
