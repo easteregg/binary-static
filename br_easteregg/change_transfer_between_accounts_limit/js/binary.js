@@ -741,11 +741,24 @@ var getMinWithdrawal = function getMinWithdrawal(currency) {
     return isCryptocurrency(currency) ? getPropertyValue(CryptoConfig.get(), [currency, 'min_withdrawal']) || 0.002 : 1;
 };
 
-// returns in a string format, e.g. '0.00000001'
-var getMinTransfer = function getMinTransfer(currency) {
-    var min_transfer = getPropertyValue(currencies_config, [currency, 'transfer_between_accounts', 'limits', 'min']) || getMinWithdrawal(currency);
+/**
+ * Returns the transfer limits for the account.
+ * @param currency
+ * @param which
+ * @returns {min: numeric, ?max: numeric}
+ */
+var getTransferLimits = function getTransferLimits(currency, which) {
+    var transfer_limits = getPropertyValue(currencies_config, [currency, 'transfer_between_accounts', 'limits']) || getMinWithdrawal(currency);
     var decimals = getDecimalPlaces(currency);
-    return min_transfer.toFixed(decimals); // we need toFixed() so that it doesn't display in scientific notation, e.g. 1e-8 for currencies with 8 decimal places
+
+    switch (which) {
+        case 'max':
+            return transfer_limits.max.toFixed(decimals) || undefined;
+        case 'all':
+            return transfer_limits;
+        default:
+            return transfer_limits.min.toFixed(decimals) || undefined;
+    }
 };
 
 var getTransferFee = function getTransferFee(currency_from, currency_to) {
@@ -775,11 +788,6 @@ var getMinPayout = function getMinPayout(currency) {
     return getPropertyValue(currencies_config, [currency, 'stake_default']);
 };
 
-var getMaxTransfer = function getMaxTransfer(currency) {
-    var max_transfer = getPropertyValue(currencies_config, [currency, 'transfer_between_accounts', 'limits', 'max']);
-    return max_transfer ? max_transfer.toFixed(getDecimalPlaces(currency)) : undefined;
-};
-
 module.exports = {
     formatMoney: formatMoney,
     formatCurrency: formatCurrency,
@@ -789,8 +797,7 @@ module.exports = {
     isCryptocurrency: isCryptocurrency,
     getCurrencyName: getCurrencyName,
     getMinWithdrawal: getMinWithdrawal,
-    getMaxTransfer: getMaxTransfer,
-    getMinTransfer: getMinTransfer,
+    getTransferLimits: getTransferLimits,
     getTransferFee: getTransferFee,
     getMinimumTransferFee: getMinimumTransferFee,
     getMinPayout: getMinPayout,
@@ -14483,7 +14490,6 @@ var AccountTransfer = function () {
         el_fee_minimum = void 0,
         el_transfer_info = void 0,
         el_success_form = void 0,
-        el_explain_dynamic_limits = void 0,
         client_balance = void 0,
         client_currency = void 0,
         client_loginid = void 0,
@@ -14571,7 +14577,7 @@ var AccountTransfer = function () {
 
         getElementById(form_id).setVisibility(1);
 
-        FormManager.init(form_id_hash, [{ selector: '#amount', validations: [['req', { hide_asterisk: true }], ['number', { type: 'float', decimals: Currency.getDecimalPlaces(client_currency), min: Currency.getMinTransfer(client_currency), max: transferable_amount, format_money: true }]] }, { request_field: 'transfer_between_accounts', value: 1 }, { request_field: 'account_from', value: client_loginid }, { request_field: 'account_to', value: function value() {
+        FormManager.init(form_id_hash, [{ selector: '#amount', validations: [['req', { hide_asterisk: true }], ['number', { type: 'float', decimals: Currency.getDecimalPlaces(client_currency), min: Currency.getTransferLimits(client_currency, 'min'), max: transferable_amount, format_money: true }]] }, { request_field: 'transfer_between_accounts', value: 1 }, { request_field: 'account_from', value: client_loginid }, { request_field: 'account_to', value: function value() {
                 return (el_transfer_to.value || el_transfer_to.getAttribute('data-value') || '').split(' (')[0];
             } }, { request_field: 'currency', value: client_currency }]);
 
@@ -14637,13 +14643,12 @@ var AccountTransfer = function () {
         el_transfer_info = getElementById('transfer_info');
         el_success_form = getElementById('success_form');
         el_reset_transfer = getElementById('reset_transfer');
-        el_explain_dynamic_limits = document.querySelector('.explain-dynamic-limit');
         el_reset_transfer.addEventListener('click', onClickReset);
 
         BinarySocket.wait('balance').then(function (response) {
             client_balance = +getPropertyValue(response, ['balance', 'balance']);
             client_currency = Client.get('currency');
-            var min_amount = Currency.getMinTransfer(client_currency);
+            var min_amount = Currency.getTransferLimits(client_currency, 'min');
             if (!client_balance || client_balance < +min_amount) {
                 getElementById(messages.parent).setVisibility(1);
                 if (client_currency) {
@@ -14677,16 +14682,32 @@ var AccountTransfer = function () {
                         getElementById(messages.parent).setVisibility(1);
                         return;
                     }
-                    max_amount = Currency.getMaxTransfer(Client.get('currency'));
+                    max_amount = Currency.getTransferLimits(Client.get('currency'), 'max');
                     transferable_amount = max_amount ? Math.min(max_amount, withdrawal_limit, client_balance) : Math.min(withdrawal_limit, client_balance);
 
-                    getElementById('range_hint').textContent = localize('Min') + ': ' + min_amount + ' ' + localize('Max') + ': ' + transferable_amount.toFixed(Currency.getDecimalPlaces(Client.get('currency')));
-
-                    el_explain_dynamic_limits.innerHTML = localize('Maximum transferable amount will be chosen from a minimum value of:[_4] Current balance: [_1][_4]Daily withdrawal limit: [_2][_4]Current account\'s maximum allowed amount: [_3]]', [Currency.formatMoney(Client.get('currency'), client_balance), Currency.formatMoney(Client.get('currency'), withdrawal_limit), max_amount ? Currency.formatMoney(Client.get('currency'), max_amount) : localize('Not announced for this currency.'), '<br />']);
+                    getElementById('range_hint_min').textContent = min_amount;
+                    getElementById('range_hint_max').textContent = transferable_amount.toFixed(Currency.getDecimalPlaces(Client.get('currency')));
+                    populateHints();
                     populateAccounts(accounts);
                 });
             }
         });
+    };
+
+    var populateHints = function populateHints() {
+        getElementById('limit_current_balance').innerHTML = Currency.formatMoney(client_currency, client_balance);
+
+        getElementById('limit_daily_withdrawal').innerHTML = Currency.formatMoney(client_currency, withdrawal_limit);
+
+        getElementById('limit_max_amount').innerHTML = max_amount ? Currency.formatMoney(client_currency, max_amount) : localize('Not announced for this currency.');
+
+        $('#range_hint').accordion({
+            heightStyle: 'content',
+            collapsible: true,
+            active: true
+        });
+
+        getElementById('range_hint').show();
     };
 
     var onUnload = function onUnload() {

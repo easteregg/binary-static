@@ -2590,3 +2590,9 @@ a.previous-wrapper {
                 padding: 5px;
                 margin: 0 0 10px;
                 font-weight: normal; } }
+
+.account_transfer {
+  width: 250px; }
+  .account_transfer__header {
+    padding: 5px !important;
+    font-size: smaller !important; }
