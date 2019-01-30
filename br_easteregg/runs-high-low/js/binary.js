@@ -722,7 +722,6 @@ var CryptoConfig = function () {
             ETH: { name: localize('Ether'), min_withdrawal: 0.002, pa_max_withdrawal: 5, pa_min_withdrawal: 0.002 },
             ETC: { name: localize('Ether Classic'), min_withdrawal: 0.002, pa_max_withdrawal: 5, pa_min_withdrawal: 0.002 },
             LTC: { name: localize('Litecoin'), min_withdrawal: 0.002, pa_max_withdrawal: 5, pa_min_withdrawal: 0.002 },
-            DAI: { name: localize('Dai'), min_withdrawal: 0.02, pa_max_withdrawal: 2000, pa_min_withdrawal: 10 },
             UST: { name: localize('Tether'), min_withdrawal: 0.02, pa_max_withdrawal: 2000, pa_min_withdrawal: 10 }
         };
     };
@@ -1155,7 +1154,7 @@ var Login = function () {
         var date_first_contact = LocalStore.get('date_first_contact');
         var marketing_queries = '&signup_device=' + signup_device + (date_first_contact ? '&date_first_contact=' + date_first_contact : '');
 
-        return server_url && /qa/.test(server_url) ? 'https://www.' + server_url.split('.')[1] + '.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + language + marketing_queries : urlForCurrentDomain('https://oauth.binary.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + language + marketing_queries);
+        return server_url && /qa/.test(server_url) ? 'https://' + server_url + '/oauth2/authorize?app_id=' + getAppId() + '&l=' + language + marketing_queries : urlForCurrentDomain('https://oauth.binary.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + language + marketing_queries);
     };
 
     var isLoginPages = function isLoginPages() {
@@ -1167,10 +1166,19 @@ var Login = function () {
         return loginUrl() + '&social_signup=' + brand;
     };
 
+    var initOneAll = function initOneAll() {
+        ['google', 'facebook'].forEach(function (provider) {
+            $('#button_' + provider).off('click').on('click', function (e) {
+                e.preventDefault();
+                window.location.href = socialLoginUrl(provider);
+            });
+        });
+    };
+
     return {
         redirectToLogin: redirectToLogin,
         isLoginPages: isLoginPages,
-        socialLoginUrl: socialLoginUrl
+        initOneAll: initOneAll
     };
 }();
 
@@ -10298,9 +10306,11 @@ module.exports = Contents;
 "use strict";
 
 
+var Cookies = __webpack_require__(/*! js-cookie */ "./node_modules/js-cookie/src/js.cookie.js");
 var BinarySocket = __webpack_require__(/*! ./socket */ "./src/javascript/app/base/socket.js");
 var Client = __webpack_require__(/*! ../base/client */ "./src/javascript/app/base/client.js");
 var isEuCountry = __webpack_require__(/*! ../common/country_base */ "./src/javascript/app/common/country_base.js").isEuCountry;
+var getElementById = __webpack_require__(/*! ../../_common/common_functions */ "./src/javascript/_common/common_functions.js").getElementById;
 var LocalStore = __webpack_require__(/*! ../../_common/storage */ "./src/javascript/_common/storage.js").LocalStore;
 var State = __webpack_require__(/*! ../../_common/storage */ "./src/javascript/_common/storage.js").State;
 
@@ -10327,19 +10337,82 @@ var Footer = function () {
         $status_notification.slideUp(200);
     };
 
+    // by default elevio is 8px above bottom of page, and scrollup is 18px above elevio
+    var adjustElevioAndScrollup = function adjustElevioAndScrollup() {
+        var elevio_height = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 8;
+        var scrollup_height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 18;
+
+        var $elevio_button = $('#_elev_io ._6byvm');
+        var $scrollup = $('#scrollup');
+
+        $elevio_button.attr('style', 'bottom: ' + elevio_height + 'px !important');
+        $scrollup.attr('style', 'bottom: ' + ($elevio_button.height() + scrollup_height) + 'px');
+    };
+
+    var clearDialogMessage = function clearDialogMessage() {
+        var $dialog_notification = $('#dialog_notification');
+        var el_footer = getElementById('footer');
+        var $status_notification = $('#status_notification');
+        var gap_to_notification = 8;
+
+        $status_notification.css('bottom', gap_to_notification + 'px');
+        el_footer.style.paddingBottom = '0px';
+        $dialog_notification.slideUp(200);
+        adjustElevioAndScrollup();
+    };
+
+    var displayDialogMessage = function displayDialogMessage() {
+        BinarySocket.wait('website_status', 'authorize', 'landing_company').then(function () {
+            if (isEuCountry()) {
+                var $dialog_notification = $('#dialog_notification');
+                var $status_notification = $('#status_notification');
+                var el_dialog_notification_accept = getElementById('dialog_notification_accept');
+                var el_footer = getElementById('footer');
+                var gap_dialog_to_elevio = 30;
+                var gap_elevio_to_scrollup = 10;
+                var gap_to_notification = 8;
+
+                $dialog_notification.css('display', 'flex');
+                el_footer.style.paddingBottom = $dialog_notification.height() + 'px';
+                adjustElevioAndScrollup($dialog_notification.height() + gap_dialog_to_elevio, $dialog_notification.height() + gap_dialog_to_elevio + gap_elevio_to_scrollup);
+                if ($status_notification.css('display') !== 'none') {
+                    $status_notification.css('bottom', $dialog_notification.height() + gap_dialog_to_elevio + 'px');
+                }
+
+                el_dialog_notification_accept.addEventListener('click', function () {
+                    adjustElevioAndScrollup();
+                    $dialog_notification.slideUp(200);
+                    el_footer.style.paddingBottom = '0px';
+                    $status_notification.css('bottom', gap_to_notification + 'px');
+                    Cookies.set('CookieConsent', 1);
+                });
+                window.addEventListener('resize', function () {
+                    adjustElevioAndScrollup($dialog_notification.height() + gap_dialog_to_elevio, $dialog_notification.height() + gap_dialog_to_elevio + gap_elevio_to_scrollup);
+                    $status_notification.css('bottom', $dialog_notification.height() + gap_dialog_to_elevio + 'px');
+                    el_footer.style.paddingBottom = $dialog_notification.height() + 'px';
+                });
+            }
+        });
+    };
+
     var displayNotification = function displayNotification(message) {
         BinarySocket.wait('time').then(function (response) {
             var notification_storage = LocalStore.getObject('status_notification');
+            var $dialog_notification = $('#dialog_notification');
+            var $status_notification = $('#status_notification');
             var time_difference = parseInt(response.time) - (parseInt(notification_storage.close_time) || 0);
             var required_difference = 30 * 60;
+            var gap_dialog_to_elevio = 30;
 
             if (time_difference > required_difference || notification_storage.message !== message) {
                 var $status_message_text = $('#status_notification_text');
                 var $close_icon = $('#status_notification_close');
-                var $status_notification = $('#status_notification');
 
                 $status_notification.css('display', 'flex');
                 $status_message_text.html(message);
+                if ($dialog_notification.css('display') !== 'none') {
+                    $status_notification.css('bottom', $dialog_notification.height() + gap_dialog_to_elevio + 'px');
+                }
                 $close_icon.off('click').on('click', function () {
                     $status_notification.slideUp(200);
                     notification_storage.message = message;
@@ -10353,7 +10426,9 @@ var Footer = function () {
     return {
         onLoad: onLoad,
         clearNotification: clearNotification,
-        displayNotification: displayNotification
+        displayNotification: displayNotification,
+        displayDialogMessage: displayDialogMessage,
+        clearDialogMessage: clearDialogMessage
     };
 }();
 
@@ -11340,6 +11415,7 @@ module.exports = BinarySocketBase;
 "use strict";
 
 
+var Cookies = __webpack_require__(/*! js-cookie */ "./node_modules/js-cookie/src/js.cookie.js");
 var Client = __webpack_require__(/*! ./client */ "./src/javascript/app/base/client.js");
 var Clock = __webpack_require__(/*! ./clock */ "./src/javascript/app/base/clock.js");
 var Footer = __webpack_require__(/*! ./footer */ "./src/javascript/app/base/footer.js");
@@ -11401,6 +11477,11 @@ var BinarySocketGeneral = function () {
                     // for logged out clients send landing company with IP address as residence
                     if (!Client.isLoggedIn() && !State.getResponse('landing_company')) {
                         BinarySocket.send({ landing_company: response.website_status.clients_country });
+                    }
+                    if (!Client.isLoggedIn() && !Cookies.get('CookieConsent')) {
+                        Footer.displayDialogMessage();
+                    } else {
+                        Footer.clearDialogMessage();
                     }
                 }
                 break;
@@ -12954,9 +13035,16 @@ var isIndonesia = function isIndonesia() {
     return State.getResponse('website_status.clients_country') === 'id';
 };
 
+var isExcludedFromCfd = function isExcludedFromCfd() {
+    var cfd_excluded_regex = new RegExp('^fr$');
+    var clients_country = Client.get('residence') || State.getResponse('website_status.clients_country');
+    return cfd_excluded_regex.test(clients_country);
+};
+
 module.exports = {
     isEuCountry: isEuCountry,
-    isIndonesia: isIndonesia
+    isIndonesia: isIndonesia,
+    isExcludedFromCfd: isExcludedFromCfd
 };
 
 /***/ }),
@@ -14402,7 +14490,6 @@ var AccountTransfer = function () {
         el_transfer_fee = void 0,
         el_fee_amount = void 0,
         el_fee_minimum = void 0,
-        el_transfer_info = void 0,
         el_success_form = void 0,
         client_balance = void 0,
         client_currency = void 0,
@@ -14435,7 +14522,7 @@ var AccountTransfer = function () {
             el_transfer_to.innerHTML = fragment_transfer_to.innerHTML;
             el_transfer_to.onchange = function () {
                 var to_currency = el_transfer_to.options[el_transfer_to.selectedIndex].getAttribute('data-currency');
-                el_transfer_info.setVisibility(client_currency !== to_currency);
+                el_transfer_fee.setVisibility(client_currency !== to_currency);
                 setTransferFeeAmount();
             };
         } else {
@@ -14458,7 +14545,7 @@ var AccountTransfer = function () {
             el_transfer_fee.setVisibility(1);
         } else {
             var to_currency = el_transfer_to.getAttribute('data-currency');
-            el_transfer_info.setVisibility(client_currency !== to_currency);
+            el_transfer_fee.setVisibility(client_currency !== to_currency);
         }
     };
 
@@ -14533,7 +14620,6 @@ var AccountTransfer = function () {
         });
 
         el_transfer_fee.setVisibility(0);
-        el_transfer_info.setVisibility(0);
         el_success_form.setVisibility(1);
     };
 
@@ -14552,7 +14638,6 @@ var AccountTransfer = function () {
         el_transfer_fee = getElementById('transfer_fee');
         el_fee_amount = getElementById('transfer_fee_amount');
         el_fee_minimum = getElementById('transfer_fee_minimum');
-        el_transfer_info = getElementById('transfer_info');
         el_success_form = getElementById('success_form');
         el_reset_transfer = getElementById('reset_transfer');
         el_reset_transfer.addEventListener('click', onClickReset);
@@ -14698,7 +14783,7 @@ var Cashier = function () {
                         var list = getPropertyValue(response, ['paymentagent_list', 'list']);
                         if (list && list.length) {
                             var regex_currency = new RegExp(currency);
-                            if (!/^(UST|DAI)$/.test(currency) || list.find(function (pa) {
+                            if (!/^UST$/.test(currency) || list.find(function (pa) {
                                 return regex_currency.test(pa.currencies);
                             })) {
                                 $('#payment-agent-section').setVisibility(1);
@@ -17474,7 +17559,6 @@ var isBinaryApp = __webpack_require__(/*! ../../config */ "./src/javascript/conf
 
 var NewAccount = function () {
     var clients_country = void 0,
-        $google_btn = void 0,
         $login_btn = void 0,
         $verify_email = void 0;
 
@@ -17483,7 +17567,6 @@ var NewAccount = function () {
     var onLoad = function onLoad() {
         getElementById('footer').setVisibility(0); // always hide footer in this page
 
-        $google_btn = $('#google-signup');
         $login_btn = $('#login');
         $verify_email = $('#verify_email');
 
@@ -17502,14 +17585,11 @@ var NewAccount = function () {
             }
         });
 
-        $google_btn.off('click').on('click', function (e) {
-            e.preventDefault();
-            window.location.href = Login.socialLoginUrl('google');
-        });
         $login_btn.off('click').on('click', function (e) {
             e.preventDefault();
             Login.redirectToLogin();
         });
+        Login.initOneAll();
     };
 
     var verifyEmailHandler = function verifyEmailHandler(response) {
@@ -21480,6 +21560,469 @@ module.exports = Defaults;
 
 /***/ }),
 
+/***/ "./src/javascript/app/pages/trade/digit_ticker.js":
+/*!********************************************************!*\
+  !*** ./src/javascript/app/pages/trade/digit_ticker.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var DigitTicker = function () {
+    var barrier = void 0,
+        el_container = void 0,
+        el_peek = void 0,
+        el_peek_box = void 0,
+        el_mask = void 0,
+        total_tick_count = void 0,
+        contract_status = void 0,
+        type = void 0,
+        current_spot = void 0;
+    var style_offset_correction = 5;
+
+    var array_of_digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+    var init = function init(container_id, contract_type, shortcode, tick_count) {
+        var status = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'open';
+
+        contract_status = status;
+        total_tick_count = tick_count;
+        type = contract_type;
+        current_spot = '-';
+        el_container = document.querySelector('#' + container_id);
+
+        setBarrierFromShortcode(type, shortcode);
+        populateContainer(el_container);
+        highlightWinningNumbers(getWinningNumbers(contract_type, barrier));
+        observeResize();
+    };
+
+    var populateContainer = function populateContainer(container_element) {
+        // remove previous elements and start fresh.
+        while (container_element && container_element.firstChild) {
+            container_element.removeChild(container_element.firstChild);
+        }
+
+        var temp_epoch_el = document.createElement('div');
+        temp_epoch_el.classList.add('epoch');
+        var temp_peek_box_el = document.createElement('div');
+        temp_peek_box_el.classList.add('peek-box');
+        if (contract_status === 'won') {
+            temp_peek_box_el.classList.add('digit-winning');
+        }
+        if (contract_status === 'lost') {
+            temp_peek_box_el.classList.add('digit-losing');
+        }
+
+        var temp_digits_el = document.createElement('div');
+        temp_digits_el.classList.add('digits');
+        array_of_digits.forEach(function (digit) {
+            var digit_el = document.createElement('div');
+            digit_el.classList.add('digit', 'digit-' + digit);
+            digit_el.appendChild(document.createTextNode(digit));
+            temp_digits_el.appendChild(digit_el);
+        });
+
+        var temp_mask_el = document.createElement('div');
+        temp_mask_el.classList.add('mask');
+        temp_mask_el.append(document.createTextNode('0 / 0'));
+
+        var temp_peek_el = document.createElement('div');
+        temp_peek_el.classList.add('peek');
+        // grid peek-box element definition
+        var topleft_el = document.createElement('div');
+        topleft_el.classList.add('topleft');
+        var top_el = document.createElement('div');
+        top_el.classList.add('top');
+        var topright_el = document.createElement('div');
+        topright_el.classList.add('topright');
+        var left_el = document.createElement('div');
+        left_el.classList.add('left');
+        var right_el = document.createElement('div');
+        right_el.classList.add('right');
+        var bottomleft_el = document.createElement('div');
+        bottomleft_el.classList.add('bottomleft');
+        var bottom_el = document.createElement('div');
+        bottom_el.classList.add('bottom');
+        var bottomright_el = document.createElement('div');
+        bottomright_el.classList.add('bottomright');
+        temp_peek_box_el.appendChild(topleft_el);
+        temp_peek_box_el.appendChild(top_el);
+        temp_peek_box_el.appendChild(topright_el);
+        temp_peek_box_el.appendChild(left_el);
+        temp_peek_box_el.appendChild(right_el);
+        temp_peek_box_el.appendChild(bottomright_el);
+        temp_peek_box_el.appendChild(bottomleft_el);
+        temp_peek_box_el.appendChild(bottom_el);
+        temp_peek_box_el.appendChild(temp_mask_el);
+        temp_peek_box_el.appendChild(temp_peek_el);
+
+        var fragment = document.createDocumentFragment();
+        fragment.appendChild(temp_epoch_el);
+        fragment.appendChild(temp_peek_box_el);
+        fragment.appendChild(temp_digits_el);
+        container_element.appendChild(fragment);
+        container_element.classList.add('invisible');
+    };
+
+    // adjust box sizes for mobile
+    var adjustBoxSizes = function adjustBoxSizes() {
+        if (el_container.offsetWidth < 360) {
+            style_offset_correction = 6;
+        }
+    };
+
+    // Detect winning numbers against the barrier with the given contract type.
+    var getWinningNumbers = function getWinningNumbers(contract_type, spot) {
+        switch (contract_type) {
+            case 'DIGITOVER':
+                return array_of_digits.filter(function (digit) {
+                    return +digit > +spot;
+                });
+            case 'DIGITUNDER':
+                return array_of_digits.filter(function (digit) {
+                    return +digit < +spot;
+                });
+            case 'DIGITMATCH':
+                return array_of_digits.filter(function (digit) {
+                    return +digit === +spot;
+                });
+            case 'DIGITDIFF':
+                return array_of_digits.filter(function (digit) {
+                    return +digit !== +spot;
+                });
+            case 'DIGITODD':
+                return array_of_digits.filter(function (digit) {
+                    return +digit % 2 !== 0;
+                });
+            case 'DIGITEVEN':
+                return array_of_digits.filter(function (digit) {
+                    return +digit % 2 === 0;
+                });
+            default:
+                throw new Error('Cannot Determine Winning numbers.');
+        }
+    };
+
+    var highlightWinningNumbers = function highlightWinningNumbers(winning_numbers) {
+        winning_numbers.forEach(function (digit) {
+            var element = el_container.querySelector('.digit-' + digit);
+            element.classList.remove('digit-losing');
+            element.classList.add('digit-winning');
+        });
+    };
+
+    var observeResize = function observeResize() {
+        window.onresize = function () {
+            if (el_peek_box) {
+                adjustBoxSizes();
+                el_peek_box.setAttribute('style', 'transform: translateX(' + calculateOffset() + 'px)');
+            }
+        };
+    };
+
+    // Calculate peek-box left offset.
+    var calculateOffset = function calculateOffset() {
+        var left_offset = document.querySelector('.digit-' + current_spot).offsetLeft;
+        return left_offset - style_offset_correction;
+    };
+
+    var markAsLost = function markAsLost() {
+        if (!el_peek_box || !el_peek) {
+            setElements();
+        }
+        el_peek.classList.remove('digit-winning', 'digit-running');
+        el_peek_box.classList.remove('digit-winning', 'digit-running');
+        el_peek.classList.add('digit-losing');
+        el_peek_box.classList.add('digit-losing');
+    };
+
+    var markDigitAsWon = function markDigitAsWon(digit) {
+        if (el_container && el_container.querySelector('.digit-' + digit)) {
+            el_container.querySelector('.digit-' + digit).classList.add('digit-won');
+        }
+    };
+
+    var markDigitAsLost = function markDigitAsLost(digit) {
+        if (el_container && el_container.querySelector('.digit-' + digit)) {
+            el_container.querySelector('.digit-' + digit).classList.add('digit-lost');
+        }
+    };
+
+    var markAsWon = function markAsWon() {
+        if (!el_peek_box || !el_peek) {
+            setElements();
+        }
+        el_peek_box.classList.remove('digit-losing', 'digit-running');
+        el_peek_box.classList.add('digit-winning');
+        el_peek.classList.remove('digit-losing', 'digit-running');
+        el_peek.classList.add('digit-winning');
+    };
+
+    var setElements = function setElements() {
+        el_peek = el_container.querySelector('.peek');
+        el_peek_box = el_container.querySelector('.peek-box');
+        el_mask = el_peek_box.querySelector('.peek-box > .mask');
+    };
+
+    var isBarrierMissing = function isBarrierMissing(contract_type, bar) {
+        return !/digit(even|odd)/i.test(type) && !bar;
+    };
+
+    var setBarrierFromShortcode = function setBarrierFromShortcode(contract_type, shortcode) {
+        barrier = '';
+        if (!/^(digiteven|digitodd)_/i.test(shortcode)) {
+            var arr_shortcode = shortcode.split('_');
+            barrier = arr_shortcode[arr_shortcode.length - 2];
+        }
+    };
+
+    var update = function update(current_tick_count, _ref) {
+        var quote = _ref.quote,
+            epoch = _ref.epoch;
+
+        setElements(epoch);
+        el_container.classList.remove('invisible');
+        adjustBoxSizes();
+        current_spot = quote.substr(-1);
+
+        el_mask.innerText = current_tick_count + ' / ' + total_tick_count;
+
+        el_peek_box.classList.add('digit-running');
+        el_peek.classList.add('digit-running');
+
+        el_peek_box.setAttribute('style', 'transform: translateX(' + calculateOffset() + 'px)');
+    };
+
+    var remove = function remove() {
+        window.onresize = null;
+        while (el_container && el_container.firstChild) {
+            el_container.removeChild(el_container.firstChild);
+        }
+        if (el_container) el_container.classList.add('invisible');
+    };
+
+    var countDecimals = function countDecimals(value) {
+        if (Math.floor(value) !== value) return value.toString().split('.')[1].length || 0;
+        return 0;
+    };
+
+    var calculateDistance = function calculateDistance(old_digit, new_digit) {
+        return Math.abs(old_digit - new_digit);
+    };
+
+    var countUp = function countUp(start, end, duration, element, render) {
+        var decimal_points = countDecimals(start.replace('/,+/', ''));
+        var f_start = parseFloat(start.replace(/,+/, ''));
+        var range = calculateDistance(f_start, end);
+        var step = Math.abs(range / 60);
+        var increment = end > f_start ? 1 * step : -1 * step;
+        var current = f_start;
+        var i = 0;
+
+        var renderTick = function renderTick() {
+            i++;
+            current += increment;
+
+            element.innerHTML = render(current.toFixed(decimal_points));
+
+            if (i <= 15) {
+                requestAnimationFrame(renderTick);
+            } else {
+                current = end;
+                element.innerHTML = render(current.toFixed(decimal_points));
+            }
+        };
+
+        requestAnimationFrame(renderTick);
+    };
+
+    return {
+        init: init,
+        update: update,
+        countUp: countUp,
+        isBarrierMissing: isBarrierMissing,
+        markAsWon: markAsWon,
+        markAsLost: markAsLost,
+        markDigitAsLost: markDigitAsLost,
+        markDigitAsWon: markDigitAsWon,
+        remove: remove
+    };
+}();
+
+module.exports = DigitTicker;
+
+/***/ }),
+
+/***/ "./src/javascript/app/pages/trade/digit_trade.js":
+/*!*******************************************************!*\
+  !*** ./src/javascript/app/pages/trade/digit_trade.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+var DigitTicker = __webpack_require__(/*! ./digit_ticker */ "./src/javascript/app/pages/trade/digit_ticker.js");
+var ViewPopupUI = __webpack_require__(/*! ../user/view_popup/view_popup.ui */ "./src/javascript/app/pages/user/view_popup/view_popup.ui.js");
+var showLocalTimeOnHover = __webpack_require__(/*! ../../base/clock */ "./src/javascript/app/base/clock.js").showLocalTimeOnHover;
+var BinarySocket = __webpack_require__(/*! ../../base/socket */ "./src/javascript/app/base/socket.js");
+var addComma = __webpack_require__(/*! ../../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js").addComma;
+var localize = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
+var getPropertyValue = __webpack_require__(/*! ../../../_common/utility */ "./src/javascript/_common/utility.js").getPropertyValue;
+
+var DigitDisplay = function () {
+    var $container = void 0,
+        contract = void 0,
+        tick_count = void 0,
+        spot_times = void 0;
+
+    var subscribe = function subscribe(request) {
+        // Subscribe if contract is still ongoing/running.
+        if (contract.current_spot_time < contract.date_expiry) {
+            request.subscribe = 1;
+            request.end = 'latest';
+        } else {
+            request.end = contract.date_expiry;
+        }
+    };
+
+    var init = function init(id_render, proposal_open_contract) {
+        tick_count = 1;
+        contract = proposal_open_contract;
+        spot_times = [];
+
+        $container = $('#' + id_render);
+        $container.addClass('normal-font').html($('<h5 />', { text: contract.display_name, class: 'center-text' })).append($('<div />', { class: 'gr-8 gr-centered gr-12-m' }).append($('<div />', { class: 'gr-row', id: 'table_digits' }).append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') })))).append($('<div />', { class: 'digit-ticker invisible', id: 'digit_ticker_container' }));
+
+        DigitTicker.init('digit_ticker_container', contract.contract_type, contract.shortcode, contract.tick_count, contract.status);
+        var request = {
+            ticks_history: contract.underlying,
+            start: contract.date_start
+        };
+
+        subscribe(request);
+
+        BinarySocket.send(request, { callback: update });
+    };
+
+    var updateTable = function updateTable(spot, time) {
+        if (spot_times.some(function (item) {
+            return item.spot === spot && item.time === time;
+        })) {
+            return;
+        }
+        if (spot_times.filter(function (spot_time) {
+            return spot_time.spot === spot && spot_time.time === time;
+        }).length !== 0) {
+            return;
+        }
+
+        spot_times.push({
+            spot: spot,
+            time: time
+        });
+
+        var csv_spot = addComma(spot);
+
+        $container.find('#table_digits').append($('<p />', { class: 'gr-3', text: tick_count })).append($('<p />', { class: 'gr-3 gray', html: tick_count === contract.tick_count ? csv_spot.slice(0, csv_spot.length - 1) + '<strong>' + csv_spot.substr(-1) + '</strong>' : csv_spot })).append($('<p />', { class: 'gr-6 gray digit-spot-time no-underline', text: moment(+time * 1000).utc().format('YYYY-MM-DD HH:mm:ss') }));
+
+        DigitTicker.update(tick_count, {
+            quote: contract.status !== 'open' ? contract.exit_tick : spot,
+            epoch: contract.status !== 'open' ? contract.exit_tick_time : contract.date_expiry
+        });
+    };
+
+    var redrawFromHistory = function redrawFromHistory(response) {
+        tick_count = 1;
+        if (!$container.is(':visible') || !response || !response.history) {
+            return;
+        }
+        $container.find('#table_digits').empty();
+        $container.find('#table_digits').append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') }));
+
+        response.history.times.some(function (time, idx) {
+            if (+time >= +contract.entry_tick_time && time <= +contract.exit_tick_time) {
+                var spot = response.history.prices[idx];
+                var csv_spot = addComma(spot);
+
+                $container.find('#table_digits').append($('<p />', { class: 'gr-3', text: tick_count })).append($('<p />', { class: 'gr-3 gray', html: tick_count === contract.tick_count ? csv_spot.slice(0, csv_spot.length - 1) + '<strong>' + csv_spot.substr(-1) + '</strong>' : csv_spot })).append($('<p />', { class: 'gr-6 gray digit-spot-time no-underline', text: moment(+time * 1000).utc().format('YYYY-MM-DD HH:mm:ss') }));
+
+                tick_count += 1;
+            }
+            return tick_count > contract.tick_count;
+        });
+
+        showLocalTimeOnHover('.digit-spot-time');
+    };
+
+    var update = function update(response) {
+        if (!$container.is(':visible') || !response || !response.tick && !response.history) {
+            return;
+        }
+
+        if (getPropertyValue(response, ['tick', 'id']) && document.getElementById('sell_content_wrapper')) {
+            ViewPopupUI.storeSubscriptionID(response.tick.id);
+        }
+
+        if (response.history) {
+            response.history.times.some(function (time, idx) {
+                if (+time >= +contract.entry_tick_time) {
+                    updateTable(response.history.prices[idx], time);
+                    tick_count += 1;
+                }
+                return tick_count > contract.tick_count;
+            });
+        } else if (response.tick) {
+            if (tick_count <= contract.tick_count && +response.tick.epoch >= +contract.entry_tick_time) {
+                updateTable(response.tick.quote, response.tick.epoch);
+                tick_count += 1;
+            }
+        }
+        showLocalTimeOnHover('.digit-spot-time');
+    };
+
+    var end = function end(proposal_open_contract) {
+        if (proposal_open_contract.status !== 'open') {
+            DigitTicker.update(proposal_open_contract.tick_count, {
+                quote: proposal_open_contract.exit_tick,
+                epoch: proposal_open_contract.exit_tick_time
+            });
+
+            var request = {
+                ticks_history: contract.underlying,
+                start: contract.entry_tick_time,
+                end: contract.exit_tick_time
+            };
+
+            // force rerender the table by sending the history
+            BinarySocket.send(request, { callback: redrawFromHistory });
+        }
+        if (proposal_open_contract.status === 'won') {
+            DigitTicker.markAsWon();
+            DigitTicker.markDigitAsWon(proposal_open_contract.exit_tick.slice(-1));
+        }
+        if (proposal_open_contract.status === 'lost') {
+            DigitTicker.markAsLost();
+            DigitTicker.markDigitAsLost(proposal_open_contract.exit_tick.slice(-1));
+        }
+    };
+
+    return {
+        end: end,
+        init: init,
+        update: update
+    };
+}();
+
+module.exports = DigitDisplay;
+
+/***/ }),
+
 /***/ "./src/javascript/app/pages/trade/duration.js":
 /*!****************************************************!*\
   !*** ./src/javascript/app/pages/trade/duration.js ***!
@@ -22559,6 +23102,7 @@ var TradingEvents = function () {
                 e.preventDefault();
                 CommonTrading.hideOverlayContainer();
                 Price.processPriceRequest();
+                Purchase.onclose();
             }
         });
 
@@ -23647,8 +24191,9 @@ var Price = function () {
         }
 
         if (multiplier && CommonFunctions.isVisible(multiplier) && multiplier.value) {
-            proposal.amount = multiplier.value;
-            if (multiplier.value > 1000) {
+            var multiplier_value = parseFloat(multiplier.value);
+            proposal.amount = multiplier_value;
+            if (multiplier_value > 1000) {
                 proposal.error = {
                     message: localize('Maximum multiplier of 1000.')
                 };
@@ -24407,6 +24952,7 @@ module.exports = Process;
 "use strict";
 
 
+var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 var isCallputspread = __webpack_require__(/*! ./callputspread */ "./src/javascript/app/pages/trade/callputspread.js").isCallputspread;
 var Contract = __webpack_require__(/*! ./contract */ "./src/javascript/app/pages/trade/contract.js");
 var hidePriceOverlay = __webpack_require__(/*! ./common */ "./src/javascript/app/pages/trade/common.js").hidePriceOverlay;
@@ -24414,6 +24960,7 @@ var getLookBackFormula = __webpack_require__(/*! ./lookback */ "./src/javascript
 var isLookback = __webpack_require__(/*! ./lookback */ "./src/javascript/app/pages/trade/lookback.js").isLookback;
 var processPriceRequest = __webpack_require__(/*! ./price */ "./src/javascript/app/pages/trade/price.js").processPriceRequest;
 var Symbols = __webpack_require__(/*! ./symbols */ "./src/javascript/app/pages/trade/symbols.js");
+var DigitTicker = __webpack_require__(/*! ./digit_ticker */ "./src/javascript/app/pages/trade/digit_ticker.js");
 var Tick = __webpack_require__(/*! ./tick */ "./src/javascript/app/pages/trade/tick.js");
 var TickDisplay = __webpack_require__(/*! ./tick_trade */ "./src/javascript/app/pages/trade/tick_trade.js");
 var updateValues = __webpack_require__(/*! ./update_values */ "./src/javascript/app/pages/trade/update_values.js");
@@ -24445,6 +24992,26 @@ var Purchase = function () {
         cost_value = void 0,
         profit_value = void 0,
         status = void 0;
+
+    var replaceElement = function replaceElement(container, child) {
+        container.querySelectorAll('.row').forEach(function (item) {
+            return item.classList.add('invisible');
+        });
+        // Count up to the number instead of just replacing it.
+        if (Array.from(container.querySelectorAll('.row.digit-trade')).length > 0) {
+            var this_quote_el = child.querySelector('.quote');
+            container.append(child);
+            if (this_quote_el.parentElement.parentElement.previousSibling) {
+                var prev_quote_el = this_quote_el.parentElement.parentElement.previousSibling.querySelector('.quote');
+                var prev_quote = prev_quote_el.innerText;
+                DigitTicker.countUp(prev_quote, parseFloat(this_quote_el.innerText.replace(/,+/, '')), 700, this_quote_el, function (content) {
+                    return '<div class=\'quote\'>' + content.replace(/\d$/, makeBold) + '</div>';
+                });
+            }
+        } else {
+            container.append(child);
+        }
+    };
 
     var display = function display(details) {
         purchase_data = details;
@@ -24553,6 +25120,15 @@ var Purchase = function () {
             }
 
             CommonFunctions.elementTextContent(CommonFunctions.getElementById('contract_highlowtick'), '');
+            var arr_shortcode = purchase_data.buy.shortcode.split('_');
+            tick_config = {
+                is_tick_high: /^tickhigh$/i.test(contract_type),
+                is_tick_low: /^ticklow$/i.test(contract_type),
+                is_digit: /^digit/i.test(contract_type),
+                selected_tick_number: arr_shortcode[arr_shortcode.length - 1],
+                winning_tick_quote: '',
+                winning_tick_number: ''
+            };
 
             if (has_chart) {
                 spots.hide();
@@ -24560,15 +25136,6 @@ var Purchase = function () {
                 CommonFunctions.elementTextContent(spots, '');
                 spots.className = '';
                 spots.show();
-
-                var arr_shortcode = purchase_data.buy.shortcode.split('_');
-                tick_config = {
-                    is_tick_high: /^tickhigh$/i.test(contract_type),
-                    is_tick_low: /^ticklow$/i.test(contract_type),
-                    selected_tick_number: arr_shortcode[arr_shortcode.length - 1],
-                    winning_tick_quote: '',
-                    winning_tick_number: ''
-                };
             }
 
             if (has_chart && !show_chart) {
@@ -24580,6 +25147,12 @@ var Purchase = function () {
                 button.hide();
                 $('#confirmation_message_container .open_contract_details').setVisibility(0);
             }
+        }
+
+        if (tick_config.is_digit && show_chart) {
+            DigitTicker.init('digit_ticker_table', passthrough.contract_type, receipt.shortcode, passthrough.duration, status);
+        } else {
+            DigitTicker.remove();
         }
 
         if (show_chart && has_chart) {
@@ -24631,9 +25204,15 @@ var Purchase = function () {
                         status = contract.status;
                         profit_value = contract.profit;
                         TickDisplay.setStatus(contract);
-                        if (contract.exit_tick_time && +contract.exit_tick_time < contract.date_expiry) {
+                        if (/^digit/i.test(contract.contract_type)) {
+                            if (contract.status !== 'open') {
+                                digitShowExitTime(contract.status, contract.exit_tick);
+                            }
+                        }
+                        if (!/^digit/i.test(contract.contract_type) && contract.exit_tick_time && +contract.exit_tick_time < contract.date_expiry) {
                             TickDisplay.updateChart({ is_sold: true }, contract);
                         }
+
                         // force to sell the expired contract, in order to get the final status
                         if (+contract.is_settleable === 1 && !contract.is_sold) {
                             BinarySocket.send({ sell_expired: 1 });
@@ -24651,6 +25230,10 @@ var Purchase = function () {
         return Header.loginOnClick(e);
     };
 
+    var onclose = function onclose() {
+        DigitTicker.remove();
+    };
+
     var updateSpotList = function updateSpotList() {
         var $spots = $('#contract_purchase_spots');
         if (!$spots.length || $spots.is(':hidden')) {
@@ -24660,7 +25243,9 @@ var Purchase = function () {
         var spots = CommonFunctions.getElementById('contract_purchase_spots');
         if (status && status !== 'open') {
             if (!new RegExp(status).test(spots.classList)) {
-                spots.className = status;
+                if (!tick_config.is_digit) {
+                    spots.className = status;
+                }
                 if (status === 'won') {
                     updateValues.updatePurchaseStatus(payout_value, cost_value, profit_value, localize('This contract won'));
                 } else if (status === 'lost') {
@@ -24689,8 +25274,8 @@ var Purchase = function () {
         var epoches = Object.keys(spots2).sort(function (a, b) {
             return a - b;
         });
-        CommonFunctions.elementTextContent(spots, '');
 
+        CommonFunctions.elementTextContent(spots, '');
         for (var s = 0; s < epoches.length; s++) {
             var tick_d = {
                 epoch: epoches[s],
@@ -24711,10 +25296,13 @@ var Purchase = function () {
                     }
                 }
 
-                var fragment = createElement('div', { class: 'row' + (is_winning_tick ? ' winning-tick-row' : '') });
+                var fragment = createElement('div', { class: 'row' + (is_winning_tick ? ' winning-tick-row' : '') + ' ' + (tick_config.is_digit ? ' digit-trade' : '') });
 
                 var el1 = createElement('div', { class: 'col', text: localize('Tick') + ' ' + current_tick_count });
-                fragment.appendChild(el1);
+
+                if (!tick_config.is_digit) {
+                    fragment.appendChild(el1);
+                }
 
                 var el2 = createElement('div', { class: 'col' });
                 var date = new Date(tick_d.epoch * 1000);
@@ -24722,14 +25310,30 @@ var Purchase = function () {
                 var minutes = padLeft(date.getUTCMinutes(), 2, '0');
                 var seconds = padLeft(date.getUTCSeconds(), 2, '0');
                 CommonFunctions.elementTextContent(el2, [hours, minutes, seconds].join(':'));
-                fragment.appendChild(el2);
-
-                var tick = tick_config.is_tick_high || tick_config.is_tick_low ? tick_d.quote : tick_d.quote.replace(/\d$/, makeBold);
+                if (!tick_config.is_digit) {
+                    fragment.appendChild(el2);
+                }
+                var tick = tick_config.is_tick_high || tick_config.is_tick_low ? tick_d.quote : '<div class=\'quote\'>' + tick_d.quote.replace(/\d$/, makeBold) + '</div>';
                 var el3 = createElement('div', { class: 'col' });
                 CommonFunctions.elementInnerHtml(el3, tick);
-                fragment.appendChild(el3);
 
-                spots.appendChild(fragment);
+                if (tick_config.is_digit) {
+                    DigitTicker.update(current_tick_count, tick_d);
+                    var el_epoch = document.createElement('div');
+                    el_epoch.className = 'digit-tick-epoch';
+                    el_epoch.style.right = (el3.offsetWidth - tick.offsetWidth) / 2;
+                    var el_epoch_content = document.createTextNode(moment(new Date(tick_d.epoch * 1000)).utc().format('HH:mm:ss'));
+                    el_epoch.appendChild(el_epoch_content);
+                    fragment.appendChild(el_epoch);
+                    el3.insertBefore(el_epoch, el3.childNodes[0]);
+
+                    replaceElement(fragment, el3);
+                    replaceElement(spots, fragment);
+                } else if (!tick_config.is_digit) {
+                    fragment.appendChild(el3);
+                    spots.appendChild(fragment);
+                }
+
                 spots.scrollTop = spots.scrollHeight;
 
                 duration--;
@@ -24749,8 +25353,31 @@ var Purchase = function () {
         }
     };
 
+    var digitShowExitTime = function digitShowExitTime(contract_status, last_tick_quote) {
+        var are_spots_rendered = CommonFunctions.getElementById('contract_purchase_spots').getElementsByClassName('row').length;
+        if (!are_spots_rendered) {
+            updateSpotList();
+        }
+        var el_container = CommonFunctions.getElementById('contract_purchase_spots');
+        var el_epoch = Array.from(el_container.querySelectorAll('.digit-tick-epoch')).pop();
+        var adjustment = 5;
+        if (el_epoch && el_epoch.classList) {
+            el_epoch.classList.add('is-visible');
+            el_epoch.setAttribute('style', 'position: absolute; right: ' + ((el_epoch.parentElement.offsetWidth - el_epoch.nextSibling.offsetWidth) / 2 + adjustment) + 'px');
+            if (contract_status === 'won') {
+                DigitTicker.markAsWon();
+                DigitTicker.markDigitAsWon(last_tick_quote.slice(-1));
+            }
+            if (contract_status === 'lost') {
+                DigitTicker.markAsLost();
+                DigitTicker.markDigitAsLost(last_tick_quote.slice(-1));
+            }
+        }
+    };
+
     return {
         display: display,
+        onclose: onclose,
         updateSpotList: updateSpotList
     };
 }();
@@ -25319,7 +25946,6 @@ var TickDisplay = function () {
         contract_start_ms = parseInt(data.contract_start) * 1000;
         contract_category = data.contract_category;
         should_set_barrier = !contract_category.match('digits|runs');
-        barrier = data.barrier;
         display_decimals = data.display_decimals || 2;
         show_contract_result = data.show_contract_result;
         reset_spot_plotted = false;
@@ -25399,16 +26025,6 @@ var TickDisplay = function () {
             ticks_needed = number_of_ticks + 1;
             x_indicators = {
                 _0: { label: localize('Entry Spot'), id: 'entry_tick' }
-            };
-        } else if (contract_category.match('digits')) {
-            ticks_needed = number_of_ticks;
-            x_indicators = {
-                _0: { label: localize('Tick [_1]', '1'), id: 'start_tick' }
-            };
-            x_indicators['_' + exit_tick_index] = {
-                label: localize('Tick [_1]', number_of_ticks),
-                id: 'last_tick',
-                dashStyle: 'Dash'
             };
         } else if (contract_category.match('highlowticks')) {
             ticks_needed = number_of_ticks;
@@ -25631,8 +26247,6 @@ var TickDisplay = function () {
                 var category = 'callput';
                 if (/asian/i.test(contract.shortcode)) {
                     category = 'asian';
-                } else if (/digit/i.test(contract.shortcode)) {
-                    category = 'digits';
                 } else if (/touch/i.test(contract.shortcode)) {
                     category = 'touchnotouch';
                 } else if (/reset/i.test(contract.shortcode)) {
@@ -25821,6 +26435,7 @@ var TickDisplay = function () {
             label: localize('Exit Spot'),
             dashStyle: 'Dash'
         };
+
         add(x_indicators[indicator_key]);
     };
 
@@ -28124,11 +28739,6 @@ var FinancialAssessment = function () {
             $.scrollTo($('h1#heading'), 500, { offset: -10 });
             $(form_selector).setVisibility(0);
             $('#msg_main').setVisibility(1);
-            BinarySocket.send({ get_account_status: 1 }).then(function (response_status) {
-                if (+response_status.get_account_status.prompt_client_to_authenticate && Client.isAccountOfType('financial')) {
-                    $('#msg_authenticate').setVisibility(1);
-                }
-            });
         } else {
             $('#msg_form').attr('class', is_success ? 'success-msg' : 'errorfield').html(is_success ? $('<ul/>', { class: 'checked', style: 'display: inline-block;' }).append($('<li/>', { text: localized_msg })) : localized_msg).css('display', 'block').delay(5000).fadeOut(1000);
         }
@@ -28784,13 +29394,11 @@ var PersonalDetails = function () {
         if (!is_error) {
             var redirect_url = localStorage.getItem('personal_details_redirect');
             // to update tax information message for financial clients
-            BinarySocket.send({ get_account_status: 1 }, { forced: true }).then(function (response_status) {
+            BinarySocket.send({ get_account_status: 1 }, { forced: true }).then(function () {
                 showHideTaxMessage();
                 Header.displayAccountStatus();
-                if (redirect_url && +response_status.get_account_status.prompt_client_to_authenticate && Client.isAccountOfType('financial')) {
-                    $('#msg_authenticate').setVisibility(1);
-                }
             });
+
             // to update the State with latest get_settings data
             BinarySocket.send({ get_settings: 1 }, { forced: true }).then(function (data) {
                 if (is_virtual && response.echo_req.residence) {
@@ -32951,7 +33559,7 @@ var ResetPassword = function () {
         generateBirthDate();
 
         $('#have_real_account').off('click').on('click', function () {
-            if ($(this).is(':checked')) {
+            if ($('#have_real_account_option_0').is(':checked')) {
                 $('#dob_field').setVisibility(1);
             } else {
                 $('#dob_field').setVisibility(0);
@@ -32959,7 +33567,7 @@ var ResetPassword = function () {
         });
 
         var form_id = '#frm_reset_password';
-        FormManager.init(form_id, [{ selector: '#new_password', validations: ['req', 'password'], re_check_field: '#repeat_password' }, { selector: '#repeat_password', validations: ['req', ['compare', { to: '#new_password' }]], exclude_request: 1 }, { selector: '#date_of_birth', validations: ['req'] }, { request_field: 'reset_password', value: 1 }], true);
+        FormManager.init(form_id, [{ selector: '#have_real_account', validations: ['req'], exclude_request: 1 }, { selector: '#date_of_birth', validations: ['req'] }, { selector: '#new_password', validations: ['req', 'password'], re_check_field: '#repeat_password' }, { selector: '#repeat_password', validations: ['req', ['compare', { to: '#new_password' }]], exclude_request: 1 }, { request_field: 'reset_password', value: 1 }], true);
 
         FormManager.handleSubmit({
             form_selector: form_id,
@@ -33364,6 +33972,7 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
 var ViewPopupUI = __webpack_require__(/*! ./view_popup.ui */ "./src/javascript/app/pages/user/view_popup/view_popup.ui.js");
 var Highchart = __webpack_require__(/*! ../../trade/charts/highchart */ "./src/javascript/app/pages/trade/charts/highchart.js");
 var Callputspread = __webpack_require__(/*! ../../trade/callputspread */ "./src/javascript/app/pages/trade/callputspread.js");
+var DigitDisplay = __webpack_require__(/*! ../../trade/digit_trade */ "./src/javascript/app/pages/trade/digit_trade.js");
 var Lookback = __webpack_require__(/*! ../../trade/lookback */ "./src/javascript/app/pages/trade/lookback.js");
 var Reset = __webpack_require__(/*! ../../trade/reset */ "./src/javascript/app/pages/trade/reset.js");
 var TickDisplay = __webpack_require__(/*! ../../trade/tick_trade */ "./src/javascript/app/pages/trade/tick_trade.js");
@@ -33394,6 +34003,7 @@ var ViewPopup = function () {
     var popupbox_id = 'inpage_popup_content_box';
     var wrapper_id = 'sell_content_wrapper';
     var hidden_class = 'invisible';
+    var id_tick_chart = 'tick_chart';
 
     var init = function init(button, onClose) {
         btn_view = button;
@@ -33607,7 +34217,13 @@ var ViewPopup = function () {
             containerSetText('trade_details_message', contract.validation_error ? contract.validation_error : '&nbsp;');
         }
 
-        if (!chart_started && !contract.tick_count) {
+        var is_digit = /digit/i.test(contract.contract_type);
+        if (is_digit) {
+            if (!chart_started) {
+                DigitDisplay.init(id_tick_chart, contract);
+                chart_started = true;
+            }
+        } else if (!chart_started && !contract.tick_count) {
             if (!chart_init) {
                 chart_init = true;
                 Highchart.showChart(contract);
@@ -33617,7 +34233,7 @@ var ViewPopup = function () {
                 chart_started = true;
             }
         } else if (contract.tick_count && !chart_updated) {
-            TickDisplay.updateChart({ id_render: 'tick_chart', request_ticks: !ticks_requested }, contract);
+            TickDisplay.updateChart({ id_render: id_tick_chart, request_ticks: !ticks_requested }, contract);
             ticks_requested = true;
             if ('barrier' in contract) {
                 chart_updated = true;
@@ -33636,7 +34252,13 @@ var ViewPopup = function () {
         }
         if (is_ended) {
             contractEnded();
-            if (!contract.tick_count) Highchart.showChart(contract, 'update');else TickDisplay.updateChart({ is_sold: true }, contract);
+            if (is_digit) {
+                DigitDisplay.end(contract);
+            } else if (!contract.tick_count) {
+                Highchart.showChart(contract, 'update');
+            } else {
+                TickDisplay.updateChart({ is_sold: true }, contract);
+            }
             containerSetText('trade_details_live_remaining', '-');
             Clock.setExternalTimer(); // stop timer
         } else {
@@ -33958,9 +34580,11 @@ var ViewPopup = function () {
             barrier_text = localize('Selected Tick');
         }
 
-        $sections.find('#sell_details_table').append($('<table>\n            <tr id="contract_tabs"><th colspan="2" id="contract_information_tab">' + localize('Contract Information') + '</th></tr><tbody id="contract_information_content">\n            ' + createRow(localize('Contract Type'), '', 'trade_details_contract_type') + '\n            ' + createRow(localize('Transaction ID'), '', 'trade_details_ref_id') + '\n            ' + createRow(localize('Start Time'), '', 'trade_details_start_date', true) + '\n            ' + createRow(localize('Purchase Time'), '', 'trade_details_purchase_time', true) + '\n            ' + (!contract.tick_count ? createRow(localize('Remaining Time'), '', 'trade_details_live_remaining') : '') + '\n            ' + (!Lookback.isLookback(contract.contract_type) ? createRow(localize('Entry Spot'), '', 'trade_details_entry_spot', 0, '<span></span>') : '') + '\n            ' + createRow(barrier_text, '', 'trade_details_barrier', true) + '\n            ' + (Reset.isReset(contract.contract_type) ? createRow(localize('Reset Barrier'), '', 'trade_details_reset_barrier', true) : '') + '\n            ' + (contract.barrier_count > 1 ? createRow(low_barrier_text, '', 'trade_details_barrier_low', true) : '') + '\n            ' + createRow(Callputspread.isCallputspread(contract.contract_type) ? localize('Maximum payout') : localize('Potential Payout'), '', 'trade_details_payout') + '\n            ' + (multiplier && Lookback.isLookback(contract.contract_type) ? createRow(localize('Multiplier'), '', 'trade_details_multiplier') : '') + '\n            ' + createRow(localize('Purchase Price'), '', 'trade_details_purchase_price') + '\n            </tbody>\n            <th colspan="2" id="barrier_change" class="invisible">' + localize('Barrier Change') + '</th>\n            <tbody id="barrier_change_content" class="invisible"></tbody>\n            <tr><th colspan="2" id="trade_details_current_title">' + localize('Current') + '</th></tr>\n            ' + createRow(localize('Spot'), 'trade_details_spot_label', 'trade_details_current_spot', 0, '<span></span>') + '\n            ' + createRow(localize('Spot Time'), 'trade_details_spottime_label', 'trade_details_current_date') + '\n            ' + createRow(localize('Current Time'), '', 'trade_details_live_date') + '\n            ' + (!contract.tick_count ? createRow('', 'trade_details_end_label', 'trade_details_end_date', true) : '') + '\n            ' + createRow(localize('Indicative'), 'trade_details_indicative_label', 'trade_details_indicative_price') + '\n            ' + createRow(localize('Potential Profit/Loss'), 'trade_details_profit_loss_label', 'trade_details_profit_loss') + '\n            <tr><td colspan="2" class="last_cell" id="trade_details_message">&nbsp;</td></tr>\n            </table>\n            <div id="errMsg" class="notice-msg ' + hidden_class + '"></div>\n            <div id="trade_details_bottom"><div id="contract_sell_wrapper" class="' + hidden_class + '"></div><div id="contract_sell_message"></div><div id="contract_win_status" class="' + hidden_class + '"></div></div>'));
+        var should_show_entry_spot = !Lookback.isLookback(contract.contract_type) && !/digit/i.test(contract.contract_type);
 
-        $sections.find('#sell_details_chart_wrapper').html($('<div/>', { id: contract.tick_count ? 'tick_chart' : 'analysis_live_chart', class: 'live_chart_wrapper' }));
+        $sections.find('#sell_details_table').append($('<table>\n            <tr id="contract_tabs"><th colspan="2" id="contract_information_tab">' + localize('Contract Information') + '</th></tr><tbody id="contract_information_content">\n            ' + createRow(localize('Contract Type'), '', 'trade_details_contract_type') + '\n            ' + createRow(localize('Transaction ID'), '', 'trade_details_ref_id') + '\n            ' + createRow(localize('Start Time'), '', 'trade_details_start_date', true) + '\n            ' + createRow(localize('Purchase Time'), '', 'trade_details_purchase_time', true) + '\n            ' + (!contract.tick_count ? createRow(localize('Remaining Time'), '', 'trade_details_live_remaining') : '') + '\n            ' + (should_show_entry_spot ? createRow(localize('Entry Spot'), '', 'trade_details_entry_spot', 0, '<span></span>') : '') + '\n            ' + createRow(barrier_text, '', 'trade_details_barrier', true) + '\n            ' + (Reset.isReset(contract.contract_type) ? createRow(localize('Reset Barrier'), '', 'trade_details_reset_barrier', true) : '') + '\n            ' + (contract.barrier_count > 1 ? createRow(low_barrier_text, '', 'trade_details_barrier_low', true) : '') + '\n            ' + createRow(Callputspread.isCallputspread(contract.contract_type) ? localize('Maximum payout') : localize('Potential Payout'), '', 'trade_details_payout') + '\n            ' + (multiplier && Lookback.isLookback(contract.contract_type) ? createRow(localize('Multiplier'), '', 'trade_details_multiplier') : '') + '\n            ' + createRow(localize('Purchase Price'), '', 'trade_details_purchase_price') + '\n            </tbody>\n            <th colspan="2" id="barrier_change" class="invisible">' + localize('Barrier Change') + '</th>\n            <tbody id="barrier_change_content" class="invisible"></tbody>\n            <tr><th colspan="2" id="trade_details_current_title">' + localize('Current') + '</th></tr>\n            ' + createRow(localize('Spot'), 'trade_details_spot_label', 'trade_details_current_spot', 0, '<span></span>') + '\n            ' + createRow(localize('Spot Time'), 'trade_details_spottime_label', 'trade_details_current_date') + '\n            ' + createRow(localize('Current Time'), '', 'trade_details_live_date') + '\n            ' + (!contract.tick_count ? createRow('', 'trade_details_end_label', 'trade_details_end_date', true) : '') + '\n            ' + createRow(localize('Indicative'), 'trade_details_indicative_label', 'trade_details_indicative_price') + '\n            ' + createRow(localize('Potential Profit/Loss'), 'trade_details_profit_loss_label', 'trade_details_profit_loss') + '\n            <tr><td colspan="2" class="last_cell" id="trade_details_message">&nbsp;</td></tr>\n            </table>\n            <div id="errMsg" class="notice-msg ' + hidden_class + '"></div>\n            <div id="trade_details_bottom"><div id="contract_sell_wrapper" class="' + hidden_class + '"></div><div id="contract_sell_message"></div><div id="contract_win_status" class="' + hidden_class + '"></div></div>'));
+
+        $sections.find('#sell_details_chart_wrapper').html($('<div/>', { id: contract.tick_count ? id_tick_chart : 'analysis_live_chart', class: 'live_chart_wrapper' }));
 
         $container.find('#' + wrapper_id).append($sections.html()).append($('<div/>', { id: 'errMsg', class: 'notice-msg ' + hidden_class })).append($('<div/>', { id: 'notice_ongoing', class: 'fill-bg-color gr-padding-10 ' + hidden_class, text: localize('You can close this window without interrupting your trade.') }));
 
@@ -34149,6 +34773,7 @@ module.exports = ViewPopup;
 var setExternalTimer = __webpack_require__(/*! ../../../base/clock */ "./src/javascript/app/base/clock.js").setExternalTimer;
 var BinarySocket = __webpack_require__(/*! ../../../base/socket */ "./src/javascript/app/base/socket.js");
 var getHighestZIndex = __webpack_require__(/*! ../../../../_common/utility */ "./src/javascript/_common/utility.js").getHighestZIndex;
+var removeDigitTicker = __webpack_require__(/*! ../../trade/digit_ticker */ "./src/javascript/app/pages/trade/digit_ticker.js").remove;
 
 var ViewPopupUI = function () {
     var $container = void 0,
@@ -34174,6 +34799,7 @@ var ViewPopupUI = function () {
                 cleanup(true);
                 $(document).off('keydown');
                 $(window).off('popstate', onClose);
+                removeDigitTicker();
             };
             $con.find('a.close').on('click', onClose);
             $(document).on('keydown', function (e) {
@@ -34394,7 +35020,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
@@ -34747,6 +35373,7 @@ var Home = function () {
     var clients_country = void 0;
 
     var onLoad = function onLoad() {
+        Login.initOneAll();
         TabSelector.onLoad();
 
         BinarySocket.wait('website_status', 'authorize', 'landing_company').then(function () {
@@ -34762,17 +35389,9 @@ var Home = function () {
                 fnc_response_handler: handler,
                 fnc_additional_check: checkCountry
             });
-            socialLogin();
             if (isEuCountry()) {
                 $('.mfsa_message').slideDown(300);
             }
-        });
-    };
-
-    var socialLogin = function socialLogin() {
-        $('#google-signup').off('click').on('click', function (e) {
-            e.preventDefault();
-            window.location.href = Login.socialLoginUrl('google');
         });
     };
 
@@ -35002,6 +35621,10 @@ module.exports = Platforms;
 "use strict";
 
 
+var BinarySocket = __webpack_require__(/*! ../../app/base/socket */ "./src/javascript/app/base/socket.js");
+var isExcludedFromCfd = __webpack_require__(/*! ../../app/common/country_base */ "./src/javascript/app/common/country_base.js").isExcludedFromCfd;
+var getElementById = __webpack_require__(/*! ../../../javascript/_common/common_functions */ "./src/javascript/_common/common_functions.js").getElementById;
+
 var Regulation = function () {
     var onLoad = function onLoad() {
         $(function () {
@@ -35023,6 +35646,14 @@ var Regulation = function () {
                 // if EU passport rights tab is active, call relocateLinks to initialize map coordinates
                 if (!$accordion.accordion('option', 'active')) {
                     relocateLinks();
+                }
+            });
+
+            BinarySocket.wait('website_status', 'authorize').then(function () {
+                if (isExcludedFromCfd()) {
+                    var el_cfd_fillbox = getElementById('cfd_fillbox');
+                    el_cfd_fillbox.nextSibling.classList.remove('margin-left-0');
+                    el_cfd_fillbox.remove();
                 }
             });
         });
