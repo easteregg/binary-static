@@ -25212,11 +25212,15 @@ var Purchase = function () {
 
                         // force to sell the expired contract, in order to get the final status
                         if (+contract.is_settleable === 1 && !contract.is_sold) {
-                            BinarySocket.send({ sell_expired: 1 });
+                            sellExpired();
                         }
                     }
                 } });
         }
+    };
+
+    var sellExpired = function sellExpired() {
+        return BinarySocket.send({ sell_expired: 1 });
     };
 
     var makeBold = function makeBold(d) {
@@ -25281,8 +25285,11 @@ var Purchase = function () {
 
             if (CommonFunctions.isVisible(spots) && tick_d.epoch && tick_d.epoch > purchase_data.buy.start_time) {
                 var current_tick_count = spots.getElementsByClassName('row').length + 1;
-                if (contract_duration && contract_duration < current_tick_count) {
-                    debugger; //eslint-disable-line
+                if (contract_duration && +contract_duration < current_tick_count) {
+                    sellExpired();
+                    duration = 0;
+                    console.log('Fixed', undefined); // eslint-disable-line
+                    break;
                 }
 
                 var is_winning_tick = false;
