@@ -24986,7 +24986,8 @@ var Purchase = function () {
     var payout_value = void 0,
         cost_value = void 0,
         profit_value = void 0,
-        status = void 0;
+        status = void 0,
+        contract_duration = void 0;
 
     var replaceElement = function replaceElement(container, child) {
         container.querySelectorAll('.row').forEach(function (item) {
@@ -25033,6 +25034,7 @@ var Purchase = function () {
         var error = details.error;
         var has_chart = !/^(digits|highlowticks)$/.test(Contract.form());
         var show_chart = !error && passthrough.duration <= 10 && passthrough.duration_unit === 't';
+        contract_duration = details.echo_req.passthrough.duration;
 
         if (error) {
             var balance = State.getResponse('balance.balance');
@@ -25279,6 +25281,9 @@ var Purchase = function () {
 
             if (CommonFunctions.isVisible(spots) && tick_d.epoch && tick_d.epoch > purchase_data.buy.start_time) {
                 var current_tick_count = spots.getElementsByClassName('row').length + 1;
+                if (contract_duration && contract_duration < current_tick_count) {
+                    debugger; //eslint-disable-line
+                }
 
                 var is_winning_tick = false;
                 if (tick_config.is_tick_high || tick_config.is_tick_low) {
