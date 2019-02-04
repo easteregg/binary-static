@@ -18495,8 +18495,8 @@ var TradingAnalysis = function () {
                 image2: 'low-tick.svg'
             },
             runs: {
-                image1: 'run-high.svg',
-                image2: 'run-low.svg'
+                image1: 'run-up.svg',
+                image2: 'run-down.svg'
             }
         };
 
@@ -25922,7 +25922,8 @@ var TickDisplay = function () {
         reset_spot_plotted = void 0,
         response_id = void 0,
         contract = void 0,
-        selected_tick = void 0;
+        selected_tick = void 0,
+        entry_spot_offset = void 0;
 
     var id_render = 'tick_chart';
 
@@ -25949,6 +25950,7 @@ var TickDisplay = function () {
         display_decimals = data.display_decimals || 2;
         show_contract_result = data.show_contract_result;
         reset_spot_plotted = false;
+        entry_spot_offset = data.barrier || undefined;
 
         if (data.id_render) {
             id_render = data.id_render;
@@ -26092,10 +26094,10 @@ var TickDisplay = function () {
         var barrier_type = /^(asian|highlowticks)$/.test(contract_category) ? contract_category : 'static';
 
         var calculated_barrier = '';
+
         if (barrier_type === 'static') {
             var first_quote = applicable_ticks[0].quote;
             var barrier_quote = first_quote;
-
             if (barrier) {
                 var final_barrier = Number(barrier).toFixed(parseInt(display_decimals));
                 if (isRelativeBarrier(barrier)) {
@@ -26105,6 +26107,8 @@ var TickDisplay = function () {
                 barrier_quote = final_barrier;
             } else if (contract && contract.barrier) {
                 barrier_quote = parseFloat(contract.barrier);
+            } else if (entry_spot_offset) {
+                barrier_quote = /^[+|-]/i.test(entry_spot_offset) ? Number(Math.round(barrier_quote + parseFloat(entry_spot_offset) + 'e' + display_decimals) + 'e-' + display_decimals) : entry_spot_offset;
             }
 
             chart.yAxis[0].addPlotLine({
@@ -35020,7 +35024,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '15034'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
