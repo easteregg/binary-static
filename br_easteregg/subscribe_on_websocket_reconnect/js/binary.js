@@ -11225,7 +11225,7 @@ var Page = function () {
                 switch (evt.key) {
                     case 'active_loginid':
                         // not the active tab and logged out or loginid switch
-                        if (document.hidden && (evt.newValue === '' || !window.is_logging_in)) {
+                        if (evt.newValue === '' || !window.is_logging_in) {
                             reload();
                         }
                         break;
@@ -35029,7 +35029,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
