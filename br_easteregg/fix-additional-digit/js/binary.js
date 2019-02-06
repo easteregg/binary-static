@@ -821,6 +821,8 @@ var Elevio = function () {
             var current_language = getLanguage().toLowerCase();
             if (available_elev_languages.indexOf(current_language) !== -1) {
                 window._elev.setLanguage(current_language); // eslint-disable-line no-underscore-dangle
+            } else {
+                window._elev.setLanguage('en');
             }
             setUserInfo(elev);
             setTranslations(elev);
@@ -21717,7 +21719,8 @@ var DigitTicker = function () {
 
     // Calculate peek-box left offset.
     var calculateOffset = function calculateOffset() {
-        var left_offset = document.querySelector('.digit-' + current_spot).offsetLeft;
+        var current_spot_digit = document.querySelector('.digit-' + current_spot);
+        var left_offset = current_spot_digit ? current_spot_digit.offsetLeft : 0;
         return left_offset - style_offset_correction;
     };
 
@@ -21775,6 +21778,9 @@ var DigitTicker = function () {
         var quote = _ref.quote,
             epoch = _ref.epoch;
 
+        if (current_tick_count > total_tick_count) {
+            return;
+        }
         setElements(epoch);
         el_container.classList.remove('invisible');
         adjustBoxSizes();
@@ -21878,18 +21884,12 @@ var DigitDisplay = function () {
 
     // Subscribe if contract is still ongoing/running.
     var subscribe = function subscribe(request) {
-        if (/^digit/.test(contract.contract_type)) {
-            if (contract.exit_tick_time) {
-                request.end = contract.exit_tick_time;
-            } else {
-                request.subscribe = 1;
-                request.end = 'latest';
-            }
-        } else if (contract.current_spot_time < contract.date_expiry) {
+        request.end = 'latest';
+        if (contract.exit_tick_time) {
+            request.end = contract.exit_tick_time;
+        } else {
             request.subscribe = 1;
             request.end = 'latest';
-        } else {
-            request.end = contract.date_expiry;
         }
     };
 
@@ -24996,7 +24996,8 @@ var Purchase = function () {
     var payout_value = void 0,
         cost_value = void 0,
         profit_value = void 0,
-        status = void 0;
+        status = void 0,
+        contract_duration = void 0;
 
     var replaceElement = function replaceElement(container, child) {
         container.querySelectorAll('.row').forEach(function (item) {
@@ -25043,6 +25044,7 @@ var Purchase = function () {
         var error = details.error;
         var has_chart = !/^(digits|highlowticks)$/.test(Contract.form());
         var show_chart = !error && passthrough.duration <= 10 && passthrough.duration_unit === 't';
+        contract_duration = details.echo_req.passthrough.duration;
 
         if (error) {
             var balance = State.getResponse('balance.balance');
@@ -25220,11 +25222,15 @@ var Purchase = function () {
 
                         // force to sell the expired contract, in order to get the final status
                         if (+contract.is_settleable === 1 && !contract.is_sold) {
-                            BinarySocket.send({ sell_expired: 1 });
+                            sellExpired();
                         }
                     }
                 } });
         }
+    };
+
+    var sellExpired = function sellExpired() {
+        return BinarySocket.send({ sell_expired: 1 });
     };
 
     var makeBold = function makeBold(d) {
@@ -25289,6 +25295,11 @@ var Purchase = function () {
 
             if (CommonFunctions.isVisible(spots) && tick_d.epoch && tick_d.epoch > purchase_data.buy.start_time) {
                 var current_tick_count = spots.getElementsByClassName('row').length + 1;
+                if (contract_duration && +contract_duration < current_tick_count) {
+                    sellExpired();
+                    duration = 0;
+                    break;
+                }
 
                 var is_winning_tick = false;
                 if (tick_config.is_tick_high || tick_config.is_tick_low) {
@@ -25927,7 +25938,8 @@ var TickDisplay = function () {
         reset_spot_plotted = void 0,
         response_id = void 0,
         contract = void 0,
-        selected_tick = void 0;
+        selected_tick = void 0,
+        entry_spot_offset = void 0;
 
     var id_render = 'tick_chart';
 
@@ -25954,6 +25966,7 @@ var TickDisplay = function () {
         display_decimals = data.display_decimals || 2;
         show_contract_result = data.show_contract_result;
         reset_spot_plotted = false;
+        entry_spot_offset = data.barrier || undefined;
 
         if (data.id_render) {
             id_render = data.id_render;
@@ -26093,10 +26106,10 @@ var TickDisplay = function () {
         var barrier_type = /^(asian|highlowticks)$/.test(contract_category) ? contract_category : 'static';
 
         var calculated_barrier = '';
+
         if (barrier_type === 'static') {
             var first_quote = applicable_ticks[0].quote;
             var barrier_quote = first_quote;
-
             if (barrier) {
                 var final_barrier = Number(barrier).toFixed(parseInt(display_decimals));
                 if (isRelativeBarrier(barrier)) {
@@ -26106,6 +26119,8 @@ var TickDisplay = function () {
                 barrier_quote = final_barrier;
             } else if (contract && contract.barrier) {
                 barrier_quote = parseFloat(contract.barrier);
+            } else if (entry_spot_offset) {
+                barrier_quote = /^[+|-]/i.test(entry_spot_offset) ? Number(Math.round(barrier_quote + parseFloat(entry_spot_offset) + 'e' + display_decimals) + 'e-' + display_decimals) : entry_spot_offset;
             }
 
             chart.yAxis[0].addPlotLine({
@@ -33550,7 +33565,7 @@ var ResetPassword = function () {
         generateBirthDate();
 
         $('#have_real_account').off('click').on('click', function () {
-            if ($(this).is(':checked')) {
+            if ($('#have_real_account_option_0').is(':checked')) {
                 $('#dob_field').setVisibility(1);
             } else {
                 $('#dob_field').setVisibility(0);
@@ -33558,7 +33573,7 @@ var ResetPassword = function () {
         });
 
         var form_id = '#frm_reset_password';
-        FormManager.init(form_id, [{ selector: '#new_password', validations: ['req', 'password'], re_check_field: '#repeat_password' }, { selector: '#repeat_password', validations: ['req', ['compare', { to: '#new_password' }]], exclude_request: 1 }, { selector: '#date_of_birth', validations: ['req'] }, { request_field: 'reset_password', value: 1 }], true);
+        FormManager.init(form_id, [{ selector: '#have_real_account', validations: ['req'], exclude_request: 1 }, { selector: '#date_of_birth', validations: ['req'] }, { selector: '#new_password', validations: ['req', 'password'], re_check_field: '#repeat_password' }, { selector: '#repeat_password', validations: ['req', ['compare', { to: '#new_password' }]], exclude_request: 1 }, { request_field: 'reset_password', value: 1 }], true);
 
         FormManager.handleSubmit({
             form_selector: form_id,
@@ -35008,7 +35023,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
