@@ -21876,9 +21876,16 @@ var DigitDisplay = function () {
 
     is_redraw_possible = false;
 
+    // Subscribe if contract is still ongoing/running.
     var subscribe = function subscribe(request) {
-        // Subscribe if contract is still ongoing/running.
-        if (contract.current_spot_time < contract.date_expiry) {
+        if (/^digit/.test(contract.contract_type)) {
+            if (contract.exit_tick_time) {
+                request.end = contract.exit_tick_time;
+            } else {
+                request.subscribe = 1;
+                request.end = 'latest';
+            }
+        } else if (contract.current_spot_time < contract.date_expiry) {
             request.subscribe = 1;
             request.end = 'latest';
         } else {
@@ -21895,6 +21902,7 @@ var DigitDisplay = function () {
         $container.addClass('normal-font').html($('<h5 />', { text: contract.display_name, class: 'center-text' })).append($('<div />', { class: 'gr-8 gr-centered gr-12-m' }).append($('<div />', { class: 'gr-row', id: 'table_digits' }).append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') })))).append($('<div />', { class: 'digit-ticker invisible', id: 'digit_ticker_container' }));
 
         DigitTicker.init('digit_ticker_container', contract.contract_type, contract.shortcode, contract.tick_count, contract.status);
+
         var request = {
             ticks_history: contract.underlying,
             start: contract.date_start
@@ -35000,7 +35008,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '15034'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
