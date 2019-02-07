@@ -21886,7 +21886,7 @@ var DigitDisplay = function () {
     var subscribe = function subscribe(request) {
         request.end = 'latest';
         if (contract.exit_tick_time) {
-            request.end = contract.exit_tick_time;
+            request.end = +contract.exit_tick_time;
         } else {
             request.subscribe = 1;
             request.end = 'latest';
@@ -21905,7 +21905,7 @@ var DigitDisplay = function () {
 
         var request = {
             ticks_history: contract.underlying,
-            start: contract.date_start
+            start: contract.entry_tick_time
         };
 
         subscribe(request);
@@ -21936,7 +21936,7 @@ var DigitDisplay = function () {
 
         DigitTicker.update(tick_count, {
             quote: contract.status !== 'open' ? contract.exit_tick : spot,
-            epoch: contract.status !== 'open' ? contract.exit_tick_time : contract.date_expiry
+            epoch: +contract.exit_tick_time || contract.current_spot_time
         });
     };
 
@@ -21994,13 +21994,13 @@ var DigitDisplay = function () {
         if (proposal_open_contract.status !== 'open') {
             DigitTicker.update(proposal_open_contract.tick_count, {
                 quote: proposal_open_contract.exit_tick,
-                epoch: proposal_open_contract.exit_tick_time
+                epoch: +proposal_open_contract.exit_tick_time
             });
 
             var request = {
                 ticks_history: contract.underlying,
                 start: contract.entry_tick_time,
-                end: contract.exit_tick_time
+                end: +contract.exit_tick_time
             };
             if (is_redraw_possible) {
                 // force rerender the table by sending the history
