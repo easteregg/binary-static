@@ -21759,7 +21759,7 @@ var DigitTicker = function () {
     var setElements = function setElements() {
         el_peek = el_container ? el_container.querySelector('.peek') : null;
         el_peek_box = el_peek ? el_container.querySelector('.peek-box') : null;
-        el_mask = el_peek_box ? el_peek_box.querySelector('.peek-box > .mask') : null;
+        el_mask = el_peek_box ? el_peek_box.querySelector('> .mask') : null;
     };
 
     var isBarrierMissing = function isBarrierMissing(contract_type, bar) {
