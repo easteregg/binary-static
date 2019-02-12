@@ -21882,6 +21882,7 @@ var DigitDisplay = function () {
     // Subscribe if contract is still ongoing/running.
     var subscribe = function subscribe(request) {
         request.end = 'latest';
+
         if (contract.exit_tick_time) {
             request.end = +contract.exit_tick_time;
             request.count = +contract.tick_count;
@@ -21906,7 +21907,7 @@ var DigitDisplay = function () {
 
         var request = {
             ticks_history: contract.underlying,
-            start: contract.entry_tick_time
+            start: +contract.entry_tick_time
         };
 
         subscribe(request);
@@ -21937,7 +21938,7 @@ var DigitDisplay = function () {
 
         DigitTicker.update(tick_count, {
             quote: contract.status !== 'open' ? contract.exit_tick : spot,
-            epoch: +contract.exit_tick_time || contract.current_spot_time
+            epoch: +contract.exit_tick_time || +contract.current_spot_time
         });
     };
 
