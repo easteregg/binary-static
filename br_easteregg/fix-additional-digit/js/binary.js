@@ -21780,7 +21780,7 @@ var DigitTicker = function () {
     var setElements = function setElements() {
         el_peek = el_container ? el_container.querySelector('.peek') : null;
         el_peek_box = el_peek ? el_container.querySelector('.peek-box') : null;
-        el_mask = el_peek_box ? el_peek_box.querySelector('& > .mask') : null;
+        el_mask = el_peek_box ? el_peek_box.querySelector('.mask') : null;
     };
 
     var isBarrierMissing = function isBarrierMissing(contract_type, bar) {
@@ -21908,7 +21908,7 @@ var DigitDisplay = function () {
             request.end = +contract.exit_tick_time;
             request.count = +contract.tick_count;
             if (+contract.tick_count === 1) {
-                request.end += 1; // TODO: backend sends the improper response when end and start are the same for 1 tick contracts. remove this block on fix
+                request.end += 1; // TODO: API sends the improper response when end and start are the same for 1 tick contracts. remove this block on fix
             }
         } else {
             request.subscribe = 1;
