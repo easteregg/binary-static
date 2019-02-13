@@ -63,7 +63,7 @@
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "" + ({"404":"404","account_password":"account_password","api_toke":"api_toke","authorized_application":"authorized_application","cashier_password":"cashier_password","contract":"contract","financial_assessment":"financial_assessment","limits":"limits","login_history":"login_history","personal_details":"personal_details","portfolio":"portfolio","self_exclusion":"self_exclusion","settings":"settings","statement":"statement","vendors~smart_chart":"vendors~smart_chart","smart_chart":"smart_chart"}[chunkId]||chunkId) + "-" + {"404":"1f20d1cb6ffbf53419ed","account_password":"67c66084bc424d34b10b","api_toke":"7c72ca04a060c6e8363d","authorized_application":"97635409ac3488b8a4dc","cashier_password":"0061f340e2203b85c4de","contract":"d5ff3abe544011cd2843","financial_assessment":"fa615b65ab7d51a072e8","limits":"6122a66075b7120f5152","login_history":"f73b0e94430bafb6dff4","personal_details":"8c2c516db1200e2e67f1","portfolio":"16052a629104e3c26ee7","self_exclusion":"10c70715aab8e89cdf0f","settings":"b65a79071afa6712cab7","statement":"df0f87e87ef416986955","vendors~smart_chart":"e29bce83a9f50024f42a","smart_chart":"3bd5fe29258265801823"}[chunkId] + ".js"
+/******/ 		return __webpack_require__.p + "" + ({"404":"404","account_password":"account_password","api_toke":"api_toke","authorized_application":"authorized_application","cashier_password":"cashier_password","contract":"contract","financial_assessment":"financial_assessment","limits":"limits","login_history":"login_history","personal_details":"personal_details","portfolio":"portfolio","self_exclusion":"self_exclusion","settings":"settings","statement":"statement","vendors~smart_chart":"vendors~smart_chart","smart_chart":"smart_chart"}[chunkId]||chunkId) + "-" + {"404":"1f20d1cb6ffbf53419ed","account_password":"67c66084bc424d34b10b","api_toke":"7c72ca04a060c6e8363d","authorized_application":"97635409ac3488b8a4dc","cashier_password":"0061f340e2203b85c4de","contract":"d5ff3abe544011cd2843","financial_assessment":"fa615b65ab7d51a072e8","limits":"6122a66075b7120f5152","login_history":"f73b0e94430bafb6dff4","personal_details":"8c2c516db1200e2e67f1","portfolio":"dcfcf75f0048e5d379cb","self_exclusion":"10c70715aab8e89cdf0f","settings":"b65a79071afa6712cab7","statement":"df0f87e87ef416986955","vendors~smart_chart":"90a0463c2d7edd3d8556","smart_chart":"7332318ac688f4c6e8d5"}[chunkId] + ".js"
 /******/ 	}
 /******/
 /******/ 	// The require function
@@ -361,12 +361,13 @@ var Calendar = (_temp = _class = function (_React$PureComponent) {
         _initialiseProps.call(_this);
 
         var date_format = props.date_format,
-            start_date = props.start_date;
+            start_date = props.start_date,
+            value = props.value;
 
-        var current_date = (0, _Date.toMoment)(start_date).format(date_format);
+        var current_date = (0, _Date.toMoment)(value || start_date).format(date_format);
         _this.state = {
             calendar_date: current_date, // calendar date reference
-            selected_date: '', // selected date
+            selected_date: value, // selected date
             calendar_view: 'date'
         };
         return _this;
@@ -376,12 +377,12 @@ var Calendar = (_temp = _class = function (_React$PureComponent) {
         key: 'render',
         value: function render() {
             var _props = this.props,
-                children = _props.children,
                 date_format = _props.date_format,
                 footer = _props.footer,
                 has_today_btn = _props.has_today_btn,
-                id = _props.id,
-                start_date = _props.start_date;
+                start_date = _props.start_date,
+                holidays = _props.holidays,
+                weekends = _props.weekends;
             var _state = this.state,
                 calendar_date = _state.calendar_date,
                 calendar_view = _state.calendar_view,
@@ -390,8 +391,7 @@ var Calendar = (_temp = _class = function (_React$PureComponent) {
 
             return _react2.default.createElement(
                 'div',
-                { id: id, className: 'calendar', 'data-value': selected_date },
-                children,
+                { className: 'calendar', 'data-value': selected_date },
                 _react2.default.createElement(_calendar_header2.default, {
                     calendar_date: calendar_date,
                     calendar_view: calendar_view,
@@ -407,7 +407,8 @@ var Calendar = (_temp = _class = function (_React$PureComponent) {
                     start_date: start_date,
                     selected_date: selected_date,
                     updateSelected: this.updateSelected,
-                    sessions: this.props.sessions
+                    holidays: holidays,
+                    weekends: weekends
                 }),
                 _react2.default.createElement(_calendar_footer2.default, {
                     footer: footer,
@@ -427,7 +428,14 @@ var Calendar = (_temp = _class = function (_React$PureComponent) {
     };
 
     this.navigateTo = function (new_date) {
-        _this2.setState({ calendar_date: (0, _Date.toMoment)(new_date).format(_this2.props.date_format) });
+        _this2.setState({
+            calendar_date: (0, _Date.toMoment)(new_date).format(_this2.props.date_format)
+        }, function () {
+            if (_this2.props.onChangeCalendarMonth) {
+                var start_of_month = (0, _Date.getStartOfMonth)(new_date);
+                _this2.props.onChangeCalendarMonth(start_of_month);
+            }
+        });
     };
 
     this.updateSelectedDate = function (e) {
@@ -477,6 +485,11 @@ var Calendar = (_temp = _class = function (_React$PureComponent) {
         _this2.setState({
             calendar_date: date,
             calendar_view: view_map[type]
+        }, function () {
+            if (_this2.props.onChangeCalendarMonth) {
+                var start_of_month = (0, _Date.getStartOfMonth)(date);
+                _this2.props.onChangeCalendarMonth(start_of_month);
+            }
         });
     };
 
@@ -532,16 +545,20 @@ Calendar.defaultProps = {
 };
 
 Calendar.propTypes = {
-    children: _propTypes2.default.object,
     date_format: _propTypes2.default.string,
     footer: _propTypes2.default.string,
     has_today_btn: _propTypes2.default.bool,
-    id: _propTypes2.default.string,
-    is_nativepicker: _propTypes2.default.bool,
+    holidays: _propTypes2.default.arrayOf(_propTypes2.default.shape({
+        dates: _propTypes2.default.array,
+        descrip: _propTypes2.default.string
+    })),
     max_date: _propTypes2.default.oneOfType([_propTypes2.default.object, _propTypes2.default.string]),
     min_date: _propTypes2.default.oneOfType([_propTypes2.default.object, _propTypes2.default.string]),
+    onChangeCalendarMonth: _propTypes2.default.func,
     onSelect: _propTypes2.default.func,
-    start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string])
+    start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+    value: _propTypes2.default.string,
+    weekends: _propTypes2.default.arrayOf(_propTypes2.default.number)
 };
 
 exports.default = Calendar;
@@ -741,13 +758,13 @@ var _react2 = _interopRequireDefault(_react);
 
 var _Common = __webpack_require__(/*! ../../../../Assets/Common */ "./src/javascript/app_2/Assets/Common/index.js");
 
+var _date_time = __webpack_require__(/*! ../../../../Constants/date_time */ "./src/javascript/app_2/Constants/date_time.js");
+
 var _Date = __webpack_require__(/*! ../../../../Utils/Date */ "./src/javascript/app_2/Utils/Date/index.js");
 
 var _calendar_button = __webpack_require__(/*! ./calendar_button.jsx */ "./src/javascript/app_2/App/Components/Elements/Calendar/calendar_button.jsx");
 
 var _calendar_button2 = _interopRequireDefault(_calendar_button);
-
-var _constants = __webpack_require__(/*! ./constants */ "./src/javascript/app_2/App/Components/Elements/Calendar/constants.js");
 
 var _helper = __webpack_require__(/*! ./helper */ "./src/javascript/app_2/App/Components/Elements/Calendar/helper.js");
 
@@ -756,10 +773,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var CalendarHeader = function CalendarHeader(_ref) {
     var calendar_date = _ref.calendar_date,
         calendar_view = _ref.calendar_view,
+        disable_month_selector = _ref.disable_month_selector,
+        disable_year_selector = _ref.disable_year_selector,
         isPeriodDisabled = _ref.isPeriodDisabled,
         navigateTo = _ref.navigateTo,
-        switchView = _ref.switchView,
-        disabled_selector = _ref.disabled_selector;
+        switchView = _ref.switchView;
 
     var is_date_view = calendar_view === 'date';
     var is_month_view = calendar_view === 'month';
@@ -779,9 +797,7 @@ var CalendarHeader = function CalendarHeader(_ref) {
     var is_prev_year_disabled = isPeriodDisabled((0, _Date.subYears)(moment_date, num_of_years), 'month');
     var is_next_month_disabled = isPeriodDisabled((0, _Date.addMonths)(moment_date, 1), 'month');
     var is_next_year_disabled = isPeriodDisabled((0, _Date.addYears)(moment_date, num_of_years), 'month');
-    var is_select_year_disabled = isPeriodDisabled(moment_date.clone().year(end_of_decade), 'year') || disabled_selector.some(function (selector) {
-        return selector === 'year';
-    });
+    var is_select_year_disabled = isPeriodDisabled(moment_date.clone().year(end_of_decade), 'year') || disable_year_selector;
 
     return _react2.default.createElement(
         'div',
@@ -817,9 +833,9 @@ var CalendarHeader = function CalendarHeader(_ref) {
             is_date_view && _react2.default.createElement(_calendar_button2.default, {
                 className: 'calendar__btn calendar__btn--select',
                 is_hidden: !is_date_view,
-                label: _constants.month_headers[moment_date.format('MMM')],
+                label: _date_time.month_headers[moment_date.format('MMM')],
                 onClick: function onClick() {
-                    return switchView('month');
+                    return disable_month_selector ? undefined : switchView('month');
                 }
             }),
             (is_date_view || is_month_view) && _react2.default.createElement(_calendar_button2.default, {
@@ -876,66 +892,14 @@ var CalendarHeader = function CalendarHeader(_ref) {
 CalendarHeader.propTypes = {
     calendar_date: _propTypes2.default.string,
     calendar_view: _propTypes2.default.string,
+    disable_month_selector: _propTypes2.default.bool,
+    disable_year_selector: _propTypes2.default.bool,
     isPeriodDisabled: _propTypes2.default.func,
     navigateTo: _propTypes2.default.func,
     switchView: _propTypes2.default.func
 };
 
 exports.default = CalendarHeader;
-
-/***/ }),
-
-/***/ "./src/javascript/app_2/App/Components/Elements/Calendar/constants.js":
-/*!****************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/Calendar/constants.js ***!
-  \****************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.week_headers_abbr = exports.week_headers = exports.month_headers = undefined;
-
-var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
-
-var month_headers = exports.month_headers = {
-    Jan: (0, _localize.localize)('Jan'),
-    Feb: (0, _localize.localize)('Feb'),
-    Mar: (0, _localize.localize)('Mar'),
-    Apr: (0, _localize.localize)('Apr'),
-    May: (0, _localize.localize)('May'),
-    Jun: (0, _localize.localize)('Jun'),
-    Jul: (0, _localize.localize)('Jul'),
-    Aug: (0, _localize.localize)('Aug'),
-    Sep: (0, _localize.localize)('Sep'),
-    Oct: (0, _localize.localize)('Oct'),
-    Nov: (0, _localize.localize)('Nov'),
-    Dec: (0, _localize.localize)('Dec')
-};
-
-var week_headers = exports.week_headers = {
-    Monday: (0, _localize.localize)('Monday'),
-    Tuesday: (0, _localize.localize)('Tuesday'),
-    Wednesday: (0, _localize.localize)('Wednesday'),
-    Thursday: (0, _localize.localize)('Thursday'),
-    Friday: (0, _localize.localize)('Friday'),
-    Saturday: (0, _localize.localize)('Saturday'),
-    Sunday: (0, _localize.localize)('Sunday')
-};
-
-var week_headers_abbr = exports.week_headers_abbr = {
-    Monday: (0, _localize.localize)('M'),
-    Tuesday: (0, _localize.localize)('T'),
-    Wednesday: (0, _localize.localize)('W'),
-    Thursday: (0, _localize.localize)('T'),
-    Friday: (0, _localize.localize)('F'),
-    Saturday: (0, _localize.localize)('S'),
-    Sunday: (0, _localize.localize)('S')
-};
 
 /***/ }),
 
@@ -1012,11 +976,17 @@ var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnam
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
 var _string_util = __webpack_require__(/*! ../../../../../../_common/string_util */ "./src/javascript/_common/string_util.js");
+
+var _date_time = __webpack_require__(/*! ../../../../../Constants/date_time */ "./src/javascript/app_2/Constants/date_time.js");
 
 var _Date = __webpack_require__(/*! ../../../../../Utils/Date */ "./src/javascript/app_2/Utils/Date/index.js");
 
@@ -1024,17 +994,21 @@ var _types = __webpack_require__(/*! ./types */ "./src/javascript/app_2/App/Comp
 
 var _types2 = _interopRequireDefault(_types);
 
-var _constants = __webpack_require__(/*! ../constants */ "./src/javascript/app_2/App/Components/Elements/Calendar/constants.js");
+var _tooltip = __webpack_require__(/*! ../../tooltip.jsx */ "./src/javascript/app_2/App/Components/Elements/tooltip.jsx");
+
+var _tooltip2 = _interopRequireDefault(_tooltip);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var getDays = function getDays(_ref) {
     var calendar_date = _ref.calendar_date,
         date_format = _ref.date_format,
+        holidays = _ref.holidays,
         isPeriodDisabled = _ref.isPeriodDisabled,
         start_date = _ref.start_date,
         selected_date = _ref.selected_date,
-        updateSelected = _ref.updateSelected;
+        updateSelected = _ref.updateSelected,
+        weekends = _ref.weekends;
 
     // adjust Calendar week by 1 day so that Calendar week starts on Monday
     // change to zero to set Calendar week to start on Sunday
@@ -1076,12 +1050,37 @@ var getDays = function getDays(_ref) {
         var moment_date = (0, _Date.toMoment)(date).startOf('day');
         var is_active = selected_date && moment_date.isSame(moment_selected);
         var is_today = moment_date.isSame(moment_today, 'day');
-        var is_disabled = isPeriodDisabled(moment_date, 'day') ||
-        // for forward starting accounts, only show same day as start date and the day after
-        start_date && (moment_date.isBefore(moment_start_date) || moment_date.isAfter((0, _Date.addDays)(moment_start_date, 1)));
 
-        // show 'disabled' style for dates that is not in the same calendar month,
-        // but the date should still be clickable
+        var events = holidays.filter(function (event) {
+            return (
+                // filter by date or day of the week
+                event.dates.find(function (d) {
+                    return d === date || (0, _date_time.getDaysOfTheWeek)(d) === (0, _Date.toMoment)(date).day();
+                })
+            );
+        });
+        var has_events = !!events.length;
+        var is_closes_early = events.map(function (event) {
+            return !!event.descrip.match(/Closes early|Opens late/);
+        })[0];
+        var message = events.map(function (event) {
+            return event.descrip;
+        })[0] || '';
+
+        var is_before_min_or_after_max_date = isPeriodDisabled(moment_date, 'day');
+        var is_disabled =
+        // check if date is before min_date or after_max_date
+        is_before_min_or_after_max_date
+        // for forward starting accounts, only show same day as start date and the day after
+        || start_date && (moment_date.isBefore(moment_start_date) || moment_date.isAfter((0, _Date.addDays)(moment_start_date, 1)))
+        // check if weekends are disabled
+        || weekends.some(function (day) {
+            return (0, _Date.toMoment)(date).day() === day;
+        })
+        // check if date falls on holidays, and doesn't close early or opens late
+        || has_events && !is_closes_early;
+
+        // show 'disabled' style for dates that is not in the same calendar month, it should still be clickable
         var is_other_month = moment_date.month() !== moment_cur_date.month();
 
         days.push(_react2.default.createElement(
@@ -1099,6 +1098,11 @@ var getDays = function getDays(_ref) {
                 },
                 'data-date': date
             },
+            (has_events || is_closes_early) && !is_other_month && !is_before_min_or_after_max_date && _react2.default.createElement(_tooltip2.default, {
+                alignment: 'top',
+                icon: 'dot',
+                message: message
+            }),
             moment_date.date()
         ));
     });
@@ -1114,18 +1118,31 @@ var CalendarDays = exports.CalendarDays = function CalendarDays(props) {
     return _react2.default.createElement(
         'div',
         { className: 'calendar__body calendar__body--date' },
-        Object.keys(_constants.week_headers_abbr).map(function (item, idx) {
+        Object.keys(_date_time.week_headers_abbr).map(function (item, idx) {
             return _react2.default.createElement(
                 'span',
                 { key: idx, className: 'calendar__text calendar__text--bold' },
-                _constants.week_headers_abbr[item]
+                _date_time.week_headers_abbr[item]
             );
         }),
         days
     );
 };
 
-CalendarDays.propTypes = _extends({}, _types2.default);
+CalendarDays.defaultProps = {
+    holidays: [],
+    weekends: []
+};
+
+CalendarDays.propTypes = _extends({}, _types2.default, {
+    date_format: _propTypes2.default.string,
+    holidays: _propTypes2.default.arrayOf(_propTypes2.default.shape({
+        dates: _propTypes2.default.array,
+        descrip: _propTypes2.default.string
+    })),
+    start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+    weekends: _propTypes2.default.arrayOf(_propTypes2.default.number)
+});
 
 /***/ }),
 
@@ -1244,13 +1261,13 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
+var _date_time = __webpack_require__(/*! ../../../../../Constants/date_time */ "./src/javascript/app_2/Constants/date_time.js");
+
 var _Date = __webpack_require__(/*! ../../../../../Utils/Date */ "./src/javascript/app_2/Utils/Date/index.js");
 
 var _types = __webpack_require__(/*! ./types */ "./src/javascript/app_2/App/Components/Elements/Calendar/panels/types.js");
 
 var _types2 = _interopRequireDefault(_types);
-
-var _constants = __webpack_require__(/*! ../constants */ "./src/javascript/app_2/App/Components/Elements/Calendar/constants.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1266,7 +1283,7 @@ var CalendarMonths = exports.CalendarMonths = function CalendarMonths(_ref) {
     return _react2.default.createElement(
         'div',
         { className: 'calendar__body calendar__body--month' },
-        Object.keys(_constants.month_headers).map(function (month, idx) {
+        Object.keys(_date_time.month_headers).map(function (month, idx) {
             var is_active = month === moment_selected_date.clone().format('MMM') && moment_selected_date.isSame(moment_date, 'year');
             var is_disabled = isPeriodDisabled(moment_date.clone().month(month), 'month');
             return _react2.default.createElement(
@@ -1282,7 +1299,7 @@ var CalendarMonths = exports.CalendarMonths = function CalendarMonths(_ref) {
                     },
                     'data-month': month
                 },
-                _constants.month_headers[month]
+                _date_time.month_headers[month]
             );
         })
     );
@@ -1454,7 +1471,7 @@ Object.keys(_calendar_decades).forEach(function (key) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.CalendarPanelTypes = undefined;
+exports.CommonPropTypes = undefined;
 
 var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
 
@@ -1462,15 +1479,11 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var CalendarPanelTypes = exports.CalendarPanelTypes = {
+var CommonPropTypes = exports.CommonPropTypes = {
     calendar_date: _propTypes2.default.string,
-    calendar_view: _propTypes2.default.string,
-    date_format: _propTypes2.default.string,
     isPeriodDisabled: _propTypes2.default.func,
-    max_date: _propTypes2.default.oneOfType([_propTypes2.default.object, _propTypes2.default.string]),
-    min_date: _propTypes2.default.oneOfType([_propTypes2.default.object, _propTypes2.default.string]),
-    onClick: _propTypes2.default.object,
-    selected_date: _propTypes2.default.string
+    selected_date: _propTypes2.default.string,
+    updateSelected: _propTypes2.default.func
 };
 
 /***/ }),
@@ -2870,9 +2883,9 @@ exports.PopConfirmElement = PopConfirmElement;
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Components/Elements/PortfolioDrawer/index.js":
+/***/ "./src/javascript/app_2/App/Components/Elements/PositionsDrawer/index.js":
 /*!*******************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/PortfolioDrawer/index.js ***!
+  !*** ./src/javascript/app_2/App/Components/Elements/PositionsDrawer/index.js ***!
   \*******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -2885,19 +2898,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _portfolio_drawer = __webpack_require__(/*! ./portfolio_drawer.jsx */ "./src/javascript/app_2/App/Components/Elements/PortfolioDrawer/portfolio_drawer.jsx");
+var _positions_drawer = __webpack_require__(/*! ./positions_drawer.jsx */ "./src/javascript/app_2/App/Components/Elements/PositionsDrawer/positions_drawer.jsx");
 
-var _portfolio_drawer2 = _interopRequireDefault(_portfolio_drawer);
+var _positions_drawer2 = _interopRequireDefault(_positions_drawer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _portfolio_drawer2.default;
+exports.default = _positions_drawer2.default;
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Components/Elements/PortfolioDrawer/portfolio_drawer.jsx":
+/***/ "./src/javascript/app_2/App/Components/Elements/PositionsDrawer/positions_drawer.jsx":
 /*!*******************************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/PortfolioDrawer/portfolio_drawer.jsx ***!
+  !*** ./src/javascript/app_2/App/Components/Elements/PositionsDrawer/positions_drawer.jsx ***!
   \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -2939,9 +2952,9 @@ var _empty_portfolio_message2 = _interopRequireDefault(_empty_portfolio_message)
 
 var _connect = __webpack_require__(/*! ../../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
 
-var _portfolio_drawer_card = __webpack_require__(/*! ./portfolio_drawer_card.jsx */ "./src/javascript/app_2/App/Components/Elements/PortfolioDrawer/portfolio_drawer_card.jsx");
+var _positions_drawer_card = __webpack_require__(/*! ./positions_drawer_card.jsx */ "./src/javascript/app_2/App/Components/Elements/PositionsDrawer/positions_drawer_card.jsx");
 
-var _portfolio_drawer_card2 = _interopRequireDefault(_portfolio_drawer_card);
+var _positions_drawer_card2 = _interopRequireDefault(_positions_drawer_card);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2951,16 +2964,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PortfolioDrawer = function (_React$Component) {
-    _inherits(PortfolioDrawer, _React$Component);
+var PositionsDrawer = function (_React$Component) {
+    _inherits(PositionsDrawer, _React$Component);
 
-    function PortfolioDrawer() {
-        _classCallCheck(this, PortfolioDrawer);
+    function PositionsDrawer() {
+        _classCallCheck(this, PositionsDrawer);
 
-        return _possibleConstructorReturn(this, (PortfolioDrawer.__proto__ || Object.getPrototypeOf(PortfolioDrawer)).apply(this, arguments));
+        return _possibleConstructorReturn(this, (PositionsDrawer.__proto__ || Object.getPrototypeOf(PositionsDrawer)).apply(this, arguments));
     }
 
-    _createClass(PortfolioDrawer, [{
+    _createClass(PositionsDrawer, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
             this.props.onMount();
@@ -2978,7 +2991,7 @@ var PortfolioDrawer = function (_React$Component) {
                 error = _props.error,
                 currency = _props.currency,
                 is_empty = _props.is_empty,
-                is_portfolio_drawer_on = _props.is_portfolio_drawer_on,
+                is_positions_drawer_on = _props.is_positions_drawer_on,
                 toggleDrawer = _props.toggleDrawer;
 
 
@@ -2994,7 +3007,7 @@ var PortfolioDrawer = function (_React$Component) {
                 body_content = _react2.default.createElement(_empty_portfolio_message2.default, null);
             } else {
                 body_content = active_positions.map(function (portfolio_position) {
-                    return _react2.default.createElement(_portfolio_drawer_card2.default, _extends({
+                    return _react2.default.createElement(_positions_drawer_card2.default, _extends({
                         key: portfolio_position.id,
                         currency: currency
                     }, portfolio_position));
@@ -3003,32 +3016,31 @@ var PortfolioDrawer = function (_React$Component) {
 
             return _react2.default.createElement(
                 'div',
-                { className: (0, _classnames2.default)('portfolio-drawer', { 'portfolio-drawer--open': is_portfolio_drawer_on }) },
+                { className: (0, _classnames2.default)('positions-drawer', { 'positions-drawer--open': is_positions_drawer_on }) },
                 _react2.default.createElement(
                     'div',
-                    { className: 'portfolio-drawer__header' },
-                    _react2.default.createElement('span', { className: 'portfolio-drawer__icon-main ic-portfolio' }),
+                    { className: 'positions-drawer__header' },
                     _react2.default.createElement(
                         'span',
-                        { className: 'portfolio-drawer__title' },
-                        (0, _localize.localize)('Portfolio Quick Menu')
+                        { className: 'positions-drawer__title' },
+                        (0, _localize.localize)('Positions')
                     ),
                     _react2.default.createElement(
                         'div',
                         {
-                            className: 'portfolio-drawer__icon-close',
+                            className: 'positions-drawer__icon-close',
                             onClick: toggleDrawer
                         },
-                        _react2.default.createElement(_Common.IconClose, null)
+                        _react2.default.createElement(_Common.IconMinimize, null)
                     )
                 ),
                 _react2.default.createElement(
                     'div',
-                    { className: 'portfolio-drawer__body' },
+                    { className: 'positions-drawer__body' },
                     _react2.default.createElement(
                         _ttReactCustomScrollbars.Scrollbars,
                         {
-                            style: { width: '100%', height: 'calc(100vh - 35px)' },
+                            style: { width: '100%', height: '100%' },
                             autoHide: true
                         },
                         body_content
@@ -3038,17 +3050,17 @@ var PortfolioDrawer = function (_React$Component) {
         }
     }]);
 
-    return PortfolioDrawer;
+    return PositionsDrawer;
 }(_react2.default.Component);
 
-PortfolioDrawer.propTypes = {
+PositionsDrawer.propTypes = {
     active_positions: _mobxReact.PropTypes.arrayOrObservableArray,
     children: _propTypes2.default.any,
     currency: _propTypes2.default.string,
     error: _propTypes2.default.string,
     is_empty: _propTypes2.default.bool,
     is_loading: _propTypes2.default.bool,
-    is_portfolio_drawer_on: _propTypes2.default.bool,
+    is_positions_drawer_on: _propTypes2.default.bool,
     onMount: _propTypes2.default.func,
     onUnmount: _propTypes2.default.func,
     toggleDrawer: _propTypes2.default.func
@@ -3066,16 +3078,16 @@ exports.default = (0, _connect.connect)(function (_ref) {
         onMount: modules.portfolio.onMount,
         onUnmount: modules.portfolio.onUnmount,
         currency: client.currency,
-        is_portfolio_drawer_on: ui.is_portfolio_drawer_on,
-        toggleDrawer: ui.togglePortfolioDrawer
+        is_positions_drawer_on: ui.is_positions_drawer_on,
+        toggleDrawer: ui.togglePositionsDrawer
     };
-})(PortfolioDrawer);
+})(PositionsDrawer);
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Components/Elements/PortfolioDrawer/portfolio_drawer_card.jsx":
+/***/ "./src/javascript/app_2/App/Components/Elements/PositionsDrawer/positions_drawer_card.jsx":
 /*!************************************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/PortfolioDrawer/portfolio_drawer_card.jsx ***!
+  !*** ./src/javascript/app_2/App/Components/Elements/PositionsDrawer/positions_drawer_card.jsx ***!
   \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -3115,7 +3127,7 @@ var _remaining_time2 = _interopRequireDefault(_remaining_time);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var PortfolioDrawerCard = function PortfolioDrawerCard(_ref) {
+var PositionsDrawerCard = function PositionsDrawerCard(_ref) {
     var currency = _ref.currency,
         expiry_time = _ref.expiry_time,
         id = _ref.id,
@@ -3125,35 +3137,38 @@ var PortfolioDrawerCard = function PortfolioDrawerCard(_ref) {
         underlying = _ref.underlying;
     return _react2.default.createElement(
         _binary_link2.default,
-        { className: 'portfolio-drawer-card', to: (0, _helpers.getContractPath)(id) },
+        {
+            className: 'positions-drawer-card',
+            to: (0, _helpers.getContractPath)(id)
+        },
         _react2.default.createElement(
             _react2.default.Fragment,
             null,
             _react2.default.createElement(
                 'div',
-                { className: 'portfolio-drawer-card__type' },
+                { className: 'positions-drawer-card__type' },
                 _react2.default.createElement(_contract_type_cell2.default, { type: type })
             ),
             _react2.default.createElement(
                 'div',
-                { className: 'portfolio-drawer-card__indicative portfolio-drawer-card__indicative--' + status },
+                { className: 'positions-drawer-card__indicative positions-drawer-card__indicative--' + status },
                 _react2.default.createElement(_money2.default, { amount: indicative, currency: currency })
             ),
             _react2.default.createElement(
                 'span',
-                { className: 'portfolio-drawer-card__symbol' },
+                { className: 'positions-drawer-card__symbol' },
                 underlying
             ),
             _react2.default.createElement(
                 'span',
-                { className: 'portfolio-drawer-card__remaining-time' },
+                { className: 'positions-drawer-card__remaining-time' },
                 _react2.default.createElement(_remaining_time2.default, { end_time: expiry_time })
             )
         )
     );
 };
 
-PortfolioDrawerCard.propTypes = {
+PositionsDrawerCard.propTypes = {
     currency: _propTypes2.default.string,
     expiry_time: _propTypes2.default.PropTypes.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
     id: _propTypes2.default.number,
@@ -3163,7 +3178,7 @@ PortfolioDrawerCard.propTypes = {
     underlying: _propTypes2.default.string
 };
 
-exports.default = PortfolioDrawerCard;
+exports.default = PositionsDrawerCard;
 
 /***/ }),
 
@@ -4283,7 +4298,7 @@ var Tooltip = function Tooltip(_ref) {
         children = _ref.children,
         icon = _ref.icon;
 
-    var icon_name = icon === 'question' || icon === 'info' ? icon : 'question';
+    var icon_name = icon === 'question' || icon === 'info' || icon === 'dot' ? icon : 'question';
     var icon_class = (0, _classnames2.default)(icon_name);
     return _react2.default.createElement(
         'span',
@@ -4390,6 +4405,8 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactTransitionGroup = __webpack_require__(/*! react-transition-group */ "./node_modules/react-transition-group/index.js");
+
 var _Common = __webpack_require__(/*! ../../../../Assets/Common */ "./src/javascript/app_2/Assets/Common/index.js");
 
 var _input_field = __webpack_require__(/*! ../input_field.jsx */ "./src/javascript/app_2/App/Components/Form/input_field.jsx");
@@ -4400,13 +4417,15 @@ var _Date = __webpack_require__(/*! ../../../../Utils/Date */ "./src/javascript/
 
 var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
 
+var _helpers = __webpack_require__(/*! ./helpers */ "./src/javascript/app_2/App/Components/Form/DatePicker/helpers.js");
+
 var _Calendar = __webpack_require__(/*! ../../Elements/Calendar */ "./src/javascript/app_2/App/Components/Elements/Calendar/index.js");
 
 var _Calendar2 = _interopRequireDefault(_Calendar);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -4429,20 +4448,24 @@ var DatePicker = function (_React$Component) {
         }
 
         return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DatePicker.__proto__ || Object.getPrototypeOf(DatePicker)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-            value: '',
+            value: _this.props.value,
             is_datepicker_visible: false,
-            is_clear_btn_visible: false
+            is_clear_btn_visible: false,
+            holidays: [],
+            weekends: []
         }, _this.handleVisibility = function () {
-            _this.setState({ is_datepicker_visible: !_this.state.is_datepicker_visible });
+            _this.setState(function (state) {
+                return { is_datepicker_visible: !state.is_datepicker_visible };
+            });
         }, _this.onClickOutside = function (e) {
             if (!_this.mainNode.contains(e.target) && _this.state.is_datepicker_visible) {
                 _this.setState({ is_datepicker_visible: false });
                 if (!!_this.state.value && _this.props.mode !== 'duration') {
-                    _this.updateDatePickerValue((0, _Date.formatDate)(_this.state.value));
+                    _this.updateDatePickerValue((0, _Date.formatDate)(_this.state.value, 'DD MMM YYYY'));
                 }
             }
         }, _this.onMouseEnter = function () {
-            if (_this.state.value && (!('is_clearable' in _this.props) || _this.props.is_clearable)) {
+            if (_this.state.value && ('is_clearable' in _this.props || _this.props.is_clearable)) {
                 _this.setState({ is_clear_btn_visible: true });
             }
         }, _this.onMouseLeave = function () {
@@ -4464,7 +4487,9 @@ var DatePicker = function (_React$Component) {
             _this.updateDatePickerValue(value);
         }, _this.clearDatePickerInput = function () {
             _this.setState({ value: null }, _this.updateStore);
-            _this.calendar.resetCalendar();
+            if (_this.calendar) {
+                _this.calendar.resetCalendar();
+            }
         }, _this.updateDatePickerValue = function (value) {
             var _this$props = _this.props,
                 date_format = _this$props.date_format,
@@ -4549,6 +4574,10 @@ var DatePicker = function (_React$Component) {
             } else {
                 this.updateDatePickerValue((0, _Date.formatDate)(value, 'DD MMM YYYY'));
             }
+
+            if (this.props.disable_trading_events) {
+                this.onChangeCalendarMonth((0, _Date.getStartOfMonth)(this.state.value));
+            }
         }
     }, {
         key: 'componentWillUnmount',
@@ -4561,6 +4590,54 @@ var DatePicker = function (_React$Component) {
 
         // update MobX store
 
+    }, {
+        key: 'onChangeCalendarMonth',
+        value: function () {
+            var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(calendar_date) {
+                var trading_events, holidays, weekends;
+                return regeneratorRuntime.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                _context.next = 2;
+                                return (0, _helpers.getTradingEvents)(calendar_date, this.props.underlying);
+
+                            case 2:
+                                trading_events = _context.sent;
+                                holidays = [];
+                                weekends = [];
+
+                                trading_events.forEach(function (events) {
+                                    var dates = events.dates.split(', '); // convert dates str into array
+                                    var idx = dates.indexOf('Fridays');
+                                    if (idx !== -1) {
+                                        weekends = [6, 0]; // Sat, Sun
+                                    }
+                                    holidays.push({
+                                        dates: dates,
+                                        descrip: events.descrip
+                                    });
+                                });
+
+                                this.setState({
+                                    holidays: holidays,
+                                    weekends: weekends
+                                });
+
+                            case 7:
+                            case 'end':
+                                return _context.stop();
+                        }
+                    }
+                }, _callee, this);
+            }));
+
+            function onChangeCalendarMonth(_x) {
+                return _ref2.apply(this, arguments);
+            }
+
+            return onChangeCalendarMonth;
+        }()
     }, {
         key: 'render',
         value: function render() {
@@ -4619,25 +4696,48 @@ var DatePicker = function (_React$Component) {
                     }),
                     onClick: this.handleVisibility
                 }),
-                _react2.default.createElement(_Common.IconClear, {
+                this.props.is_clearable && _react2.default.createElement(_Common.IconClear, {
                     className: (0, _classnames2.default)('datepicker__icon datepicker__icon--clear', {
                         'datepicker__icon--is-hidden': !this.state.is_clear_btn_visible
                     }),
                     onClick: this.state.is_clear_btn_visible ? this.clearDatePickerInput : undefined
                 }),
                 _react2.default.createElement(
-                    'div',
+                    _reactTransitionGroup.CSSTransition,
                     {
-                        className: (0, _classnames2.default)('datepicker__picker', _defineProperty({
-                            'datepicker__picker--show': this.state.is_datepicker_visible
-                        }, 'datepicker__picker--align-' + this.props.alignment, this.props.alignment))
-                    },
-                    _react2.default.createElement(_Calendar2.default, _extends({
-                        ref: function ref(node) {
-                            _this2.calendar = node;
+                        'in': this.state.is_datepicker_visible,
+                        timeout: 100,
+                        classNames: {
+                            enter: 'datepicker__picker--enter',
+                            enterDone: 'datepicker__picker--enter-done',
+                            exit: 'datepicker__picker--exit'
                         },
-                        onSelect: this.onSelectCalendar
-                    }, this.props))
+                        unmountOnExit: true
+                    },
+                    _react2.default.createElement(
+                        'div',
+                        {
+                            className: (0, _classnames2.default)('datepicker__picker', {
+                                'datepicker__picker--left': this.props.alignment === 'left'
+                            })
+                        },
+                        _react2.default.createElement(_Calendar2.default, {
+                            ref: function ref(node) {
+                                _this2.calendar = node;
+                            },
+                            onSelect: this.onSelectCalendar,
+                            onChangeCalendarMonth: this.props.disable_trading_events ? this.onChangeCalendarMonth.bind(this) : undefined,
+                            holidays: this.state.holidays,
+                            weekends: this.state.weekends,
+                            date_format: this.props.date_format,
+                            has_today_btn: this.props.has_today_btn,
+                            footer: this.props.footer,
+                            max_date: this.props.max_date,
+                            min_date: this.props.min_date,
+                            start_date: this.props.start_date,
+                            value: this.props.value
+                        })
+                    )
                 )
             );
         }
@@ -4654,6 +4754,97 @@ DatePicker.defaultProps = {
 DatePicker.propTypes = _extends({}, _Calendar2.default.propTypes);
 
 exports.default = (0, _mobxReact.observer)(DatePicker);
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/App/Components/Form/DatePicker/helpers.js":
+/*!************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Form/DatePicker/helpers.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.getTradingEvents = undefined;
+
+var _Services = __webpack_require__(/*! ../../../../Services */ "./src/javascript/app_2/Services/index.js");
+
+var _utility = __webpack_require__(/*! ../../../../../_common/utility */ "./src/javascript/_common/utility.js");
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+var trading_events = {};
+var getTradingEvents = exports.getTradingEvents = function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(date) {
+        var underlying = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+        var trading_times_response, i, submarkets, j, symbols, k, symbol;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+                switch (_context.prev = _context.next) {
+                    case 0:
+                        if (date) {
+                            _context.next = 2;
+                            break;
+                        }
+
+                        return _context.abrupt('return', []);
+
+                    case 2:
+                        if (date in trading_events) {
+                            _context.next = 7;
+                            break;
+                        }
+
+                        _context.next = 5;
+                        return _Services.WS.getTradingTimes(date);
+
+                    case 5:
+                        trading_times_response = _context.sent;
+
+
+                        if ((0, _utility.getPropertyValue)(trading_times_response, ['trading_times', 'markets'])) {
+                            for (i = 0; i < trading_times_response.trading_times.markets.length; i++) {
+                                submarkets = trading_times_response.trading_times.markets[i].submarkets;
+
+                                if (submarkets) {
+                                    for (j = 0; j < submarkets.length; j++) {
+                                        symbols = submarkets[j].symbols;
+
+                                        if (symbols) {
+                                            for (k = 0; k < symbols.length; k++) {
+                                                symbol = symbols[k];
+
+                                                if (!trading_events[trading_times_response.echo_req.trading_times]) {
+                                                    trading_events[trading_times_response.echo_req.trading_times] = {};
+                                                }
+                                                trading_events[trading_times_response.echo_req.trading_times][symbol.symbol] = symbol.events;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    case 7:
+                        return _context.abrupt('return', trading_events[date][underlying]);
+
+                    case 8:
+                    case 'end':
+                        return _context.stop();
+                }
+            }
+        }, _callee, undefined);
+    }));
+
+    return function getTradingEvents(_x) {
+        return _ref.apply(this, arguments);
+    };
+}();
 
 /***/ }),
 
@@ -5769,6 +5960,7 @@ var InputField = function InputField(_ref) {
         fractional_digits = _ref.fractional_digits,
         helper = _ref.helper,
         id = _ref.id,
+        is_autocomplete_disabled = _ref.is_autocomplete_disabled,
         is_disabled = _ref.is_disabled,
         is_float = _ref.is_float,
         is_incrementable = _ref.is_incrementable,
@@ -5802,7 +5994,7 @@ var InputField = function InputField(_ref) {
             e.target.value = e.target.value.replace(unit, '').trim();
         }
 
-        if (e.target.value === value) {
+        if (e.target.value === value && type !== 'checkbox') {
             return;
         }
 
@@ -5876,7 +6068,8 @@ var InputField = function InputField(_ref) {
         readOnly: is_read_only,
         required: required || undefined,
         type: type === 'number' ? 'text' : type,
-        value: display_value || ''
+        value: display_value || '',
+        autoComplete: is_autocomplete_disabled ? 'off' : undefined
     });
 
     var input_increment = _react2.default.createElement(
@@ -5940,6 +6133,7 @@ InputField.propTypes = {
     fractional_digits: _propTypes2.default.number,
     helper: _propTypes2.default.string,
     id: _propTypes2.default.string,
+    is_autocomplete_disabled: _propTypes2.default.bool,
     is_disabled: _propTypes2.default.string,
     is_float: _propTypes2.default.bool,
     is_incrementable: _propTypes2.default.bool,
@@ -6468,14 +6662,14 @@ Object.keys(_toggle_fullscreen).forEach(function (key) {
   });
 });
 
-var _toggle_portfolio = __webpack_require__(/*! ./toggle_portfolio.jsx */ "./src/javascript/app_2/App/Components/Layout/Footer/toggle_portfolio.jsx");
+var _toggle_positions = __webpack_require__(/*! ./toggle_positions.jsx */ "./src/javascript/app_2/App/Components/Layout/Footer/toggle_positions.jsx");
 
-Object.keys(_toggle_portfolio).forEach(function (key) {
+Object.keys(_toggle_positions).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     get: function get() {
-      return _toggle_portfolio[key];
+      return _toggle_positions[key];
     }
   });
 });
@@ -6663,9 +6857,9 @@ exports.ToggleFullScreen = ToggleFullScreen;
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Components/Layout/Footer/toggle_portfolio.jsx":
+/***/ "./src/javascript/app_2/App/Components/Layout/Footer/toggle_positions.jsx":
 /*!********************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Layout/Footer/toggle_portfolio.jsx ***!
+  !*** ./src/javascript/app_2/App/Components/Layout/Footer/toggle_positions.jsx ***!
   \********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -6676,7 +6870,7 @@ exports.ToggleFullScreen = ToggleFullScreen;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.TogglePortfolio = undefined;
+exports.TogglePositions = undefined;
 
 var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 
@@ -6694,30 +6888,30 @@ var _Footer = __webpack_require__(/*! ../../../../Assets/Footer */ "./src/javasc
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var TogglePortfolio = function TogglePortfolio(_ref) {
-    var is_portfolio_drawer_on = _ref.is_portfolio_drawer_on,
-        togglePortfolioDrawer = _ref.togglePortfolioDrawer;
+var TogglePositions = function TogglePositions(_ref) {
+    var is_positions_drawer_on = _ref.is_positions_drawer_on,
+        togglePositionsDrawer = _ref.togglePositionsDrawer;
 
-    var toggle_portfolio_class = (0, _classnames2.default)('ic-portfolio', {
-        'active': is_portfolio_drawer_on
+    var toggle_positions_class = (0, _classnames2.default)('ic-positions', {
+        'active': is_positions_drawer_on
     });
     return _react2.default.createElement(
         'a',
         {
             href: 'javascript:;',
-            className: toggle_portfolio_class,
-            onClick: togglePortfolioDrawer
+            className: toggle_positions_class,
+            onClick: togglePositionsDrawer
         },
-        _react2.default.createElement(_Footer.IconQuickPortfolio, { className: 'footer-icon' })
+        _react2.default.createElement(_Footer.IconPositions, null)
     );
 };
 
-TogglePortfolio.propTypes = {
-    is_portfolio_drawer_on: _propTypes2.default.bool,
-    togglePortfolioDrawer: _propTypes2.default.func
+TogglePositions.propTypes = {
+    is_positions_drawer_on: _propTypes2.default.bool,
+    togglePositionsDrawer: _propTypes2.default.func
 };
 
-exports.TogglePortfolio = TogglePortfolio;
+exports.TogglePositions = TogglePositions;
 
 /***/ }),
 
@@ -7999,6 +8193,9 @@ var AccountSwitcher = function (_React$Component) {
             }
         }, _this.handleLogout = function () {
             _this.props.toggle();
+            if (_this.props.is_positions_drawer_on) {
+                _this.props.togglePositionsDrawer(); // TODO: hide drawer inside logout, once it is a mobx action
+            }
             (0, _Services.requestLogout)();
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
@@ -8165,17 +8362,20 @@ AccountSwitcher.propTypes = {
     account_list: _propTypes2.default.array,
     account_loginid: _propTypes2.default.string,
     is_logged_in: _propTypes2.default.bool,
+    is_positions_drawer_on: _propTypes2.default.bool,
     is_upgrade_enabled: _propTypes2.default.bool,
     is_virtual: _propTypes2.default.bool,
     is_visible: _propTypes2.default.bool,
     onClickUpgrade: _propTypes2.default.func,
     toggle: _propTypes2.default.func,
+    togglePositionsDrawer: _propTypes2.default.func,
     upgrade_info: _propTypes2.default.object,
     virtual_loginid: _propTypes2.default.string
 };
 
 var account_switcher = (0, _connect.connect)(function (_ref3) {
-    var client = _ref3.client;
+    var client = _ref3.client,
+        ui = _ref3.ui;
     return {
         account_list: client.account_list,
         account_loginid: client.loginid,
@@ -8183,7 +8383,9 @@ var account_switcher = (0, _connect.connect)(function (_ref3) {
         is_virtual: client.is_virtual,
         switchAccount: client.switchAccount,
         upgrade_info: client.upgrade_info,
-        virtual_loginid: client.virtual_account_loginid
+        virtual_loginid: client.virtual_account_loginid,
+        is_positions_drawer_on: ui.is_positions_drawer_on,
+        togglePositionsDrawer: ui.togglePositionsDrawer
 
     };
 })(AccountSwitcher);
@@ -8392,10 +8594,10 @@ var MenuDrawer = function MenuDrawer(_ref) {
     var is_dark_mode = _ref.is_dark_mode,
         is_logged_in = _ref.is_logged_in,
         is_mobile = _ref.is_mobile,
-        is_portfolio_drawer_on = _ref.is_portfolio_drawer_on,
+        is_positions_drawer_on = _ref.is_positions_drawer_on,
         is_purchase_locked = _ref.is_purchase_locked,
         toggleDarkMode = _ref.toggleDarkMode,
-        togglePortfolioDrawer = _ref.togglePortfolioDrawer,
+        togglePositionsDrawer = _ref.togglePositionsDrawer,
         togglePurchaseLock = _ref.togglePurchaseLock;
     return _react2.default.createElement(
         'div',
@@ -8441,8 +8643,8 @@ var MenuDrawer = function MenuDrawer(_ref) {
                 icon: _react2.default.createElement(_Drawer2.IconLogout, { className: 'drawer-icon' }),
                 text: (0, _localize.localize)('Logout'),
                 custom_action: function custom_action() {
-                    if (is_portfolio_drawer_on) {
-                        togglePortfolioDrawer(); // TODO: hide drawer inside logout, once it is a mobx action
+                    if (is_positions_drawer_on) {
+                        togglePositionsDrawer(); // TODO: hide drawer inside logout, once it is a mobx action
                     }
                     (0, _Services.requestLogout)();
                 }
@@ -8455,11 +8657,11 @@ MenuDrawer.propTypes = {
     is_dark_mode: _propTypes2.default.bool,
     is_logged_in: _propTypes2.default.bool,
     is_mobile: _propTypes2.default.bool,
-    is_portfolio_drawer_on: _propTypes2.default.bool,
+    is_positions_drawer_on: _propTypes2.default.bool,
     is_purchase_confirmed: _propTypes2.default.bool,
     is_purchase_locked: _propTypes2.default.bool,
     toggleDarkMode: _propTypes2.default.func,
-    togglePortfolioDrawer: _propTypes2.default.func,
+    togglePositionsDrawer: _propTypes2.default.func,
     togglePurchaseConfirmation: _propTypes2.default.func,
     togglePurchaseLock: _propTypes2.default.func
 };
@@ -8471,11 +8673,11 @@ exports.default = (0, _connect.connect)(function (_ref2) {
         is_logged_in: client.is_logged_in,
         is_dark_mode: ui.is_dark_mode_on,
         is_mobile: ui.is_mobile,
-        is_portfolio_drawer_on: ui.is_portfolio_drawer_on,
+        is_positions_drawer_on: ui.is_positions_drawer_on,
         is_purchase_confirmed: ui.is_purchase_confirm_on,
         is_purchase_locked: ui.is_purchase_lock_on,
         toggleDarkMode: ui.toggleDarkMode,
-        togglePortfolioDrawer: ui.togglePortfolioDrawer,
+        togglePositionsDrawer: ui.togglePositionsDrawer,
         togglePurchaseConfirmation: ui.togglePurchaseConfirmation,
         togglePurchaseLock: ui.togglePurchaseLock
     };
@@ -8511,34 +8713,47 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = __webpack_require__(/*! react-router */ "./node_modules/react-router/es/index.js");
 
+var _ttReactCustomScrollbars = __webpack_require__(/*! tt-react-custom-scrollbars */ "./node_modules/tt-react-custom-scrollbars/lib/index.js");
+
 var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var AppContents = function AppContents(_ref) {
     var children = _ref.children,
-        is_portfolio_drawer_on = _ref.is_portfolio_drawer_on;
+        is_contract_mode = _ref.is_contract_mode,
+        is_positions_drawer_on = _ref.is_positions_drawer_on;
     return _react2.default.createElement(
         'div',
         {
             id: 'app_contents',
             className: (0, _classnames2.default)('app-contents', {
-                'app-contents--show-portfolio-drawer': is_portfolio_drawer_on
+                'app-contents--show-positions-drawer': is_positions_drawer_on,
+                'app-contents--contract-mode': is_contract_mode
             })
         },
-        children
+        _react2.default.createElement(
+            _ttReactCustomScrollbars.Scrollbars,
+            {
+                autoHide: true,
+                style: { height: 'calc(100vh - 83px)' }
+            },
+            children
+        )
     );
 };
 
 AppContents.propTypes = {
     children: _propTypes2.default.any,
-    is_portfolio_drawer_on: _propTypes2.default.bool
+    is_positions_drawer_on: _propTypes2.default.bool
 };
 
 exports.default = (0, _reactRouter.withRouter)((0, _connect.connect)(function (_ref2) {
-    var ui = _ref2.ui;
+    var modules = _ref2.modules,
+        ui = _ref2.ui;
     return {
-        is_portfolio_drawer_on: ui.is_portfolio_drawer_on
+        is_positions_drawer_on: ui.is_positions_drawer_on,
+        is_contract_mode: modules.smart_chart.is_contract_mode
     };
 })(AppContents));
 
@@ -8577,29 +8792,33 @@ var _Footer = __webpack_require__(/*! ../../Components/Layout/Footer */ "./src/j
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Footer = function Footer(_ref) {
-    var is_logged_in = _ref.is_logged_in,
-        is_portfolio_drawer_on = _ref.is_portfolio_drawer_on,
-        is_language_dialog_visible = _ref.is_language_dialog_visible,
+    var is_language_dialog_visible = _ref.is_language_dialog_visible,
+        is_logged_in = _ref.is_logged_in,
+        is_positions_drawer_on = _ref.is_positions_drawer_on,
         is_settings_dialog_on = _ref.is_settings_dialog_on,
         network_status = _ref.network_status,
-        toggleSettingsDialog = _ref.toggleSettingsDialog,
-        togglePortfolioDrawer = _ref.togglePortfolioDrawer;
+        togglePositionsDrawer = _ref.togglePositionsDrawer,
+        toggleSettingsDialog = _ref.toggleSettingsDialog;
     return _react2.default.createElement(
         _react2.default.Fragment,
         null,
+        _react2.default.createElement(
+            'div',
+            { className: 'footer-links footer-links-left' },
+            is_logged_in && _react2.default.createElement(_Footer.TogglePositions, {
+                is_positions_drawer_on: is_positions_drawer_on,
+                togglePositionsDrawer: togglePositionsDrawer
+            })
+        ),
         _react2.default.createElement(_Footer.NetworkStatus, { status: network_status }),
         _react2.default.createElement(_server_time2.default, null),
         _react2.default.createElement(
             'div',
             { className: 'footer-links' },
-            is_logged_in && _react2.default.createElement(_Footer.TogglePortfolio, {
-                is_portfolio_drawer_on: is_portfolio_drawer_on,
-                togglePortfolioDrawer: togglePortfolioDrawer
-            }),
             _react2.default.createElement(_Footer.ToggleFullScreen, null),
             _react2.default.createElement(_Footer.ToggleSettings, {
-                is_settings_visible: is_settings_dialog_on,
                 is_language_visible: is_language_dialog_visible,
+                is_settings_visible: is_settings_dialog_on,
                 toggleSettings: toggleSettingsDialog
             })
         )
@@ -8609,10 +8828,10 @@ var Footer = function Footer(_ref) {
 Footer.propTypes = {
     is_language_dialog_visible: _propTypes2.default.bool,
     is_logged_in: _propTypes2.default.bool,
-    is_portfolio_drawer_on: _propTypes2.default.bool,
+    is_positions_drawer_on: _propTypes2.default.bool,
     is_settings_dialog_on: _propTypes2.default.bool,
     network_status: _propTypes2.default.object,
-    togglePortfolioDrawer: _propTypes2.default.func,
+    togglePositionsDrawer: _propTypes2.default.func,
     toggleSettingsDialog: _propTypes2.default.func
 };
 
@@ -8622,11 +8841,11 @@ exports.default = (0, _connect.connect)(function (_ref2) {
         ui = _ref2.ui;
     return {
         is_logged_in: client.is_logged_in,
-        is_language_dialog_visible: ui.is_language_dialog_on,
-        is_portfolio_drawer_on: ui.is_portfolio_drawer_on,
-        is_settings_dialog_on: ui.is_settings_dialog_on,
         network_status: common.network_status,
-        togglePortfolioDrawer: ui.togglePortfolioDrawer,
+        is_language_dialog_visible: ui.is_language_dialog_on,
+        is_positions_drawer_on: ui.is_positions_drawer_on,
+        is_settings_dialog_on: ui.is_settings_dialog_on,
+        togglePositionsDrawer: ui.togglePositionsDrawer,
         toggleSettingsDialog: ui.toggleSettingsDialog
     };
 })(Footer);
@@ -9514,9 +9733,9 @@ var _error_boundary = __webpack_require__(/*! ./Components/Elements/Errors/error
 
 var _error_boundary2 = _interopRequireDefault(_error_boundary);
 
-var _PortfolioDrawer = __webpack_require__(/*! ./Components/Elements/PortfolioDrawer */ "./src/javascript/app_2/App/Components/Elements/PortfolioDrawer/index.js");
+var _PositionsDrawer = __webpack_require__(/*! ./Components/Elements/PositionsDrawer */ "./src/javascript/app_2/App/Components/Elements/PositionsDrawer/index.js");
 
-var _PortfolioDrawer2 = _interopRequireDefault(_PortfolioDrawer);
+var _PositionsDrawer2 = _interopRequireDefault(_PositionsDrawer);
 
 var _ToastMessage = __webpack_require__(/*! ./Components/Elements/ToastMessage */ "./src/javascript/app_2/App/Components/Elements/ToastMessage/index.js");
 
@@ -9573,7 +9792,7 @@ var App = function App(_ref) {
                         _app_contents2.default,
                         null,
                         _react2.default.createElement(_routes2.default, null),
-                        _react2.default.createElement(_PortfolioDrawer2.default, null),
+                        _react2.default.createElement(_PositionsDrawer2.default, null),
                         _react2.default.createElement(_toast_message2.default, { position: _ToastMessage.POSITIONS.TOP_RIGHT })
                     ),
                     _react2.default.createElement(_DenialOfServiceModal2.default, null)
@@ -9626,7 +9845,7 @@ var IconArrow = function IconArrow(_ref) {
     return _react2.default.createElement(
         'svg',
         { className: className, width: '16', height: '16', xmlns: 'http://www.w3.org/2000/svg' },
-        _react2.default.createElement('path', { className: 'arrow-path', d: 'M13.164 5.13a.5.5 0 1 1 .672.74l-5.5 5a.5.5 0 0 1-.672 0l-5.5-5a.5.5 0 0 1 .672-.74L8 9.824l5.164-4.694z', fill: '#D2D3DA', fillRule: 'nonzero' })
+        _react2.default.createElement('path', { className: 'arrow-path', d: 'M13.164 5.13a.5.5 0 1 1 .672.74l-5.5 5a.5.5 0 0 1-.672 0l-5.5-5a.5.5 0 0 1 .672-.74L8 9.824l5.164-4.694z', fill: 'rgba(0, 0, 0, 0.8)', fillRule: 'nonzero' })
     );
 };
 
@@ -9672,7 +9891,7 @@ var IconBack = function IconBack(_ref) {
     return _react2.default.createElement(
         'svg',
         { className: (0, _classnames2.default)('inline-icon', className), xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 16 16' },
-        _react2.default.createElement('path', { fill: '#5C5C5C', fillRule: 'evenodd', d: 'M3.613 8.5l3.26 3.668a.5.5 0 1 1-.747.664l-4-4.5a.5.5 0 0 1 0-.664l4-4.5a.5.5 0 0 1 .748.664L3.614 7.5H13.5a.5.5 0 1 1 0 1H3.613z' })
+        _react2.default.createElement('path', { fill: 'rgba(0, 0, 0, 0.8)', fillRule: 'evenodd', d: 'M3.613 8.5l3.26 3.668a.5.5 0 1 1-.747.664l-4-4.5a.5.5 0 0 1 0-.664l4-4.5a.5.5 0 0 1 .748.664L3.614 7.5H13.5a.5.5 0 1 1 0 1H3.613z' })
     );
 };
 
@@ -9721,7 +9940,7 @@ var IconCalendar = function IconCalendar(_ref) {
             className: className,
             onClick: onClick
         },
-        _react2.default.createElement('path', { fill: '#5C5C5C', fillRule: 'evenodd', d: 'M13.875 2H12v-.438a.562.562 0 1 0-1.125 0V2h-5.75v-.438a.562.562 0 1 0-1.125 0V2H2.125C1.503 2 1 2.503 1 3.125v10.75C1 14.497 1.503 15 2.125 15h11.75c.622 0 1.125-.505 1.125-1.125V3.125C15 2.503 14.497 2 13.875 2zM2.125 3.125H4v.313a.562.562 0 1 0 1.125 0v-.313h5.75v.313a.562.562 0 1 0 1.125 0v-.313h1.875v1.75H2.125v-1.75zm11.75 10.75H2.125V6h11.75v7.875zM4.5 8h1a.5.5 0 1 1 0 1h-1a.5.5 0 1 1 0-1zm3 0h1a.5.5 0 1 1 0 1h-1a.5.5 0 1 1 0-1zm3 0h1a.5.5 0 1 1 0 1h-1a.5.5 0 1 1 0-1zm-6 3.031h1a.5.5 0 1 1 0 1h-1a.5.5 0 1 1 0-1zm3 0h1a.5.5 0 1 1 0 1h-1a.5.5 0 1 1 0-1z' })
+        _react2.default.createElement('path', { fill: '#000', fillOpacity: '.8', fillRule: 'nonzero', d: 'M4 3H2v11h12V3h-2v.5a.5.5 0 1 1-1 0V3H5v.5a.5.5 0 0 1-1 0V3zm1-1h6v-.5a.5.5 0 1 1 1 0V2h2a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h2v-.5a.5.5 0 0 1 1 0V2zM2 5h12v1H2V5z' })
     );
 };
 
@@ -9818,7 +10037,7 @@ var IconChevronDoubleLeft = function IconChevronDoubleLeft(_ref) {
     return _react2.default.createElement(
         'svg',
         { className: (0, _classnames2.default)('inline-icon', className), width: '16', height: '16', viewBox: '0 0 16 16' },
-        _react2.default.createElement('path', { fill: '#5C5C5C', fillRule: 'evenodd', d: 'M4.247 8l4.587 4.128a.5.5 0 0 1-.668.744l-5-4.5a.5.5 0 0 1 0-.744l5-4.5a.5.5 0 0 1 .668.744L4.247 8zm8.587 4.128a.5.5 0 0 1-.668.744l-5-4.5a.5.5 0 0 1 0-.744l5-4.5a.5.5 0 0 1 .668.744L8.247 8l4.587 4.128z' })
+        _react2.default.createElement('path', { fill: 'rgba(0, 0, 0, 0.8)', fillRule: 'evenodd', d: 'M4.247 8l4.587 4.128a.5.5 0 0 1-.668.744l-5-4.5a.5.5 0 0 1 0-.744l5-4.5a.5.5 0 0 1 .668.744L4.247 8zm8.587 4.128a.5.5 0 0 1-.668.744l-5-4.5a.5.5 0 0 1 0-.744l5-4.5a.5.5 0 0 1 .668.744L8.247 8l4.587 4.128z' })
     );
 };
 
@@ -9864,7 +10083,7 @@ var IconChevronDoubleRight = function IconChevronDoubleRight(_ref) {
     return _react2.default.createElement(
         'svg',
         { className: (0, _classnames2.default)('inline-icon', className), width: '16', height: '16', viewBox: '0 0 16 16' },
-        _react2.default.createElement('path', { fill: '#5C5C5C', fillRule: 'evenodd', d: 'M7.753 8L3.166 3.872a.5.5 0 0 1 .668-.744l5 4.5a.5.5 0 0 1 0 .744l-5 4.5a.5.5 0 1 1-.668-.744L7.753 8zm4 0L7.166 3.872a.5.5 0 0 1 .668-.744l5 4.5a.5.5 0 0 1 0 .744l-5 4.5a.5.5 0 1 1-.668-.744L11.753 8z' })
+        _react2.default.createElement('path', { fill: 'rgba(0, 0, 0, 0.8)', fillRule: 'evenodd', d: 'M7.753 8L3.166 3.872a.5.5 0 0 1 .668-.744l5 4.5a.5.5 0 0 1 0 .744l-5 4.5a.5.5 0 1 1-.668-.744L7.753 8zm4 0L7.166 3.872a.5.5 0 0 1 .668-.744l5 4.5a.5.5 0 0 1 0 .744l-5 4.5a.5.5 0 1 1-.668-.744L11.753 8z' })
     );
 };
 
@@ -9910,7 +10129,7 @@ var IconChevronLeft = function IconChevronLeft(_ref) {
     return _react2.default.createElement(
         'svg',
         { className: (0, _classnames2.default)('inline-icon', className), width: '16', height: '16', viewBox: '0 0 16 16' },
-        _react2.default.createElement('path', { fill: '#5C5C5C', fillRule: 'evenodd', d: 'M6.247 8l4.587 4.128a.5.5 0 0 1-.668.744l-5-4.5a.5.5 0 0 1 0-.744l5-4.5a.5.5 0 0 1 .668.744L6.247 8z' })
+        _react2.default.createElement('path', { fill: 'rgba(0, 0, 0, 0.8)', fillRule: 'evenodd', d: 'M6.247 8l4.587 4.128a.5.5 0 0 1-.668.744l-5-4.5a.5.5 0 0 1 0-.744l5-4.5a.5.5 0 0 1 .668.744L6.247 8z' })
     );
 };
 
@@ -9956,7 +10175,7 @@ var IconChevronRight = function IconChevronRight(_ref) {
     return _react2.default.createElement(
         'svg',
         { className: (0, _classnames2.default)('inline-icon', className), width: '16', height: '16', viewBox: '0 0 16 16' },
-        _react2.default.createElement('path', { fill: '#5C5C5C', fillRule: 'evenodd', d: 'M9.753 8L5.166 3.872a.5.5 0 0 1 .668-.744l5 4.5a.5.5 0 0 1 0 .744l-5 4.5a.5.5 0 1 1-.668-.744L9.753 8z' })
+        _react2.default.createElement('path', { fill: 'rgba(0, 0, 0, 0.8)', fillRule: 'evenodd', d: 'M9.753 8L5.166 3.872a.5.5 0 0 1 .668-.744l5 4.5a.5.5 0 0 1 0 .744l-5 4.5a.5.5 0 1 1-.668-.744L9.753 8z' })
     );
 };
 
@@ -10056,7 +10275,12 @@ var IconClock = function IconClock(_ref) {
             className: className,
             onClick: onClick
         },
-        _react2.default.createElement('path', { fill: '#7F8397', fillRule: 'evenodd', d: 'M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16zm2.854-5.854a.5.5 0 0 1-.708.708l-2.5-2.5A.5.5 0 0 1 7.5 8V3.5a.5.5 0 0 1 1 0v4.293l2.354 2.353z' })
+        _react2.default.createElement(
+            'g',
+            { fill: 'none', fillRule: 'nonzero', stroke: '#5C5C5C' },
+            _react2.default.createElement('circle', { cx: '8', cy: '8', r: '7.5' }),
+            _react2.default.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', d: 'M8 3.5v5h3.5' })
+        )
     );
 };
 
@@ -10211,6 +10435,52 @@ exports.IconExclamation = IconExclamation;
 
 /***/ }),
 
+/***/ "./src/javascript/app_2/Assets/Common/icon_minimize.jsx":
+/*!**************************************************************!*\
+  !*** ./src/javascript/app_2/Assets/Common/icon_minimize.jsx ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.IconMinimize = undefined;
+
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var IconMinimize = function IconMinimize(_ref) {
+    var className = _ref.className;
+    return _react2.default.createElement(
+        'svg',
+        { className: (0, _classnames2.default)('inline-icon', className), xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 16 16' },
+        _react2.default.createElement('path', { className: 'color1-fill', fill: '#000', fillOpacity: '0.8', fillRule: 'nonzero', d: 'M0 7h16v2H0z' })
+    );
+};
+
+IconMinimize.propTypes = {
+    className: _propTypes2.default.string
+};
+
+exports.IconMinimize = IconMinimize;
+
+/***/ }),
+
 /***/ "./src/javascript/app_2/Assets/Common/icon_minus.jsx":
 /*!***********************************************************!*\
   !*** ./src/javascript/app_2/Assets/Common/icon_minus.jsx ***!
@@ -10246,7 +10516,7 @@ var IconMinus = function IconMinus(_ref) {
     return _react2.default.createElement(
         'svg',
         { className: (0, _classnames2.default)(className, { disabled: is_disabled }), xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 16 16' },
-        _react2.default.createElement('path', { fill: '#5C5C5C', fillRule: 'evenodd', d: 'M3 7.5h10v1H3z' })
+        _react2.default.createElement('path', { fill: 'rgba(0, 0, 0, 0.8)', fillRule: 'evenodd', d: 'M3 7.5h10v1H3z' })
     );
 };
 
@@ -10307,10 +10577,10 @@ exports.IconPlus = IconPlus;
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/Assets/Common/icon_tooltip_light.jsx":
-/*!*******************************************************************!*\
-  !*** ./src/javascript/app_2/Assets/Common/icon_tooltip_light.jsx ***!
-  \*******************************************************************/
+/***/ "./src/javascript/app_2/Assets/Common/icon_tooltip.jsx":
+/*!*************************************************************!*\
+  !*** ./src/javascript/app_2/Assets/Common/icon_tooltip.jsx ***!
+  \*************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10320,7 +10590,7 @@ exports.IconPlus = IconPlus;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.IconTooltipLight = undefined;
+exports.IconTooltip = undefined;
 
 var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
 
@@ -10332,30 +10602,20 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var IconTooltipLight = function IconTooltipLight(_ref) {
+var IconTooltip = function IconTooltip(_ref) {
     var className = _ref.className;
     return _react2.default.createElement(
         'svg',
         { className: className, xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 16 16' },
-        _react2.default.createElement(
-            'g',
-            { fill: 'none', fillRule: 'evenodd' },
-            _react2.default.createElement('circle', { cx: '8', cy: '8', r: '7.5', stroke: '#B0B3BF' }),
-            _react2.default.createElement(
-                'g',
-                { fill: '#B0B3BF', transform: 'translate(6.5 4)' },
-                _react2.default.createElement('circle', { cx: '1.5', cy: '1.25', r: '1' }),
-                _react2.default.createElement('rect', { width: '1', height: '5', x: '1', y: '3', rx: '.5' })
-            )
-        )
+        _react2.default.createElement('path', { fill: 'rgba(0, 0, 0, 0.8)', fillRule: 'evenodd', d: 'M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16zM8 6a.75.75 0 1 0 0-1.5A.75.75 0 0 0 8 6zm0 1a.5.5 0 0 0-.5.5v4a.5.5 0 1 0 1 0v-4A.5.5 0 0 0 8 7z' })
     );
 };
 
-IconTooltipLight.propTypes = {
+IconTooltip.propTypes = {
     className: _propTypes2.default.string
 };
 
-exports.IconTooltipLight = IconTooltipLight;
+exports.IconTooltip = IconTooltip;
 
 /***/ }),
 
@@ -10513,6 +10773,18 @@ Object.keys(_icon_exclamation).forEach(function (key) {
     enumerable: true,
     get: function get() {
       return _icon_exclamation[key];
+    }
+  });
+});
+
+var _icon_minimize = __webpack_require__(/*! ./icon_minimize.jsx */ "./src/javascript/app_2/Assets/Common/icon_minimize.jsx");
+
+Object.keys(_icon_minimize).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _icon_minimize[key];
     }
   });
 });
@@ -10732,10 +11004,10 @@ exports.IconMaximize = IconMaximize;
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/Assets/Footer/icon_quick_portfolio.jsx":
-/*!*********************************************************************!*\
-  !*** ./src/javascript/app_2/Assets/Footer/icon_quick_portfolio.jsx ***!
-  \*********************************************************************/
+/***/ "./src/javascript/app_2/Assets/Footer/icon_positions.jsx":
+/*!***************************************************************!*\
+  !*** ./src/javascript/app_2/Assets/Footer/icon_positions.jsx ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10745,11 +11017,7 @@ exports.IconMaximize = IconMaximize;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.IconQuickPortfolio = undefined;
-
-var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
-
-var _classnames2 = _interopRequireDefault(_classnames);
+exports.IconPositions = undefined;
 
 var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
 
@@ -10759,22 +11027,34 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var IconQuickPortfolio = function IconQuickPortfolio(_ref) {
+var IconPositions = function IconPositions(_ref) {
     var className = _ref.className;
+
+    var IconType = _react2.default.createElement(
+        'g',
+        { fill: 'none', fillRule: 'evenodd' },
+        _react2.default.createElement('path', { className: 'color1-fill color3-fill', fill: '#000', fillOpacity: '.8', fillRule: 'evenodd', d: 'M5 2v-.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5V2h3.5A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2H5zm1 0h4v-.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5V2zM1 8.128V12.5a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5V8.128l-2.804 1.557a2.5 2.5 0 0 1-1.214.315H5.018a2.5 2.5 0 0 1-1.214-.315L1 8.128zm0-1.144L4.29 8.81A1.5 1.5 0 0 0 5.018 9h5.964a1.5 1.5 0 0 0 .728-.189L15 6.984V3.5a.5.5 0 0 0-.5-.5h-13a.5.5 0 0 0-.5.5v3.484zM6.5 8a.5.5 0 0 1 0-1h3a.5.5 0 0 1 0 1h-3z' })
+    );
+
     return _react2.default.createElement(
         'svg',
-        { className: (0, _classnames2.default)('inline-icon', className), xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 16 12' },
-        _react2.default.createElement('path', { className: 'color1-fill color3-fill', fill: '#2A3052', fillRule: 'evenodd', d: 'M1 0h14c.6 0 1 .4 1 1v10c0 .6-.4 1-1 1H1a1 1 0 0 1-1-1V1c0-.6.4-1 1-1zm0 1v10h5V1H1zm6 0v10h8V1H7zm1.5 1.5a.5.5 0 1 1 0 1 .5.5 0 0 1 0-1zm2 0h3a.5.5 0 1 1 0 1h-3a.5.5 0 1 1 0-1zm-2 2a.5.5 0 1 1 0 1 .5.5 0 0 1 0-1zm2 0h3a.5.5 0 1 1 0 1h-3a.5.5 0 1 1 0-1zm-2 2a.5.5 0 1 1 0 1 .5.5 0 0 1 0-1zm2 0h3a.5.5 0 1 1 0 1h-3a.5.5 0 1 1 0-1zm-2 2a.5.5 0 1 1 0 1 .5.5 0 0 1 0-1zm2 0h3a.5.5 0 1 1 0 1h-3a.5.5 0 1 1 0-1z' })
+        { className: (0, _classnames2.default)('inline-icon', className), xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 16 16' },
+        IconType
     );
 };
 
-IconQuickPortfolio.propTypes = {
-    className: _propTypes2.default.string
+IconPositions.propTypes = {
+    className: _propTypes2.default.string,
+    type: _propTypes2.default.string
 };
 
-exports.IconQuickPortfolio = IconQuickPortfolio;
+exports.IconPositions = IconPositions;
 
 /***/ }),
 
@@ -10850,14 +11130,14 @@ Object.keys(_icon_maximize).forEach(function (key) {
   });
 });
 
-var _icon_quick_portfolio = __webpack_require__(/*! ./icon_quick_portfolio.jsx */ "./src/javascript/app_2/Assets/Footer/icon_quick_portfolio.jsx");
+var _icon_positions = __webpack_require__(/*! ./icon_positions.jsx */ "./src/javascript/app_2/Assets/Footer/icon_positions.jsx");
 
-Object.keys(_icon_quick_portfolio).forEach(function (key) {
+Object.keys(_icon_positions).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     get: function get() {
-      return _icon_quick_portfolio[key];
+      return _icon_positions[key];
     }
   });
 });
@@ -11151,18 +11431,12 @@ var IconPortfolio = function IconPortfolio(_ref) {
     var className = _ref.className;
     return _react2.default.createElement(
         'svg',
-        { className: (0, _classnames2.default)('inline-icon', className), xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 16 16' },
+        { className: (0, _classnames2.default)('inline-icon', className), xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '14', viewBox: '0 0 16 14' },
         _react2.default.createElement(
             'g',
-            { className: 'color2-fill', fill: 'none', fillRule: 'evenodd', stroke: 'none', strokeWidth: '1' },
-            _react2.default.createElement(
-                'g',
-                null,
-                _react2.default.createElement('path', { className: 'color1-stroke color2-fill color3-stroke', fill: 'none', stroke: '#2A3052', d: 'M1.5 14.5h13a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-13a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1z' }),
-                _react2.default.createElement('path', { className: 'color1-stroke color3-stroke color4-fill portfolio-fix', stroke: '#2A3052', d: 'M5.5 3v-.5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V3' }),
-                _react2.default.createElement('path', { className: 'color1-stroke scale-fix', stroke: '#2A3052', strokeLinecap: 'square', d: 'M0 8l4.047 2.248a2 2 0 0 0 .971.252h5.964a2 2 0 0 0 .971-.252L16 8' }),
-                _react2.default.createElement('path', { className: 'color1-stroke', stroke: '#2A3052', strokeLinecap: 'round', d: 'M6.5 8.5h3' })
-            )
+            { fill: 'none', fillRule: 'evenodd' },
+            _react2.default.createElement('path', { fill: '#000', fillOpacity: '0.16', d: 'M5 2v-.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5V2h3.5A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2H5zm1 0h4v-.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5V2z' }),
+            _react2.default.createElement('path', { fill: '#FFF', fillRule: 'nonzero', d: 'M1 8.128l2.804 1.557A2.5 2.5 0 0 0 5.018 10h5.964a2.5 2.5 0 0 0 1.214-.315L15 8.128V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V8.128zm0-1.144V3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v3.484L11.71 8.81a1.5 1.5 0 0 1-.728.189H5.018a1.5 1.5 0 0 1-.728-.189L1 6.984zM6.5 8h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0 0 1z' })
         )
     );
 };
@@ -12594,6 +12868,74 @@ var getContractTypeDisplay = exports.getContractTypeDisplay = function getContra
 
 /***/ }),
 
+/***/ "./src/javascript/app_2/Constants/date_time.js":
+/*!*****************************************************!*\
+  !*** ./src/javascript/app_2/Constants/date_time.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.getDaysOfTheWeek = exports.week_headers_abbr = exports.week_headers = exports.month_headers = undefined;
+
+var _localize = __webpack_require__(/*! ../../_common/localize */ "./src/javascript/_common/localize.js");
+
+var month_headers = exports.month_headers = {
+    Jan: (0, _localize.localize)('Jan'),
+    Feb: (0, _localize.localize)('Feb'),
+    Mar: (0, _localize.localize)('Mar'),
+    Apr: (0, _localize.localize)('Apr'),
+    May: (0, _localize.localize)('May'),
+    Jun: (0, _localize.localize)('Jun'),
+    Jul: (0, _localize.localize)('Jul'),
+    Aug: (0, _localize.localize)('Aug'),
+    Sep: (0, _localize.localize)('Sep'),
+    Oct: (0, _localize.localize)('Oct'),
+    Nov: (0, _localize.localize)('Nov'),
+    Dec: (0, _localize.localize)('Dec')
+};
+
+var week_headers = exports.week_headers = {
+    Monday: (0, _localize.localize)('Monday'),
+    Tuesday: (0, _localize.localize)('Tuesday'),
+    Wednesday: (0, _localize.localize)('Wednesday'),
+    Thursday: (0, _localize.localize)('Thursday'),
+    Friday: (0, _localize.localize)('Friday'),
+    Saturday: (0, _localize.localize)('Saturday'),
+    Sunday: (0, _localize.localize)('Sunday')
+};
+
+var week_headers_abbr = exports.week_headers_abbr = {
+    Monday: (0, _localize.localize)('M'),
+    Tuesday: (0, _localize.localize)('T'),
+    Wednesday: (0, _localize.localize)('W'),
+    Thursday: (0, _localize.localize)('T'),
+    Friday: (0, _localize.localize)('F'),
+    Saturday: (0, _localize.localize)('S'),
+    Sunday: (0, _localize.localize)('S')
+};
+
+var getDaysOfTheWeek = exports.getDaysOfTheWeek = function getDaysOfTheWeek(day) {
+    var days_of_the_week = {
+        'Mondays': 1,
+        'Tuesdays': 2,
+        'Wednesdays': 3,
+        'Thursdays': 4,
+        'Fridays': 5,
+        'Saturdays': 6,
+        'Sundays': 0
+    };
+
+    return days_of_the_week[day];
+};
+
+/***/ }),
+
 /***/ "./src/javascript/app_2/Constants/index.js":
 /*!*************************************************!*\
   !*** ./src/javascript/app_2/Constants/index.js ***!
@@ -13951,11 +14293,15 @@ var EmptyPortfolioMessage = function EmptyPortfolioMessage() {
         _react2.default.createElement(
             'div',
             { className: 'portfolio-empty' },
-            _react2.default.createElement(_NavBar.IconPortfolio, { className: 'portfolio-empty__icon' }),
             _react2.default.createElement(
-                'span',
-                { className: 'portfolio-empty__text' },
-                (0, _localize.localize)('No open positions.')
+                'div',
+                { className: 'portfolio-empty__wrapper' },
+                _react2.default.createElement(_NavBar.IconPortfolio, { className: 'portfolio-empty__icon' }),
+                _react2.default.createElement(
+                    'span',
+                    { className: 'portfolio-empty__text' },
+                    (0, _localize.localize)('No running contract')
+                )
             )
         )
     );
@@ -14396,7 +14742,7 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _icon_tooltip_light = __webpack_require__(/*! ../../../../../Assets/Common/icon_tooltip_light.jsx */ "./src/javascript/app_2/Assets/Common/icon_tooltip_light.jsx");
+var _icon_tooltip = __webpack_require__(/*! ../../../../../Assets/Common/icon_tooltip.jsx */ "./src/javascript/app_2/Assets/Common/icon_tooltip.jsx");
 
 var _Categories = __webpack_require__(/*! ../../../../../Assets/Trading/Categories */ "./src/javascript/app_2/Assets/Trading/Categories/index.js");
 
@@ -14431,7 +14777,7 @@ var ContractTypeItem = function ContractTypeItem(_ref) {
                 { id: 'info-icon', className: 'trade-type-info-icon', onClick: function onClick() {
                         return handleInfoClick(contract);
                     } },
-                _react2.default.createElement(_icon_tooltip_light.IconTooltipLight, null)
+                _react2.default.createElement(_icon_tooltip.IconTooltip, null)
             )
         );
     });
@@ -14650,7 +14996,7 @@ var ContractTypeWidget = function (_React$PureComponent) {
             if (_this.wrapper_ref && !_this.wrapper_ref.contains(event.target) && _this.state.is_dialog_open) {
                 _this.setState({ is_dialog_open: false });
             } else if (_this.wrapper_ref && !_this.wrapper_ref.contains(event.target) && _this.state.is_info_dialog_open) {
-                _this.setState({ is_info_dialog_open: false, is_dialog_open: true });
+                _this.setState({ is_info_dialog_open: false, is_dialog_open: false });
             }
         };
 
@@ -15382,6 +15728,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
 var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
@@ -15413,8 +15763,12 @@ var ContractInfo = function ContractInfo(_ref) {
         null,
         proposal_info.has_error || !proposal_info.id ? _react2.default.createElement(
             'div',
-            { className: proposal_info.has_error ? 'error-info-wrapper' : '' },
-            _react2.default.createElement(
+            {
+                className: (0, _classnames2.default)({
+                    'error-info-wrapper': proposal_info.has_error
+                })
+            },
+            proposal_info.message && _react2.default.createElement(
                 'span',
                 null,
                 proposal_info.message
@@ -15432,7 +15786,7 @@ var ContractInfo = function ContractInfo(_ref) {
                 ),
                 _react2.default.createElement(
                     'div',
-                    null,
+                    { className: 'info-wrapper__amount' },
                     _react2.default.createElement(_money2.default, { amount: proposal_info.obj_contract_basis.value, currency: currency })
                 ),
                 _react2.default.createElement(
@@ -15539,6 +15893,7 @@ var AdvancedDuration = function AdvancedDuration(_ref) {
         shared_input_props = _ref.shared_input_props,
         start_date = _ref.start_date,
         start_time = _ref.start_time,
+        symbol = _ref.symbol,
         market_close_times = _ref.market_close_times,
         onChangeUiStore = _ref.onChangeUiStore,
         duration_t = _ref.duration_t;
@@ -15643,11 +15998,11 @@ var AdvancedDuration = function AdvancedDuration(_ref) {
                     onChange: onChange,
                     value: expiry_date,
                     is_read_only: true,
-                    is_clearable: true,
                     is_nativepicker: is_nativepicker,
                     alignment: 'left',
-                    disabled_selector: ['year']
-                    // sessions={expiry_date_sessions} TODO: add expiry date sessions. e.g. disable days if market closes on weekend
+                    disable_year_selector: true,
+                    disable_trading_events: true,
+                    underlying: symbol
                     // validation_errors={validation_errors.expiry_date} TODO: add validation_errors for expiry date
                 }),
                 is_24_hours_contract && _react2.default.createElement(_time_picker2.default, {
@@ -15688,7 +16043,8 @@ AdvancedDuration.propTypes = {
     sessions: _mobxReact.PropTypes.arrayOrObservableArray,
     shared_input_props: _propTypes2.default.object,
     start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
-    start_time: _propTypes2.default.string
+    start_time: _propTypes2.default.string,
+    symbol: _propTypes2.default.string
 };
 
 exports.default = AdvancedDuration;
@@ -15764,6 +16120,7 @@ var Duration = function Duration(_ref) {
         getDurationFromUnit = _ref.getDurationFromUnit,
         onChange = _ref.onChange,
         onChangeUiStore = _ref.onChangeUiStore,
+        onChangeMultiple = _ref.onChangeMultiple,
         is_advanced_duration = _ref.is_advanced_duration,
         is_minimized = _ref.is_minimized,
         is_nativepicker = _ref.is_nativepicker,
@@ -15774,7 +16131,8 @@ var Duration = function Duration(_ref) {
         validation_errors = _ref.validation_errors,
         market_close_times = _ref.market_close_times,
         simple_duration_unit = _ref.simple_duration_unit,
-        duration_t = _ref.duration_t;
+        duration_t = _ref.duration_t,
+        symbol = _ref.symbol;
 
     var expiry_list = [{ text: (0, _localize.localize)('Duration'), value: 'duration' }];
 
@@ -15810,8 +16168,10 @@ var Duration = function Duration(_ref) {
         var duration_value = getDurationFromUnit(value);
 
         onChangeUiStore({ name: name, value: value });
-        onChange({ target: { name: 'duration_unit', value: value } });
-        onChange({ target: { name: 'duration', value: duration_value } });
+        onChangeMultiple({
+            duration_unit: value,
+            duration: duration_value
+        });
     };
 
     var changeDurationValue = function changeDurationValue(_ref3) {
@@ -15840,17 +16200,21 @@ var Duration = function Duration(_ref) {
         }
 
         var duration_value = getDurationFromUnit(current_duration_unit);
-        onChange({ target: { name: 'duration_unit', value: current_duration_unit } });
-        onChange({ target: { name: 'duration', value: duration_value } });
+        var new_trade_store_values = {
+            duration_unit: current_duration_unit,
+            duration: duration_value
+        };
 
         // simple only has expiry type of duration
         if (!value && expiry_type !== 'duration') {
-            onChange({ target: { name: 'expiry_type', value: 'duration' } });
+            new_trade_store_values.expiry_type = 'duration';
         }
 
         if (value && expiry_type !== advanced_expiry_type) {
-            onChange({ target: { name: 'expiry_type', value: advanced_expiry_type } });
+            new_trade_store_values.expiry_type = advanced_expiry_type;
         }
+
+        onChangeMultiple(_extends({}, new_trade_store_values));
     };
 
     var max_value = void 0,
@@ -15909,7 +16273,8 @@ var Duration = function Duration(_ref) {
                 start_date: start_date,
                 start_time: start_time,
                 onChangeUiStore: onChangeUiStore,
-                duration_t: duration_t
+                duration_t: duration_t,
+                symbol: symbol
             }),
             !is_advanced_duration && _react2.default.createElement(_simple_duration2.default, {
                 getDurationFromUnit: getDurationFromUnit,
@@ -15956,6 +16321,7 @@ Duration.propTypes = {
     simple_duration_unit: _propTypes2.default.string,
     start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
     start_time: _propTypes2.default.string,
+    symbol: _propTypes2.default.string,
     validation_errors: _propTypes2.default.object
 };
 
@@ -16057,7 +16423,7 @@ var _duration2 = _interopRequireDefault(_duration);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -16080,7 +16446,14 @@ var DurationWrapper = function (_React$Component) {
         }
 
         return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DurationWrapper.__proto__ || Object.getPrototypeOf(DurationWrapper)).call.apply(_ref, [this].concat(args))), _this), _this.hasDurationUnit = function (duration_unit) {
-            return _this.props.duration_units_list.some(function (du) {
+            var duration_list = [].concat(_toConsumableArray(_this.props.duration_units_list));
+
+            if (_this.props.duration_units_list.length > 1 && !_this.props.is_advanced_duration) {
+                duration_list = duration_list.filter(function (du) {
+                    return du.value === 'm' || du.value === 't';
+                });
+            }
+            return duration_list.some(function (du) {
                 return du.value === duration_unit;
             });
         }, _temp), _possibleConstructorReturn(_this, _ret);
@@ -16088,39 +16461,16 @@ var DurationWrapper = function (_React$Component) {
 
     _createClass(DurationWrapper, [{
         key: 'setDurationUnit',
-        value: function () {
-            var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-                var new_duration_unit, new_duration_value;
-                return regeneratorRuntime.wrap(function _callee$(_context) {
-                    while (1) {
-                        switch (_context.prev = _context.next) {
-                            case 0:
-                                new_duration_unit = this.props.duration_units_list[0].value;
-                                new_duration_value = this.props.getDurationFromUnit(new_duration_unit);
+        value: function setDurationUnit() {
+            var new_duration_unit = this.props.duration_units_list[0].value;
+            var new_duration_value = this.props.getDurationFromUnit(new_duration_unit);
 
-
-                                this.props.onChangeUiStore({ name: (this.props.is_advanced_duration ? 'advanced' : 'simple') + '_duration_unit', value: new_duration_unit });
-                                _context.next = 5;
-                                return this.props.onChangeAsync({ target: { name: 'duration_unit', value: new_duration_unit } });
-
-                            case 5:
-                                _context.next = 7;
-                                return this.props.onChangeAsync({ target: { name: 'duration', value: new_duration_value } });
-
-                            case 7:
-                            case 'end':
-                                return _context.stop();
-                        }
-                    }
-                }, _callee, this);
-            }));
-
-            function setDurationUnit() {
-                return _ref2.apply(this, arguments);
-            }
-
-            return setDurationUnit;
-        }()
+            this.props.onChangeUiStore({ name: (this.props.is_advanced_duration ? 'advanced' : 'simple') + '_duration_unit', value: new_duration_unit });
+            this.props.onChangeMultiple({
+                duration_unit: new_duration_unit,
+                duration: new_duration_value
+            });
+        }
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
@@ -16138,15 +16488,17 @@ var DurationWrapper = function (_React$Component) {
     }, {
         key: 'componentWillReact',
         value: function componentWillReact() {
-            var simple_is_missing_duration_unit = this.props.simple_duration_unit === 'd' && this.props.duration_units_list.length === 4;
-            var current_duration = this.props.is_advanced_duration ? this.props.advanced_duration_unit : this.props.simple_duration_unit;
-            var has_missing_duration_unit = !this.hasDurationUnit(current_duration);
+            var simple_is_missing_duration_unit = !this.props.is_advanced_duration && this.props.simple_duration_unit === 'd' && this.props.duration_units_list.length === 4;
+            var current_duration_unit = this.props.is_advanced_duration ? this.props.advanced_duration_unit : this.props.simple_duration_unit;
+            var current_duration = this.props.getDurationFromUnit(this.props.duration_unit);
+            var has_missing_duration_unit = !this.hasDurationUnit(current_duration_unit);
             var simple_is_not_type_duration = !this.props.is_advanced_duration && this.props.expiry_type !== 'duration';
-            var advanced_has_wrong_expiry = this.props.is_advanced_duration && this.props.expiry_type !== this.props.advanced_expiry_type;
+            var advanced_has_wrong_expiry = this.props.is_advanced_duration && this.props.expiry_type !== this.props.advanced_expiry_type && this.props.duration_units_list.length > 1;
 
             // intercept changes to current contracts duration_units_list - if they are missing change duration_unit and value in trade_store and ui_store
             if (has_missing_duration_unit || simple_is_missing_duration_unit) {
                 this.setDurationUnit();
+                return;
             }
 
             // simple only has expiry type duration
@@ -16156,6 +16508,10 @@ var DurationWrapper = function (_React$Component) {
 
             if (advanced_has_wrong_expiry) {
                 this.props.onChange({ target: { name: 'expiry_type', value: this.props.advanced_expiry_type } });
+            }
+
+            if (this.props.duration !== current_duration) {
+                this.props.onChangeUiStore({ name: 'duration_' + this.props.duration_unit, value: this.props.duration });
             }
         }
     }, {
@@ -16192,13 +16548,14 @@ DurationWrapper.propTypes = {
     is_nativepicker: _propTypes2.default.bool,
     market_close_times: _propTypes2.default.array,
     onChange: _propTypes2.default.func,
-    onChangeAsync: _propTypes2.default.func,
+    onChangeMultiple: _propTypes2.default.func,
     onChangeUiStore: _propTypes2.default.func,
     server_time: _propTypes2.default.object,
     sessions: _mobxReact.PropTypes.arrayOrObservableArray,
     simple_duration_unit: _propTypes2.default.string,
     start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
     start_time: _propTypes2.default.string,
+    symbol: _propTypes2.default.string,
     validation_errors: _propTypes2.default.object
 };
 
@@ -16508,6 +16865,7 @@ var Amount = function Amount(_ref) {
             _react2.default.createElement(_input_field2.default, {
                 error_messages: validation_errors.amount,
                 fractional_digits: (0, _currency_base.getDecimalPlaces)(currency),
+                is_autocomplete_disabled: true,
                 is_float: true,
                 is_nativepicker: is_nativepicker,
                 max_length: 10,
@@ -16845,6 +17203,8 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
+var _ttReactCustomScrollbars = __webpack_require__(/*! tt-react-custom-scrollbars */ "./node_modules/tt-react-custom-scrollbars/lib/index.js");
+
 var _icon_back = __webpack_require__(/*! ../../../../../Assets/Common/icon_back.jsx */ "./src/javascript/app_2/Assets/Common/icon_back.jsx");
 
 var _icon_chevron_left = __webpack_require__(/*! ../../../../../Assets/Common/icon_chevron_left.jsx */ "./src/javascript/app_2/Assets/Common/icon_chevron_left.jsx");
@@ -16861,7 +17221,7 @@ var _localize = __webpack_require__(/*! ../../../../../../_common/localize */ ".
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ContractTypeItem = function ContractTypeItem(_ref) {
+var TradeTypeInfoItem = function TradeTypeInfoItem(_ref) {
     var handleNavigationClick = _ref.handleNavigationClick,
         handleNextClick = _ref.handleNextClick,
         handlePrevClick = _ref.handlePrevClick,
@@ -16897,11 +17257,22 @@ var ContractTypeItem = function ContractTypeItem(_ref) {
         _react2.default.createElement(
             'div',
             { className: 'info-content' },
-            _react2.default.createElement(_trade_categories.TradeCategories, { category: item.value })
+            _react2.default.createElement(
+                _ttReactCustomScrollbars.Scrollbars,
+                {
+                    autoHide: true,
+                    style: { height: '215px' }
+                },
+                _react2.default.createElement(_trade_categories.TradeCategories, { category: item.value })
+            )
         ),
-        _react2.default.createElement(_button2.default, { className: 'info-choose', text: (0, _localize.localize)('CHOOSE'), onClick: function onClick() {
-                return onSubmitButtonClick(item);
-            } }),
+        _react2.default.createElement(
+            'div',
+            { className: 'info-choose' },
+            _react2.default.createElement(_button2.default, { text: (0, _localize.localize)('Choose'), onClick: function onClick() {
+                    return onSubmitButtonClick(item);
+                } })
+        ),
         _react2.default.createElement(
             'div',
             { className: 'info-navigation' },
@@ -16939,7 +17310,7 @@ var ContractTypeItem = function ContractTypeItem(_ref) {
     );
 };
 
-ContractTypeItem.propTypes = {
+TradeTypeInfoItem.propTypes = {
     handleNavigationClick: _propTypes2.default.func,
     handleNextClick: _propTypes2.default.func,
     handlePrevClick: _propTypes2.default.func,
@@ -16950,7 +17321,7 @@ ContractTypeItem.propTypes = {
     onSubmitButtonClick: _propTypes2.default.func
 };
 
-exports.default = ContractTypeItem;
+exports.default = TradeTypeInfoItem;
 
 /***/ }),
 
@@ -19637,7 +20008,9 @@ var CONTRACT_SHADES = exports.CONTRACT_SHADES = {
     RANGE: 'BETWEEN',
     UPORDOWN: 'OUTSIDE',
     ONETOUCH: 'NONE_SINGLE', // no shade
-    NOTOUCH: 'NONE_SINGLE' // no shade
+    NOTOUCH: 'NONE_SINGLE', // no shade
+    ASIANU: 'ABOVE',
+    ASIAND: 'BELOW'
 };
 
 // Default non-shade according to number of barriers
@@ -20162,6 +20535,8 @@ function _initializerWarningHelper(descriptor, context) {
     throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
+var store_name = 'smart_chart_store';
+
 var SmartChartStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, _dec5 = _mobx.action.bound, _dec6 = _mobx.action.bound, _dec7 = _mobx.action.bound, _dec8 = _mobx.action.bound, _dec9 = _mobx.action.bound, _dec10 = _mobx.action.bound, (_class = function (_BaseStore) {
     _inherits(SmartChartStore, _BaseStore);
 
@@ -20172,7 +20547,7 @@ var SmartChartStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _d
 
         var local_storage_properties = ['chart_type', 'granularity'];
 
-        var _this = _possibleConstructorReturn(this, (SmartChartStore.__proto__ || Object.getPrototypeOf(SmartChartStore)).call(this, { root_store: root_store, local_storage_properties: local_storage_properties }));
+        var _this = _possibleConstructorReturn(this, (SmartChartStore.__proto__ || Object.getPrototypeOf(SmartChartStore)).call(this, { root_store: root_store, local_storage_properties: local_storage_properties, store_name: store_name }));
 
         _initDefineProp(_this, 'symbol', _descriptor, _this);
 
@@ -22426,6 +22801,8 @@ function _initializerWarningHelper(descriptor, context) {
     throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
+var store_name = 'trade_store';
+
 var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, _dec5 = _mobx.action.bound, _dec6 = _mobx.action.bound, _dec7 = _mobx.action.bound, _dec8 = _mobx.action.bound, _dec9 = _mobx.action.bound, _dec10 = _mobx.action.bound, _dec11 = _mobx.action.bound, _dec12 = _mobx.action.bound, _dec13 = _mobx.action.bound, _dec14 = _mobx.action.bound, _dec15 = _mobx.action.bound, _dec16 = _mobx.action.bound, _dec17 = _mobx.action.bound, _dec18 = _mobx.action.bound, (_class = function (_BaseStore) {
     _inherits(TradeStore, _BaseStore);
 
@@ -22460,6 +22837,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
 
         var _this = _possibleConstructorReturn(this, (TradeStore.__proto__ || Object.getPrototypeOf(TradeStore)).call(this, {
             root_store: root_store,
+            store_name: store_name,
             session_storage_properties: _query_string.allowed_query_string_variables,
             validation_rules: (0, _validation_rules2.default)()
         }));
@@ -22659,39 +23037,24 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
             return prepareTradeStore;
         }()
     }, {
-        key: 'onChangeAsync',
-        value: function () {
-            var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
-                var _e$target, name, value;
+        key: 'onChangeMultiple',
+        value: function onChangeMultiple(values) {
+            var _this3 = this;
 
-                return regeneratorRuntime.wrap(function _callee3$(_context3) {
-                    while (1) {
-                        switch (_context3.prev = _context3.next) {
-                            case 0:
-                                _e$target = e.target, name = _e$target.name, value = _e$target.value;
-                                _context3.next = 3;
-                                return this.processNewValuesAsync(_defineProperty({}, name, value), true);
+            Object.keys(values).forEach(function (name) {
+                if (!(name in _this3)) {
+                    throw new Error('Invalid Argument: ' + name);
+                }
+            });
 
-                            case 3:
-                            case 'end':
-                                return _context3.stop();
-                        }
-                    }
-                }, _callee3, this);
-            }));
-
-            function onChangeAsync(_x) {
-                return _ref4.apply(this, arguments);
-            }
-
-            return onChangeAsync;
-        }()
+            this.processNewValuesAsync(_extends({}, values), true);
+        }
     }, {
         key: 'onChange',
         value: function onChange(e) {
-            var _e$target2 = e.target,
-                name = _e$target2.name,
-                checked = _e$target2.checked;
+            var _e$target = e.target,
+                name = _e$target.name,
+                checked = _e$target.checked;
             var value = e.target.value;
 
 
@@ -22723,29 +23086,29 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
     }, {
         key: 'onPurchase',
         value: function onPurchase(proposal_id, price, type) {
-            var _this3 = this;
+            var _this4 = this;
 
             if (proposal_id) {
                 (0, _purchase.processPurchase)(proposal_id, price).then((0, _mobx.action)(function (response) {
-                    if (_this3.proposal_info[type].id !== proposal_id) {
+                    if (_this4.proposal_info[type].id !== proposal_id) {
                         throw new Error('Proposal ID does not match.');
                     }
                     if (response.buy) {
-                        var contract_data = _extends({}, _this3.proposal_requests[type], _this3.proposal_info[type], {
+                        var contract_data = _extends({}, _this4.proposal_requests[type], _this4.proposal_info[type], {
                             buy_price: response.buy.buy_price
                         });
-                        _gtm2.default.pushPurchaseData(contract_data, _this3.root_store);
+                        _gtm2.default.pushPurchaseData(contract_data, _this4.root_store);
                     }
                     _Services.WS.forgetAll('proposal');
-                    _this3.purchase_info = response;
+                    _this4.purchase_info = response;
                 }));
             }
         }
     }, {
         key: 'onClickNewTrade',
         value: function onClickNewTrade(e) {
-            this.requestProposal();
             e.preventDefault();
+            _Services.WS.forgetAll('proposal').then(this.requestProposal());
         }
 
         /**
@@ -22757,16 +23120,16 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
     }, {
         key: 'updateStore',
         value: function updateStore(new_state) {
-            var _this4 = this;
+            var _this5 = this;
 
             Object.keys((0, _utility.cloneObject)(new_state)).forEach(function (key) {
                 if (key === 'root_store' || ['validation_rules', 'validation_errors', 'currency', 'smart_chart'].indexOf(key) > -1) return;
-                if (JSON.stringify(_this4[key]) === JSON.stringify(new_state[key])) {
+                if (JSON.stringify(_this5[key]) === JSON.stringify(new_state[key])) {
                     delete new_state[key];
                 } else {
                     if (key === 'symbol') {
-                        _this4.is_purchase_enabled = false;
-                        _this4.is_trade_enabled = false;
+                        _this5.is_purchase_enabled = false;
+                        _this5.is_trade_enabled = false;
                     }
 
                     if (new_state.start_date && typeof new_state.start_date === 'string') {
@@ -22774,16 +23137,16 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                     }
 
                     // Add changes to queryString of the url
-                    if (_query_string.allowed_query_string_variables.indexOf(key) !== -1 && _this4.is_trade_component_mounted) {
+                    if (_query_string.allowed_query_string_variables.indexOf(key) !== -1 && _this5.is_trade_component_mounted) {
                         _url_helper2.default.setQueryParam(_defineProperty({}, key, new_state[key]));
                     }
 
-                    _this4[key] = new_state[key];
+                    _this5[key] = new_state[key];
 
                     // validation is done in mobx intercept (base_store.js)
                     // when barrier_1 is set, it is compared with store.barrier_2 (which is not updated yet)
                     if (key === 'barrier_2' && new_state.barrier_1) {
-                        _this4.barrier_1 = new_state.barrier_1; // set it again, after barrier_2 is updated in store
+                        _this5.barrier_1 = new_state.barrier_1; // set it again, after barrier_2 is updated in store
                     }
                 }
             });
@@ -22793,16 +23156,18 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
     }, {
         key: 'processNewValuesAsync',
         value: function () {
-            var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+            var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
                 var obj_new_values = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
                 var is_changed_by_user = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
                 var new_state, is_barrier_changed, snapshot, query_string_values;
-                return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                return regeneratorRuntime.wrap(function _callee3$(_context3) {
                     while (1) {
-                        switch (_context4.prev = _context4.next) {
+                        switch (_context3.prev = _context3.next) {
                             case 0:
                                 // Sets the default value to Amount when Currency has changed from Fiat to Crypto and vice versa.
                                 // The source of default values is the website_status response.
+                                _Services.WS.forgetAll('proposal');
+
                                 if (is_changed_by_user && /\bcurrency\b/.test(Object.keys(obj_new_values)) && (0, _currency_base.isCryptocurrency)(obj_new_values.currency) !== (0, _currency_base.isCryptocurrency)(this.currency)) {
                                     obj_new_values.amount = obj_new_values.amount || (0, _currency_base.getMinPayout)(obj_new_values.currency);
                                 }
@@ -22810,19 +23175,19 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                                 new_state = this.updateStore((0, _utility.cloneObject)(obj_new_values));
 
                                 if (!(is_changed_by_user || /\b(symbol|contract_types_list)\b/.test(Object.keys(new_state)))) {
-                                    _context4.next = 17;
+                                    _context3.next = 18;
                                     break;
                                 }
 
                                 if (!('symbol' in new_state)) {
-                                    _context4.next = 6;
+                                    _context3.next = 7;
                                     break;
                                 }
 
-                                _context4.next = 6;
+                                _context3.next = 7;
                                 return _Symbol.onChangeSymbolAsync(new_state.symbol);
 
-                            case 6:
+                            case 7:
 
                                 this.updateStore({ // disable purchase button(s), clear contract info
                                     is_purchase_enabled: false,
@@ -22839,11 +23204,11 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                                     }
                                 }
 
-                                _context4.next = 10;
+                                _context3.next = 11;
                                 return (0, _process.processTradeParams)(this, new_state);
 
-                            case 10:
-                                snapshot = _context4.sent;
+                            case 11:
+                                snapshot = _context3.sent;
                                 query_string_values = this.updateQueryString();
 
                                 snapshot.is_trade_enabled = true;
@@ -22859,16 +23224,16 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
 
                                 this.debouncedProposal();
 
-                            case 17:
+                            case 18:
                             case 'end':
-                                return _context4.stop();
+                                return _context3.stop();
                         }
                     }
-                }, _callee4, this);
+                }, _callee3, this);
             }));
 
             function processNewValuesAsync() {
-                return _ref5.apply(this, arguments);
+                return _ref4.apply(this, arguments);
             }
 
             return processNewValuesAsync;
@@ -22876,7 +23241,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
     }, {
         key: 'requestProposal',
         value: function requestProposal() {
-            var _this5 = this;
+            var _this6 = this;
 
             var requests = (0, _proposal.createProposalRequests)(this);
 
@@ -22898,10 +23263,8 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                 this.proposal_info = {};
                 this.purchase_info = {};
 
-                _Services.WS.forgetAll('proposal').then(function () {
-                    Object.keys(_this5.proposal_requests).forEach(function (type) {
-                        _Services.WS.subscribeProposal(_this5.proposal_requests[type], _this5.onProposalResponse);
-                    });
+                Object.keys(this.proposal_requests).forEach(function (type) {
+                    _Services.WS.subscribeProposal(_this6.proposal_requests[type], _this6.onProposalResponse);
                 });
             }
         }
@@ -22969,15 +23332,16 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
     }, {
         key: 'changeAllowEquals',
         value: function changeAllowEquals() {
-            var _this6 = this;
+            var hasCallPutEqual = function hasCallPutEqual(contract_type_list) {
+                if (!contract_type_list) return false;
 
-            var hasCallPutEqual = function hasCallPutEqual() {
-                var up_down_contracts = (0, _utility.getPropertyValue)(_this6.contract_types_list, 'Up/Down');
-                return up_down_contracts.some(function (contract) {
+                return (0, _utility.getPropertyValue)(contract_type_list, 'Up/Down').some(function (contract) {
                     return contract.value === 'rise_fall_equal';
                 });
             };
             var hasDurationForCallPutEqual = function hasDurationForCallPutEqual(contract_type_list, duration_unit, contract_start_type) {
+                if (!contract_type_list || !duration_unit || !contract_start_type) return false;
+
                 var contract_list = Object.keys(contract_type_list || {}).reduce(function (key, list) {
                     return [].concat(_toConsumableArray(key), _toConsumableArray(contract_type_list[list].map(function (contract) {
                         return contract.value;
@@ -22989,7 +23353,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                 });
 
                 // Check whether rise fall equal is exists and has the current store duration unit
-                return hasCallPutEqual() ? contract_duration_list.filter(function (contract) {
+                return hasCallPutEqual(contract_type_list) ? contract_duration_list.filter(function (contract) {
                     return contract.rise_fall_equal;
                 })[0].rise_fall_equal.some(function (duration) {
                     return duration.value === duration_unit;
@@ -23002,7 +23366,7 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
                 this.is_equal_checked = 0;
             }
 
-            if (/^(rise_fall|rise_fall_equal)$/.test(this.contract_type) && (check_callput_equal_duration || this.expiry_type === 'endtime') && hasCallPutEqual()) {
+            if (/^(rise_fall|rise_fall_equal)$/.test(this.contract_type) && (check_callput_equal_duration || this.expiry_type === 'endtime') && hasCallPutEqual(this.contract_types_list)) {
                 this.is_allow_equal = true;
             } else {
                 this.is_allow_equal = false;
@@ -23014,45 +23378,45 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
             var _this7 = this;
 
             return new Promise(function () {
-                var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(resolve) {
-                    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(resolve) {
+                    return regeneratorRuntime.wrap(function _callee4$(_context4) {
                         while (1) {
-                            switch (_context5.prev = _context5.next) {
+                            switch (_context4.prev = _context4.next) {
                                 case 0:
-                                    _context5.next = 2;
+                                    _context4.next = 2;
                                     return _this7.refresh();
 
                                 case 2:
-                                    _context5.next = 4;
+                                    _context4.next = 4;
                                     return _this7.prepareTradeStore();
 
                                 case 4:
-                                    return _context5.abrupt('return', resolve(_this7.debouncedProposal()));
+                                    return _context4.abrupt('return', resolve(_this7.debouncedProposal()));
 
                                 case 5:
                                 case 'end':
-                                    return _context5.stop();
+                                    return _context4.stop();
                             }
                         }
-                    }, _callee5, _this7);
+                    }, _callee4, _this7);
                 }));
 
-                return function (_x4) {
-                    return _ref7.apply(this, arguments);
+                return function (_x3) {
+                    return _ref6.apply(this, arguments);
                 };
             }());
         }
     }, {
         key: 'onMount',
         value: function () {
-            var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+            var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
                 var _this8 = this;
 
-                return regeneratorRuntime.wrap(function _callee6$(_context6) {
+                return regeneratorRuntime.wrap(function _callee5$(_context5) {
                     while (1) {
-                        switch (_context6.prev = _context6.next) {
+                        switch (_context5.prev = _context5.next) {
                             case 0:
-                                _context6.next = 2;
+                                _context5.next = 2;
                                 return this.prepareTradeStore();
 
                             case 2:
@@ -23065,14 +23429,14 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
 
                             case 6:
                             case 'end':
-                                return _context6.stop();
+                                return _context5.stop();
                         }
                     }
-                }, _callee6, this);
+                }, _callee5, this);
             }));
 
             function onMount() {
-                return _ref8.apply(this, arguments);
+                return _ref7.apply(this, arguments);
             }
 
             return onMount;
@@ -23255,23 +23619,23 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
     initializer: function initializer() {
         var _this9 = this;
 
-        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-            return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+            return regeneratorRuntime.wrap(function _callee6$(_context6) {
                 while (1) {
-                    switch (_context7.prev = _context7.next) {
+                    switch (_context6.prev = _context6.next) {
                         case 0:
-                            _context7.next = 2;
+                            _context6.next = 2;
                             return _socket_base2.default.wait('website_status');
 
                         case 2:
                         case 'end':
-                            return _context7.stop();
+                            return _context6.stop();
                     }
                 }
-            }, _callee7, _this9);
+            }, _callee6, _this9);
         }));
     }
-}), _applyDecoratedDescriptor(_class.prototype, 'refresh', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'refresh'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'prepareTradeStore', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'prepareTradeStore'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onChangeAsync', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'onChangeAsync'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onChange', [_dec5], Object.getOwnPropertyDescriptor(_class.prototype, 'onChange'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onHoverPurchase', [_dec6], Object.getOwnPropertyDescriptor(_class.prototype, 'onHoverPurchase'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onPurchase', [_dec7], Object.getOwnPropertyDescriptor(_class.prototype, 'onPurchase'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onClickNewTrade', [_dec8], Object.getOwnPropertyDescriptor(_class.prototype, 'onClickNewTrade'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateStore', [_dec9], Object.getOwnPropertyDescriptor(_class.prototype, 'updateStore'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'requestProposal', [_dec10], Object.getOwnPropertyDescriptor(_class.prototype, 'requestProposal'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onProposalResponse', [_dec11], Object.getOwnPropertyDescriptor(_class.prototype, 'onProposalResponse'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onChartBarrierChange', [_dec12], Object.getOwnPropertyDescriptor(_class.prototype, 'onChartBarrierChange'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateQueryString', [_dec13], Object.getOwnPropertyDescriptor(_class.prototype, 'updateQueryString'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'changeDurationValidationRules', [_dec14], Object.getOwnPropertyDescriptor(_class.prototype, 'changeDurationValidationRules'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'changeAllowEquals', [_dec15], Object.getOwnPropertyDescriptor(_class.prototype, 'changeAllowEquals'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'accountSwitcherListener', [_dec16], Object.getOwnPropertyDescriptor(_class.prototype, 'accountSwitcherListener'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onMount', [_dec17], Object.getOwnPropertyDescriptor(_class.prototype, 'onMount'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onUnmount', [_dec18], Object.getOwnPropertyDescriptor(_class.prototype, 'onUnmount'), _class.prototype)), _class));
+}), _applyDecoratedDescriptor(_class.prototype, 'refresh', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'refresh'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'prepareTradeStore', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'prepareTradeStore'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onChangeMultiple', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'onChangeMultiple'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onChange', [_dec5], Object.getOwnPropertyDescriptor(_class.prototype, 'onChange'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onHoverPurchase', [_dec6], Object.getOwnPropertyDescriptor(_class.prototype, 'onHoverPurchase'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onPurchase', [_dec7], Object.getOwnPropertyDescriptor(_class.prototype, 'onPurchase'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onClickNewTrade', [_dec8], Object.getOwnPropertyDescriptor(_class.prototype, 'onClickNewTrade'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateStore', [_dec9], Object.getOwnPropertyDescriptor(_class.prototype, 'updateStore'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'requestProposal', [_dec10], Object.getOwnPropertyDescriptor(_class.prototype, 'requestProposal'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onProposalResponse', [_dec11], Object.getOwnPropertyDescriptor(_class.prototype, 'onProposalResponse'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onChartBarrierChange', [_dec12], Object.getOwnPropertyDescriptor(_class.prototype, 'onChartBarrierChange'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateQueryString', [_dec13], Object.getOwnPropertyDescriptor(_class.prototype, 'updateQueryString'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'changeDurationValidationRules', [_dec14], Object.getOwnPropertyDescriptor(_class.prototype, 'changeDurationValidationRules'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'changeAllowEquals', [_dec15], Object.getOwnPropertyDescriptor(_class.prototype, 'changeAllowEquals'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'accountSwitcherListener', [_dec16], Object.getOwnPropertyDescriptor(_class.prototype, 'accountSwitcherListener'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onMount', [_dec17], Object.getOwnPropertyDescriptor(_class.prototype, 'onMount'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onUnmount', [_dec18], Object.getOwnPropertyDescriptor(_class.prototype, 'onUnmount'), _class.prototype)), _class));
 exports.default = TradeStore;
 
 /***/ }),
@@ -23426,6 +23790,7 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
      *     @property {String[]} local_storage_properties - A list of properties' names that should be kept in localStorage.
      *     @property {String[]} session_storage_properties - A list of properties' names that should be kept in sessionStorage.
      *     @property {Object}   validation_rules - An object that contains the validation rules for each property of the store.
+     *     @property {String}   store_name - Explicit store name for browser application storage (to bypass minification)
      */
     function BaseStore() {
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -23441,7 +23806,8 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
         var root_store = options.root_store,
             local_storage_properties = options.local_storage_properties,
             session_storage_properties = options.session_storage_properties,
-            validation_rules = options.validation_rules;
+            validation_rules = options.validation_rules,
+            store_name = options.store_name;
 
 
         Object.defineProperty(this, 'root_store', {
@@ -23456,6 +23822,20 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
             enumerable: false,
             writable: true
         });
+
+        var has_local_or_session_storage = local_storage_properties && local_storage_properties.length || session_storage_properties && session_storage_properties.length;
+
+        if (has_local_or_session_storage) {
+            if (!store_name) {
+                throw new Error('store_name is required for local/session storage');
+            }
+
+            Object.defineProperty(this, 'store_name', {
+                value: store_name,
+                enumerable: false,
+                writable: false
+            });
+        }
 
         this.root_store = root_store;
         this.local_storage_properties = local_storage_properties || [];
@@ -23560,9 +23940,9 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
             });
 
             if (storage === BaseStore.STORAGES.LOCAL_STORAGE) {
-                localStorage.setItem(this.constructor.name, snapshot);
+                localStorage.setItem(this.store_name, snapshot);
             } else if (storage === BaseStore.STORAGES.SESSION_STORAGE) {
-                sessionStorage.setItem(this.constructor.name, snapshot);
+                sessionStorage.setItem(this.store_name, snapshot);
             }
         }
 
@@ -23576,8 +23956,8 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
         value: function retrieveFromStorage() {
             var _this3 = this;
 
-            var local_storage_snapshot = JSON.parse(localStorage.getItem(this.constructor.name, {}));
-            var session_storage_snapshot = JSON.parse(sessionStorage.getItem(this.constructor.name, {}));
+            var local_storage_snapshot = JSON.parse(localStorage.getItem(this.store_name, {}));
+            var session_storage_snapshot = JSON.parse(sessionStorage.getItem(this.store_name, {}));
 
             var snapshot = _extends({}, local_storage_snapshot, session_storage_snapshot);
 
@@ -24819,6 +25199,8 @@ function _initializerWarningHelper(descriptor, context) {
     throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
+var store_name = 'ui_store';
+
 var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, _dec5 = _mobx.action.bound, _dec6 = _mobx.action.bound, _dec7 = _mobx.action.bound, _dec8 = _mobx.action.bound, _dec9 = _mobx.action.bound, _dec10 = _mobx.action.bound, _dec11 = _mobx.action.bound, _dec12 = _mobx.action.bound, _dec13 = _mobx.action.bound, _dec14 = _mobx.action.bound, _dec15 = _mobx.action.bound, _dec16 = _mobx.action.bound, _dec17 = _mobx.action.bound, _dec18 = _mobx.action.bound, _dec19 = _mobx.action.bound, _dec20 = _mobx.action.bound, _dec21 = _mobx.action.bound, _dec22 = _mobx.action.bound, (_class = function (_BaseStore) {
     _inherits(UIStore, _BaseStore);
 
@@ -24826,15 +25208,15 @@ var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _m
     function UIStore() {
         _classCallCheck(this, UIStore);
 
-        var local_storage_properties = ['advanced_duration_unit', 'is_advanced_duration', 'advanced_expiry_type', 'simple_duration_unit', 'duration_t', 'duration_s', 'duration_m', 'duration_h', 'duration_d', 'is_chart_asset_info_visible', 'is_chart_countdown_visible', 'is_chart_layout_default', 'is_dark_mode_on', 'is_portfolio_drawer_on', 'is_purchase_confirm_on', 'is_purchase_lock_on'];
+        var local_storage_properties = ['advanced_duration_unit', 'is_advanced_duration', 'advanced_expiry_type', 'simple_duration_unit', 'duration_t', 'duration_s', 'duration_m', 'duration_h', 'duration_d', 'is_chart_asset_info_visible', 'is_chart_countdown_visible', 'is_chart_layout_default', 'is_dark_mode_on', 'is_positions_drawer_on', 'is_purchase_confirm_on', 'is_purchase_lock_on'];
 
-        var _this = _possibleConstructorReturn(this, (UIStore.__proto__ || Object.getPrototypeOf(UIStore)).call(this, { local_storage_properties: local_storage_properties }));
+        var _this = _possibleConstructorReturn(this, (UIStore.__proto__ || Object.getPrototypeOf(UIStore)).call(this, { local_storage_properties: local_storage_properties, store_name: store_name }));
 
         _initDefineProp(_this, 'is_main_drawer_on', _descriptor, _this);
 
         _initDefineProp(_this, 'is_notifications_drawer_on', _descriptor2, _this);
 
-        _initDefineProp(_this, 'is_portfolio_drawer_on', _descriptor3, _this);
+        _initDefineProp(_this, 'is_positions_drawer_on', _descriptor3, _this);
 
         _initDefineProp(_this, 'is_dark_mode_on', _descriptor4, _this);
 
@@ -24913,7 +25295,7 @@ var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _m
         value: function handleResize() {
             this.screen_width = window.innerWidth;
             if (this.is_mobile) {
-                this.is_portfolio_drawer_on = false;
+                this.is_positions_drawer_on = false;
             }
         }
     }, {
@@ -24968,10 +25350,10 @@ var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _m
             this.is_language_dialog_on = false;
         }
     }, {
-        key: 'togglePortfolioDrawer',
-        value: function togglePortfolioDrawer() {
-            // show and hide Portfolio Drawer
-            this.is_portfolio_drawer_on = !this.is_portfolio_drawer_on;
+        key: 'togglePositionsDrawer',
+        value: function togglePositionsDrawer() {
+            // show and hide Positions Drawer
+            this.is_positions_drawer_on = !this.is_positions_drawer_on;
         }
     }, {
         key: 'showMainDrawer',
@@ -25049,7 +25431,7 @@ var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _m
     initializer: function initializer() {
         return false;
     }
-}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'is_portfolio_drawer_on', [_mobx.observable], {
+}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'is_positions_drawer_on', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return false;
@@ -25164,7 +25546,7 @@ var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _m
     initializer: function initializer() {
         return 1;
     }
-}), _applyDecoratedDescriptor(_class.prototype, 'onChangeUiStore', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'onChangeUiStore'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'handleResize', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'handleResize'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_mobile', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_mobile'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_tablet', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_tablet'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleAccountsDialog', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleAccountsDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChartLayout', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChartLayout'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChartAssetInfo', [_dec5], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChartAssetInfo'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChartCountdown', [_dec6], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChartCountdown'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'togglePurchaseLock', [_dec7], Object.getOwnPropertyDescriptor(_class.prototype, 'togglePurchaseLock'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'togglePurchaseConfirmation', [_dec8], Object.getOwnPropertyDescriptor(_class.prototype, 'togglePurchaseConfirmation'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleDarkMode', [_dec9], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleDarkMode'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleSettingsDialog', [_dec10], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleSettingsDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showLanguageDialog', [_dec11], Object.getOwnPropertyDescriptor(_class.prototype, 'showLanguageDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideLanguageDialog', [_dec12], Object.getOwnPropertyDescriptor(_class.prototype, 'hideLanguageDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'togglePortfolioDrawer', [_dec13], Object.getOwnPropertyDescriptor(_class.prototype, 'togglePortfolioDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showMainDrawer', [_dec14], Object.getOwnPropertyDescriptor(_class.prototype, 'showMainDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showNotificationsDrawer', [_dec15], Object.getOwnPropertyDescriptor(_class.prototype, 'showNotificationsDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideDrawers', [_dec16], Object.getOwnPropertyDescriptor(_class.prototype, 'hideDrawers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showInstallButton', [_dec17], Object.getOwnPropertyDescriptor(_class.prototype, 'showInstallButton'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideInstallButton', [_dec18], Object.getOwnPropertyDescriptor(_class.prototype, 'hideInstallButton'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setPWAPromptEvent', [_dec19], Object.getOwnPropertyDescriptor(_class.prototype, 'setPWAPromptEvent'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'addToastMessage', [_dec20], Object.getOwnPropertyDescriptor(_class.prototype, 'addToastMessage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removeToastMessage', [_dec21], Object.getOwnPropertyDescriptor(_class.prototype, 'removeToastMessage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removeAllToastMessages', [_dec22], Object.getOwnPropertyDescriptor(_class.prototype, 'removeAllToastMessages'), _class.prototype)), _class));
+}), _applyDecoratedDescriptor(_class.prototype, 'onChangeUiStore', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'onChangeUiStore'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'handleResize', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'handleResize'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_mobile', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_mobile'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_tablet', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_tablet'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleAccountsDialog', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleAccountsDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChartLayout', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChartLayout'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChartAssetInfo', [_dec5], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChartAssetInfo'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChartCountdown', [_dec6], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChartCountdown'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'togglePurchaseLock', [_dec7], Object.getOwnPropertyDescriptor(_class.prototype, 'togglePurchaseLock'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'togglePurchaseConfirmation', [_dec8], Object.getOwnPropertyDescriptor(_class.prototype, 'togglePurchaseConfirmation'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleDarkMode', [_dec9], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleDarkMode'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleSettingsDialog', [_dec10], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleSettingsDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showLanguageDialog', [_dec11], Object.getOwnPropertyDescriptor(_class.prototype, 'showLanguageDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideLanguageDialog', [_dec12], Object.getOwnPropertyDescriptor(_class.prototype, 'hideLanguageDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'togglePositionsDrawer', [_dec13], Object.getOwnPropertyDescriptor(_class.prototype, 'togglePositionsDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showMainDrawer', [_dec14], Object.getOwnPropertyDescriptor(_class.prototype, 'showMainDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showNotificationsDrawer', [_dec15], Object.getOwnPropertyDescriptor(_class.prototype, 'showNotificationsDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideDrawers', [_dec16], Object.getOwnPropertyDescriptor(_class.prototype, 'hideDrawers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showInstallButton', [_dec17], Object.getOwnPropertyDescriptor(_class.prototype, 'showInstallButton'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideInstallButton', [_dec18], Object.getOwnPropertyDescriptor(_class.prototype, 'hideInstallButton'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setPWAPromptEvent', [_dec19], Object.getOwnPropertyDescriptor(_class.prototype, 'setPWAPromptEvent'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'addToastMessage', [_dec20], Object.getOwnPropertyDescriptor(_class.prototype, 'addToastMessage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removeToastMessage', [_dec21], Object.getOwnPropertyDescriptor(_class.prototype, 'removeToastMessage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removeAllToastMessages', [_dec22], Object.getOwnPropertyDescriptor(_class.prototype, 'removeAllToastMessages'), _class.prototype)), _class));
 exports.default = UIStore;
 
 /***/ }),
@@ -25182,7 +25564,7 @@ exports.default = UIStore;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.minDate = exports.subYears = exports.subMonths = exports.subDays = exports.addYears = exports.addMonths = exports.addDays = exports.isDateValid = exports.isMinuteValid = exports.isHourValid = exports.isTimeValid = exports.formatDuration = exports.getDiffDuration = exports.daysFromTodayTo = exports.formatDate = exports.toGMTFormat = exports.convertToUnix = exports.setTime = exports.toMoment = exports.epochToMoment = undefined;
+exports.getStartOfMonth = exports.minDate = exports.subYears = exports.subMonths = exports.subDays = exports.addYears = exports.addMonths = exports.addDays = exports.isDateValid = exports.isMinuteValid = exports.isHourValid = exports.isTimeValid = exports.formatDuration = exports.getDiffDuration = exports.daysFromTodayTo = exports.formatDate = exports.toGMTFormat = exports.convertToUnix = exports.setTime = exports.toMoment = exports.epochToMoment = undefined;
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
@@ -25212,8 +25594,11 @@ var epochToMoment = exports.epochToMoment = function epochToMoment(epoch) {
 var toMoment = exports.toMoment = function toMoment(value) {
   if (!value) return (0, _moment2.default)().utc(); // returns 'now' moment object
   if (value instanceof _moment2.default && value.isValid() && value.isUTC()) return value; // returns if already a moment object
-  var moment_obj = epochToMoment(value);
-  return moment_obj.isValid() ? moment_obj : _moment2.default.utc(value);
+  var is_number = typeof value === 'number';
+  // need to explicitly convert date string to a JS Date object then pass that into Moment
+  // to get rid of the warning: Deprecation warning: moment construction falls back to js Date
+  var formatted_date = (0, _moment2.default)(new Date(value)).format('YYYY-MM-DD');
+  return is_number ? epochToMoment(value) : _moment2.default.utc(formatted_date);
 };
 
 /**
@@ -25383,6 +25768,14 @@ var subYears = exports.subYears = function subYears(date, num_of_years) {
  */
 var minDate = exports.minDate = function minDate(date_1, date_2) {
   return _moment2.default.min(toMoment(date_1), toMoment(date_2));
+};
+
+/**
+ * returns a new date
+ * @param {moment|string|epoch} date date
+ */
+var getStartOfMonth = exports.getStartOfMonth = function getStartOfMonth(date) {
+  return toMoment(date).clone().startOf('month').format('YYYY-MM-DD');
 };
 
 /***/ }),
@@ -26309,7 +26702,7 @@ var GTM = function () {
             },
             settings: {
                 theme: root_store.ui.is_dark_mode_on ? 'dark' : 'light',
-                portfolio_drawer: root_store.ui.is_portfolio_drawer_on ? 'open' : 'closed',
+                positions_drawer: root_store.ui.is_positions_drawer_on ? 'open' : 'closed',
                 purchase_confirm: root_store.ui.is_purchase_confirm_on ? 'enabled' : 'disabled',
                 chart: {
                     toolbar_position: root_store.ui.is_chart_layout_default ? 'bottom' : 'left',
