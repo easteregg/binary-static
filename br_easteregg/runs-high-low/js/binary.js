@@ -20409,7 +20409,7 @@ var commonTrading = function () {
     };
 
     var getContractCategoryTree = function getContractCategoryTree(elements) {
-        var tree = [['updown', ['risefall', 'higherlower']], 'touchnotouch', ['inout', ['endsinout', 'staysinout']], 'asian', ['digits', ['matchdiff', 'evenodd', 'overunder']], ['lookback', ['lookbackhigh', 'lookbacklow', 'lookbackhighlow']], 'reset', 'callputspread', 'highlowticks', 'runs'];
+        var tree = [['updown', ['risefall', 'higherlower']], 'touchnotouch', ['inout', ['endsinout', 'staysinout']], 'asian', ['digits', ['matchdiff', 'evenodd', 'overunder']], ['lookback', ['lookbackhigh', 'lookbacklow', 'lookbackhighlow']], 'reset', 'callputspread', 'highlowticks', ['run', ['runs']]];
 
         if (elements) {
             tree = tree.map(function (e) {
@@ -21091,6 +21091,10 @@ var Contract = function () {
 
         if (trade_contract_forms.risefall || trade_contract_forms.higherlower) {
             trade_contract_forms.updown = localize('Up/Down');
+        }
+
+        if (trade_contract_forms.runs) {
+            trade_contract_forms.run = localize('Run');
         }
 
         if (trade_contract_forms.endsinout || trade_contract_forms.staysinout) {
