@@ -2941,8 +2941,6 @@ a.previous-wrapper {
                 margin: 0 0 10px;
                 font-weight: normal; } }
 
-/* stylelint-disable color-no-hex */
-/* stylelint-enable color-no-hex */
 .transfer_form {
   background-color: #fff;
   display: -webkit-box;
