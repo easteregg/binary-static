@@ -29220,6 +29220,7 @@ var PersonalDetails = function () {
         is_fully_authenticated = void 0,
         residence = void 0,
         get_settings_data = void 0,
+        has_changeable_fields = void 0,
         changeable_fields = void 0;
 
     var init = function init() {
@@ -29278,6 +29279,9 @@ var PersonalDetails = function () {
      */
     var displayChangeableFields = function displayChangeableFields(get_settings) {
         if (!has_changeable_fields) return;
+        changeable_fields.forEach(function (field) {
+            CommonFunctions.getElementById('row_' + field).setVisibility(1);
+        });
 
         if (changeable_fields.includes('first_name') || changeable_fields.includes('last_name') || changeable_fields.includes('salutation')) {
             CommonFunctions.getElementById('row_name').setVisibility(0);
@@ -29287,19 +29291,14 @@ var PersonalDetails = function () {
         }
 
         if (changeable_fields.includes('date_of_birth')) {
-            var $input_el = $('input#date_of_birth');
+            var $input_el = $('#date_of_birth');
+            $input_el.setVisibility(1);
             $input_el.attr('data-value', toISOFormat(moment().subtract(18, 'years'))).change(function () {
                 return CommonFunctions.dateValueChanged(this, 'date');
             });
 
-            if (get_settings && get_settings.date_of_birth) {
-                $input_el.val(get_settings.date_of_birth);
-            }
-            $input_el.setVisibility(true);
-            CommonFunctions.getElementById('row_date_of_birth').setVisibility(0);
-
             DatePicker.init({
-                selector: 'input#date_of_birth',
+                selector: '#date_of_birth',
                 minDate: -100 * 365,
                 maxDate: -18 * 365 - 5,
                 yearRange: '-100:-18'
@@ -29315,10 +29314,7 @@ var PersonalDetails = function () {
             $options.prepend($('<option/>', { value: '', text: localize('Please select') }));
             $('#place_of_birth').html($options.html()).val(get_settings.place_of_birth);
 
-            CommonFunctions.getElementById('row_place_of_birth').setVisibility(1);
-
             $('#citizen').html($options.html()).val(get_settings.citizen);
-            CommonFunctions.getElementById('citizen_row').setVisibility(1);
         }
     };
 
@@ -29350,15 +29346,16 @@ var PersonalDetails = function () {
 
         displayGetSettingsData(get_settings);
 
-        if (is_virtual) {
+        if (has_changeable_fields) {
+            displayChangeableFields(data);
+            $(real_acc_elements).setVisibility(1);
+        } else if (is_virtual) {
             $(real_acc_elements).remove();
         } else {
             $(real_acc_elements).setVisibility(1);
             showHideTaxMessage();
         }
-        if (has_changeable_fields) {
-            displayChangeableFields(data);
-        }
+
         $(form_id).setVisibility(1);
         $('#loading').remove();
         FormManager.init(form_id, getValidations());
@@ -29373,15 +29370,15 @@ var PersonalDetails = function () {
     };
 
     var show_label_if_any_value = ['account_opening_reason', 'citizen', 'place_of_birth', 'tax_residence', 'tax_identification_number'];
-    var force_update_fields = ['tax_residence', 'tax_identification_number'].concat(changeable_fields);
-    var has_changeable_fields = Client.hasCostaricaAccount() && /^CR/.exec(Client.get('loginid')) && !is_fully_authenticated && !is_virtual;
+    var force_update_fields = ['tax_residence', 'tax_identification_number'];
 
     var displayGetSettingsData = function displayGetSettingsData(get_settings) {
         var populate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         Object.keys(get_settings).forEach(function (key) {
+            // If there are changeable fields, show input instead of labels instead.
             var has_label = show_label_if_any_value.includes(key) && !changeable_fields.includes(key);
-            var force_update = force_update_fields.includes(key);
+            var force_update = force_update_fields.concat(changeable_fields).includes(key);
             var should_show_label = has_label && get_settings[key];
             var element_id = '' + (should_show_label ? 'lbl_' : '') + key;
             var element_key = CommonFunctions.getElementById(element_id);
@@ -29391,7 +29388,7 @@ var PersonalDetails = function () {
                 if (populate) {
                     var should_update_value = /select|text/i.test(element_key.type);
                     if (has_label) {
-                        CommonFunctions.getElementById('row_' + element_id).setVisibility(1);
+                        CommonFunctions.getElementById('row_lbl_' + element_id).setVisibility(1);
                     }
                     if (element_key.type === 'checkbox') {
                         element_key.checked = !!get_settings[key];
@@ -29424,8 +29421,12 @@ var PersonalDetails = function () {
                             // Force pushing values, used for (API-)expected values
                             $element.attr({ 'data-force': true, 'data-value': el_value });
                         }
+                        if (!has_label) {
+                            CommonFunctions.getElementById('row_lbl_' + key).setVisibility(0);
+                        }
                         // Update data-value on change for inputs
                         if (should_update_value) {
+                            CommonFunctions.getElementById('row_' + key).setVisibility(1);
                             $(element_key).change(function () {
                                 this.setAttribute('data-value', this.value);
                             });
@@ -29472,27 +29473,25 @@ var PersonalDetails = function () {
                     } }]] }, { selector: '#place_of_birth', validations: ['req'] }, { selector: '#account_opening_reason', validations: ['req'] }, { selector: '#tax_residence', validations: is_tax_req ? ['req'] : '' }, { selector: '#citizen', validations: is_financial || is_gaming || is_for_mt_citizen ? ['req'] : '' }, { selector: '#chk_tax_id', validations: is_financial ? [['req', { hide_asterisk: true, message: localize('Please confirm that all the information above is true and complete.') }]] : '', exclude_request: 1 }];
 
             // Push validations for changeable fields.
-            if (has_changeable_fields) {
-                changeable_fields.forEach(function (key) {
-                    var selector = '#' + key;
+            changeable_fields.forEach(function (key) {
+                var selector = '#' + key;
 
-                    // First name and last name validations
-                    if (['first_name', 'last_name'].includes(key)) {
-                        validations.push({
-                            selector: selector,
-                            validations: ['req', 'letter_symbol', ['length', { min: 2, max: 30 }]]
-                        });
-                    }
+                // First name and last name validations
+                if (['first_name', 'last_name'].includes(key)) {
+                    validations.push({
+                        selector: selector,
+                        validations: ['req', 'letter_symbol', ['length', { min: 2, max: 30 }]]
+                    });
+                }
 
-                    // Required Without special treatment
-                    if (['salutation'].includes(key)) {
-                        validations.push({
-                            selector: selector,
-                            validations: ['req']
-                        });
-                    }
-                });
-            }
+                // Required Without special treatment
+                if (['salutation'].includes(key)) {
+                    validations.push({
+                        selector: selector,
+                        validations: ['req']
+                    });
+                }
+            });
 
             var tax_id_validation = { selector: '#tax_identification_number', validations: ['tax_id', ['length', { min: 0, max: 20 }]] };
             if (is_tax_req) {
@@ -29651,33 +29650,40 @@ var PersonalDetails = function () {
             var account_status = State.getResponse('get_account_status').status;
             get_settings_data = State.getResponse('get_settings');
             is_fully_authenticated = checkStatus(account_status, 'authenticated');
+            has_changeable_fields = Client.get('landing_company_shortcode') === 'costarica' && !is_fully_authenticated;
+
             if (is_virtual) {
                 getDetailsResponse(get_settings_data);
-            }
-            if (!is_virtual || !residence || has_changeable_fields) {
+            } else if (has_changeable_fields) {
                 populateChangeableFields();
-                BinarySocket.send({ residence_list: 1 }).then(function (response) {
-                    populateResidence(response).then(function () {
-                        if (residence) {
-                            BinarySocket.send({ states_list: residence }).then(function (response_state) {
-                                populateStates(response_state).then(function () {
-                                    getDetailsResponse(get_settings_data, response.residence_list);
-                                    if (!is_virtual && !is_fully_authenticated) {
-                                        Geocoder.validate(form_id);
-                                    }
-                                });
-                            });
-                        } else {
+                displayResidenceList();
+            } else if (!is_virtual || !residence) {
+                displayResidenceList();
+            }
+        });
+    };
+
+    var displayResidenceList = function displayResidenceList() {
+        BinarySocket.send({ residence_list: 1 }).then(function (response) {
+            populateResidence(response).then(function () {
+                if (residence) {
+                    BinarySocket.send({ states_list: residence }).then(function (response_state) {
+                        populateStates(response_state).then(function () {
                             getDetailsResponse(get_settings_data, response.residence_list);
-                        }
-                        $('#place_of_birth, #citizen').select2({
-                            matcher: function matcher(params, data) {
-                                return SelectMatcher(params, data);
+                            if (!is_virtual && !is_fully_authenticated) {
+                                Geocoder.validate(form_id);
                             }
                         });
                     });
+                } else {
+                    getDetailsResponse(get_settings_data, response.residence_list);
+                }
+                $('#place_of_birth, #citizen').select2({
+                    matcher: function matcher(params, data) {
+                        return SelectMatcher(params, data);
+                    }
                 });
-            }
+            });
         });
     };
 
