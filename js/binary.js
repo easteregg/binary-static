@@ -200,7 +200,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/js/";
+/******/ 	__webpack_require__.p = "/binary-static/js/";
 /******/
 /******/ 	// on error function for async loading
 /******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
@@ -497,7 +497,6 @@ var ClientBase = function () {
         var can_open_multi = false;
         var type = void 0,
             can_upgrade_to = void 0;
-
         if ((upgradeable_landing_companies || []).length) {
             var current_landing_company = get('landing_company_shortcode');
 
@@ -621,6 +620,7 @@ var ClientBase = function () {
         setNewAccount: setNewAccount,
         currentLandingCompany: currentLandingCompany,
         shouldCompleteTax: shouldCompleteTax,
+        getAllAccountsObject: getAllAccountsObject,
         getMT5AccountType: getMT5AccountType,
         getBasicUpgradeInfo: getBasicUpgradeInfo,
         getLandingCompanyValue: getLandingCompanyValue,
@@ -722,8 +722,8 @@ var CryptoConfig = function () {
             ETH: { name: localize('Ether'), min_withdrawal: 0.002, pa_max_withdrawal: 5, pa_min_withdrawal: 0.002 },
             ETC: { name: localize('Ether Classic'), min_withdrawal: 0.002, pa_max_withdrawal: 5, pa_min_withdrawal: 0.002 },
             LTC: { name: localize('Litecoin'), min_withdrawal: 0.002, pa_max_withdrawal: 5, pa_min_withdrawal: 0.002 },
-            DAI: { name: localize('Dai'), min_withdrawal: 0.02, pa_max_withdrawal: 2000, pa_min_withdrawal: 10 },
-            UST: { name: localize('Tether'), min_withdrawal: 0.02, pa_max_withdrawal: 2000, pa_min_withdrawal: 10 }
+            UST: { name: localize('Tether'), min_withdrawal: 0.02, pa_max_withdrawal: 2000, pa_min_withdrawal: 10 },
+            USB: { name: localize('Binary Coin'), min_withdrawal: 0.02, pa_max_withdrawal: 2000, pa_min_withdrawal: 10 }
         };
     };
 
@@ -741,8 +741,22 @@ var getMinWithdrawal = function getMinWithdrawal(currency) {
     return isCryptocurrency(currency) ? getPropertyValue(CryptoConfig.get(), [currency, 'min_withdrawal']) || 0.002 : 1;
 };
 
+// returns in a string format, e.g. '0.00000001'
 var getMinTransfer = function getMinTransfer(currency) {
-    return getPropertyValue(currencies_config, [currency, 'limits', 'transfer_between_accounts', 'min']) || getMinWithdrawal(currency);
+    var min_transfer = getPropertyValue(currencies_config, [currency, 'transfer_between_accounts', 'limits', 'min']) || getMinWithdrawal(currency);
+    var decimals = getDecimalPlaces(currency);
+    return min_transfer.toFixed(decimals); // we need toFixed() so that it doesn't display in scientific notation, e.g. 1e-8 for currencies with 8 decimal places
+};
+
+var getTransferFee = function getTransferFee(currency_from, currency_to) {
+    var transfer_fee = getPropertyValue(currencies_config, [currency_from, 'transfer_between_accounts', 'fees', currency_to]);
+    return (typeof transfer_fee === 'undefined' ? '1' : transfer_fee) + '%';
+};
+
+// returns in a string format, e.g. '0.00000001'
+var getMinimumTransferFee = function getMinimumTransferFee(currency) {
+    var decimals = getDecimalPlaces(currency);
+    return currency + ' ' + (1 / Math.pow(10, decimals)).toFixed(decimals); // we need toFixed() so that it doesn't display in scientific notation, e.g. 1e-8 for currencies with 8 decimal places
 };
 
 // @param {String} limit = max|min
@@ -771,6 +785,8 @@ module.exports = {
     getCurrencyName: getCurrencyName,
     getMinWithdrawal: getMinWithdrawal,
     getMinTransfer: getMinTransfer,
+    getTransferFee: getTransferFee,
+    getMinimumTransferFee: getMinimumTransferFee,
     getMinPayout: getMinPayout,
     getPaWithdrawalLimit: getPaWithdrawalLimit,
     getCurrencies: function getCurrencies() {
@@ -802,10 +818,12 @@ var Elevio = function () {
         if (!window._elev) return; // eslint-disable-line no-underscore-dangle
         window._elev.on('load', function (elev) {
             // eslint-disable-line no-underscore-dangle
-            var available_elev_languages = ['id', 'ru'];
+            var available_elev_languages = ['es', 'id', 'pt', 'ru'];
             var current_language = getLanguage().toLowerCase();
             if (available_elev_languages.indexOf(current_language) !== -1) {
                 window._elev.setLanguage(current_language); // eslint-disable-line no-underscore-dangle
+            } else {
+                window._elev.setLanguage('en');
             }
             setUserInfo(elev);
             setTranslations(elev);
@@ -896,7 +914,7 @@ var getAppId = __webpack_require__(/*! ../../config */ "./src/javascript/config.
 
 var GTM = function () {
     var isGtmApplicable = function isGtmApplicable() {
-        return (/^(1|1098|14473)$/.test(getAppId())
+        return (/^(1|1098|14473|15284)$/.test(getAppId())
         );
     };
 
@@ -936,6 +954,8 @@ var GTM = function () {
             pushDataLayer({ bom_affiliate_token: affiliate_token.t });
         }
 
+        // Get current time (moment, set by server), else fallback to client time
+        var moment_now = window.time || moment().utc();
         var data = {
             visitorId: ClientBase.get('loginid'),
             bom_account_type: ClientBase.getAccountType(),
@@ -944,7 +964,7 @@ var GTM = function () {
             bom_country_abbrev: get_settings.country_code,
             bom_email: get_settings.email,
             url: window.location.href,
-            bom_today: Math.floor(Date.now() / 1000)
+            bom_today: moment_now.unix()
         };
 
         if (is_new_account) {
@@ -953,7 +973,7 @@ var GTM = function () {
         }
 
         if (!ClientBase.get('is_virtual')) {
-            data.bom_age = parseInt((moment().unix() - get_settings.date_of_birth) / 31557600);
+            data.bom_age = moment_now.diff(moment.unix(get_settings.date_of_birth).utc(), 'year');
             data.bom_firstname = get_settings.first_name;
             data.bom_lastname = get_settings.last_name;
             data.bom_phone = get_settings.phone;
@@ -1044,10 +1064,55 @@ var GTM = function () {
         pushDataLayer(gtm_data);
     };
 
+    // Pushes deposit & withdrawal data from transaction-stream to GTM
+    var pushTransactionData = function pushTransactionData(response) {
+        var extra_data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        if (!isGtmApplicable() || ClientBase.get('is_virtual')) return;
+        if (!response.transaction || !response.transaction.action) return;
+        if (!['deposit', 'withdrawal'].includes(response.transaction.action)) return;
+
+        var moment_now = window.time || moment().utc();
+        var storage_key = 'GTM_transactions';
+
+        // Remove values from prev days so localStorage doesn't grow to infinity
+        var gtm_transactions = JSON.parse(localStorage.getItem(storage_key)) || {};
+        if (Object.prototype.hasOwnProperty.call(gtm_transactions, 'timestamp')) {
+            if (moment_now.isAfter(moment.unix(gtm_transactions.timestamp).utc(), 'day')) {
+                localStorage.removeItem(storage_key);
+                gtm_transactions = { timestamp: moment_now.unix() };
+            }
+        }
+        var transactions_arr = gtm_transactions.transactions || [];
+        if (!transactions_arr.includes(response.transaction.transaction_id)) {
+            var data = {
+                event: 'transaction',
+                bom_account_type: ClientBase.getAccountType(),
+                bom_today: moment_now.unix(),
+                transaction: {
+                    id: response.transaction.transaction_id,
+                    type: response.transaction.action,
+                    time: response.transaction.transaction_time,
+                    amount: response.transaction.amount,
+                    balance: response.transaction.balance
+                }
+            };
+            Object.assign(data, extra_data);
+            pushDataLayer(data);
+
+            transactions_arr.push(response.transaction.transaction_id);
+            gtm_transactions.transactions = transactions_arr;
+            gtm_transactions.timestamp = gtm_transactions.timestamp || moment_now.unix();
+
+            localStorage.setItem(storage_key, JSON.stringify(gtm_transactions));
+        }
+    };
+
     return {
         pushDataLayer: pushDataLayer,
         eventHandler: eventHandler,
         pushPurchaseData: pushPurchaseData,
+        pushTransactionData: pushTransactionData,
         mt5NewAccount: mt5NewAccount,
         setLoginFlag: function setLoginFlag(event_name) {
             if (isGtmApplicable()) localStorage.setItem('GTM_login', event_name);
@@ -1092,7 +1157,7 @@ var Login = function () {
         var date_first_contact = LocalStore.get('date_first_contact');
         var marketing_queries = '&signup_device=' + signup_device + (date_first_contact ? '&date_first_contact=' + date_first_contact : '');
 
-        return server_url && /qa/.test(server_url) ? 'https://www.' + server_url.split('.')[1] + '.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + language + marketing_queries : urlForCurrentDomain('https://oauth.binary.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + language + marketing_queries);
+        return server_url && /qa/.test(server_url) ? 'https://' + server_url + '/oauth2/authorize?app_id=' + getAppId() + '&l=' + language + marketing_queries : urlForCurrentDomain('https://oauth.binary.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + language + marketing_queries);
     };
 
     var isLoginPages = function isLoginPages() {
@@ -1104,10 +1169,19 @@ var Login = function () {
         return loginUrl() + '&social_signup=' + brand;
     };
 
+    var initOneAll = function initOneAll() {
+        ['google', 'facebook'].forEach(function (provider) {
+            $('#button_' + provider).off('click').on('click', function (e) {
+                e.preventDefault();
+                window.location.href = socialLoginUrl(provider);
+            });
+        });
+    };
+
     return {
         redirectToLogin: redirectToLogin,
         isLoginPages: isLoginPages,
-        socialLoginUrl: socialLoginUrl
+        initOneAll: initOneAll
     };
 }();
 
@@ -1392,6 +1466,7 @@ var BinarySocketBase = function () {
     var wrong_app_id = 0;
     var is_available = true;
     var is_disconnect_called = false;
+    var is_connected_before = false;
 
     var socket_url = getSocketURL() + '?app_id=' + getAppId() + '&l=' + getLanguage();
     var timeouts = {};
@@ -1604,6 +1679,14 @@ var BinarySocketBase = function () {
             if (typeof config.onOpen === 'function') {
                 config.onOpen(isReady());
             }
+
+            if (typeof config.onReconnect === 'function' && is_connected_before) {
+                config.onReconnect();
+            }
+
+            if (!is_connected_before) {
+                is_connected_before = true;
+            }
         };
 
         binary_socket.onmessage = function (msg) {
@@ -1680,6 +1763,12 @@ var BinarySocketBase = function () {
         },
         setOnDisconnect: function setOnDisconnect(onDisconnect) {
             config.onDisconnect = onDisconnect;
+        },
+        setOnReconnect: function setOnReconnect(onReconnect) {
+            config.onReconnect = onReconnect;
+        },
+        removeOnReconnect: function removeOnReconnect() {
+            delete config.onReconnect;
         },
         removeOnDisconnect: function removeOnDisconnect() {
             delete config.onDisconnect;
@@ -1838,6 +1927,230 @@ var SocketCache = function () {
 }();
 
 module.exports = SocketCache;
+
+/***/ }),
+
+/***/ "./src/javascript/_common/base/subscription_manager.js":
+/*!*************************************************************!*\
+  !*** ./src/javascript/_common/base/subscription_manager.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _socket_base = __webpack_require__(/*! ./socket_base */ "./src/javascript/_common/base/socket_base.js");
+
+var _socket_base2 = _interopRequireDefault(_socket_base);
+
+var _utility = __webpack_require__(/*! ../utility */ "./src/javascript/_common/utility.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * A layer over BinarySocket to handle subscribing to streaming calls
+ * in order to keep track of subscriptions, manage forget, prevent multiple subscription at the same time, ...
+ *
+ * structure of the the subscription object is:
+ * {
+ *     1: { msg_type: 'proposal', request: { ... }, stream_id: '...', subscribers: [ ... ] },
+ *     2: ...
+ * }
+ * object keys: subscription_id that assigned to each subscription
+ * msg_type   : msg_type of the request for faster filtering
+ * request    : the request object, used to subscribe to the same stream when there is a new subscribe request with exactly the same values
+ * stream_id  : id of the stream which stored from its response and used to forget the stream when needed
+ * subscribers: an array of callbacks to dispatch the response to
+ */
+var SubscriptionManager = function () {
+    var subscriptions = {};
+    var forget_requested = {};
+
+    var subscription_id = 0;
+
+    /**
+     * To submit request for a new subscription
+     *
+     * @param {String}   msg_type             msg_type of the request
+     * @param {Object}   request_obj          the whole object of the request to be made
+     * @param {Function} fncCallback          callback function to pass the responses to
+     * @param {Boolean}  should_forget_first  when it's true: forgets the previous subscription, then subscribes after receiving the forget response (if any)
+     */
+    var subscribe = function subscribe(msg_type, request_obj, fncCallback) {
+        var should_forget_first = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+        if (should_forget_first) {
+            forget(msg_type, fncCallback).then(function () {
+                subscribe(msg_type, request_obj, fncCallback);
+            });
+            return;
+        }
+
+        var sub_id = Object.keys(subscriptions).find(function (id) {
+            return (0, _utility.isDeepEqual)(request_obj, subscriptions[id].request);
+        });
+
+        if (!sub_id) {
+            sub_id = ++subscription_id;
+
+            subscriptions[sub_id] = {
+                msg_type: msg_type,
+                request: (0, _utility.cloneObject)(request_obj),
+                stream_id: '', // stream_id will be updated after receiving the response
+                subscribers: [fncCallback]
+            };
+
+            _socket_base2.default.send(request_obj, {
+                callback: function callback(response) {
+                    return dispatch(response, sub_id);
+                }
+            });
+        } else if (!hasCallbackFunction(sub_id, fncCallback)) {
+            // there is already an active subscription for the very same request which fncCallback is not subscribed to it yet
+            subscriptions[sub_id].subscribers.push(fncCallback);
+        }
+    };
+
+    // dispatches the response to subscribers of the specific subscription id (internal use only)
+    var dispatch = function dispatch(response, sub_id) {
+        var stream_id = (0, _utility.getPropertyValue)(response, [response.msg_type, 'id']);
+
+        if (!subscriptions[sub_id]) {
+            if (!forget_requested[stream_id]) {
+                forgetStream(stream_id);
+            }
+            return;
+        }
+
+        var sub_info = subscriptions[sub_id];
+        // set the stream_id
+        if (!sub_info.stream_id && stream_id) {
+            sub_info.stream_id = stream_id;
+        }
+
+        // callback subscribers
+        var subscribers = sub_info.subscribers;
+        if (subscribers.length) {
+            if (
+            // it is the first response
+            !sub_info.stream_id && (
+            // the first response returned error
+            response.error ||
+            // not a subscription (i.e. subscribed proposal_open_contract for an expired contract)
+            // also to filter out streams with no stream id but later it will continue streaming (i.e. proposal_open_contract without contract id)
+            !(0, _utility.isEmptyObject)(response[response.msg_type]) &&
+            // check msg_type to filter out those calls which don't return stream `id` on first response (tick_history, ...)
+            response.msg_type === sub_info.msg_type) ||
+            // remove when response isn't first and response has no stream_id
+            !stream_id && sub_info.stream_id) {
+                delete subscriptions[sub_id];
+            }
+            sub_info.subscribers.forEach(function (fnc) {
+                fnc(response);
+            });
+        } else {
+            delete subscriptions[sub_id];
+            forgetStream(sub_info.stream_id);
+        }
+    };
+
+    /**
+     * To forget a subscription which submitted for a specific callback function
+     *
+     * @param  {String}   msg_type      msg_type to forget
+     * @param  {Function} fncCallback   the same function passed to subscribe()
+     *     (this is the way to distinguish between different subscribers of the same stream at the same time)
+     * @param  {Object}   match_values  optional, to only forget subscriptions having request that "contains" provided values
+     * @return {Promise}  the promise object of all possible forget requests
+     */
+    var forget = function forget(msg_type, fncCallback, match_values) {
+        if (typeof fncCallback !== 'function') {
+            throw new Error('Missing callback function. To forget all subscriptions of msg_type: ' + msg_type + ', please call forgetAll().');
+        }
+
+        // find corresponding id(s)
+        var sub_ids = Object.keys(subscriptions).filter(function (id) {
+            return subscriptions[id].msg_type === msg_type && hasCallbackFunction(id, fncCallback);
+        });
+
+        var forgets_list = [];
+        sub_ids.forEach(function (id) {
+            if (match_values && !hasValues(subscriptions[id].request, match_values)) {
+                return;
+            }
+            var stream_id = subscriptions[id].stream_id;
+            if (stream_id && subscriptions[id].subscribers.length === 1) {
+                delete subscriptions[id];
+                forgets_list.push(forgetStream(stream_id));
+            } else {
+                // there are other subscribers, or for some reason there is no stream_id:
+                // (i.e. returned an error, or forget() being called before the first response)
+                subscriptions[id].subscribers.splice(subscriptions[id].subscribers.indexOf(fncCallback), 1);
+            }
+        });
+        return Promise.all(forgets_list);
+    };
+
+    /**
+     * To forget all active subscriptions of a list of msg_types
+     *
+     * @param  {String}  msg_types  list of msg_types to forget
+     * @return {Promise} the promise object of all possible forget_all requests
+     */
+    var forgetAll = function forgetAll() {
+        for (var _len = arguments.length, msg_types = Array(_len), _key = 0; _key < _len; _key++) {
+            msg_types[_key] = arguments[_key];
+        }
+
+        var types_to_forget = {};
+
+        msg_types.forEach(function (msg_type) {
+            var sub_ids = Object.keys(subscriptions).filter(function (id) {
+                return subscriptions[id].msg_type === msg_type;
+            });
+            if (sub_ids.length) {
+                sub_ids.forEach(function (id) {
+                    delete subscriptions[id];
+                });
+                types_to_forget[msg_type] = true;
+            }
+        });
+
+        return Promise.resolve(!(0, _utility.isEmptyObject)(types_to_forget) ? _socket_base2.default.send({ forget_all: Object.keys(types_to_forget) }) : {});
+    };
+
+    var forgetStream = function forgetStream(stream_id) {
+        forget_requested[stream_id] = true; // to prevent forgetting multiple times
+        return Promise.resolve(stream_id ? _socket_base2.default.send({ forget: stream_id }).then(function () {
+            delete forget_requested[stream_id];
+        }) : {});
+    };
+
+    var hasCallbackFunction = function hasCallbackFunction(sub_id, fncCallback) {
+        return subscriptions[sub_id] && subscriptions[sub_id].subscribers.indexOf(fncCallback) !== -1;
+    };
+
+    var hasValues = function hasValues(request_obj, values_obj) {
+        return (typeof request_obj === 'undefined' ? 'undefined' : _typeof(request_obj)) === 'object' && (typeof values_obj === 'undefined' ? 'undefined' : _typeof(values_obj)) === 'object' && Object.keys(values_obj).every(function (key) {
+            return request_obj[key] === values_obj[key];
+        });
+    };
+
+    return {
+        subscribe: subscribe,
+        forget: forget,
+        forgetAll: forgetAll
+    };
+}();
+
+exports.default = SubscriptionManager;
 
 /***/ }),
 
@@ -2139,67 +2452,108 @@ module.exports = Crowdin;
 
 /* global google */
 var scriptjs = __webpack_require__(/*! scriptjs */ "./node_modules/scriptjs/dist/script.js");
-var localize = __webpack_require__(/*! ./localize */ "./src/javascript/_common/localize.js").localize;
+var getElementById = __webpack_require__(/*! ./common_functions */ "./src/javascript/_common/common_functions.js").getElementById;
 var applyToAllElements = __webpack_require__(/*! ./utility */ "./src/javascript/_common/utility.js").applyToAllElements;
-var createElement = __webpack_require__(/*! ./utility */ "./src/javascript/_common/utility.js").createElement;
 var Client = __webpack_require__(/*! ../app/base/client */ "./src/javascript/app/base/client.js");
 
 var Geocoder = function () {
     var el_btn_validate = void 0,
-        el_error = void 0;
+        el_error = void 0,
+        el_geocode_status = void 0,
+        el_loader = void 0,
+        el_postcode_row = void 0,
+        el_success = void 0,
+        is_states_el_select = void 0;
     var validated = false;
 
     var init = function init(form_id) {
+        // TODO: We should store the Google API key in an unstaged file so it doesn't get committed to the public repository
         scriptjs('https://maps.googleapis.com/maps/api/js?key=AIzaSyAEha6-HeZuI95L9JWmX3m6o-AxQr_oFqU&libraries=places', 'gMaps');
 
-        var form = document.getElementById(form_id.split('#')[1]);
+        var form = getElementById(form_id.split('#')[1]);
         var addr_1 = '#address_line_1';
         var addr_2 = '#address_line_2';
         var city = '#address_city';
         var state = '#address_state';
         var postcode = '#address_postcode';
-        var residence = Client.get('residence');
+        var residence = Client.get('residence').toUpperCase();
 
-        var getValue = function getValue(id) {
-            return document.getElementById(id.split('#')[1]).value || '';
-        };
+        is_states_el_select = form.querySelector(state).tagName === 'SELECT';
+
         var getAddress = function getAddress() {
-            return getValue(addr_1) + ' ' + getValue(addr_2) + ', ' + getValue(city) + ', ' + getValue(state) + ' ' + getValue(postcode) + ', ' + residence;
+            return getValue(addr_1) + ', ' + getValue(addr_2) + ', ' + getValue(city) + ', ' + getValue(postcode) + ' ' + (is_states_el_select ? getStateText(state) : getValue(state)) + ', ' + residence + ' ';
         };
 
-        form.querySelector(city).addEventListener('change', function () {
-            if (getValue(addr_1).length && getValue(city).length && !validated) {
+        el_btn_validate = form.querySelector('#geocode_validate');
+        el_geocode_status = form.querySelector('#geocode_status');
+        el_error = form.querySelector('#geocode_error');
+        el_postcode_row = form.querySelector('.postcode-form-row');
+        el_success = form.querySelector('#geocode_success');
+        el_loader = form.querySelector('.barspinner');
+
+        if (el_btn_validate) {
+            applyToAllElements(addr_1 + ', ' + addr_2 + ', ' + postcode + ', ' + (!is_states_el_select ? state : undefined) + ' ,' + city, function (element) {
+                // List of fields that will trigger event onChange but will allow empty values as they are non-required fields
+                var non_required_fields = ['addr_2', 'postcode', '' + (!is_states_el_select ? 'state' : undefined)];
+
+                element.addEventListener('keyup', function () {
+                    var value = element.value;
+                    // Check if address_line_1, address_state and address city have values
+                    var has_met_conditions = getValue(city).trim().length > 0 && getValue(addr_1).trim().length > 0;
+
+                    if (value.length > 0 && !non_required_fields.includes(element.id) && has_met_conditions) {
+                        el_btn_validate.classList.remove('geocode-btn-disabled');
+                    } else if (!non_required_fields.includes(element.id) && has_met_conditions) {
+                        el_btn_validate.classList.remove('geocode-btn-disabled');
+                    } else {
+                        el_btn_validate.classList.add('geocode-btn-disabled');
+                    }
+                });
+            }, '', form);
+
+            el_btn_validate.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (el_btn_validate.classList.contains('geocode-btn-disabled')) {
+                    return;
+                }
                 validator(getAddress()).then(function () {
                     validated = true;
                 });
-            }
-        });
-
-        el_error = form.querySelector('#geocode_error');
-        applyToAllElements(addr_1 + ', ' + addr_2 + ', ' + city + ', ' + postcode, function (element) {
-            element.addEventListener('keyup', function () {
-                if (!validated && !el_btn_validate) {
-                    el_btn_validate = createElement('button', {
-                        id: 'geocode_validate',
-                        class: 'button-secondary',
-                        text: localize('Validate address')
-                    });
-                    el_btn_validate.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        validator(getAddress()).then(function () {
-                            validated = true;
-                        });
-                    });
-                    el_error.parentNode.appendChild(el_btn_validate);
-                }
-                if (el_btn_validate) el_btn_validate.setVisibility(1);
-                el_error.setVisibility(0);
             });
-        }, '', form);
+
+            // using jQuery here because for some reason vanilla javascript eventListener isn't working for select input onChange events
+            $(state).on('change', function () {
+                if (getValue(city).length > 0 && getValue(addr_1).length > 0) {
+                    el_btn_validate.classList.remove('geocode-btn-disabled');
+                } else {
+                    el_btn_validate.classList.add('geocode-btn-disabled');
+                }
+            });
+
+            el_btn_validate.setVisibility(1);
+
+            if (validated || !getValue(addr_1).length || !getValue(state)) {
+                el_btn_validate.classList.add('geocode-btn-disabled');
+            }
+        }
+
+        el_postcode_row.parentNode.appendChild(el_geocode_status);
+
+        if (el_error) {
+            el_error.setVisibility(0);
+        }
 
         return {
             address: getAddress()
         };
+    };
+
+    var getValue = function getValue(selector) {
+        return getElementById(selector.split('#')[1]).value || '';
+    };
+    var getStateText = function getStateText(selector) {
+        var states_list_el = getElementById(selector.split('#')[1]);
+        return states_list_el.options[states_list_el.selectedIndex].text;
     };
 
     var validate = function validate(form_id) {
@@ -2213,26 +2567,76 @@ var Geocoder = function () {
         return new Promise(function (resolve) {
             scriptjs.ready('gMaps', function () {
                 var geocoder = new google.maps.Geocoder();
+                el_btn_validate.classList.add('geocode-btn-disabled');
+                el_success.setVisibility(0);
+                el_error.setVisibility(0);
+                el_loader.setVisibility(1);
                 geocoder.geocode({
-                    address: address
+                    address: address,
+                    // Restrict Geolocation to client's country of residence and state
+                    componentRestrictions: {
+                        country: Client.get('residence').toUpperCase(),
+                        administrativeArea: is_states_el_select ? getStateText('#address_state') : getValue('#address_state')
+                    }
                 }, function (result, status) {
                     // Geocoding status reference:
                     // https://developers.google.com/maps/documentation/javascript/geocoding#GeocodingStatusCodes
-                    handleResponse(status);
-                    resolve(status);
+                    var data = { result: result, status: status };
+                    handleResponse(data);
+                    resolve(data);
                 });
             });
         });
     };
 
-    var handleResponse = function handleResponse(status) {
-        if (/ZERO_RESULTS|INVALID_REQUEST/.test(status)) {
+    var isAddressFound = function isAddressFound(user_address, user_city, geoloc_address) {
+        var result = void 0;
+        var trimSpaces = function trimSpaces(string) {
+            return string.replace(/^\s+|\s+$/g, '');
+        };
+
+        if (geoloc_address.length && getValue('#address_city')) {
+            var item_idx = geoloc_address.length - 1;
+
+            var country_longname = getElementById('country').innerHTML;
+            var input_city = trimSpaces(user_city).toLowerCase();
+            var user_address_str = trimSpaces(user_address);
+            var arr_input_address = user_address_str.replace(/[\s]-[\s]|\/\w+/g, ' ').toLowerCase().split(', ');
+
+            var arr_address_components = geoloc_address[item_idx].address_components;
+            var arr_address_list = [];
+
+            // Create address dictionary string based on returned long and short named address components by Geolocation API
+            arr_address_components.filter(function (address) {
+                arr_address_list.push(address.long_name.replace(/ - /g, ' '));
+                arr_address_list.push(address.short_name.replace(/ - /g, ' '));
+            });
+
+            // Filter out duplicates in address components
+            var address_list_dictionary = arr_address_list.filter(function (elem, pos, arr) {
+                return arr.indexOf(elem) === pos;
+            }).join(' ').toLowerCase();
+
+            // Check if city exists, if true, check if first line of address exists
+            if (address_list_dictionary.indexOf(input_city) !== -1 && user_address.toLowerCase() !== country_longname.toLowerCase()) {
+                result = arr_input_address.some(function (address) {
+                    return address_list_dictionary.includes(address);
+                });
+            }
+        }
+        return result;
+    };
+
+    var handleResponse = function handleResponse(data) {
+        var is_address_found = isAddressFound(getValue('#address_line_1'), getValue('#address_city'), data.result);
+        if (/ZERO_RESULTS|INVALID_REQUEST|UNKNOWN_ERROR/.test(data.status) || !is_address_found) {
             el_error.setVisibility(1);
-            if (el_btn_validate) el_btn_validate.setVisibility(0);
+            el_success.setVisibility(0);
         } else {
             el_error.setVisibility(0);
-            if (el_btn_validate) el_btn_validate.setVisibility(0);
+            el_success.setVisibility(1);
         }
+        el_loader.setVisibility(0);
     };
 
     return {
@@ -7363,6 +7767,30 @@ if (!('includes' in Array.prototype)) {
 
 /***/ }),
 
+/***/ "./src/javascript/_common/lib/polyfills/element.closest.js":
+/*!*****************************************************************!*\
+  !*** ./src/javascript/_common/lib/polyfills/element.closest.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+if (!Element.prototype.closest) {
+    Element.prototype.closest = function (s) {
+        var el = this;
+        if (!document.documentElement.contains(el)) return null;
+        do {
+            if (el.matches(s)) return el;
+            el = el.parentElement || el.parentNode;
+        } while (el !== null && el.nodeType === 1);
+        return null;
+    };
+}
+
+/***/ }),
+
 /***/ "./src/javascript/_common/lib/polyfills/element.matches.js":
 /*!*****************************************************************!*\
   !*** ./src/javascript/_common/lib/polyfills/element.matches.js ***!
@@ -9042,6 +9470,8 @@ module.exports = {
 "use strict";
 
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var BinaryPjax = __webpack_require__(/*! ./binary_pjax */ "./src/javascript/app/base/binary_pjax.js");
 var pages_config = __webpack_require__(/*! ./binary_pages */ "./src/javascript/app/base/binary_pages.js");
 var Client = __webpack_require__(/*! ./client */ "./src/javascript/app/base/client.js");
@@ -9095,6 +9525,7 @@ var BinaryLoader = function () {
     var beforeContentChange = function beforeContentChange() {
         if (active_script) {
             BinarySocket.removeOnDisconnect();
+            BinarySocket.removeOnReconnect();
             if (typeof active_script.onUnload === 'function') {
                 active_script.onUnload();
             }
@@ -9108,14 +9539,26 @@ var BinaryLoader = function () {
         GTM.pushDataLayer({ event: 'page_load' });
 
         var this_page = e.detail.getAttribute('data-page');
-        if (this_page in pages_config) {
-            loadHandler(pages_config[this_page]);
+        if (Object.prototype.hasOwnProperty.call(pages_config, this_page)) {
+            loadHandler(this_page);
         } else if (/\/get-started\//i.test(window.location.pathname)) {
-            loadHandler(pages_config['get-started']);
+            loadHandler('get-started');
         }
 
         ContentVisibility.init();
-        ScrollToAnchor.init();
+
+        BinarySocket.wait('authorize', 'website_status', 'landing_company').then(function () {
+            // first time load.
+            var last_image = $('#content img').last();
+            if (last_image) {
+                last_image.on('load', function () {
+                    ScrollToAnchor.init();
+                });
+            }
+
+            ScrollToAnchor.init();
+        });
+        BinarySocket.setOnReconnect(active_script.onReconnect);
     };
 
     var error_messages = {
@@ -9133,7 +9576,8 @@ var BinaryLoader = function () {
         }
     };
 
-    var loadHandler = function loadHandler(config) {
+    var loadHandler = function loadHandler(this_page) {
+        var config = _extends({}, pages_config[this_page]);
         active_script = config.module;
         if (config.is_authenticated) {
             if (!Client.isLoggedIn()) {
@@ -9152,7 +9596,11 @@ var BinaryLoader = function () {
                 });
             }
         } else if (config.not_authenticated && Client.isLoggedIn()) {
-            handleNotAuthenticated();
+            if (this_page === 'home') {
+                BinaryPjax.load(Client.defaultRedirectUrl(), true);
+            } else {
+                handleNotAuthenticated();
+            }
         } else {
             loadActiveScript(config);
         }
@@ -9194,12 +9642,16 @@ var BinaryLoader = function () {
     };
 
     var handleNotAuthenticated = function handleNotAuthenticated() {
-        var content = container.querySelector('#content .container');
+        var content = container.querySelector('#content');
         if (!content) {
             return;
         }
+        content.classList.add('container');
 
-        var outer_container = createElement('div', { class: 'logged_out_title_container', html: content.getElementsByTagName('h1')[0] });
+        var outer_container = createElement('div', { class: 'logged_out_title_container' });
+        outer_container.appendChild(container.querySelector('#page_info'));
+        outer_container.appendChild(container.getElementsByTagName('h1')[0]);
+
         var rowDiv = function rowDiv(element) {
             var row_element = createElement('div', { class: 'gr-padding-10' });
             row_element.appendChild(element);
@@ -9275,7 +9727,7 @@ var TwoFactorAuthentication = __webpack_require__(/*! ../pages/user/account/sett
 var PersonalDetails = __webpack_require__(/*! ../pages/user/account/settings/personal_details */ "./src/javascript/app/pages/user/account/settings/personal_details.js");
 var professionalClient = __webpack_require__(/*! ../pages/user/account/settings/professional_client */ "./src/javascript/app/pages/user/account/settings/professional_client.js");
 var Statement = __webpack_require__(/*! ../pages/user/account/statement/statement.init */ "./src/javascript/app/pages/user/account/statement/statement.init.js");
-var TopUpVirtual = __webpack_require__(/*! ../pages/user/account/top_up_virtual */ "./src/javascript/app/pages/user/account/top_up_virtual.js");
+var TopUpVirtual = __webpack_require__(/*! ../pages/user/account/top_up_virtual/top_up_virtual */ "./src/javascript/app/pages/user/account/top_up_virtual/top_up_virtual.js");
 var Accounts = __webpack_require__(/*! ../pages/user/accounts */ "./src/javascript/app/pages/user/accounts.js");
 var LostPassword = __webpack_require__(/*! ../pages/user/lost_password */ "./src/javascript/app/pages/user/lost_password.js");
 var MetaTrader = __webpack_require__(/*! ../pages/user/metatrader/metatrader */ "./src/javascript/app/pages/user/metatrader/metatrader.js");
@@ -9291,7 +9743,7 @@ var TNCApproval = __webpack_require__(/*! ../pages/user/tnc_approval */ "./src/j
 var VideoFacility = __webpack_require__(/*! ../pages/user/video_facility */ "./src/javascript/app/pages/user/video_facility.js");
 
 // ==================== static ====================
-var Charity = __webpack_require__(/*! ../../static/pages/charity */ "./src/javascript/static/pages/charity.js");
+// const Charity            = require('../../static/pages/charity');
 var Contact = __webpack_require__(/*! ../../static/pages/contact */ "./src/javascript/static/pages/contact.js");
 var Contact2 = __webpack_require__(/*! ../../static/pages/contact_2 */ "./src/javascript/static/pages/contact_2.js");
 var GetStarted = __webpack_require__(/*! ../../static/pages/get_started */ "./src/javascript/static/pages/get_started.js");
@@ -9313,32 +9765,42 @@ var pages_config = {
     asset_indexws: { module: AssetIndexUI },
     authenticate: { module: Authenticate, is_authenticated: true, only_real: true },
     authorised_appsws: { module: AuthorisedApps, is_authenticated: true },
+    careers: { module: StaticPages.Careers },
     cashier: { module: Cashier },
     cashier_passwordws: { module: CashierPassword, is_authenticated: true, only_real: true },
+    cfds: { module: GetStarted.CFDs },
+    // charity                  : { module: Charity },
     change_passwordws: { module: ChangePassword, is_authenticated: true },
-    charity: { module: Charity },
     contact: { module: Contact },
+    cryptocurrencies: { module: GetStarted.Cryptocurrencies },
+    cyberjaya: { module: StaticPages.Locations },
     detailsws: { module: PersonalDetails, is_authenticated: true, needs_currency: true },
+    download: { module: MetatraderDownloadUI },
     economic_calendar: { module: EconomicCalendar },
     endpoint: { module: Endpoint },
     epg_forwardws: { module: DepositWithdraw, is_authenticated: true, only_real: true },
+    faq: { module: StaticPages.AffiliatesFAQ },
+    forex: { module: GetStarted.Forex },
     forwardws: { module: DepositWithdraw, is_authenticated: true, only_real: true },
     home: { module: Home, not_authenticated: true },
     iphistoryws: { module: IPHistory, is_authenticated: true },
+    labuan: { module: StaticPages.Locations },
     landing_page: { module: StaticPages.LandingPage, is_authenticated: true, only_virtual: true },
     limitsws: { module: Limits, is_authenticated: true, only_real: true, needs_currency: true },
     logged_inws: { module: LoggedInHandler },
     lost_passwordws: { module: LostPassword, not_authenticated: true },
+    malta: { module: StaticPages.Locations },
     maltainvestws: { module: FinancialAccOpening, is_authenticated: true },
     market_timesws: { module: TradingTimesUI },
+    metals: { module: GetStarted.Metals },
     metatrader: { module: MetaTrader, is_authenticated: true, needs_currency: true },
     multi_barriers_trading: { module: MBTradePage, needs_currency: true },
     payment_agent_listws: { module: PaymentAgentList, is_authenticated: true },
     payment_methods: { module: Cashier.PaymentMethods },
     platforms: { module: Platforms },
     portfoliows: { module: Portfolio, is_authenticated: true, needs_currency: true },
-    profit_tablews: { module: ProfitTable, is_authenticated: true, needs_currency: true },
     professional: { module: professionalClient, is_authenticated: true, only_real: true },
+    profit_tablews: { module: ProfitTable, is_authenticated: true, needs_currency: true },
     realws: { module: RealAccOpening, is_authenticated: true },
     redirect: { module: Redirect },
     regulation: { module: Regulation },
@@ -9356,36 +9818,28 @@ var pages_config = {
     virtualws: { module: VirtualAccOpening, not_authenticated: true },
     welcome: { module: WelcomePage, is_authenticated: true, only_virtual: true },
     withdrawws: { module: PaymentAgentWithdraw, is_authenticated: true, only_real: true },
+
+    'binary-in-numbers': { module: StaticPages.BinaryInNumbers },
     'binary-options': { module: GetStarted.BinaryOptions },
     'binary-options-mt5': { module: GetStarted.BinaryOptionsForMT5 },
-    'careers': { module: StaticPages.Careers },
     'contact-2': { module: Contact2 },
-    'cyberjaya': { module: StaticPages.Locations },
-    'cfds': { module: GetStarted.CFDs },
     'contract-specifications': { module: TabSelector },
-    'cryptocurrencies': { module: GetStarted.Cryptocurrencies },
-    'download': { module: MetatraderDownloadUI },
-    'faq': { module: StaticPages.AffiliatesFAQ },
-    'forex': { module: GetStarted.Forex },
     'get-started': { module: TabSelector },
     'how-to-trade-mt5': { module: TabSelector },
     'ib-faq': { module: StaticPages.IBProgrammeFAQ },
     'ib-signup': { module: TabSelector },
     'job-details': { module: JobDetails },
     'keep-safe': { module: KeepSafe },
-    'labuan': { module: StaticPages.Locations },
-    'malta': { module: StaticPages.Locations },
-    'metals': { module: GetStarted.Metals },
     'new-account': { module: NewAccount, not_authenticated: true },
     'open-positions': { module: StaticPages.OpenPositions },
     'open-source-projects': { module: StaticPages.OpenSourceProjects },
     'payment-agent': { module: StaticPages.PaymentAgent },
     'set-currency': { module: SetCurrency, is_authenticated: true, only_real: true, needs_currency: true },
+    'telegram-bot': { module: TelegramBot, is_authenticated: true },
     'terms-and-conditions': { module: TermsAndConditions },
     'types-of-accounts': { module: TypesOfAccounts },
     'video-facility': { module: VideoFacility, is_authenticated: true, only_real: true },
-    'why-us': { module: WhyUs },
-    'telegram-bot': { module: TelegramBot, is_authenticated: true }
+    'why-us': { module: WhyUs }
 };
 /* eslint-enable max-len */
 
@@ -9496,6 +9950,8 @@ var BinaryPjax = function () {
         // check if url is not same as current or if url has `anchor` query
         if (location.href !== url || Url.paramsHash().anchor) {
             processUrl(url);
+        } else {
+            $.scrollTo('body', 500);
         }
 
         // workaround to remove non-error notification msg for chrome bug where users logout from different browser window
@@ -9714,6 +10170,9 @@ var Client = function () {
         if (response.logout !== 1) return;
         removeCookies('login', 'loginid', 'loginid_list', 'email', 'residence', 'settings'); // backward compatibility
         removeCookies('reality_check', 'affiliate_token', 'affiliate_tracking');
+        // clear elev.io session storage
+        sessionStorage.removeItem('_elevaddon-6app');
+        sessionStorage.removeItem('_elevaddon-6create');
         ClientBase.clearAllAccounts();
         ClientBase.set('loginid', '');
         SocketCache.clear();
@@ -9867,9 +10326,11 @@ module.exports = Contents;
 "use strict";
 
 
+var Cookies = __webpack_require__(/*! js-cookie */ "./node_modules/js-cookie/src/js.cookie.js");
 var BinarySocket = __webpack_require__(/*! ./socket */ "./src/javascript/app/base/socket.js");
 var Client = __webpack_require__(/*! ../base/client */ "./src/javascript/app/base/client.js");
 var isEuCountry = __webpack_require__(/*! ../common/country_base */ "./src/javascript/app/common/country_base.js").isEuCountry;
+var getElementById = __webpack_require__(/*! ../../_common/common_functions */ "./src/javascript/_common/common_functions.js").getElementById;
 var LocalStore = __webpack_require__(/*! ../../_common/storage */ "./src/javascript/_common/storage.js").LocalStore;
 var State = __webpack_require__(/*! ../../_common/storage */ "./src/javascript/_common/storage.js").State;
 
@@ -9896,19 +10357,82 @@ var Footer = function () {
         $status_notification.slideUp(200);
     };
 
+    // by default elevio is 8px above bottom of page, and scrollup is 18px above elevio
+    var adjustElevioAndScrollup = function adjustElevioAndScrollup() {
+        var elevio_height = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 8;
+        var scrollup_height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 18;
+
+        var $elevio_button = $('#_elev_io ._6byvm');
+        var $scrollup = $('#scrollup');
+
+        $elevio_button.attr('style', 'bottom: ' + elevio_height + 'px !important');
+        $scrollup.attr('style', 'bottom: ' + ($elevio_button.height() + scrollup_height) + 'px');
+    };
+
+    var clearDialogMessage = function clearDialogMessage() {
+        var $dialog_notification = $('#dialog_notification');
+        var el_footer = getElementById('footer');
+        var $status_notification = $('#status_notification');
+        var gap_to_notification = 8;
+
+        $status_notification.css('bottom', gap_to_notification + 'px');
+        el_footer.style.paddingBottom = '0px';
+        $dialog_notification.slideUp(200);
+        adjustElevioAndScrollup();
+    };
+
+    var displayDialogMessage = function displayDialogMessage() {
+        BinarySocket.wait('website_status', 'authorize', 'landing_company').then(function () {
+            if (isEuCountry()) {
+                var $dialog_notification = $('#dialog_notification');
+                var $status_notification = $('#status_notification');
+                var el_dialog_notification_accept = getElementById('dialog_notification_accept');
+                var el_footer = getElementById('footer');
+                var gap_dialog_to_elevio = 30;
+                var gap_elevio_to_scrollup = 10;
+                var gap_to_notification = 8;
+
+                $dialog_notification.css('display', 'flex');
+                el_footer.style.paddingBottom = $dialog_notification.height() + 'px';
+                adjustElevioAndScrollup($dialog_notification.height() + gap_dialog_to_elevio, $dialog_notification.height() + gap_dialog_to_elevio + gap_elevio_to_scrollup);
+                if ($status_notification.css('display') !== 'none') {
+                    $status_notification.css('bottom', $dialog_notification.height() + gap_dialog_to_elevio + 'px');
+                }
+
+                el_dialog_notification_accept.addEventListener('click', function () {
+                    adjustElevioAndScrollup();
+                    $dialog_notification.slideUp(200);
+                    el_footer.style.paddingBottom = '0px';
+                    $status_notification.css('bottom', gap_to_notification + 'px');
+                    Cookies.set('CookieConsent', 1);
+                });
+                window.addEventListener('resize', function () {
+                    adjustElevioAndScrollup($dialog_notification.height() + gap_dialog_to_elevio, $dialog_notification.height() + gap_dialog_to_elevio + gap_elevio_to_scrollup);
+                    $status_notification.css('bottom', $dialog_notification.height() + gap_dialog_to_elevio + 'px');
+                    el_footer.style.paddingBottom = $dialog_notification.height() + 'px';
+                });
+            }
+        });
+    };
+
     var displayNotification = function displayNotification(message) {
         BinarySocket.wait('time').then(function (response) {
             var notification_storage = LocalStore.getObject('status_notification');
+            var $dialog_notification = $('#dialog_notification');
+            var $status_notification = $('#status_notification');
             var time_difference = parseInt(response.time) - (parseInt(notification_storage.close_time) || 0);
             var required_difference = 30 * 60;
+            var gap_dialog_to_elevio = 30;
 
             if (time_difference > required_difference || notification_storage.message !== message) {
                 var $status_message_text = $('#status_notification_text');
                 var $close_icon = $('#status_notification_close');
-                var $status_notification = $('#status_notification');
 
                 $status_notification.css('display', 'flex');
                 $status_message_text.html(message);
+                if ($dialog_notification.css('display') !== 'none') {
+                    $status_notification.css('bottom', $dialog_notification.height() + gap_dialog_to_elevio + 'px');
+                }
                 $close_icon.off('click').on('click', function () {
                     $status_notification.slideUp(200);
                     notification_storage.message = message;
@@ -9922,7 +10446,9 @@ var Footer = function () {
     return {
         onLoad: onLoad,
         clearNotification: clearNotification,
-        displayNotification: displayNotification
+        displayNotification: displayNotification,
+        displayDialogMessage: displayDialogMessage,
+        clearDialogMessage: clearDialogMessage
     };
 }();
 
@@ -10701,8 +11227,8 @@ var Page = function () {
             window.addEventListener('storage', function (evt) {
                 switch (evt.key) {
                     case 'active_loginid':
-                        // not the active tab and logged out or loginid switch
-                        if (document.hidden && (evt.newValue === '' || !window.is_logging_in)) {
+                        // reload the page when the client changes account on other pages.
+                        if (evt.newValue === '' || !window.is_logging_in) {
                             reload();
                         }
                         break;
@@ -10909,6 +11435,7 @@ module.exports = BinarySocketBase;
 "use strict";
 
 
+var Cookies = __webpack_require__(/*! js-cookie */ "./node_modules/js-cookie/src/js.cookie.js");
 var Client = __webpack_require__(/*! ./client */ "./src/javascript/app/base/client.js");
 var Clock = __webpack_require__(/*! ./clock */ "./src/javascript/app/base/clock.js");
 var Footer = __webpack_require__(/*! ./footer */ "./src/javascript/app/base/footer.js");
@@ -10922,6 +11449,7 @@ var SessionDurationLimit = __webpack_require__(/*! ../common/session_duration_li
 var updateBalance = __webpack_require__(/*! ../pages/user/update_balance */ "./src/javascript/app/pages/user/update_balance.js");
 var GTM = __webpack_require__(/*! ../../_common/base/gtm */ "./src/javascript/_common/base/gtm.js");
 var Login = __webpack_require__(/*! ../../_common/base/login */ "./src/javascript/_common/base/login.js");
+var SubscriptionManager = __webpack_require__(/*! ../../_common/base/subscription_manager */ "./src/javascript/_common/base/subscription_manager.js").default;
 var Crowdin = __webpack_require__(/*! ../../_common/crowdin */ "./src/javascript/_common/crowdin.js");
 var localize = __webpack_require__(/*! ../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 var LocalStore = __webpack_require__(/*! ../../_common/storage */ "./src/javascript/_common/storage.js").LocalStore;
@@ -10970,6 +11498,11 @@ var BinarySocketGeneral = function () {
                     if (!Client.isLoggedIn() && !State.getResponse('landing_company')) {
                         BinarySocket.send({ landing_company: response.website_status.clients_country });
                     }
+                    if (!Client.isLoggedIn() && !Cookies.get('CookieConsent')) {
+                        Footer.displayDialogMessage();
+                    } else {
+                        Footer.clearDialogMessage();
+                    }
                 }
                 break;
             case 'authorize':
@@ -10990,6 +11523,9 @@ var BinarySocketGeneral = function () {
                         BinarySocket.send({ get_account_status: 1 });
                         BinarySocket.send({ payout_currencies: 1 });
                         BinarySocket.send({ mt5_login_list: 1 });
+                        SubscriptionManager.subscribe('transaction', { transaction: 1, subscribe: 1 }, function () {
+                            return false;
+                        });
                         var clients_country = response.authorize.country || Client.get('residence');
                         setResidence(clients_country);
                         // for logged in clients send landing company with IP address as residence
@@ -11041,6 +11577,9 @@ var BinarySocketGeneral = function () {
                         $('#topMenuPaymentAgent').setVisibility(1);
                     }
                 }
+                break;
+            case 'transaction':
+                GTM.pushTransactionData(response, { bom_ui: 'new' });
                 break;
             // no default
         }
@@ -11138,6 +11677,7 @@ var AccountOpening = function () {
 
     var populateForm = function populateForm(form_id, getValidations, is_financial) {
         getResidence(form_id, getValidations);
+        handleTaxIdentificationNumber();
         generateBirthDate();
         var landing_company = State.getResponse('landing_company');
         var lc_to_upgrade_to = landing_company[is_financial ? 'financial_company' : 'gaming_company'] || landing_company.financial_company;
@@ -11146,7 +11686,6 @@ var AccountOpening = function () {
         if (getPropertyValue(landing_company, ['financial_company', 'shortcode']) === 'maltainvest') {
             professionalClient.init(is_financial, false);
         }
-        Geocoder.init(form_id);
     };
 
     var getResidence = function getResidence(form_id, getValidations) {
@@ -11158,7 +11697,6 @@ var AccountOpening = function () {
     var handleResidenceList = function handleResidenceList(residence_list, form_id, getValidations) {
         if (residence_list.length > 0) {
             var $place_of_birth = $('#place_of_birth');
-            var $tax_residence = $('#tax_residence');
             var $phone = $('#phone');
             var residence_value = Client.get('residence') || '';
             var residence_text = '';
@@ -11183,9 +11721,12 @@ var AccountOpening = function () {
 
             $('#lbl_residence').html($('<strong/>', { text: residence_text }));
 
-            if ($place_of_birth.length) {
-                BinarySocket.wait('get_settings').then(function (response) {
-                    var place_of_birth = response.get_settings.place_of_birth;
+            BinarySocket.wait('get_settings').then(function (response) {
+                var citizen = response.get_settings.citizen;
+                var place_of_birth = response.get_settings.place_of_birth;
+                var tax_residence = response.get_settings.tax_residence;
+
+                if ($place_of_birth.length) {
                     if (place_of_birth) {
                         var txt_place_of_birth = (residence_list.find(function (obj) {
                             return obj.value === place_of_birth;
@@ -11199,15 +11740,12 @@ var AccountOpening = function () {
                             return SelectMatcher(params, data);
                         }
                     });
-                });
-            }
+                }
 
-            if (/^(malta|maltainvest|iom)$/.test(State.getResponse('authorize.upgradeable_landing_companies'))) {
-                var $citizen = $('#citizen');
-                CommonFunctions.getElementById('citizen_row').setVisibility(1);
-                if ($citizen.length) {
-                    BinarySocket.wait('get_settings').then(function (response) {
-                        var citizen = response.get_settings.citizen;
+                if (/^(malta|maltainvest|iom)$/.test(State.getResponse('authorize.upgradeable_landing_companies'))) {
+                    var $citizen = $('#citizen');
+                    CommonFunctions.getElementById('citizen_row').setVisibility(1);
+                    if ($citizen.length) {
                         if (citizen) {
                             var txt_citizen = (residence_list.find(function (obj) {
                                 return obj.value === citizen;
@@ -11221,27 +11759,49 @@ var AccountOpening = function () {
                                 return SelectMatcher(params, data);
                             }
                         });
-                    });
+                    }
                 }
-            }
 
-            if ($tax_residence) {
-                $tax_residence.html($options_with_disabled.html()).promise().done(function () {
-                    setTimeout(function () {
-                        $tax_residence.select2().val(getTaxResidence() || residence_value).trigger('change').setVisibility(1);
-                    }, 500);
-                });
-            }
+                var $tax_residence_select = $('#tax_residence');
+                $tax_residence_select.html($options_with_disabled.html());
 
+                if (tax_residence) {
+                    var tax_residences_arr = tax_residence.split(',');
+                    var txt_tax_residence = tax_residences_arr.map(function (current_residence) {
+                        return (residence_list.find(function (obj) {
+                            return obj.value === current_residence;
+                        }) || {}).text;
+                    }).join(', ') || tax_residence;
+                    $('#lbl_tax_residence').text(txt_tax_residence);
+
+                    $tax_residence_select.select2(tax_residences_arr.length > 1 ? { multiple: true } : {}) // Multiple in some cases, users could prev select more than 1 residence
+                    .val(tax_residences_arr) // Set value for validation
+                    .attr({ 'data-force': true, 'data-value': tax_residence }).trigger('change');
+                    CommonFunctions.getElementById('row_lbl_tax_residence').setVisibility(1);
+                } else {
+                    $tax_residence_select.select2().val(residence_value) // Attempt auto-assign country_residence to tax_residence if none set
+                    .trigger('change');
+                    CommonFunctions.getElementById('row_tax_residence').setVisibility(1);
+                }
+            });
             BinarySocket.send({ states_list: Client.get('residence') }).then(function (data) {
                 return handleState(data.states_list, form_id, getValidations);
             });
         }
     };
 
-    var getTaxResidence = function getTaxResidence() {
-        var tax_residence = State.getResponse('get_settings.tax_residence');
-        return tax_residence ? tax_residence.split(',') : '';
+    var handleTaxIdentificationNumber = function handleTaxIdentificationNumber() {
+        BinarySocket.wait('get_settings').then(function (response) {
+            var tax_identification_number = response.get_settings.tax_identification_number;
+            if (tax_identification_number) {
+                $('#lbl_tax_identification_number').text(tax_identification_number);
+                CommonFunctions.getElementById('row_lbl_tax_identification_number').setVisibility(1);
+                $('#tax_identification_number').val(tax_identification_number) // Set value for validation
+                .attr({ 'data-force': true, 'data-value': tax_identification_number });
+            } else {
+                CommonFunctions.getElementById('row_tax_identification_number').setVisibility(1);
+            }
+        });
     };
 
     var handleState = function handleState(states_list, form_id, getValidations) {
@@ -11278,9 +11838,9 @@ var AccountOpening = function () {
             if (form_id && typeof getValidations === 'function') {
                 FormManager.init(form_id, getValidations());
             }
+            Geocoder.init(form_id);
         });
     };
-
     var handleNewAccount = function handleNewAccount(response, message_type) {
         if (response.error) {
             var errorMessage = response.error.message;
@@ -11300,7 +11860,7 @@ var AccountOpening = function () {
     var commonValidations = function commonValidations() {
         var req = [{ selector: '#salutation', validations: ['req'] }, { selector: '#first_name', validations: ['req', 'letter_symbol', ['length', { min: 2, max: 30 }]] }, { selector: '#last_name', validations: ['req', 'letter_symbol', ['length', { min: 2, max: 30 }]] }, { selector: '#date_of_birth', validations: ['req'] }, { selector: '#address_line_1', validations: ['req', 'address', ['length', { min: 1, max: 70 }]] }, { selector: '#address_line_2', validations: ['address', ['length', { min: 0, max: 70 }]] }, { selector: '#address_city', validations: ['req', 'letter_symbol', ['length', { min: 1, max: 35 }]] }, { selector: '#address_state', validations: $('#address_state').prop('nodeName') === 'SELECT' ? '' : ['letter_symbol', ['length', { min: 0, max: 35 }]] }, { selector: '#address_postcode', validations: [Client.get('residence') === 'gb' ? 'req' : '', 'postcode', ['length', { min: 0, max: 20 }]] }, { selector: '#phone', validations: ['req', 'phone', ['length', { min: 8, max: 35, value: function value() {
                     return $('#phone').val().replace(/\D/g, '');
-                } }]] }, { selector: '#secret_question', validations: ['req'] }, { selector: '#secret_answer', validations: ['req', 'general', ['length', { min: 4, max: 50 }]] }, { selector: '#tnc', validations: [['req', { message: localize('Please accept the terms and conditions.') }]], exclude_request: 1 }, { request_field: 'residence', value: Client.get('residence') }, { request_field: 'client_type', value: function value() {
+                } }]] }, { selector: '#secret_question', validations: ['req'] }, { selector: '#secret_answer', validations: ['req', 'general', ['length', { min: 4, max: 50 }]] }, { selector: '#tnc', validations: [['req', { message: localize('Please accept the terms and conditions.') }]], exclude_request: 1 }, { selector: '#tax_residence', validations: ['req', ['length', { min: 1, max: 20 }]] }, { selector: '#tax_identification_number', validations: ['req'] }, { request_field: 'residence', value: Client.get('residence') }, { request_field: 'client_type', value: function value() {
                 return $('#chk_professional').is(':checked') ? 'professional' : 'retail';
             } }];
 
@@ -11545,15 +12105,18 @@ var toISOFormat = __webpack_require__(/*! ../../../_common/string_util */ "./src
 
 var generateBirthDate = function generateBirthDate() {
     var date_of_birth = '#date_of_birth';
-    DatePicker.init({
-        selector: date_of_birth,
-        minDate: -100 * 365,
-        maxDate: -18 * 365 - 5,
-        yearRange: '-100:-18'
-    });
-    $(date_of_birth).attr('data-value', toISOFormat(moment())).change(function () {
-        return dateValueChanged(this, 'date');
-    }).val('');
+
+    if (!$(date_of_birth).val()) {
+        DatePicker.init({
+            selector: date_of_birth,
+            minDate: -100 * 365,
+            maxDate: -18 * 365 - 5,
+            yearRange: '-100:-18'
+        });
+        $(date_of_birth).attr('data-value', toISOFormat(moment())).change(function () {
+            return dateValueChanged(this, 'date');
+        }).val('');
+    }
 };
 
 module.exports = generateBirthDate;
@@ -11675,6 +12238,8 @@ var showPopup = __webpack_require__(/*! ./popup */ "./src/javascript/app/common/
 var elementInnerHtml = __webpack_require__(/*! ../../../_common/common_functions */ "./src/javascript/_common/common_functions.js").elementInnerHtml;
 var urlFor = __webpack_require__(/*! ../../../_common/url */ "./src/javascript/_common/url.js").urlFor;
 
+// use this function if you need a simple popup with just a confirm or also a cancel button
+// if you need to show a form with some validations, use showPopup() instead
 var Dialog = function () {
     var baseDialog = function baseDialog(options) {
         var is_alert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -11688,11 +12253,18 @@ var Dialog = function () {
                     var el_dialog = container;
                     var el_btn_ok = container.querySelector('#btn_ok');
                     var el_btn_cancel = container.querySelector('#btn_cancel');
+                    var el_title = container.querySelector('#dialog_title');
 
                     if (!el_dialog) return;
 
                     var localized_message = Array.isArray(options.localized_message) ? options.localized_message.join('<p />') : options.localized_message;
                     elementInnerHtml(container.querySelector('#dialog_message'), localized_message);
+
+                    var localized_title = options.localized_title;
+                    if (localized_title && el_title) {
+                        el_title.setVisibility(1);
+                        elementInnerHtml(container.querySelector('#dialog_title'), localized_title);
+                    }
 
                     if (is_alert) {
                         el_btn_cancel.classList.add('invisible');
@@ -11708,6 +12280,10 @@ var Dialog = function () {
 
                     if (options.ok_text && el_btn_ok.firstElementChild) {
                         el_btn_ok.firstElementChild.textContent = options.ok_text;
+                    }
+
+                    if (options.cancel_text && el_btn_cancel.firstElementChild) {
+                        el_btn_cancel.firstElementChild.textContent = options.cancel_text;
                     }
 
                     el_btn_ok.addEventListener('click', function () {
@@ -11878,6 +12454,8 @@ var createElement = __webpack_require__(/*! ../../../_common/utility */ "./src/j
 var cache = {};
 var popup_queue = [];
 
+// use this function if you need to show a form with some validations in popup
+// if you need a simple popup with just a confirm or also a cancel button use Dialog instead
 var showPopup = function showPopup(options) {
     if (cache[options.url]) {
         callback(options);
@@ -12104,7 +12682,6 @@ var ChartSettings = function () {
         labels = labels || { // needs to be inside setLabels function so localize works
             barrier_line: '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="' + common_horizontal_line_style + ' border-color: green; border-style: solid;"></span>' + localize('Barrier') + '&nbsp;</div>',
             barrier_spot: '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="' + common_horizontal_line_style + ' border-color: green; border-style: dotted;"></span>' + localize('Barrier') + '&nbsp;</div>',
-            end_time: '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="' + common_vertical_line_style + ' border-color: #e98024; border-style: dashed;"></span>' + localize('End Time') + '&nbsp;</div>',
             entry_spot: '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="' + common_spot_style + ' border: 3px solid orange; width: 4px; height: 4px;"></span>' + localize('Entry Spot') + '&nbsp;</div>',
             exit_spot: '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="' + common_spot_style + ' background-color: orange; width:10px; height: 10px;"></span>' + localize('Exit Spot') + '&nbsp;</div>',
             delay: '<div class=\'nowrap gr-padding-10 gr-parent delay\'><span class="chart-delay">' + localize('Charting for this underlying is delayed') + '&nbsp;</span></div>',
@@ -12114,17 +12691,23 @@ var ChartSettings = function () {
             purchase_time: '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="' + common_vertical_line_style + ' border-color: #7cb5ec; border-style: solid;"></span>' + localize('Purchase Time') + '&nbsp;</div>',
             reset_barrier: '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="' + common_horizontal_line_style + ' border-color: green; border-style: solid;"></span>' + localize('Reset Barrier') + '&nbsp;</div>',
             reset_time: '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="' + common_vertical_line_style + ' border-color: #e98024; border-color: #000; border-style: solid;"></span>' + localize('Reset Time') + '&nbsp;</div>',
-            start_end_time: '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="' + common_vertical_line_style + ' border-color: #e98024; border-style: solid;"></span>' + localize('Start/End Time') + '&nbsp;</div>',
             selected_tick: '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="margin-left: 10px; margin-right: 5px; display: inline-block; border-radius: 6px; background-color: orange; width:10px; height: 10px;"></span>' + localize('Selected Tick') + '&nbsp;</div>',
-            start_time: '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="' + common_vertical_line_style + ' border-color: #e98024; border-style: solid;"></span>' + localize('Start Time') + '&nbsp;</div>'
+
+            // need to pass is_tick_trade params explicitly to return correct label when switching between ticks and non-ticks charts
+            getEndTime: function getEndTime(is_tick_trade) {
+                return '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="' + common_vertical_line_style + ' border-color: #e98024; border-style: dashed;"></span>' + (is_tick_trade ? localize('Exit Spot') : localize('End Time')) + '&nbsp;</div>';
+            },
+            getStartTime: function getStartTime(is_tick_trade) {
+                return '<div class=\'nowrap gr-padding-10 gr-parent\'><span style="' + common_vertical_line_style + ' border-color: #e98024; border-style: solid;"></span>' + (is_tick_trade ? localize('Entry Spot') : localize('Start Time')) + '&nbsp;</div>';
+            }
         };
 
         var is_high_low_ticks = params.contract_type === 'highlowticks';
         var barrier_style = params.is_tick_trade ? labels.barrier_line : labels.barrier_spot;
         var barrier = params.is_reset_barrier ? labels.reset_barrier : barrier_style;
-        var start_time = is_high_low_ticks ? labels.start_end_time : labels.start_time;
+        var start_time = labels.getStartTime(params.is_tick_trade);
         var highest_lowest = /^tickhigh_/i.test(params.shortcode) ? labels.highest_tick : labels.lowest_tick;
-        txt_subtitle = (params.is_chart_delayed ? labels.delay : '') + (params.is_forward_starting ? labels.purchase_time : '') + (params.is_sold_before_start ? '' : start_time) + (history ? params.is_sold_before_start || params.is_tick_trade ? '' : labels.entry_spot : '') + (params.has_barrier && !params.is_sold_before_start ? barrier : '') + (history ? params.is_user_sold || params.is_tick_trade ? '' : labels.exit_spot : '') + (isReset(params.contract_type) ? labels.reset_time : '') + (is_high_low_ticks ? labels.selected_tick : '') + (is_high_low_ticks ? '' : labels.end_time) + (is_high_low_ticks ? highest_lowest : '') + (isCallputspread(params.contract_type) ? labels.payout_range : '');
+        txt_subtitle = (params.is_chart_delayed ? labels.delay : '') + (params.is_forward_starting ? labels.purchase_time : '') + (params.is_sold_before_start ? '' : start_time) + (params.is_tick_type ? params.is_sold_before_start || params.is_tick_trade ? '' : labels.entry_spot : '') + (params.has_barrier && !params.is_sold_before_start ? barrier : '') + (params.is_tick_type ? params.is_user_sold || params.is_tick_trade ? '' : labels.exit_spot : '') + (isReset(params.contract_type) ? labels.reset_time : '') + (is_high_low_ticks ? labels.selected_tick : '') + (is_high_low_ticks ? highest_lowest : '') + (params.show_end_time ? labels.getEndTime(params.is_tick_trade) : '') + (isCallputspread(params.contract_type) ? labels.payout_range : '');
     };
 
     var setChartOptions = function setChartOptions(params) {
@@ -12277,6 +12860,9 @@ var updateTabDisplay = __webpack_require__(/*! ../../_common/tab_selector */ "./
         Show for clients with 'vanuatu' mt5 financial company
             data-show='mt5fin:vanuatu'
 
+        Show for clients either with  'vanuatu' or 'labuan' mt5 financial company
+            data-show='mt5fin:vanuatu, labuan'
+
     Prohibited values:
         Cannot mix includes and excludes:
             data-show='costarica, -malta' -> throws error
@@ -12290,9 +12876,24 @@ var eu_country_rule = 'eucountry';
 
 var ContentVisibility = function () {
     var init = function init() {
+        var arr_mt5fin_shortcodes = void 0;
+
         BinarySocket.wait('authorize', 'landing_company', 'website_status').then(function () {
-            var current_landing_company_shortcode = State.getResponse('authorize.landing_company_name');
-            controlVisibility(current_landing_company_shortcode, MetaTrader.isEligible(), State.getResponse('landing_company.mt_financial_company.shortcode'));
+            var current_landing_company_shortcode = State.getResponse('authorize.landing_company_name') || 'default';
+            var mt_financial_company = State.getResponse('landing_company.mt_financial_company');
+            var mt_gaming_company = State.getResponse('landing_company.mt_gaming_company');
+
+            // Check if mt_financial_company is offered, if not found, switch to mt_gaming_company
+            var mt_landing_company = mt_financial_company || mt_gaming_company;
+
+            // Check mt_financial_company by account type, since we are offering different landing companies for standard and advanced
+            arr_mt5fin_shortcodes = mt_landing_company ? Object.keys(mt_landing_company).map(function (key) {
+                return mt_landing_company[key].shortcode;
+            }) : [];
+
+            controlVisibility(current_landing_company_shortcode, MetaTrader.isEligible(),
+            // We then pass the list of found mt5fin company shortcodes as an array
+            arr_mt5fin_shortcodes);
         });
     };
 
@@ -12361,7 +12962,7 @@ var ContentVisibility = function () {
         return rule.match(/^mt5fin:(.+)$/)[1];
     };
 
-    var shouldShowElement = function shouldShowElement(attr_str, current_landing_company_shortcode, client_has_mt_company, mt5fin_company_shortcode) {
+    var shouldShowElement = function shouldShowElement(attr_str, current_landing_company_shortcode, client_has_mt_company, arr_mt5fin_shortcodes) {
         var _parseAttributeString = parseAttributeString(attr_str),
             is_exclude = _parseAttributeString.is_exclude,
             mt5fin_rules = _parseAttributeString.mt5fin_rules,
@@ -12379,7 +12980,12 @@ var ContentVisibility = function () {
         if (client_has_mt_company && rule_set_has_mt) show_element = !is_exclude;else if (is_exclude !== rule_set_has_current) show_element = true;
         if (rule_set_has_eu_country && is_eu_country) show_element = !is_exclude;
 
-        if (mt5fin_rules.includes(mt5fin_company_shortcode)) show_element = !is_exclude;
+        // Check if list of mt5fin_company_shortcodes is array type and filter with defined mt5fin rules
+        if (Array.isArray(arr_mt5fin_shortcodes)) {
+            if (arr_mt5fin_shortcodes.some(function (el) {
+                return mt5fin_rules.includes(el);
+            })) show_element = !is_exclude;
+        }
 
         return show_element;
     };
@@ -12449,9 +13055,16 @@ var isIndonesia = function isIndonesia() {
     return State.getResponse('website_status.clients_country') === 'id';
 };
 
+var isExcludedFromCfd = function isExcludedFromCfd() {
+    var cfd_excluded_regex = new RegExp('^fr$');
+    var clients_country = Client.get('residence') || State.getResponse('website_status.clients_country');
+    return cfd_excluded_regex.test(clients_country);
+};
+
 module.exports = {
     isEuCountry: isEuCountry,
-    isIndonesia: isIndonesia
+    isIndonesia: isIndonesia,
+    isExcludedFromCfd: isExcludedFromCfd
 };
 
 /***/ }),
@@ -12469,22 +13082,36 @@ module.exports = {
 var CurrencyBase = __webpack_require__(/*! ../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js");
 var localize = __webpack_require__(/*! ../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 
+var getCurrencyFullName = function getCurrencyFullName(currency) {
+    return CurrencyBase.isCryptocurrency(currency) ? CurrencyBase.getCurrencyName(currency) + ' (' + currency + ')' : currency;
+};
+
 var getCurrencyList = function getCurrencyList(currencies) {
     var $currencies = $('<select/>');
     var $fiat_currencies = $('<optgroup/>', { label: localize('Fiat') });
     var $cryptocurrencies = $('<optgroup/>', { label: localize('Crypto') });
 
     currencies.forEach(function (currency) {
-        var is_crypto_currency = CurrencyBase.isCryptocurrency(currency);
-        var currency_name = is_crypto_currency ? CurrencyBase.getCurrencyName(currency) + ' (' + currency + ')' : currency;
-        (is_crypto_currency ? $cryptocurrencies : $fiat_currencies).append($('<option/>', { value: currency, text: currency_name }));
+        var currency_name = getCurrencyFullName(currency);
+        (CurrencyBase.isCryptocurrency(currency) ? $cryptocurrencies : $fiat_currencies).append($('<option/>', { value: currency, text: currency_name }));
     });
 
     return $currencies.append($fiat_currencies.children().length ? $fiat_currencies : '').append($cryptocurrencies.children().length ? $cryptocurrencies : '');
 };
 
+var getCurrencyNameList = function getCurrencyNameList(currencies) {
+    var currencies_name_list = [];
+    currencies.forEach(function (currency) {
+        var currency_name = getCurrencyFullName(currency);
+        currencies_name_list.push(currency_name);
+    });
+    return currencies_name_list;
+};
+
 module.exports = Object.assign({
-    getCurrencyList: getCurrencyList
+    getCurrencyList: getCurrencyList,
+    getCurrencyNameList: getCurrencyNameList,
+    getCurrencyFullName: getCurrencyFullName
 }, CurrencyBase);
 
 /***/ }),
@@ -12576,7 +13203,7 @@ var FormManager = function () {
 
         fields.forEach(function (field) {
             if (!field.exclude_request) {
-                if (field.$.is(':visible') || field.value) {
+                if (field.$.is(':visible') || field.value || field.$.attr('data-force')) {
                     val = field.$.val();
                     key = field.request_field || field.selector;
 
@@ -13881,7 +14508,8 @@ var AccountTransfer = function () {
         el_transfer_to = void 0,
         el_reset_transfer = void 0,
         el_transfer_fee = void 0,
-        el_transfer_info = void 0,
+        el_fee_amount = void 0,
+        el_fee_minimum = void 0,
         el_success_form = void 0,
         client_balance = void 0,
         client_currency = void 0,
@@ -13900,6 +14528,7 @@ var AccountTransfer = function () {
         accounts.forEach(function (account) {
             if (Client.canTransferFunds(account)) {
                 var option = document.createElement('option');
+                option.setAttribute('data-currency', account.currency);
                 option.appendChild(document.createTextNode('' + account.loginid + (account.currency ? ' (' + account.currency + ')' : '')));
                 fragment_transfer_to.appendChild(option);
             }
@@ -13911,8 +14540,16 @@ var AccountTransfer = function () {
         }
         if (fragment_transfer_to.childElementCount > 1) {
             el_transfer_to.innerHTML = fragment_transfer_to.innerHTML;
+            el_transfer_to.onchange = function () {
+                var to_currency = el_transfer_to.options[el_transfer_to.selectedIndex].getAttribute('data-currency');
+                el_transfer_fee.setVisibility(client_currency !== to_currency);
+                setTransferFeeAmount();
+            };
         } else {
-            var label = createElement('label', { 'data-value': fragment_transfer_to.innerText });
+            var label = createElement('label', {
+                'data-value': fragment_transfer_to.innerText,
+                'data-currency': fragment_transfer_to.firstChild.getAttribute('data-currency')
+            });
             label.appendChild(document.createTextNode(fragment_transfer_to.innerText));
             label.id = 'transfer_to';
 
@@ -13923,10 +14560,17 @@ var AccountTransfer = function () {
         showForm();
 
         if (Client.hasCurrencyType('crypto') && Client.hasCurrencyType('fiat')) {
+            setTransferFeeAmount();
+            elementTextContent(el_fee_minimum, Currency.getMinimumTransferFee(client_currency));
             el_transfer_fee.setVisibility(1);
         } else {
-            el_transfer_info.setVisibility(1);
+            var to_currency = el_transfer_to.getAttribute('data-currency');
+            el_transfer_fee.setVisibility(client_currency !== to_currency);
         }
+    };
+
+    var setTransferFeeAmount = function setTransferFeeAmount() {
+        elementTextContent(el_fee_amount, Currency.getTransferFee(client_currency, (el_transfer_to.value || el_transfer_to.getAttribute('data-value') || '').match(/\((\w+)\)/)[1]));
     };
 
     var hasError = function hasError(response) {
@@ -13996,7 +14640,6 @@ var AccountTransfer = function () {
         });
 
         el_transfer_fee.setVisibility(0);
-        el_transfer_info.setVisibility(0);
         el_success_form.setVisibility(1);
     };
 
@@ -14013,7 +14656,8 @@ var AccountTransfer = function () {
         }
 
         el_transfer_fee = getElementById('transfer_fee');
-        el_transfer_info = getElementById('transfer_info');
+        el_fee_amount = getElementById('transfer_fee_amount');
+        el_fee_minimum = getElementById('transfer_fee_minimum');
         el_success_form = getElementById('success_form');
         el_reset_transfer = getElementById('reset_transfer');
         el_reset_transfer.addEventListener('click', onClickReset);
@@ -14022,7 +14666,7 @@ var AccountTransfer = function () {
             client_balance = +getPropertyValue(response, ['balance', 'balance']);
             client_currency = Client.get('currency');
             var min_amount = Currency.getMinTransfer(client_currency);
-            if (!client_balance || client_balance < min_amount) {
+            if (!client_balance || client_balance < +min_amount) {
                 getElementById(messages.parent).setVisibility(1);
                 if (client_currency) {
                     elementTextContent(getElementById('min_required_amount'), client_currency + ' ' + min_amount);
@@ -14049,7 +14693,7 @@ var AccountTransfer = function () {
                         return;
                     }
                     withdrawal_limit = +response_limits.get_limits.remainder;
-                    if (withdrawal_limit < min_amount) {
+                    if (withdrawal_limit < +min_amount) {
                         getElementById(messages.limit).setVisibility(1);
                         getElementById(messages.parent).setVisibility(1);
                         return;
@@ -14121,8 +14765,7 @@ var Cashier = function () {
         BinarySocket.wait('authorize').then(function () {
             $('.cashier_note').setVisibility(Client.isLoggedIn() && // only show to logged-in clients
             !Client.get('is_virtual') && // only show to real accounts
-            !isCryptocurrency(Client.get('currency')) && // only show to fiat currencies
-            /^(vn|ng|lk|id)$/.test(Client.get('residence')) // only show to Vietnam, Nigeria, Sri Lanka, Indonesia
+            !isCryptocurrency(Client.get('currency')) // only show to fiat currencies
             );
         });
     };
@@ -14160,7 +14803,7 @@ var Cashier = function () {
                         var list = getPropertyValue(response, ['paymentagent_list', 'list']);
                         if (list && list.length) {
                             var regex_currency = new RegExp(currency);
-                            if (!/^(UST|DAI)$/.test(currency) || list.find(function (pa) {
+                            if (!/^UST$/.test(currency) || list.find(function (pa) {
                                 return regex_currency.test(pa.currencies);
                             })) {
                                 $('#payment-agent-section').setVisibility(1);
@@ -14691,6 +15334,7 @@ var PaymentAgentWithdraw = function () {
             var max = getPaWithdrawalLimit(currency, 'max');
 
             $(form_id).find('label[for="txtAmount"]').text(localize('Amount') + ' ' + currency);
+            trimDescriptionContent();
             FormManager.init(form_id, [{ selector: field_ids.ddl_agents, validations: ['req'], request_field: 'paymentagent_loginid' }, { selector: field_ids.txt_amount, validations: ['req', ['number', { type: 'float', decimals: getDecimalPlaces(currency), min: min, max: max }], ['custom', { func: function func() {
                         return +Client.get('balance') >= +$(field_ids.txt_amount).val();
                     }, message: localize('Insufficient balance.') }]], request_field: 'amount' }, { selector: field_ids.txt_desc, validations: ['general'], request_field: 'description' }, { request_field: 'currency', value: currency }, { request_field: 'paymentagent_withdraw', value: 1 }, { request_field: 'dry_run', value: 1 }], true);
@@ -14702,6 +15346,13 @@ var PaymentAgentWithdraw = function () {
                 enable_button: true
             });
         }
+    };
+
+    // Remove multiline and excess whitespaces from description text.
+    var trimDescriptionContent = function trimDescriptionContent() {
+        document.getElementById('txtDescription').addEventListener('change', function (e) {
+            e.srcElement.value = e.target.value.replace(/\s+/g, ' ');
+        });
     };
 
     var insertListOption = function insertListOption($ddl_object, item_text, item_value) {
@@ -16795,6 +17446,7 @@ var Client = __webpack_require__(/*! ../../base/client */ "./src/javascript/app/
 var Header = __webpack_require__(/*! ../../base/header */ "./src/javascript/app/base/header.js");
 var BinarySocket = __webpack_require__(/*! ../../base/socket */ "./src/javascript/app/base/socket.js");
 var getDecimalPlaces = __webpack_require__(/*! ../../common/currency */ "./src/javascript/app/common/currency.js").getDecimalPlaces;
+var TopUpVirtualPopup = __webpack_require__(/*! ../../pages/user/account/top_up_virtual/pop_up */ "./src/javascript/app/pages/user/account/top_up_virtual/pop_up.js");
 var getElementById = __webpack_require__(/*! ../../../_common/common_functions */ "./src/javascript/_common/common_functions.js").getElementById;
 var State = __webpack_require__(/*! ../../../_common/storage */ "./src/javascript/_common/storage.js").State;
 var urlFor = __webpack_require__(/*! ../../../_common/url */ "./src/javascript/_common/url.js").urlFor;
@@ -16838,6 +17490,12 @@ var MBTradePage = function () {
         State.set('is_chart_allowed', true);
         State.set('ViewPopup.onDisplayed', MBPrice.hidePriceOverlay);
         $('.container').css('max-width', '1200px');
+        // if not loaded by pjax, balance update function calls TopUpVirtualPopup
+        if (State.get('is_loaded_by_pjax')) {
+            BinarySocket.wait('balance').then(function () {
+                TopUpVirtualPopup.init(State.getResponse('balance.balance'));
+            });
+        }
     };
 
     var showCurrency = function showCurrency(currency) {
@@ -16923,7 +17581,6 @@ var isBinaryApp = __webpack_require__(/*! ../../config */ "./src/javascript/conf
 
 var NewAccount = function () {
     var clients_country = void 0,
-        $google_btn = void 0,
         $login_btn = void 0,
         $verify_email = void 0;
 
@@ -16932,7 +17589,6 @@ var NewAccount = function () {
     var onLoad = function onLoad() {
         getElementById('footer').setVisibility(0); // always hide footer in this page
 
-        $google_btn = $('#google-signup');
         $login_btn = $('#login');
         $verify_email = $('#verify_email');
 
@@ -16951,14 +17607,11 @@ var NewAccount = function () {
             }
         });
 
-        $google_btn.on('click', function (e) {
-            e.preventDefault();
-            window.location.href = Login.socialLoginUrl('google');
-        });
-        $login_btn.on('click', function (e) {
+        $login_btn.off('click').on('click', function (e) {
             e.preventDefault();
             Login.redirectToLogin();
         });
+        Login.initOneAll();
     };
 
     var verifyEmailHandler = function verifyEmailHandler(response) {
@@ -16991,8 +17644,6 @@ var NewAccount = function () {
 
     var onUnload = function onUnload() {
         getElementById('footer').setVisibility(1);
-        $google_btn.off('click');
-        $login_btn.off('click');
     };
 
     return {
@@ -17828,6 +18479,10 @@ var TradingAnalysis = function () {
             staysinout: {
                 image1: 'stays-between.svg',
                 image2: 'goes-outside.svg'
+            },
+            digits: {
+                image1: 'matches.svg',
+                image2: 'differs.svg'
             },
             evenodd: {
                 image1: 'even.svg',
@@ -18687,6 +19342,7 @@ var addComma = __webpack_require__(/*! ../../../common/currency */ "./src/javasc
 var localize = __webpack_require__(/*! ../../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 var State = __webpack_require__(/*! ../../../../_common/storage */ "./src/javascript/_common/storage.js").State;
 var getPropertyValue = __webpack_require__(/*! ../../../../_common/utility */ "./src/javascript/_common/utility.js").getPropertyValue;
+var isEmptyObject = __webpack_require__(/*! ../../../../_common/utility */ "./src/javascript/_common/utility.js").isEmptyObject;
 
 var Highchart = function () {
     var chart = void 0,
@@ -18717,13 +19373,14 @@ var Highchart = function () {
         is_history_send = void 0,
         is_entry_tick_barrier_selected = void 0,
         is_response_id_set = void 0,
+        is_tick_type = void 0,
         prev_barriers = void 0; // For checking if barrier was updated
 
     var initOnce = function initOnce() {
         chart = options = response_id = request = min_point = max_point = '';
         lines_drawn = new Set();
 
-        is_initialized = is_chart_delayed = is_chart_subscribed = stop_streaming = is_response_id_set = is_contracts_for_send = is_history_send = is_entry_tick_barrier_selected = false;
+        is_initialized = is_chart_delayed = is_chart_subscribed = stop_streaming = is_response_id_set = is_contracts_for_send = is_history_send = is_entry_tick_barrier_selected = is_tick_type = false;
     };
 
     var initializeValues = function initializeValues() {
@@ -18843,11 +19500,14 @@ var Highchart = function () {
         return {
             is_chart_delayed: is_chart_delayed,
             is_reset_barrier: is_reset_barrier,
+            is_tick_type: is_tick_type,
             contract_type: contract.contract_type,
             is_forward_starting: purchase_time !== start_time,
             is_sold_before_start: sell_time < start_time,
             is_user_sold: contract.status === 'sold',
-            has_barrier: !!(contract.barrier || contract.high_barrier)
+            has_barrier: !!(contract.barrier || contract.high_barrier),
+            is_tick_trade: false,
+            show_end_time: contract.contract_type !== 'highlowticks'
         };
     };
 
@@ -18890,6 +19550,7 @@ var Highchart = function () {
             var tick = response.tick;
             var ohlc = response.ohlc;
             response_id = response[type].id;
+            is_tick_type = !isEmptyObject(history) || !isEmptyObject(tick);
             // send view popup the response ID so view popup can forget the calls if it's closed before contract ends
             if (response_id && !is_response_id_set) {
                 if (State.get('is_trading') || State.get('is_mb_trading')) {
@@ -20215,12 +20876,6 @@ var getSelectedOption = function getSelectedOption($selector) {
     return $selected_option;
 };
 
-var showAssetOpenHours = function showAssetOpenHours($selector) {
-    var $selected_option = $selector ? getSelectedOption($selector) : '';
-    var sessions = $selected_option ? $selected_option.attr('data-sessions') : '';
-    $('#asset_open_hours').text(sessions || '').parent().setVisibility(!!sessions);
-};
-
 module.exports = {
     displayPriceMovement: displayPriceMovement,
     countDecimalPlaces: countDecimalPlaces,
@@ -20229,7 +20884,6 @@ module.exports = {
     getSelectedOption: getSelectedOption,
     getMinMaxTimeStart: getMinMaxTimeStart,
     getMinMaxTimeEnd: getMinMaxTimeEnd,
-    showAssetOpenHours: showAssetOpenHours,
     getStartDateNode: getElement,
     getTradingTimes: function getTradingTimes() {
         return trading_times;
@@ -20921,6 +21575,448 @@ var Defaults = function () {
 }();
 
 module.exports = Defaults;
+
+/***/ }),
+
+/***/ "./src/javascript/app/pages/trade/digit_ticker.js":
+/*!********************************************************!*\
+  !*** ./src/javascript/app/pages/trade/digit_ticker.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var DigitTicker = function () {
+    var barrier = void 0,
+        el_container = void 0,
+        el_peek = void 0,
+        el_peek_box = void 0,
+        el_mask = void 0,
+        total_tick_count = void 0,
+        contract_status = void 0,
+        type = void 0,
+        current_spot = void 0;
+    var style_offset_correction = 5;
+
+    var array_of_digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+    var init = function init(container_id, contract_type, shortcode, tick_count) {
+        var status = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'open';
+
+        contract_status = status;
+        total_tick_count = tick_count;
+        type = contract_type;
+        current_spot = '-';
+        el_container = document.querySelector('#' + container_id);
+
+        setBarrierFromShortcode(type, shortcode);
+        populateContainer(el_container);
+        highlightWinningNumbers(getWinningNumbers(contract_type, barrier));
+        observeResize();
+    };
+
+    var populateContainer = function populateContainer(container_element) {
+        // remove previous elements and start fresh.
+        while (container_element && container_element.firstChild) {
+            container_element.removeChild(container_element.firstChild);
+        }
+
+        var temp_epoch_el = document.createElement('div');
+        temp_epoch_el.classList.add('epoch');
+        var temp_peek_box_el = document.createElement('div');
+        temp_peek_box_el.classList.add('peek-box');
+        if (contract_status === 'won') {
+            temp_peek_box_el.classList.add('digit-winning');
+        }
+        if (contract_status === 'lost') {
+            temp_peek_box_el.classList.add('digit-losing');
+        }
+
+        var temp_digits_el = document.createElement('div');
+        temp_digits_el.classList.add('digits');
+        array_of_digits.forEach(function (digit) {
+            var digit_el = document.createElement('div');
+            digit_el.classList.add('digit', 'digit-' + digit);
+            digit_el.appendChild(document.createTextNode(digit));
+            temp_digits_el.appendChild(digit_el);
+        });
+
+        var temp_mask_el = document.createElement('div');
+        temp_mask_el.classList.add('mask');
+        temp_mask_el.append(document.createTextNode('0 / 0'));
+
+        var temp_peek_el = document.createElement('div');
+        temp_peek_el.classList.add('peek');
+        // grid peek-box element definition
+        var topleft_el = document.createElement('div');
+        topleft_el.classList.add('topleft');
+        var top_el = document.createElement('div');
+        top_el.classList.add('top');
+        var topright_el = document.createElement('div');
+        topright_el.classList.add('topright');
+        var left_el = document.createElement('div');
+        left_el.classList.add('left');
+        var right_el = document.createElement('div');
+        right_el.classList.add('right');
+        var bottomleft_el = document.createElement('div');
+        bottomleft_el.classList.add('bottomleft');
+        var bottom_el = document.createElement('div');
+        bottom_el.classList.add('bottom');
+        var bottomright_el = document.createElement('div');
+        bottomright_el.classList.add('bottomright');
+        temp_peek_box_el.appendChild(topleft_el);
+        temp_peek_box_el.appendChild(top_el);
+        temp_peek_box_el.appendChild(topright_el);
+        temp_peek_box_el.appendChild(left_el);
+        temp_peek_box_el.appendChild(right_el);
+        temp_peek_box_el.appendChild(bottomright_el);
+        temp_peek_box_el.appendChild(bottomleft_el);
+        temp_peek_box_el.appendChild(bottom_el);
+        temp_peek_box_el.appendChild(temp_mask_el);
+        temp_peek_box_el.appendChild(temp_peek_el);
+
+        var fragment = document.createDocumentFragment();
+        fragment.appendChild(temp_epoch_el);
+        fragment.appendChild(temp_peek_box_el);
+        fragment.appendChild(temp_digits_el);
+        container_element.appendChild(fragment);
+        container_element.classList.add('invisible');
+    };
+
+    // adjust box sizes for mobile
+    var adjustBoxSizes = function adjustBoxSizes() {
+        if (el_container.offsetWidth < 360) {
+            style_offset_correction = 6;
+        }
+    };
+
+    // Detect winning numbers against the barrier with the given contract type.
+    var getWinningNumbers = function getWinningNumbers(contract_type, spot) {
+        switch (contract_type) {
+            case 'DIGITOVER':
+                return array_of_digits.filter(function (digit) {
+                    return +digit > +spot;
+                });
+            case 'DIGITUNDER':
+                return array_of_digits.filter(function (digit) {
+                    return +digit < +spot;
+                });
+            case 'DIGITMATCH':
+                return array_of_digits.filter(function (digit) {
+                    return +digit === +spot;
+                });
+            case 'DIGITDIFF':
+                return array_of_digits.filter(function (digit) {
+                    return +digit !== +spot;
+                });
+            case 'DIGITODD':
+                return array_of_digits.filter(function (digit) {
+                    return +digit % 2 !== 0;
+                });
+            case 'DIGITEVEN':
+                return array_of_digits.filter(function (digit) {
+                    return +digit % 2 === 0;
+                });
+            default:
+                throw new Error('Cannot Determine Winning numbers.');
+        }
+    };
+
+    var highlightWinningNumbers = function highlightWinningNumbers(winning_numbers) {
+        winning_numbers.forEach(function (digit) {
+            var element = el_container.querySelector('.digit-' + digit);
+            element.classList.remove('digit-losing');
+            element.classList.add('digit-winning');
+        });
+    };
+
+    var observeResize = function observeResize() {
+        window.onresize = function () {
+            if (el_peek_box) {
+                adjustBoxSizes();
+                el_peek_box.setAttribute('style', 'transform: translateX(' + calculateOffset() + 'px)');
+            }
+        };
+    };
+
+    // Calculate peek-box left offset.
+    var calculateOffset = function calculateOffset() {
+        var current_spot_digit = document.querySelector('.digit-' + current_spot);
+        var left_offset = current_spot_digit ? current_spot_digit.offsetLeft : 0;
+        return left_offset - style_offset_correction;
+    };
+
+    var markAsLost = function markAsLost() {
+        if (!el_peek_box || !el_peek) {
+            setElements();
+        }
+        el_peek.classList.remove('digit-winning', 'digit-running');
+        el_peek_box.classList.remove('digit-winning', 'digit-running');
+        el_peek.classList.add('digit-losing');
+        el_peek_box.classList.add('digit-losing');
+    };
+
+    var markDigitAsWon = function markDigitAsWon(digit) {
+        if (el_container && el_container.querySelector('.digit-' + digit)) {
+            el_container.querySelector('.digit-' + digit).classList.add('digit-won');
+        }
+    };
+
+    var markDigitAsLost = function markDigitAsLost(digit) {
+        if (el_container && el_container.querySelector('.digit-' + digit)) {
+            el_container.querySelector('.digit-' + digit).classList.add('digit-lost');
+        }
+    };
+
+    var markAsWon = function markAsWon() {
+        if (!el_peek_box || !el_peek) {
+            setElements();
+        }
+        el_peek_box.classList.remove('digit-losing', 'digit-running');
+        el_peek_box.classList.add('digit-winning');
+        el_peek.classList.remove('digit-losing', 'digit-running');
+        el_peek.classList.add('digit-winning');
+    };
+
+    var setElements = function setElements() {
+        el_peek = el_container ? el_container.querySelector('.peek') : null;
+        el_peek_box = el_peek ? el_container.querySelector('.peek-box') : null;
+        el_mask = el_peek_box ? el_peek_box.querySelector('.mask') : null;
+    };
+
+    var isBarrierMissing = function isBarrierMissing(contract_type, bar) {
+        return !/digit(even|odd)/i.test(type) && !bar;
+    };
+
+    var setBarrierFromShortcode = function setBarrierFromShortcode(contract_type, shortcode) {
+        barrier = '';
+        if (!/^(digiteven|digitodd)_/i.test(shortcode)) {
+            var arr_shortcode = shortcode.split('_');
+            barrier = arr_shortcode[arr_shortcode.length - 2];
+        }
+    };
+
+    var update = function update(current_tick_count, _ref) {
+        var quote = _ref.quote,
+            epoch = _ref.epoch;
+
+        if (current_tick_count > total_tick_count) {
+            return;
+        }
+        setElements(epoch);
+        el_container.classList.remove('invisible');
+        adjustBoxSizes();
+        current_spot = quote.substr(-1);
+
+        el_mask.innerText = current_tick_count + ' / ' + total_tick_count;
+
+        el_peek_box.classList.add('digit-running');
+        el_peek.classList.add('digit-running');
+
+        el_peek_box.setAttribute('style', 'transform: translateX(' + calculateOffset() + 'px)');
+    };
+
+    var remove = function remove() {
+        window.onresize = null;
+        while (el_container && el_container.firstChild) {
+            el_container.removeChild(el_container.firstChild);
+        }
+        if (el_container) el_container.classList.add('invisible');
+    };
+
+    var countDecimals = function countDecimals(value) {
+        if (Math.floor(value) !== value) return value.toString().split('.')[1].length || 0;
+        return 0;
+    };
+
+    var calculateDistance = function calculateDistance(old_digit, new_digit) {
+        return Math.abs(old_digit - new_digit);
+    };
+
+    var countUp = function countUp(start, end, duration, element, render) {
+        var decimal_points = countDecimals(start.replace('/,+/', ''));
+        var f_start = parseFloat(start.replace(/,+/, ''));
+        var range = calculateDistance(f_start, end);
+        var step = Math.abs(range / 60);
+        var increment = end > f_start ? 1 * step : -1 * step;
+        var current = f_start;
+        var i = 0;
+
+        var renderTick = function renderTick() {
+            i++;
+            current += increment;
+
+            element.innerHTML = render(current.toFixed(decimal_points));
+
+            if (i <= 15) {
+                requestAnimationFrame(renderTick);
+            } else {
+                current = end;
+                element.innerHTML = render(current.toFixed(decimal_points));
+            }
+        };
+
+        requestAnimationFrame(renderTick);
+    };
+
+    return {
+        init: init,
+        update: update,
+        countUp: countUp,
+        isBarrierMissing: isBarrierMissing,
+        markAsWon: markAsWon,
+        markAsLost: markAsLost,
+        markDigitAsLost: markDigitAsLost,
+        markDigitAsWon: markDigitAsWon,
+        remove: remove
+    };
+}();
+
+module.exports = DigitTicker;
+
+/***/ }),
+
+/***/ "./src/javascript/app/pages/trade/digit_trade.js":
+/*!*******************************************************!*\
+  !*** ./src/javascript/app/pages/trade/digit_trade.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+var DigitTicker = __webpack_require__(/*! ./digit_ticker */ "./src/javascript/app/pages/trade/digit_ticker.js");
+var ViewPopupUI = __webpack_require__(/*! ../user/view_popup/view_popup.ui */ "./src/javascript/app/pages/user/view_popup/view_popup.ui.js");
+var showLocalTimeOnHover = __webpack_require__(/*! ../../base/clock */ "./src/javascript/app/base/clock.js").showLocalTimeOnHover;
+var BinarySocket = __webpack_require__(/*! ../../base/socket */ "./src/javascript/app/base/socket.js");
+var addComma = __webpack_require__(/*! ../../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js").addComma;
+var localize = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
+var getPropertyValue = __webpack_require__(/*! ../../../_common/utility */ "./src/javascript/_common/utility.js").getPropertyValue;
+
+var DigitDisplay = function () {
+    var $container = void 0,
+        contract = void 0,
+        tick_count = void 0,
+        spot_times = void 0;
+
+    // Subscribe if contract is still ongoing/running.
+    var subscribe = function subscribe(request) {
+        request.end = 'latest';
+
+        if (contract.exit_tick_time) {
+            request.end = +contract.exit_tick_time;
+            request.count = +contract.tick_count;
+            if (+contract.tick_count === 1) {
+                request.end += 1; // TODO: API sends the improper response when end and start are the same for 1 tick contracts. remove this block on fix
+            }
+        } else {
+            request.subscribe = 1;
+            request.end = 'latest';
+        }
+    };
+
+    var init = function init(id_render, proposal_open_contract) {
+        tick_count = 1;
+        contract = proposal_open_contract;
+        spot_times = [];
+
+        $container = $('#' + id_render);
+        $container.addClass('normal-font').html($('<h5 />', { text: contract.display_name, class: 'center-text' })).append($('<div />', { class: 'gr-8 gr-centered gr-12-m' }).append($('<div />', { class: 'gr-row', id: 'table_digits' }).append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') })))).append($('<div />', { class: 'digit-ticker invisible', id: 'digit_ticker_container' }));
+
+        DigitTicker.init('digit_ticker_container', contract.contract_type, contract.shortcode, contract.tick_count, contract.status);
+
+        var request = {
+            ticks_history: contract.underlying,
+            start: +contract.entry_tick_time
+        };
+
+        subscribe(request);
+
+        BinarySocket.send(request, { callback: update });
+    };
+
+    var updateTable = function updateTable(spot, time) {
+        if (spot_times.some(function (item) {
+            return item.spot === spot && item.time === time;
+        })) {
+            return;
+        }
+        if (spot_times.filter(function (spot_time) {
+            return spot_time.spot === spot && spot_time.time === time;
+        }).length !== 0) {
+            return;
+        }
+
+        spot_times.push({
+            spot: spot,
+            time: time
+        });
+
+        var csv_spot = addComma(spot);
+
+        $container.find('#table_digits').append($('<p />', { class: 'gr-3', text: tick_count })).append($('<p />', { class: 'gr-3 gray', html: tick_count === contract.tick_count ? csv_spot.slice(0, csv_spot.length - 1) + '<strong>' + csv_spot.substr(-1) + '</strong>' : csv_spot })).append($('<p />', { class: 'gr-6 gray digit-spot-time no-underline', text: moment(+time * 1000).utc().format('YYYY-MM-DD HH:mm:ss') }));
+
+        DigitTicker.update(tick_count, {
+            quote: contract.status !== 'open' ? contract.exit_tick : spot,
+            epoch: +contract.exit_tick_time || +contract.current_spot_time
+        });
+    };
+
+    var update = function update(response) {
+        if (!$container.is(':visible') || !response || !response.tick && !response.history) {
+            return;
+        }
+
+        if (getPropertyValue(response, ['tick', 'id']) && document.getElementById('sell_content_wrapper')) {
+            ViewPopupUI.storeSubscriptionID(response.tick.id);
+        }
+
+        if (response.history) {
+            response.history.times.some(function (time, idx) {
+                if (+time >= +contract.entry_tick_time) {
+                    updateTable(response.history.prices[idx], time);
+                    tick_count += 1;
+                }
+                return tick_count > contract.tick_count;
+            });
+        } else if (response.tick) {
+            if (tick_count <= contract.tick_count && +response.tick.epoch >= +contract.entry_tick_time) {
+                updateTable(response.tick.quote, response.tick.epoch);
+                tick_count += 1;
+            }
+        }
+        showLocalTimeOnHover('.digit-spot-time');
+    };
+
+    var end = function end(proposal_open_contract) {
+        if (proposal_open_contract.status !== 'open') {
+            DigitTicker.update(proposal_open_contract.tick_count, {
+                quote: proposal_open_contract.exit_tick,
+                epoch: +proposal_open_contract.exit_tick_time
+            });
+        }
+        if (proposal_open_contract.status === 'won') {
+            DigitTicker.markAsWon();
+            DigitTicker.markDigitAsWon(proposal_open_contract.exit_tick.slice(-1));
+        }
+        if (proposal_open_contract.status === 'lost') {
+            DigitTicker.markAsLost();
+            DigitTicker.markDigitAsLost(proposal_open_contract.exit_tick.slice(-1));
+        }
+    };
+
+    return {
+        end: end,
+        init: init,
+        update: update
+    };
+}();
+
+module.exports = DigitDisplay;
 
 /***/ }),
 
@@ -21900,8 +22996,6 @@ var TradingEvents = function () {
         if (date_start_element) {
             date_start_element.addEventListener('change', function (e) {
                 Defaults.set('date_start', e.target.value);
-                // don't show asset open hours if value is now because there is no time picker
-                CommonIndependent.showAssetOpenHours(e.target.value === 'now' ? '' : $(e.target));
                 initTimePicker();
                 var r = Durations.onStartDateChange(e.target.value);
                 Process.displayEquals();
@@ -21969,15 +23063,19 @@ var TradingEvents = function () {
             }
             var id = this.getAttribute('data-purchase-id');
             var ask_price = this.getAttribute('data-ask-price');
-
             var params = { buy: id, price: ask_price, passthrough: {} };
-            Object.keys(this.attributes).forEach(function (attr) {
-                if (attr && this.attributes[attr] && this.attributes[attr].name && !/data-balloon/.test(this.attributes[attr].name)) {
-                    // do not send tooltip data
-                    var m = this.attributes[attr].name.match(/data-(.+)/);
 
-                    if (m && m[1] && m[1] !== 'purchase-id' && m[1] !== 'passthrough') {
-                        params.passthrough[m[1]] = this.attributes[attr].value;
+            Object.keys(this.attributes).forEach(function (attr) {
+                if (attr && this.attributes[attr] && this.attributes[attr].name) {
+                    if (/^data-balloon$/.test(this.attributes[attr].name)) {
+                        // Force removal of attribute for Safari
+                        this.removeAttribute(this.attributes[attr].name);
+                    } else if (!/data-balloon/.test(this.attributes[attr].name)) {
+                        // Do not send tooltip data
+                        var m = this.attributes[attr].name.match(/data-(.+)/);
+                        if (m && m[1] && m[1] !== 'purchase-id' && m[1] !== 'passthrough') {
+                            params.passthrough[m[1]] = this.attributes[attr].value;
+                        }
                     }
                 }
             }, this);
@@ -22001,6 +23099,7 @@ var TradingEvents = function () {
                 e.preventDefault();
                 CommonTrading.hideOverlayContainer();
                 Price.processPriceRequest();
+                Purchase.onclose();
             }
         });
 
@@ -22609,6 +23708,7 @@ var Markets = (_temp = _class = function (_React$Component) {
                             type: 'text',
                             maxLength: 20,
                             onInput: searchSymbols,
+                            onChange: searchSymbols,
                             placeholder: (0, _localize.localize)('Search...'),
                             value: query
                         }),
@@ -23088,8 +24188,9 @@ var Price = function () {
         }
 
         if (multiplier && CommonFunctions.isVisible(multiplier) && multiplier.value) {
-            proposal.amount = multiplier.value;
-            if (multiplier.value > 1000) {
+            var multiplier_value = parseFloat(multiplier.value);
+            proposal.amount = multiplier_value;
+            if (multiplier_value > 1000) {
                 proposal.error = {
                     message: localize('Maximum multiplier of 1000.')
                 };
@@ -23848,11 +24949,15 @@ module.exports = Process;
 "use strict";
 
 
+var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+var isCallputspread = __webpack_require__(/*! ./callputspread */ "./src/javascript/app/pages/trade/callputspread.js").isCallputspread;
 var Contract = __webpack_require__(/*! ./contract */ "./src/javascript/app/pages/trade/contract.js");
+var hidePriceOverlay = __webpack_require__(/*! ./common */ "./src/javascript/app/pages/trade/common.js").hidePriceOverlay;
 var getLookBackFormula = __webpack_require__(/*! ./lookback */ "./src/javascript/app/pages/trade/lookback.js").getFormula;
 var isLookback = __webpack_require__(/*! ./lookback */ "./src/javascript/app/pages/trade/lookback.js").isLookback;
-var isCallputspread = __webpack_require__(/*! ./callputspread */ "./src/javascript/app/pages/trade/callputspread.js").isCallputspread;
+var processPriceRequest = __webpack_require__(/*! ./price */ "./src/javascript/app/pages/trade/price.js").processPriceRequest;
 var Symbols = __webpack_require__(/*! ./symbols */ "./src/javascript/app/pages/trade/symbols.js");
+var DigitTicker = __webpack_require__(/*! ./digit_ticker */ "./src/javascript/app/pages/trade/digit_ticker.js");
 var Tick = __webpack_require__(/*! ./tick */ "./src/javascript/app/pages/trade/tick.js");
 var TickDisplay = __webpack_require__(/*! ./tick_trade */ "./src/javascript/app/pages/trade/tick_trade.js");
 var updateValues = __webpack_require__(/*! ./update_values */ "./src/javascript/app/pages/trade/update_values.js");
@@ -23860,9 +24965,11 @@ var Client = __webpack_require__(/*! ../../base/client */ "./src/javascript/app/
 var Header = __webpack_require__(/*! ../../base/header */ "./src/javascript/app/base/header.js");
 var BinarySocket = __webpack_require__(/*! ../../base/socket */ "./src/javascript/app/base/socket.js");
 var formatMoney = __webpack_require__(/*! ../../common/currency */ "./src/javascript/app/common/currency.js").formatMoney;
+var TopUpVirtualPopup = __webpack_require__(/*! ../../pages/user/account/top_up_virtual/pop_up */ "./src/javascript/app/pages/user/account/top_up_virtual/pop_up.js");
 var CommonFunctions = __webpack_require__(/*! ../../../_common/common_functions */ "./src/javascript/_common/common_functions.js");
 var localize = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 var localizeKeepPlaceholders = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js").localizeKeepPlaceholders;
+var State = __webpack_require__(/*! ../../../_common/storage */ "./src/javascript/_common/storage.js").State;
 var padLeft = __webpack_require__(/*! ../../../_common/string_util */ "./src/javascript/_common/string_util.js").padLeft;
 var urlFor = __webpack_require__(/*! ../../../_common/url */ "./src/javascript/_common/url.js").urlFor;
 var createElement = __webpack_require__(/*! ../../../_common/utility */ "./src/javascript/_common/utility.js").createElement;
@@ -23881,7 +24988,28 @@ var Purchase = function () {
     var payout_value = void 0,
         cost_value = void 0,
         profit_value = void 0,
-        status = void 0;
+        status = void 0,
+        contract_duration = void 0;
+
+    var replaceElement = function replaceElement(container, child) {
+        container.querySelectorAll('.row').forEach(function (item) {
+            return item.classList.add('invisible');
+        });
+        // Count up to the number instead of just replacing it.
+        if (Array.from(container.querySelectorAll('.row.digit-trade')).length > 0) {
+            var this_quote_el = child.querySelector('.quote');
+            container.append(child);
+            if (this_quote_el.parentElement.parentElement.previousSibling) {
+                var prev_quote_el = this_quote_el.parentElement.parentElement.previousSibling.querySelector('.quote');
+                var prev_quote = prev_quote_el.innerText;
+                DigitTicker.countUp(prev_quote, parseFloat(this_quote_el.innerText.replace(/,+/, '')), 700, this_quote_el, function (content) {
+                    return '<div class=\'quote\'>' + content.replace(/\d$/, makeBold) + '</div>';
+                });
+            }
+        } else {
+            container.append(child);
+        }
+    };
 
     var display = function display(details) {
         purchase_data = details;
@@ -23908,32 +25036,40 @@ var Purchase = function () {
         var error = details.error;
         var has_chart = !/^(digits|highlowticks)$/.test(Contract.form());
         var show_chart = !error && passthrough.duration <= 10 && passthrough.duration_unit === 't';
-
-        contracts_list.style.display = 'none';
+        contract_duration = details.echo_req.passthrough.duration;
 
         if (error) {
-            container.style.display = 'block';
-            message_container.hide();
-            if (/AuthorizationRequired/.test(error.code)) {
-                authorization_error.setVisibility(1);
-                var authorization_error_btn_login = CommonFunctions.getElementById('authorization_error_btn_login');
-                authorization_error_btn_login.removeEventListener('click', loginOnClick);
-                authorization_error_btn_login.addEventListener('click', loginOnClick);
+            var balance = State.getResponse('balance.balance');
+            if (/InsufficientBalance/.test(error.code) && TopUpVirtualPopup.shouldShow(balance, true)) {
+                hidePriceOverlay();
+                processPriceRequest();
+                TopUpVirtualPopup.show(error.message);
             } else {
-                confirmation_error.setVisibility(1);
-                var message = error.message;
-                if (/RestrictedCountry/.test(error.code)) {
-                    var additional_message = '';
-                    if (/FinancialBinaries/.test(error.code)) {
-                        additional_message = localize('Try our [_1]Volatility Indices[_2].', ['<a href="' + urlFor('get-started/binary-options', 'anchor=volatility-indices#range-of-markets') + '" >', '</a>']);
-                    } else if (/Random/.test(error.code)) {
-                        additional_message = localize('Try our other markets.');
+                contracts_list.style.display = 'none';
+                container.style.display = 'block';
+                message_container.hide();
+                if (/AuthorizationRequired/.test(error.code)) {
+                    authorization_error.setVisibility(1);
+                    var authorization_error_btn_login = CommonFunctions.getElementById('authorization_error_btn_login');
+                    authorization_error_btn_login.removeEventListener('click', loginOnClick);
+                    authorization_error_btn_login.addEventListener('click', loginOnClick);
+                } else {
+                    confirmation_error.setVisibility(1);
+                    var message = error.message;
+                    if (/RestrictedCountry/.test(error.code)) {
+                        var additional_message = '';
+                        if (/FinancialBinaries/.test(error.code)) {
+                            additional_message = localize('Try our [_1]Volatility Indices[_2].', ['<a href="' + urlFor('get-started/binary-options', 'anchor=volatility-indices#range-of-markets') + '" >', '</a>']);
+                        } else if (/Random/.test(error.code)) {
+                            additional_message = localize('Try our other markets.');
+                        }
+                        message = error.message + '. ' + additional_message;
                     }
-                    message = error.message + '. ' + additional_message;
+                    CommonFunctions.elementInnerHtml(confirmation_error, message);
                 }
-                CommonFunctions.elementInnerHtml(confirmation_error, message);
             }
         } else {
+            contracts_list.style.display = 'none';
             CommonFunctions.getElementById('guideBtn').style.display = 'none';
             container.style.display = 'table-row';
             message_container.show();
@@ -23983,21 +25119,22 @@ var Purchase = function () {
             }
 
             CommonFunctions.elementTextContent(CommonFunctions.getElementById('contract_highlowtick'), '');
+            var arr_shortcode = purchase_data.buy.shortcode.split('_');
+            tick_config = {
+                is_tick_high: /^tickhigh$/i.test(contract_type),
+                is_tick_low: /^ticklow$/i.test(contract_type),
+                is_digit: /^digit/i.test(contract_type),
+                selected_tick_number: arr_shortcode[arr_shortcode.length - 1],
+                winning_tick_quote: '',
+                winning_tick_number: ''
+            };
+
             if (has_chart) {
                 spots.hide();
             } else {
                 CommonFunctions.elementTextContent(spots, '');
                 spots.className = '';
                 spots.show();
-
-                var arr_shortcode = purchase_data.buy.shortcode.split('_');
-                tick_config = {
-                    is_tick_high: /^tickhigh$/i.test(contract_type),
-                    is_tick_low: /^ticklow$/i.test(contract_type),
-                    selected_tick_number: arr_shortcode[arr_shortcode.length - 1],
-                    winning_tick_quote: '',
-                    winning_tick_number: ''
-                };
             }
 
             if (has_chart && !show_chart) {
@@ -24009,6 +25146,12 @@ var Purchase = function () {
                 button.hide();
                 $('#confirmation_message_container .open_contract_details').setVisibility(0);
             }
+        }
+
+        if (tick_config.is_digit && show_chart) {
+            DigitTicker.init('digit_ticker_table', passthrough.contract_type, receipt.shortcode, passthrough.duration, status);
+        } else {
+            DigitTicker.remove();
         }
 
         if (show_chart && has_chart) {
@@ -24060,16 +25203,26 @@ var Purchase = function () {
                         status = contract.status;
                         profit_value = contract.profit;
                         TickDisplay.setStatus(contract);
-                        if (contract.exit_tick_time && +contract.exit_tick_time < contract.date_expiry) {
+                        if (/^digit/i.test(contract.contract_type)) {
+                            if (contract.status !== 'open') {
+                                digitShowExitTime(contract.status, contract.exit_tick);
+                            }
+                        }
+                        if (!/^digit/i.test(contract.contract_type) && contract.exit_tick_time && +contract.exit_tick_time < contract.date_expiry) {
                             TickDisplay.updateChart({ is_sold: true }, contract);
                         }
+
                         // force to sell the expired contract, in order to get the final status
                         if (+contract.is_settleable === 1 && !contract.is_sold) {
-                            BinarySocket.send({ sell_expired: 1 });
+                            sellExpired();
                         }
                     }
                 } });
         }
+    };
+
+    var sellExpired = function sellExpired() {
+        return BinarySocket.send({ sell_expired: 1 });
     };
 
     var makeBold = function makeBold(d) {
@@ -24078,6 +25231,10 @@ var Purchase = function () {
 
     var loginOnClick = function loginOnClick(e) {
         return Header.loginOnClick(e);
+    };
+
+    var onclose = function onclose() {
+        DigitTicker.remove();
     };
 
     var updateSpotList = function updateSpotList() {
@@ -24089,7 +25246,9 @@ var Purchase = function () {
         var spots = CommonFunctions.getElementById('contract_purchase_spots');
         if (status && status !== 'open') {
             if (!new RegExp(status).test(spots.classList)) {
-                spots.className = status;
+                if (!tick_config.is_digit) {
+                    spots.className = status;
+                }
                 if (status === 'won') {
                     updateValues.updatePurchaseStatus(payout_value, cost_value, profit_value, localize('This contract won'));
                 } else if (status === 'lost') {
@@ -24109,6 +25268,7 @@ var Purchase = function () {
         }
 
         var duration = +getPropertyValue(purchase_data, ['echo_req', 'passthrough', 'duration']);
+
         if (!duration) {
             return;
         }
@@ -24117,8 +25277,8 @@ var Purchase = function () {
         var epoches = Object.keys(spots2).sort(function (a, b) {
             return a - b;
         });
-        CommonFunctions.elementTextContent(spots, '');
 
+        CommonFunctions.elementTextContent(spots, '');
         for (var s = 0; s < epoches.length; s++) {
             var tick_d = {
                 epoch: epoches[s],
@@ -24127,6 +25287,11 @@ var Purchase = function () {
 
             if (CommonFunctions.isVisible(spots) && tick_d.epoch && tick_d.epoch > purchase_data.buy.start_time) {
                 var current_tick_count = spots.getElementsByClassName('row').length + 1;
+                if (contract_duration && +contract_duration < current_tick_count) {
+                    sellExpired();
+                    duration = 0;
+                    break;
+                }
 
                 var is_winning_tick = false;
                 if (tick_config.is_tick_high || tick_config.is_tick_low) {
@@ -24139,10 +25304,13 @@ var Purchase = function () {
                     }
                 }
 
-                var fragment = createElement('div', { class: 'row' + (is_winning_tick ? ' winning-tick-row' : '') });
+                var fragment = createElement('div', { class: 'row' + (is_winning_tick ? ' winning-tick-row' : '') + ' ' + (tick_config.is_digit ? ' digit-trade' : '') });
 
                 var el1 = createElement('div', { class: 'col', text: localize('Tick') + ' ' + current_tick_count });
-                fragment.appendChild(el1);
+
+                if (!tick_config.is_digit) {
+                    fragment.appendChild(el1);
+                }
 
                 var el2 = createElement('div', { class: 'col' });
                 var date = new Date(tick_d.epoch * 1000);
@@ -24150,14 +25318,30 @@ var Purchase = function () {
                 var minutes = padLeft(date.getUTCMinutes(), 2, '0');
                 var seconds = padLeft(date.getUTCSeconds(), 2, '0');
                 CommonFunctions.elementTextContent(el2, [hours, minutes, seconds].join(':'));
-                fragment.appendChild(el2);
-
-                var tick = tick_config.is_tick_high || tick_config.is_tick_low ? tick_d.quote : tick_d.quote.replace(/\d$/, makeBold);
+                if (!tick_config.is_digit) {
+                    fragment.appendChild(el2);
+                }
+                var tick = tick_config.is_tick_high || tick_config.is_tick_low ? tick_d.quote : '<div class=\'quote\'>' + tick_d.quote.replace(/\d$/, makeBold) + '</div>';
                 var el3 = createElement('div', { class: 'col' });
                 CommonFunctions.elementInnerHtml(el3, tick);
-                fragment.appendChild(el3);
 
-                spots.appendChild(fragment);
+                if (tick_config.is_digit) {
+                    DigitTicker.update(current_tick_count, tick_d);
+                    var el_epoch = document.createElement('div');
+                    el_epoch.className = 'digit-tick-epoch';
+                    el_epoch.style.right = (el3.offsetWidth - tick.offsetWidth) / 2;
+                    var el_epoch_content = document.createTextNode(moment(new Date(tick_d.epoch * 1000)).utc().format('HH:mm:ss'));
+                    el_epoch.appendChild(el_epoch_content);
+                    fragment.appendChild(el_epoch);
+                    el3.insertBefore(el_epoch, el3.childNodes[0]);
+
+                    replaceElement(fragment, el3);
+                    replaceElement(spots, fragment);
+                } else if (!tick_config.is_digit) {
+                    fragment.appendChild(el3);
+                    spots.appendChild(fragment);
+                }
+
                 spots.scrollTop = spots.scrollHeight;
 
                 duration--;
@@ -24177,8 +25361,31 @@ var Purchase = function () {
         }
     };
 
+    var digitShowExitTime = function digitShowExitTime(contract_status, last_tick_quote) {
+        var are_spots_rendered = CommonFunctions.getElementById('contract_purchase_spots').getElementsByClassName('row').length;
+        if (!are_spots_rendered) {
+            updateSpotList();
+        }
+        var el_container = CommonFunctions.getElementById('contract_purchase_spots');
+        var el_epoch = Array.from(el_container.querySelectorAll('.digit-tick-epoch')).pop();
+        var adjustment = 5;
+        if (el_epoch && el_epoch.classList) {
+            el_epoch.classList.add('is-visible');
+            el_epoch.setAttribute('style', 'position: absolute; right: ' + ((el_epoch.parentElement.offsetWidth - el_epoch.nextSibling.offsetWidth) / 2 + adjustment) + 'px');
+            if (contract_status === 'won') {
+                DigitTicker.markAsWon();
+                DigitTicker.markDigitAsWon(last_tick_quote.slice(-1));
+            }
+            if (contract_status === 'lost') {
+                DigitTicker.markAsLost();
+                DigitTicker.markDigitAsLost(last_tick_quote.slice(-1));
+            }
+        }
+    };
+
     return {
         display: display,
+        onclose: onclose,
         updateSpotList: updateSpotList
     };
 }();
@@ -24366,12 +25573,11 @@ var StartDates = function () {
                     day = date_open.format('ddd - DD MMM, YYYY');
                     $duplicated_option = $(fragment).find('option:contains(' + day + ')');
                     if ($duplicated_option.length) {
-                        $duplicated_option.attr('data-sessions', $duplicated_option.attr('data-sessions') + ', ' + date_open.format('HH:mm') + '-' + date_close.format('HH:mm'));
                         if (+date_close.unix() > +$duplicated_option.attr('data-end')) {
                             $duplicated_option.attr('data-end', date_close.unix());
                         }
                     } else {
-                        option = createElement('option', { value: date_open.unix(), 'data-end': date_close.unix(), 'data-sessions': date_open.format('HH:mm') + '-' + date_close.format('HH:mm'), text: day });
+                        option = createElement('option', { value: date_open.unix(), 'data-end': date_close.unix(), text: day });
                         if (option.value >= default_start && !selected) {
                             selected = true;
                             option.setAttribute('selected', 'selected');
@@ -24387,7 +25593,6 @@ var StartDates = function () {
                 target.appendChild(fragment);
                 Dropdown('#date_start');
                 Defaults.set('date_start', target.value);
-                CommonIndependent.showAssetOpenHours(target.value === 'now' ? '' : $(target));
                 $('#time_start_row').setVisibility(target.value !== 'now');
             }
             State.set('is_start_dates_displayed', true);
@@ -24689,6 +25894,7 @@ module.exports = Tick;
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+var HighchartUI = __webpack_require__(/*! ./charts/highchart.ui */ "./src/javascript/app/pages/trade/charts/highchart.ui.js");
 var requireHighstock = __webpack_require__(/*! ./common */ "./src/javascript/app/pages/trade/common.js").requireHighstock;
 var Reset = __webpack_require__(/*! ./reset */ "./src/javascript/app/pages/trade/reset.js");
 var Tick = __webpack_require__(/*! ./tick */ "./src/javascript/app/pages/trade/tick.js");
@@ -24724,7 +25930,8 @@ var TickDisplay = function () {
         reset_spot_plotted = void 0,
         response_id = void 0,
         contract = void 0,
-        selected_tick = void 0;
+        selected_tick = void 0,
+        entry_spot_offset = void 0;
 
     var id_render = 'tick_chart';
 
@@ -24748,10 +25955,10 @@ var TickDisplay = function () {
         contract_start_ms = parseInt(data.contract_start) * 1000;
         contract_category = data.contract_category;
         should_set_barrier = !contract_category.match('digits');
-        barrier = data.barrier;
         display_decimals = data.display_decimals || 2;
         show_contract_result = data.show_contract_result;
         reset_spot_plotted = false;
+        entry_spot_offset = data.barrier || undefined;
 
         if (data.id_render) {
             id_render = data.id_render;
@@ -24830,16 +26037,6 @@ var TickDisplay = function () {
             x_indicators = {
                 _0: { label: localize('Entry Spot'), id: 'entry_tick' }
             };
-        } else if (contract_category.match('digits')) {
-            ticks_needed = number_of_ticks;
-            x_indicators = {
-                _0: { label: localize('Tick [_1]', '1'), id: 'start_tick' }
-            };
-            x_indicators['_' + exit_tick_index] = {
-                label: localize('Tick [_1]', number_of_ticks),
-                id: 'last_tick',
-                dashStyle: 'Dash'
-            };
         } else if (contract_category.match('highlowticks')) {
             ticks_needed = number_of_ticks;
             x_indicators = {
@@ -24847,7 +26044,8 @@ var TickDisplay = function () {
             };
             x_indicators['_' + exit_tick_index] = {
                 label: localize('Exit Spot'),
-                id: 'exit_tick'
+                id: 'exit_tick',
+                dashStyle: 'Dash'
             };
         } else {
             x_indicators = {};
@@ -24856,18 +26054,19 @@ var TickDisplay = function () {
 
     var initializeChart = function initializeChart(config, data) {
         var has_reset_barrier = contract.entry_spot && contract.barrier && Reset.isReset(contract_category) && Reset.isNewBarrier(contract.entry_spot, contract.barrier);
-        ChartSettings.setLabels({
-            contract_type: contract_category,
-            has_barrier: should_set_barrier && contract_category !== 'highlowticks',
-            is_reset_barrier: has_reset_barrier,
-            is_tick_trade: true,
-            shortcode: contract.shortcode
-        });
         Highcharts.setOptions({
             lang: { thousandsSep: ',' }
         });
         ChartSettings.setChartOptions(config);
         chart = new Highcharts.Chart(ChartSettings.getChartOptions());
+        HighchartUI.updateLabels(chart, {
+            contract_type: contract_category,
+            has_barrier: should_set_barrier && contract_category !== 'highlowticks',
+            is_reset_barrier: has_reset_barrier,
+            is_tick_trade: true,
+            shortcode: contract.shortcode,
+            show_end_time: contract_category !== 'highlowticks'
+        });
         if (data) {
             dispatch(data);
         }
@@ -24899,10 +26098,10 @@ var TickDisplay = function () {
         var barrier_type = /^(asian|highlowticks)$/.test(contract_category) ? contract_category : 'static';
 
         var calculated_barrier = '';
+
         if (barrier_type === 'static') {
             var first_quote = applicable_ticks[0].quote;
             var barrier_quote = first_quote;
-
             if (barrier) {
                 var final_barrier = Number(barrier).toFixed(parseInt(display_decimals));
                 if (isRelativeBarrier(barrier)) {
@@ -24912,6 +26111,8 @@ var TickDisplay = function () {
                 barrier_quote = final_barrier;
             } else if (contract && contract.barrier) {
                 barrier_quote = parseFloat(contract.barrier);
+            } else if (entry_spot_offset) {
+                barrier_quote = /^[+|-]/i.test(entry_spot_offset) ? Number(Math.round(barrier_quote + parseFloat(entry_spot_offset) + 'e' + display_decimals) + 'e-' + display_decimals) : entry_spot_offset;
             }
 
             chart.yAxis[0].addPlotLine({
@@ -25054,8 +26255,6 @@ var TickDisplay = function () {
                 var category = 'callput';
                 if (/asian/i.test(contract.shortcode)) {
                     category = 'asian';
-                } else if (/digit/i.test(contract.shortcode)) {
-                    category = 'digits';
                 } else if (/touch/i.test(contract.shortcode)) {
                     category = 'touchnotouch';
                 } else if (/reset/i.test(contract.shortcode)) {
@@ -25135,6 +26334,15 @@ var TickDisplay = function () {
                             label: localize('Exit Spot'),
                             dashStyle: 'Dash'
                         };
+                    } else if (current_tick_count === ticks_needed && contract_category === 'highlowticks') {
+                        HighchartUI.updateLabels(chart, {
+                            contract_type: contract_category,
+                            has_barrier: false,
+                            is_reset_barrier: false,
+                            is_tick_trade: true,
+                            shortcode: contract.shortcode,
+                            show_end_time: true
+                        });
                     }
 
                     if (typeof x_indicators[indicator_key] !== 'undefined') {
@@ -25191,16 +26399,14 @@ var TickDisplay = function () {
 
             CommonFunctions.elementInnerHtml(CommonFunctions.getElementById('contract_purchase_barrier'), localize('Reset Barrier') + ': ' + reset_barrier);
             reset_spot_plotted = true;
-            ChartSettings.setLabels({
+            HighchartUI.updateLabels(chart, {
                 contract_type: contract_category,
                 has_barrier: true,
                 is_reset_barrier: true,
                 is_tick_trade: true,
-                shortcode: contract.shortcode
+                shortcode: contract.shortcode,
+                show_end_time: true
             });
-            if (chart) {
-                chart.setTitle(null, { text: ChartSettings.getSubtitle() });
-            }
         }
 
         evaluateContractOutcome();
@@ -25323,6 +26529,7 @@ var Client = __webpack_require__(/*! ../../base/client */ "./src/javascript/app/
 var Header = __webpack_require__(/*! ../../base/header */ "./src/javascript/app/base/header.js");
 var BinarySocket = __webpack_require__(/*! ../../base/socket */ "./src/javascript/app/base/socket.js");
 var Guide = __webpack_require__(/*! ../../common/guide */ "./src/javascript/app/common/guide.js");
+var TopUpVirtualPopup = __webpack_require__(/*! ../../pages/user/account/top_up_virtual/pop_up */ "./src/javascript/app/pages/user/account/top_up_virtual/pop_up.js");
 var State = __webpack_require__(/*! ../../../_common/storage */ "./src/javascript/_common/storage.js").State;
 
 var TradePage = function () {
@@ -25347,6 +26554,12 @@ var TradePage = function () {
             Header.displayAccountStatus();
             if (Client.get('is_virtual')) {
                 Header.upgradeMessageVisibility(); // To handle the upgrade buttons visibility
+                // if not loaded by pjax, balance update function calls TopUpVirtualPopup
+                if (State.get('is_loaded_by_pjax')) {
+                    BinarySocket.wait('balance').then(function () {
+                        TopUpVirtualPopup.init(State.getResponse('balance.balance'));
+                    });
+                }
             }
             Client.activateByClientType('trading_socket_container');
             BinarySocket.send({ payout_currencies: 1 }).then(function () {
@@ -26050,18 +27263,26 @@ var PaymentAgentTransfer = function () {
         });
     };
 
+    // Remove multiline and excess whitespaces from description text.
+    var trimDescriptionContent = function trimDescriptionContent() {
+        document.getElementById('description').addEventListener('change', function (e) {
+            e.srcElement.value = e.target.value.replace(/\s+/g, ' ');
+        });
+    };
+
     var init = function init(pa, currency) {
         var form_id = '#frm_paymentagent_transfer';
         $form_error = $('#form_error');
 
         setFormVisibility(true);
         PaymentAgentTransferUI.updateFormView(currency);
+        trimDescriptionContent();
 
         common_request_fields = [{ request_field: 'paymentagent_transfer', value: 1 }, { request_field: 'currency', value: currency }];
 
         FormManager.init(form_id, [{ selector: '#client_id', validations: ['req', ['regular', { regex: /^\w+\d+$/, message: localize('Please enter a valid Login ID.') }]], request_field: 'transfer_to' }, { selector: '#amount', validations: ['req', ['number', { type: 'float', decimals: getDecimalPlaces(currency), min: pa ? pa.min_withdrawal : 10, max: pa ? pa.max_withdrawal : 2000 }], ['custom', { func: function func() {
                     return +Client.get('balance') >= +$('#amount').val();
-                }, message: localize('Insufficient balance.') }]] }, { request_field: 'dry_run', value: 1 }].concat(common_request_fields));
+                }, message: localize('Insufficient balance.') }]] }, { selector: '#description', validations: ['general'] }, { request_field: 'dry_run', value: 1 }].concat(common_request_fields));
 
         FormManager.handleSubmit({
             form_selector: form_id,
@@ -26116,7 +27337,7 @@ var PaymentAgentTransfer = function () {
     var initConfirm = function initConfirm(req) {
         var confirm_form_id = '#frm_confirm_transfer';
 
-        FormManager.init(confirm_form_id, [{ request_field: 'transfer_to', value: req.transfer_to }, { request_field: 'amount', value: req.amount }].concat(common_request_fields));
+        FormManager.init(confirm_form_id, [{ request_field: 'transfer_to', value: req.transfer_to }, { request_field: 'amount', value: req.amount }, { request_field: 'description', value: req.description }].concat(common_request_fields));
 
         FormManager.handleSubmit({
             form_selector: confirm_form_id,
@@ -26259,6 +27480,7 @@ var Client = __webpack_require__(/*! ../../../../base/client */ "./src/javascrip
 var BinarySocket = __webpack_require__(/*! ../../../../base/socket */ "./src/javascript/app/base/socket.js");
 var formatMoney = __webpack_require__(/*! ../../../../common/currency */ "./src/javascript/app/common/currency.js").formatMoney;
 var GetAppDetails = __webpack_require__(/*! ../../../../common/get_app_details */ "./src/javascript/app/common/get_app_details.js");
+var SubscriptionManager = __webpack_require__(/*! ../../../../../_common/base/subscription_manager */ "./src/javascript/_common/base/subscription_manager.js").default;
 var localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 var urlParam = __webpack_require__(/*! ../../../../../_common/url */ "./src/javascript/_common/url.js").param;
 var getPropertyValue = __webpack_require__(/*! ../../../../../_common/utility */ "./src/javascript/_common/utility.js").getPropertyValue;
@@ -26288,7 +27510,7 @@ var PortfolioInit = function () {
             updatePortfolio(response);
         });
         // Subscribe to transactions to auto update new purchases
-        BinarySocket.send({ transaction: 1, subscribe: 1 }, { callback: transactionResponseHandler });
+        SubscriptionManager.subscribe('transaction', { transaction: 1, subscribe: 1 }, transactionResponseHandler);
         BinarySocket.send({ oauth_apps: 1 }).then(function (response) {
             updateOAuthApps(response);
         });
@@ -26456,13 +27678,27 @@ var PortfolioInit = function () {
     };
 
     var onUnload = function onUnload() {
-        BinarySocket.send({ forget_all: ['proposal_open_contract', 'transaction'] });
+        BinarySocket.send({ forget_all: ['proposal_open_contract'] });
+        SubscriptionManager.forget('transaction', transactionResponseHandler);
         $('#portfolio-body').empty();
         $('#portfolio-content').setVisibility(0);
         is_initialized = false;
     };
 
+    var onReconnect = function onReconnect() {
+        BinarySocket.wait('authorize', 'website_status').then(function () {
+            BinarySocket.send({ forget_all: ['proposal_open_contract'] });
+            SubscriptionManager.forgetAll('transaction').then(function () {
+                $('#portfolio-body').empty();
+                $('#portfolio-content').setVisibility(0);
+                is_initialized = false;
+                init();
+            });
+        });
+    };
+
     return {
+        onReconnect: onReconnect,
         updateBalance: updateBalance,
         onLoad: onLoad,
         onUnload: onUnload
@@ -27435,7 +28671,7 @@ var FinancialAssessment = function () {
         }
 
         // display Trading Experience only for financial & MT5 financial accounts
-        var is_mt5_financial = /real_vanuatu_(standard|advanced|mamm_advanced)/.test(localStorage.getItem('financial_assessment_redirect'));
+        var is_mt5_financial = /labuan_advanced|real_vanuatu_(standard|advanced|mamm_advanced)/.test(localStorage.getItem('financial_assessment_redirect'));
         $('#trading_experience_form').setVisibility(is_mt5_financial || Client.isAccountOfType('financial'));
 
         Object.keys(financial_assessment).forEach(function (key) {
@@ -27479,7 +28715,12 @@ var FinancialAssessment = function () {
             var data = { set_financial_assessment: 1 };
             showLoadingImage(getElementById('msg_form'));
             $(form_selector).find('select').each(function () {
-                financial_assessment[$(this).attr('id')] = data[$(this).attr('id')] = $(this).val() || null;
+                var $this = $(this);
+                var value = $this.val();
+                var id = $this.attr('id');
+                if (value.length) {
+                    financial_assessment[id] = data[id] = value;
+                }
             });
             BinarySocket.send(data).then(function (response) {
                 $btn_submit.removeAttr('disabled');
@@ -27516,11 +28757,6 @@ var FinancialAssessment = function () {
             $.scrollTo($('h1#heading'), 500, { offset: -10 });
             $(form_selector).setVisibility(0);
             $('#msg_main').setVisibility(1);
-            BinarySocket.send({ get_account_status: 1 }).then(function (response_status) {
-                if (+response_status.get_account_status.prompt_client_to_authenticate && Client.isAccountOfType('financial')) {
-                    $('#msg_authenticate').setVisibility(1);
-                }
-            });
         } else {
             $('#msg_form').attr('class', is_success ? 'success-msg' : 'errorfield').html(is_success ? $('<ul/>', { class: 'checked', style: 'display: inline-block;' }).append($('<li/>', { text: localized_msg })) : localized_msg).css('display', 'block').delay(5000).fadeOut(1000);
         }
@@ -27979,6 +29215,7 @@ var PersonalDetails = function () {
 
     var editable_fields = void 0,
         is_virtual = void 0,
+        is_fully_authenticated = void 0,
         residence = void 0,
         get_settings_data = void 0;
 
@@ -27987,6 +29224,12 @@ var PersonalDetails = function () {
         get_settings_data = {};
         is_virtual = Client.get('is_virtual');
         residence = Client.get('residence');
+    };
+
+    var checkStatus = function checkStatus(status, string) {
+        return status.findIndex(function (s) {
+            return s === string;
+        }) < 0 ? Boolean(false) : Boolean(true);
     };
 
     var showHideTaxMessage = function showHideTaxMessage() {
@@ -28058,44 +29301,60 @@ var PersonalDetails = function () {
             fnc_additional_check: additionalCheck,
             enable_button: true
         });
-        if (!is_virtual) {
-            Geocoder.validate(form_id);
-        }
         showHideMissingDetails();
     };
 
-    var show_label_if_any_value = ['account_opening_reason', 'citizen', 'place_of_birth'];
+    var show_label_if_any_value = ['account_opening_reason', 'citizen', 'place_of_birth', 'tax_residence', 'tax_identification_number'];
+    var force_update_fields = ['tax_residence', 'tax_identification_number'];
 
     var displayGetSettingsData = function displayGetSettingsData(get_settings) {
         var populate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-        var el_id = void 0,
-            el_key = void 0,
-            has_label = void 0,
-            should_show_label = void 0,
-            should_update_value = void 0;
         Object.keys(get_settings).forEach(function (key) {
-            has_label = show_label_if_any_value.indexOf(key) !== -1;
-            should_show_label = has_label && get_settings[key]; // if we have a value for any of these fields, show them as label
-            el_id = '' + (should_show_label ? 'lbl_' : '') + key;
-            el_key = CommonFunctions.getElementById(el_id);
-            if (el_key) {
-                editable_fields[key] = get_settings[key];
+            var has_label = show_label_if_any_value.includes(key);
+            var force_update = force_update_fields.includes(key);
+            var should_show_label = has_label && get_settings[key];
+            var element_id = '' + (should_show_label ? 'lbl_' : '') + key;
+            var element_key = CommonFunctions.getElementById(element_id);
+
+            if (element_key) {
+                editable_fields[key] = get_settings[key] !== null ? get_settings[key] : '';
                 if (populate) {
-                    should_update_value = /select|text/i.test(el_key.type);
+                    var should_update_value = /select|text/i.test(element_key.type);
                     if (has_label) {
-                        CommonFunctions.getElementById('row_' + el_id).setVisibility(1);
+                        CommonFunctions.getElementById('row_' + element_id).setVisibility(1);
                     }
-                    if (el_key.type === 'checkbox') {
-                        el_key.checked = !!get_settings[key];
+                    if (element_key.type === 'checkbox') {
+                        element_key.checked = !!get_settings[key];
                     } else if (!should_update_value) {
                         // for all non (checkbox|select|text) elements
-                        var localized_text = (document.querySelector('#' + key + ' option[value="' + get_settings[key] + '"]') || {}).innerText || get_settings[key];
-                        CommonFunctions.elementInnerHtml(el_key, localized_text || '-');
+                        var getOptionText = function getOptionText(value) {
+                            return (document.querySelector('#' + key + ' option[value="' + value + '"]') || {}).innerText || value;
+                        };
+                        var localized_text = void 0;
+                        if (key === 'tax_residence') {
+                            // Resolve comma-separated country codes to country names
+                            localized_text = get_settings[key] ? get_settings[key].split(',').map(function (value) {
+                                return getOptionText(value);
+                            }).join(', ') : '';
+                        } else {
+                            localized_text = getOptionText(get_settings[key]);
+                        }
+                        CommonFunctions.elementInnerHtml(element_key, localized_text || '-');
                     }
                     if (should_update_value || should_show_label) {
                         // if should show label, set the value of the non-label so that it doesn't count as missing information
-                        $(should_show_label ? '#' + key : el_key).val(get_settings[key] ? get_settings[key].split(',') : '').trigger('change');
+                        var $element = $(should_show_label ? '#' + key : element_key);
+                        var el_value = get_settings[key] ? get_settings[key].split(',') : '';
+                        $element.val(el_value).trigger('change');
+                        if (should_show_label) {
+                            // If we show label, (input) row should be hidden
+                            CommonFunctions.getElementById('row_' + key).setVisibility(0);
+                        }
+                        if (force_update) {
+                            // Force pushing values, used for (API-)expected values
+                            $element.attr({ 'data-force': true, 'data-value': el_value });
+                        }
                     }
                 }
             }
@@ -28153,13 +29412,11 @@ var PersonalDetails = function () {
         if (!is_error) {
             var redirect_url = localStorage.getItem('personal_details_redirect');
             // to update tax information message for financial clients
-            BinarySocket.send({ get_account_status: 1 }, { forced: true }).then(function (response_status) {
+            BinarySocket.send({ get_account_status: 1 }, { forced: true }).then(function () {
                 showHideTaxMessage();
                 Header.displayAccountStatus();
-                if (redirect_url && +response_status.get_account_status.prompt_client_to_authenticate && Client.isAccountOfType('financial')) {
-                    $('#msg_authenticate').setVisibility(1);
-                }
             });
+
             // to update the State with latest get_settings data
             BinarySocket.send({ get_settings: 1 }, { forced: true }).then(function (data) {
                 if (is_virtual && response.echo_req.residence) {
@@ -28187,10 +29444,16 @@ var PersonalDetails = function () {
                     $('#msg_main').setVisibility(1);
                     return;
                 }
-                getDetailsResponse(get_settings);
+                if (additionalCheck(get_settings)) {
+                    getDetailsResponse(get_settings);
+                    showFormMessage(localize('Your settings have been updated successfully.'), true);
+                    if (!is_fully_authenticated) Geocoder.validate(form_id);
+                }
             });
+        } else {
+            // is_error
+            showFormMessage(getPropertyValue(response, ['error', 'message']) || localize('Sorry, an error occurred while processing your account.'), false);
         }
-        showFormMessage(is_error ? getPropertyValue(response, ['error', 'message']) || localize('Sorry, an error occurred while processing your account.') : localize('Your settings have been updated successfully.'), !is_error);
     };
 
     var showFormMessage = function showFormMessage(localized_text, is_success) {
@@ -28217,7 +29480,8 @@ var PersonalDetails = function () {
                     var $tax_residence = $('#tax_residence');
                     $tax_residence.html($options_with_disabled.html()).promise().done(function () {
                         setTimeout(function () {
-                            $tax_residence.select2().val(get_settings_data.tax_residence ? get_settings_data.tax_residence.split(',') : '').trigger('change').setVisibility(1);
+                            var residence_value = get_settings_data.tax_residence ? get_settings_data.tax_residence.split(',') : Client.get('residence') || '';
+                            $tax_residence.select2().val(residence_value).trigger('change').setVisibility(1);
                         }, 500);
                     });
 
@@ -28282,8 +29546,9 @@ var PersonalDetails = function () {
     var onLoad = function onLoad() {
         BinarySocket.wait('get_account_status', 'get_settings').then(function () {
             init();
+            var account_status = State.getResponse('get_account_status').status;
             get_settings_data = State.getResponse('get_settings');
-
+            is_fully_authenticated = checkStatus(account_status, 'authenticated');
             if (is_virtual) {
                 getDetailsResponse(get_settings_data);
             }
@@ -28295,6 +29560,9 @@ var PersonalDetails = function () {
                             BinarySocket.send({ states_list: residence }).then(function (response_state) {
                                 populateStates(response_state).then(function () {
                                     getDetailsResponse(get_settings_data, response.residence_list);
+                                    if (!is_virtual && !is_fully_authenticated) {
+                                        Geocoder.validate(form_id);
+                                    }
                                 });
                             });
                         } else {
@@ -28360,6 +29628,12 @@ var professionalClient = function () {
         populateProfessionalClient(is_financial);
     };
 
+    var setVisible = function setVisible($selector) {
+        $('#loading').remove();
+        $('#frm_professional').setVisibility(0);
+        $selector.setVisibility(1);
+    };
+
     var populateProfessionalClient = function populateProfessionalClient(is_financial) {
         var has_maltainvest = State.getResponse('landing_company.financial_company.shortcode') === 'maltainvest';
         if (!has_maltainvest || !is_financial) {
@@ -28370,12 +29644,23 @@ var professionalClient = function () {
             return;
         }
 
+        var $professional = $('#professional');
+        var $processing = $('#processing');
+        var $rejected = $('#rejected');
+
+        $professional.setVisibility(0);
+        $processing.setVisibility(0);
+        $rejected.setVisibility(0);
+
         var status = State.getResponse('get_account_status.status') || [];
-        if (is_in_page && /professional/.test(status)) {
-            $('#loading').remove();
-            $('#frm_professional').setVisibility(0);
-            $('#' + (/professional_requested/.test(status) ? 'processing' : 'professional')).setVisibility(1);
+        if (is_in_page && status.includes('professional')) {
+            setVisible($professional);
             return;
+        } else if (is_in_page && status.includes('professional_requested')) {
+            setVisible($processing);
+            return;
+        } else if (is_in_page && status.includes('professional_rejected')) {
+            setVisible($rejected);
         }
 
         var $container = $('#fs_professional');
@@ -29345,7 +30630,6 @@ var StatementUI = function () {
         var credit_debit_type = parseFloat(transaction.amount) >= 0 ? 'profit' : 'loss';
 
         var $statement_row = Table.createFlexTableRow([statement_data.date, '<span ' + showTooltip(statement_data.app_id, oauth_apps[statement_data.app_id]) + '>' + statement_data.ref + '</span>', statement_data.payout, statement_data.localized_action, '', statement_data.amount, statement_data.balance, ''], columns, 'data');
-
         $statement_row.children('.credit').addClass(credit_debit_type);
         $statement_row.children('.date').addClass('pre');
         $statement_row.children('.desc').html(statement_data.desc + '<br>');
@@ -29406,20 +30690,149 @@ module.exports = StatementUI;
 
 /***/ }),
 
-/***/ "./src/javascript/app/pages/user/account/top_up_virtual.js":
-/*!*****************************************************************!*\
-  !*** ./src/javascript/app/pages/user/account/top_up_virtual.js ***!
-  \*****************************************************************/
+/***/ "./src/javascript/app/pages/user/account/top_up_virtual/pop_up.js":
+/*!************************************************************************!*\
+  !*** ./src/javascript/app/pages/user/account/top_up_virtual/pop_up.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Client = __webpack_require__(/*! ../../../base/client */ "./src/javascript/app/base/client.js");
-var BinarySocket = __webpack_require__(/*! ../../../base/socket */ "./src/javascript/app/base/socket.js");
-var formatMoney = __webpack_require__(/*! ../../../common/currency */ "./src/javascript/app/common/currency.js").formatMoney;
-var localize = __webpack_require__(/*! ../../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
+var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+var BinaryPjax = __webpack_require__(/*! ../../../../base/binary_pjax */ "./src/javascript/app/base/binary_pjax.js");
+var Client = __webpack_require__(/*! ../../../../base/client */ "./src/javascript/app/base/client.js");
+var BinarySocket = __webpack_require__(/*! ../../../../base/socket */ "./src/javascript/app/base/socket.js");
+var Dialog = __webpack_require__(/*! ../../../../common/attach_dom/dialog */ "./src/javascript/app/common/attach_dom/dialog.js");
+var showPopup = __webpack_require__(/*! ../../../../common/attach_dom/popup */ "./src/javascript/app/common/attach_dom/popup.js");
+var getElementById = __webpack_require__(/*! ../../../../../_common/common_functions */ "./src/javascript/_common/common_functions.js").getElementById;
+var localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
+var urlFor = __webpack_require__(/*! ../../../../../_common/url */ "./src/javascript/_common/url.js").urlFor;
+var State = __webpack_require__(/*! ../../../../../_common/storage */ "./src/javascript/_common/storage.js").State;
+
+var TopUpVirtualPopup = function () {
+    var form_id = '#frm_confirm';
+    var popup_id = 'top_up_virtual_pop_up';
+
+    var init = function init(balance) {
+        if (shouldShowPopup(balance)) {
+            showTopUpPopup();
+        }
+    };
+
+    var shouldShowPopup = function shouldShowPopup(balance, should_ignore_hide) {
+        // this is only applicable to virtual clients who are on smart trader page or ladders page
+        if (!(Client.get('is_virtual') && (State.get('is_trading') || State.get('is_mb_trading')))) {
+            return false;
+        }
+        // this is only applicable to clients who have less than 1k balance and have not set popup to remain hidden
+        var hide_virtual_top_up_until = should_ignore_hide ? 0 : Client.get('hide_virtual_top_up_until');
+        if (+balance > 1000 || hide_virtual_top_up_until && moment.utc().diff(moment.unix(hide_virtual_top_up_until).utc(), 'day') < 1) {
+            return false;
+        }
+
+        return true;
+    };
+
+    var doTopUp = function doTopUp() {
+        BinarySocket.send({ topup_virtual: '1' }).then(function (response_top_up) {
+            var el_popup = getElementById(popup_id);
+            if (el_popup) {
+                el_popup.remove();
+            }
+            // use Dialog for both error and success since there are no form elements or validation to be done
+            if (response_top_up.error) {
+                Dialog.alert({
+                    id: 'top_up_error',
+                    localized_title: localize('Top up error'),
+                    localized_message: response_top_up.error.message,
+                    ok_text: localize('Understood')
+                });
+            } else {
+                Dialog.confirm({
+                    id: 'top_up_success',
+                    localized_title: localize('Top-up successful'),
+                    localized_message: localize('[_1] has been credited into your Virtual Account: [_2].', ['$10,000.00', Client.get('loginid')]),
+                    cancel_text: localize('Go to statement'),
+                    ok_text: localize('Continue trading'),
+                    onAbort: function onAbort() {
+                        BinaryPjax.load(urlFor('user/statementws'));
+                    }
+                });
+            }
+        });
+    };
+
+    var showTopUpPopup = function showTopUpPopup(message) {
+        // use showPopup since we have a checkbox
+        showPopup({
+            form_id: form_id,
+            popup_id: popup_id,
+            url: urlFor('user/top_up_virtual_pop_up'),
+            content_id: '#top_up',
+            additionalFunction: function additionalFunction() {
+                if (message) {
+                    getElementById('top_up_message').textContent = message;
+                    getElementById('chk_hide_top_up').parentNode.setVisibility(0);
+                }
+                var el_redirect = getElementById('top_up_cashier_redirect');
+                var el_popup = getElementById(popup_id);
+                el_redirect.addEventListener('click', function () {
+                    if (el_popup) {
+                        el_popup.remove();
+                    }
+                });
+                var el_cancel = getElementById('btn_cancel');
+                el_cancel.addEventListener('click', function () {
+                    Client.set('hide_virtual_top_up_until', moment.utc().add(1, 'day').unix());
+                    if (el_popup) {
+                        el_popup.remove();
+                    }
+                });
+                var el_chk_hide_top_up = getElementById('chk_hide_top_up');
+                el_chk_hide_top_up.addEventListener('click', function () {
+                    if (el_chk_hide_top_up.checked) {
+                        Client.set('hide_virtual_top_up_until', moment.utc().add(10, 'year').unix());
+                    } else {
+                        Client.set('hide_virtual_top_up_until', moment.utc().unix());
+                    }
+                });
+                var $btn_ok = $('#btn_ok');
+                $btn_ok.on('click dblclick', function () {
+                    // use this instead of submit as multi click is not handled in submit
+                    $btn_ok.attr('disabled', 'disabled');
+                    doTopUp();
+                });
+            }
+        });
+    };
+
+    return {
+        init: init,
+        shouldShow: shouldShowPopup,
+        show: showTopUpPopup
+    };
+}();
+
+module.exports = TopUpVirtualPopup;
+
+/***/ }),
+
+/***/ "./src/javascript/app/pages/user/account/top_up_virtual/top_up_virtual.js":
+/*!********************************************************************************!*\
+  !*** ./src/javascript/app/pages/user/account/top_up_virtual/top_up_virtual.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Client = __webpack_require__(/*! ../../../../base/client */ "./src/javascript/app/base/client.js");
+var BinarySocket = __webpack_require__(/*! ../../../../base/socket */ "./src/javascript/app/base/socket.js");
+var formatMoney = __webpack_require__(/*! ../../../../common/currency */ "./src/javascript/app/common/currency.js").formatMoney;
+var localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 
 var TopUpVirtual = function () {
     var $views = void 0;
@@ -29437,7 +30850,7 @@ var TopUpVirtual = function () {
             if (response.error) {
                 showMessage(response.error.message, false);
             } else {
-                showMessage(localize('[_1] has been credited into your virtual account: [_2].', [formatMoney(response.topup_virtual.currency, response.topup_virtual.amount), Client.get('loginid')]), true);
+                showMessage(localize('[_1] has been credited into your Virtual Account: [_2].', [formatMoney(response.topup_virtual.currency, response.topup_virtual.amount), Client.get('loginid')]), true);
             }
             $('.barspinner').setVisibility(0);
         });
@@ -29479,7 +30892,7 @@ var getCurrencies = __webpack_require__(/*! ./get_currency */ "./src/javascript/
 var BinaryPjax = __webpack_require__(/*! ../../base/binary_pjax */ "./src/javascript/app/base/binary_pjax.js");
 var Client = __webpack_require__(/*! ../../base/client */ "./src/javascript/app/base/client.js");
 var BinarySocket = __webpack_require__(/*! ../../base/socket */ "./src/javascript/app/base/socket.js");
-var getCurrencyList = __webpack_require__(/*! ../../common/currency */ "./src/javascript/app/common/currency.js").getCurrencyList;
+var Currency = __webpack_require__(/*! ../../common/currency */ "./src/javascript/app/common/currency.js");
 var FormManager = __webpack_require__(/*! ../../common/form_manager */ "./src/javascript/app/common/form_manager.js");
 var getElementById = __webpack_require__(/*! ../../../_common/common_functions */ "./src/javascript/_common/common_functions.js").getElementById;
 var localize = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
@@ -29497,7 +30910,9 @@ var Accounts = function () {
             return {
                 account: localize('Account'),
                 available_markets: localize('Available Markets'),
-                available_currencies: localize('Available Currencies')
+                available_currencies: localize('Available Currencies'),
+                type: localize('Type'),
+                currency: localize('Currency')
             };
         };
 
@@ -29558,11 +30973,13 @@ var Accounts = function () {
             financial: new_account.type === 'financial'
         };
         var new_account_title = new_account.type === 'financial' ? localize('Financial Account') : localize('Real Account');
+        var available_currencies = Client.getLandingCompanyValue(account, landing_company, 'legal_allowed_currencies');
+        var currencies_name_list = Currency.getCurrencyNameList(available_currencies);
         $(form_id).find('tbody').append($('<tr/>').append($('<td/>', { datath: table_headers.account }).html($('<span/>', {
             text: new_account_title,
             'data-balloon': localize('Counterparty') + ': ' + getCompanyName(account) + ', ' + localize('Jurisdiction') + ': ' + getCompanyCountry(account),
             'data-balloon-length': 'large'
-        }))).append($('<td/>', { text: getAvailableMarkets(account), datath: table_headers.available_markets })).append($('<td/>', { text: Client.getLandingCompanyValue(account, landing_company, 'legal_allowed_currencies').join(', '), datath: table_headers.available_currencies })).append($('<td/>').html($('<a/>', { class: 'button', href: urlFor(new_account.upgrade_link) }).html($('<span/>', { text: localize('Create') })))));
+        }))).append($('<td/>', { text: getAvailableMarkets(account), datath: table_headers.available_markets })).append($('<td/>', { text: currencies_name_list.join(', '), datath: table_headers.available_currencies })).append($('<td/>').html($('<a/>', { class: 'button', href: urlFor(new_account.upgrade_link) }).html($('<span/>', { text: localize('Create') })))));
     };
 
     var populateExistingAccounts = function populateExistingAccounts() {
@@ -29587,6 +31004,7 @@ var Accounts = function () {
     };
 
     var appendExistingAccounts = function appendExistingAccounts(loginid) {
+        var table_headers = TableHeaders.get();
         var account_currency = Client.get('currency', loginid);
         var account_type_prop = { text: Client.getAccountTitle(loginid) };
 
@@ -29608,7 +31026,7 @@ var Accounts = function () {
             txt_markets = getAvailableMarkets(loginid);
         }
 
-        $('#existing_accounts').find('tbody').append($('<tr/>', { id: loginid, class: is_disabled || excluded_until ? 'color-dark-white' : '' }).append($('<td/>', { text: loginid })).append($('<td/>').html($('<span/>', account_type_prop))).append($('<td/>', { text: txt_markets })).append($('<td/>').html(!account_currency && loginid === Client.get('loginid') ? $('<a/>', { class: 'button', href: urlFor('user/set-currency') }).html($('<span/>', { text: localize('Set Currency') })) : account_currency || '-')));
+        $('#existing_accounts').find('tbody').append($('<tr/>', { id: loginid, class: is_disabled || excluded_until ? 'color-dark-white' : '' }).append($('<td/>', { text: loginid, datath: table_headers.account })).append($('<td/>', { datath: table_headers.type }).html($('<span/>', account_type_prop))).append($('<td/>', { text: txt_markets, datath: table_headers.available_markets })).append($('<td/>', { datath: table_headers.currency }).html(!account_currency && loginid === Client.get('loginid') ? $('<a/>', { class: 'button', href: urlFor('user/set-currency') }).html($('<span/>', { text: localize('Set Currency') })) : Currency.getCurrencyFullName(account_currency) || '-')));
 
         if (is_disabled || excluded_until) {
             $('#note_support').setVisibility(1);
@@ -29669,10 +31087,10 @@ var Accounts = function () {
         var $new_account_opening = $('#new_account_opening');
         if (currencies.length > 1) {
             var $currencies = $('<div/>');
-            $currencies.append(getCurrencyList(currencies).html());
+            $currencies.append(Currency.getCurrencyList(currencies).html());
             $new_account_opening.find('.account-currency').html($('<select/>', { id: 'new_account_currency' }).html($currencies.html()));
         } else {
-            $new_account_opening.find('.account-currency').html($('<label/>', { id: 'new_account_currency', 'data-value': currencies, text: currencies }));
+            $new_account_opening.find('.account-currency').html($('<label/>', { id: 'new_account_currency', 'data-value': currencies, text: Currency.getCurrencyFullName(currencies) }));
         }
 
         // need to make it visible before adding the form manager event on it
@@ -29792,8 +31210,10 @@ var GetCurrency = function () {
         var is_crypto = Currency.isCryptocurrency(client_currency);
         var currency_values = getCurrencyValues();
 
+        var allowed_currencies = Client.getLandingCompanyValue({ real: 1 }, landing_company, 'legal_allowed_currencies');
+
         var available_crypto = currency_values.cryptocurrencies.filter(function (c) {
-            return currency_values.other_currencies.concat(is_crypto ? client_currency : []).indexOf(c) < 0;
+            return currency_values.other_currencies.concat(is_crypto ? client_currency : []).indexOf(c) < 0 && allowed_currencies.indexOf(c) > -1;
         });
         var can_open_crypto = available_crypto.length;
 
@@ -29802,7 +31222,7 @@ var GetCurrency = function () {
         if (client_currency && (can_open_crypto || !currency_values.has_fiat) || !client_currency && (available_crypto.length > 1 || can_open_crypto && !currency_values.has_fiat)) {
             // if have sub account with fiat currency, or master account is fiat currency, only show cryptocurrencies
             // else show all
-            currencies_to_show = currency_values.has_fiat || !is_crypto && client_currency ? currency_values.cryptocurrencies : Client.getLandingCompanyValue({ real: 1 }, landing_company, 'legal_allowed_currencies');
+            currencies_to_show = currency_values.has_fiat || !is_crypto && client_currency ? available_crypto : allowed_currencies;
             // remove client's currency and sub account currencies from list of currencies to show
             currencies_to_show = currencies_to_show.filter(function (c) {
                 return currency_values.other_currencies.concat(client_currency).indexOf(c) < 0;
@@ -29914,7 +31334,7 @@ var MetaTraderConfig = function () {
             };
             var advanced_config = {
                 account_type: 'advanced',
-                leverage: 300,
+                leverage: 100,
                 short_title: localize('Advanced')
             };
             var volatility_config = {
@@ -29982,6 +31402,11 @@ var MetaTraderConfig = function () {
         };
     }();
 
+    // we need to check if the account type is standard or advanced account before returning landing_company shortcode
+    var getMTFinancialAccountType = function getMTFinancialAccountType(acc_type) {
+        return '' + (/_advanced$/.test(acc_type) ? 'advanced' : 'standard');
+    };
+
     var accounts_info = {};
 
     var $messages = void 0;
@@ -30030,7 +31455,7 @@ var MetaTraderConfig = function () {
                         // financial accounts have their own checks
                         BinarySocket.wait('get_account_status', 'landing_company').then(function () {
                             var is_ok = true;
-                            if (State.getResponse('landing_company.mt_financial_company.shortcode') === 'maltainvest' && !Client.hasAccountType('financial', 1)) {
+                            if (State.getResponse('landing_company.mt_financial_company.' + getMTFinancialAccountType(acc_type) + '.shortcode') === 'maltainvest' && !Client.hasAccountType('financial', 1)) {
                                 $message.find('.maltainvest').setVisibility(1);
                                 is_ok = false;
                             } else {
@@ -30395,6 +31820,7 @@ var MetaTraderConfig = function () {
     return {
         accounts_info: accounts_info,
         actions_info: actions_info,
+        getMTFinancialAccountType: getMTFinancialAccountType,
         fields: fields,
         validations: validations,
         needsRealMessage: needsRealMessage,
@@ -30475,7 +31901,17 @@ var MetaTrader = function () {
     };
 
     var setMTCompanies = function setMTCompanies() {
-        var is_financial = State.getResponse('landing_company.mt_financial_company.shortcode') === 'maltainvest';
+        var mt_financial_company = State.getResponse('landing_company.mt_financial_company');
+        var mt_gaming_company = State.getResponse('landing_company.mt_gaming_company');
+
+        // Check if mt_financial_company is offered, if not found, switch to mt_gaming_company
+        var mt_landing_company = mt_financial_company || mt_gaming_company;
+
+        // Check if any of the account type shortcodes from mt_landing_company account is maltainvest
+        var is_financial = mt_landing_company ? Object.keys(mt_landing_company).some(function (key) {
+            return mt_landing_company[key].shortcode === 'maltainvest';
+        }) : undefined;
+
         mt_companies = mt_companies || MetaTraderConfig[is_financial ? 'configMtFinCompanies' : 'configMtCompanies']();
     };
 
@@ -30483,11 +31919,13 @@ var MetaTrader = function () {
         setMTCompanies();
         var has_mt_company = false;
         Object.keys(mt_companies).forEach(function (company) {
-            mt_company[company] = State.getResponse('landing_company.mt_' + company + '_company.shortcode');
-            if (mt_company[company]) {
-                has_mt_company = true;
-                addAccount(company);
-            }
+            Object.keys(mt_companies[company]).forEach(function (acc_type) {
+                mt_company[company] = State.getResponse('landing_company.mt_' + company + '_company.' + MetaTraderConfig.getMTFinancialAccountType(acc_type) + '.shortcode');
+                if (mt_company[company]) {
+                    has_mt_company = true;
+                    addAccount(company);
+                }
+            });
         });
         return has_mt_company;
     };
@@ -30681,8 +32119,9 @@ module.exports = MetaTrader;
 
 var MetaTraderConfig = __webpack_require__(/*! ./metatrader.config */ "./src/javascript/app/pages/user/metatrader/metatrader.config.js");
 var Client = __webpack_require__(/*! ../../../base/client */ "./src/javascript/app/base/client.js");
-var formatMoney = __webpack_require__(/*! ../../../common/currency */ "./src/javascript/app/common/currency.js").formatMoney;
+var Currency = __webpack_require__(/*! ../../../common/currency */ "./src/javascript/app/common/currency.js");
 var Validation = __webpack_require__(/*! ../../../common/form_validation */ "./src/javascript/app/common/form_validation.js");
+var getTransferFee = __webpack_require__(/*! ../../../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js").getTransferFee;
 var localize = __webpack_require__(/*! ../../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 var State = __webpack_require__(/*! ../../../../_common/storage */ "./src/javascript/_common/storage.js").State;
 var urlForStatic = __webpack_require__(/*! ../../../../_common/url */ "./src/javascript/_common/url.js").urlForStatic;
@@ -30835,7 +32274,7 @@ var MetaTraderUI = function () {
                 $list.find('#acc_group_real').setVisibility(1);
             }
             if (acc_type === Client.get('mt5_account')) {
-                var mt_balance = formatMoney(MetaTraderConfig.getCurrency(acc_type), +accounts_info[acc_type].info.balance);
+                var mt_balance = Currency.formatMoney(MetaTraderConfig.getCurrency(acc_type), +accounts_info[acc_type].info.balance);
                 $acc_item.find('.mt-balance').html(mt_balance);
                 $action.find('.mt5-balance').html(mt_balance);
             }
@@ -30867,7 +32306,7 @@ var MetaTraderUI = function () {
                 var info = accounts_info[acc_type].info[key];
                 var mapping = {
                     balance: function balance() {
-                        return isNaN(info) ? '' : formatMoney(MetaTraderConfig.getCurrency(acc_type), +info);
+                        return isNaN(info) ? '' : Currency.formatMoney(MetaTraderConfig.getCurrency(acc_type), +info);
                     },
                     leverage: function leverage() {
                         return '1:' + info;
@@ -30878,6 +32317,9 @@ var MetaTraderUI = function () {
                 };
                 $(this).html(typeof mapping[key] === 'function' ? mapping[key]() : info);
             });
+
+            setCounterpartyAndJurisdictionTooltip($('.acc-info div[data="login"]'), acc_type);
+
             // $container.find('.act_cashier').setVisibility(!types_info[acc_type].is_demo);
             if (current_action_ui !== 'new_account') {
                 $container.find('.has-account').setVisibility(1);
@@ -30967,14 +32409,21 @@ var MetaTraderUI = function () {
             var mt_currency = MetaTraderConfig.getCurrency(acc_type);
             cloneForm();
             _$form.find('.binary-account').text('' + localize('[_1] Account [_2]', ['Binary', Client.get('loginid')]));
-            _$form.find('.binary-balance').html('' + formatMoney(client_currency, Client.get('balance')));
+            _$form.find('.binary-balance').html('' + Currency.formatMoney(client_currency, Client.get('balance')));
             _$form.find('.mt5-account').text('' + localize('[_1] Account [_2]', [accounts_info[acc_type].title, accounts_info[acc_type].info.login]));
-            _$form.find('.mt5-balance').html('' + formatMoney(mt_currency, accounts_info[acc_type].info.balance));
+            _$form.find('.mt5-balance').html('' + Currency.formatMoney(mt_currency, accounts_info[acc_type].info.balance));
             _$form.find('.symbols.mt-currency').addClass(mt_currency.toLowerCase());
             _$form.find('label[for="txt_amount_deposit"]').append(' ' + client_currency);
             _$form.find('label[for="txt_amount_withdrawal"]').append(' ' + mt_currency);
 
-            _$form.find('#txt_amount_deposit, #txt_amount_withdrawal').siblings('.hint').setVisibility(client_currency !== mt_currency);
+            var should_show_transfer_fee = client_currency !== mt_currency;
+            if (should_show_transfer_fee) {
+                $('#transfer_fee_amount_to').text(getTransferFee(client_currency, mt_currency));
+                $('#transfer_fee_minimum_to').text(Currency.getMinimumTransferFee(client_currency));
+                $('#transfer_fee_amount_from').text(getTransferFee(mt_currency, client_currency));
+                $('#transfer_fee_minimum_from').text(Currency.getMinimumTransferFee(mt_currency));
+            }
+            _$form.find('#txt_amount_deposit, #txt_amount_withdrawal').siblings('.hint').setVisibility(should_show_transfer_fee);
 
             ['deposit', 'withdrawal'].forEach(function (act) {
                 actions_info[act].prerequisites(acc_type).then(function (error_msg) {
@@ -31154,6 +32603,10 @@ var MetaTraderUI = function () {
             return !accounts_info[acc_type].is_demo && accounts_info[acc_type].mt5_account_type !== 'mamm';
         }) // toEnableMAM: remove second check
         .forEach(function (acc_type) {
+            // toEnableVanuatuAdvanced: remove vanuatu_advanced from regex below
+            if (/labuan_standard|vanuatu_advanced/.test(acc_type)) {
+                return;
+            }
             count++;
             var $acc = $acc_template.clone();
             var type = acc_type.split('_').slice(1).join('_');
@@ -31257,6 +32710,26 @@ var MetaTraderUI = function () {
         if (MetaTraderConfig.hasAccount(acc_type) && accounts_info[acc_type].account_type === 'financial') {
             $('#financial_authenticate_msg').setVisibility(!MetaTraderConfig.isAuthenticated());
         }
+    };
+
+    var setCounterpartyAndJurisdictionTooltip = function setCounterpartyAndJurisdictionTooltip($el, acc_type) {
+        var mt_financial_company = State.getResponse('landing_company.mt_financial_company');
+        var mt_gaming_company = State.getResponse('landing_company.mt_gaming_company');
+        var account = accounts_info[acc_type];
+        var company = void 0;
+
+        if (/standard/.test(account.mt5_account_type)) {
+            company = mt_financial_company.standard;
+        } else if (/advanced/.test(account.mt5_account_type)) {
+            company = mt_financial_company.advanced;
+        } else if (account.account_type === 'gaming' || account.mt5_account_type === '' && account.account_type === 'demo') {
+            company = mt_gaming_company.standard;
+        }
+
+        $el.attr({
+            'data-balloon': localize('Counterparty') + ': ' + company.name + ', ' + localize('Jurisdiction') + ': ' + company.country,
+            'data-balloon-length': 'large'
+        });
     };
 
     return {
@@ -31388,16 +32861,16 @@ var FinancialAccOpening = function () {
             Object.keys(get_settings).forEach(function (key) {
                 $element = $('#' + key);
                 value = get_settings[key];
-                if (key === 'date_of_birth') {
+                if (key === 'date_of_birth' && value) {
                     var moment_val = moment.utc(value * 1000);
                     get_settings[key] = moment_val.format('DD MMM, YYYY');
                     $element.attr({
                         'data-value': toISOFormat(moment_val),
+                        'value': toISOFormat(moment_val),
                         'type': 'text'
                     });
                     $('.input-disabled').attr('disabled', 'disabled');
-                }
-                if (value) $element.val(value);
+                } else if (value) $element.val(value);
             });
         });
 
@@ -31423,7 +32896,7 @@ var FinancialAccOpening = function () {
     };
 
     var getValidations = function getValidations() {
-        var validations = AccountOpening.commonValidations().concat(AccountOpening.selectCheckboxValidation(form_id), [{ selector: '#citizen', validations: ['req'] }, { selector: '#tax_identification_number', validations: ['req', 'tax_id', ['length', { min: 1, max: 20 }]] }, { selector: '#chk_tax_id', validations: [['req', { hide_asterisk: true, message: localize('Please confirm that all the information above is true and complete.') }]], exclude_request: 1 }]);
+        var validations = AccountOpening.commonValidations().concat(AccountOpening.selectCheckboxValidation(form_id), [{ selector: '#citizen', validations: ['req'] }, { selector: '#tax_residence', validations: ['req'] }, { selector: '#tax_identification_number', validations: ['req', 'tax_id', ['length', { min: 1, max: 20 }]] }, { selector: '#chk_tax_id', validations: [['req', { hide_asterisk: true, message: localize('Please confirm that all the information above is true and complete.') }]], exclude_request: 1 }]);
         var place_of_birth = State.getResponse('get_settings.place_of_birth');
         if (place_of_birth) {
             validations = validations.concat([{ request_field: 'place_of_birth', value: place_of_birth }]);
@@ -31738,26 +33211,25 @@ module.exports = VirtualAccOpening;
 
 var BinarySocket = __webpack_require__(/*! ../../../base/socket */ "./src/javascript/app/base/socket.js");
 var Client = __webpack_require__(/*! ../../../base/client */ "./src/javascript/app/base/client.js");
-var localize = __webpack_require__(/*! ../../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
-var createElement = __webpack_require__(/*! ../../../../_common/utility */ "./src/javascript/_common/utility.js").createElement;
 var getElementById = __webpack_require__(/*! ../../../../_common/common_functions */ "./src/javascript/_common/common_functions.js").getElementById;
+var localize = __webpack_require__(/*! ../../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 var Url = __webpack_require__(/*! ../../../../_common/url */ "./src/javascript/_common/url.js");
+var createElement = __webpack_require__(/*! ../../../../_common/utility */ "./src/javascript/_common/utility.js").createElement;
+var showLoadingImage = __webpack_require__(/*! ../../../../_common/utility */ "./src/javascript/_common/utility.js").showLoadingImage;
 
 var WelcomePage = function () {
     var onLoad = function onLoad() {
         BinarySocket.wait('authorize', 'landing_company', 'get_settings').then(function () {
+            var el_welcome_container = getElementById('welcome_container');
             if (Client.hasAccountType('real')) {
-                Url.defaultRedirectUrl();
+                window.location.href = Client.defaultRedirectUrl();
+                showLoadingImage(el_welcome_container, 'dark');
             }
 
             var upgrade_info = Client.getUpgradeInfo();
-
-            var welcome_msg = getElementById('welcome_container');
-            if (welcome_msg) {
-                var upgrade_title_el = getElementById('upgrade_title');
-                upgrade_title_el.html(upgrade_info.type === 'financial' ? localize('Financial Account') : localize('Real Account'));
-                welcome_msg.setVisibility(1);
-            }
+            var el_upgrade_title = getElementById('upgrade_title');
+            el_upgrade_title.html(upgrade_info.type === 'financial' ? localize('Financial Account') : localize('Real Account'));
+            el_welcome_container.setVisibility(1);
 
             if (upgrade_info.can_upgrade) {
                 var upgrade_btn = getElementById('upgrade_btn');
@@ -32135,7 +33607,7 @@ var ResetPassword = function () {
         generateBirthDate();
 
         $('#have_real_account').off('click').on('click', function () {
-            if ($(this).is(':checked')) {
+            if ($('#have_real_account_option_0').is(':checked')) {
                 $('#dob_field').setVisibility(1);
             } else {
                 $('#dob_field').setVisibility(0);
@@ -32143,7 +33615,7 @@ var ResetPassword = function () {
         });
 
         var form_id = '#frm_reset_password';
-        FormManager.init(form_id, [{ selector: '#new_password', validations: ['req', 'password'], re_check_field: '#repeat_password' }, { selector: '#repeat_password', validations: ['req', ['compare', { to: '#new_password' }]], exclude_request: 1 }, { selector: '#date_of_birth', validations: ['req'] }, { request_field: 'reset_password', value: 1 }], true);
+        FormManager.init(form_id, [{ selector: '#have_real_account', validations: ['req'], exclude_request: 1 }, { selector: '#date_of_birth', validations: ['req'] }, { selector: '#new_password', validations: ['req', 'password'], re_check_field: '#repeat_password' }, { selector: '#repeat_password', validations: ['req', ['compare', { to: '#new_password' }]], exclude_request: 1 }, { request_field: 'reset_password', value: 1 }], true);
 
         FormManager.handleSubmit({
             form_selector: form_id,
@@ -32170,10 +33642,12 @@ module.exports = ResetPassword;
 "use strict";
 
 
+var getCurrencies = __webpack_require__(/*! ./get_currency */ "./src/javascript/app/pages/user/get_currency.js").getCurrencies;
 var BinaryPjax = __webpack_require__(/*! ../../base/binary_pjax */ "./src/javascript/app/base/binary_pjax.js");
 var Client = __webpack_require__(/*! ../../base/client */ "./src/javascript/app/base/client.js");
 var Header = __webpack_require__(/*! ../../base/header */ "./src/javascript/app/base/header.js");
 var BinarySocket = __webpack_require__(/*! ../../base/socket */ "./src/javascript/app/base/socket.js");
+var Dialog = __webpack_require__(/*! ../../common/attach_dom/dialog */ "./src/javascript/app/common/attach_dom/dialog.js");
 var getCurrencyName = __webpack_require__(/*! ../../common/currency */ "./src/javascript/app/common/currency.js").getCurrencyName;
 var isCryptocurrency = __webpack_require__(/*! ../../common/currency */ "./src/javascript/app/common/currency.js").isCryptocurrency;
 var localize = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
@@ -32204,11 +33678,16 @@ var SetCurrency = function () {
             return;
         }
 
-        BinarySocket.wait('payout_currencies').then(function (response) {
-            var payout_currencies = response.payout_currencies;
+        BinarySocket.wait('payout_currencies', 'landing_company').then(function () {
+            var landing_company = State.getResponse('landing_company');
+            var currencies = State.getResponse('payout_currencies');
+
+            if (Client.get('landing_company_shortcode') === 'costarica') {
+                currencies = getCurrencies(landing_company);
+            }
             var $fiat_currencies = $('<div/>');
             var $cryptocurrencies = $('<div/>');
-            payout_currencies.forEach(function (c) {
+            currencies.forEach(function (c) {
                 (isCryptocurrency(c) ? $cryptocurrencies : $fiat_currencies).append($('<div/>', { class: 'gr-2 gr-3-m currency_wrapper', id: c }).append($('<div/>').append($('<img/>', { src: Url.urlForStatic('images/pages/set_currency/' + c.toLowerCase() + '.svg') }))).append($('<div/>', { class: 'currency-name', html: isCryptocurrency(c) ? getCurrencyName(c) + '<br />(' + c + ')' : c })));
             });
             var fiat_currencies = $fiat_currencies.html();
@@ -32226,15 +33705,9 @@ var SetCurrency = function () {
             $('#set_currency, .select_currency').setVisibility(1);
 
             var $currency_list = $('.currency_list');
-            $('.currency_wrapper').on('click', function () {
-                $currency_list.find('> div').removeClass('selected');
-                $(this).addClass('selected');
-            });
+            var $error = $('#set_currency').find('.error-msg');
 
-            var $form = $('#frm_set_currency');
-            var $error = $form.find('.error-msg');
-            $form.on('submit', function (evt) {
-                evt.preventDefault();
+            var onConfirm = function onConfirm() {
                 $error.setVisibility(0);
                 var $selected_currency = $currency_list.find('.selected');
                 if ($selected_currency.length) {
@@ -32276,6 +33749,32 @@ var SetCurrency = function () {
                 } else {
                     $error.text(localize('Please choose a currency')).setVisibility(1);
                 }
+            };
+
+            $('.currency_wrapper').on('click', function () {
+                var $clicked_currency = $(this);
+                var currency = $clicked_currency.attr('id');
+                var localized_message = '';
+                $error.setVisibility(0);
+                $currency_list.find('> div').removeClass('selected');
+                $clicked_currency.addClass('selected');
+                if (isCryptocurrency(currency)) {
+                    localized_message = localize('You have chosen [_1] as the currency for this account. You cannot change this later. You can have more than one cryptocurrency account.', '<strong>' + getCurrencyName(currency) + ' (' + currency + ')</strong>');
+                } else {
+                    localized_message = localize('You have chosen [_1] as the currency for this account. You cannot change this later. You can have one fiat currency account only.', '<strong>' + currency + '</strong>');
+                }
+
+                Dialog.confirm({
+                    id: 'set_currency_popup_container',
+                    ok_text: localize('Confirm'),
+                    cancel_text: localize('Back'),
+                    localized_title: localize('Are you sure?'),
+                    localized_message: localized_message,
+                    onConfirm: onConfirm,
+                    onAbort: function onAbort() {
+                        return $currency_list.find('> div').removeClass('selected');
+                    }
+                });
             });
         });
     };
@@ -32429,6 +33928,7 @@ var updateContractBalance = __webpack_require__(/*! ../trade/update_values */ ".
 var Client = __webpack_require__(/*! ../../base/client */ "./src/javascript/app/base/client.js");
 var BinarySocket = __webpack_require__(/*! ../../base/socket */ "./src/javascript/app/base/socket.js");
 var formatMoney = __webpack_require__(/*! ../../common/currency */ "./src/javascript/app/common/currency.js").formatMoney;
+var TopUpVirtualPopup = __webpack_require__(/*! ../../pages/user/account/top_up_virtual/pop_up */ "./src/javascript/app/pages/user/account/top_up_virtual/pop_up.js");
 var getPropertyValue = __webpack_require__(/*! ../../../_common/utility */ "./src/javascript/_common/utility.js").getPropertyValue;
 
 var updateBalance = function updateBalance(response) {
@@ -32446,6 +33946,7 @@ var updateBalance = function updateBalance(response) {
         var view = formatMoney(currency, balance);
         updateContractBalance(balance);
         $('.topMenuBalance, .binary-balance').html(view).css('visibility', 'visible');
+        TopUpVirtualPopup.init(balance);
     });
 };
 
@@ -32519,6 +34020,7 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
 var ViewPopupUI = __webpack_require__(/*! ./view_popup.ui */ "./src/javascript/app/pages/user/view_popup/view_popup.ui.js");
 var Highchart = __webpack_require__(/*! ../../trade/charts/highchart */ "./src/javascript/app/pages/trade/charts/highchart.js");
 var Callputspread = __webpack_require__(/*! ../../trade/callputspread */ "./src/javascript/app/pages/trade/callputspread.js");
+var DigitDisplay = __webpack_require__(/*! ../../trade/digit_trade */ "./src/javascript/app/pages/trade/digit_trade.js");
 var Lookback = __webpack_require__(/*! ../../trade/lookback */ "./src/javascript/app/pages/trade/lookback.js");
 var Reset = __webpack_require__(/*! ../../trade/reset */ "./src/javascript/app/pages/trade/reset.js");
 var TickDisplay = __webpack_require__(/*! ../../trade/tick_trade */ "./src/javascript/app/pages/trade/tick_trade.js");
@@ -32549,6 +34051,7 @@ var ViewPopup = function () {
     var popupbox_id = 'inpage_popup_content_box';
     var wrapper_id = 'sell_content_wrapper';
     var hidden_class = 'invisible';
+    var id_tick_chart = 'tick_chart';
 
     var init = function init(button, onClose) {
         btn_view = button;
@@ -32760,7 +34263,13 @@ var ViewPopup = function () {
             containerSetText('trade_details_message', contract.validation_error ? contract.validation_error : '&nbsp;');
         }
 
-        if (!chart_started && !contract.tick_count) {
+        var is_digit = /digit/i.test(contract.contract_type);
+        if (is_digit) {
+            if (!chart_started) {
+                DigitDisplay.init(id_tick_chart, contract);
+                chart_started = true;
+            }
+        } else if (!chart_started && !contract.tick_count) {
             if (!chart_init) {
                 chart_init = true;
                 Highchart.showChart(contract);
@@ -32770,7 +34279,7 @@ var ViewPopup = function () {
                 chart_started = true;
             }
         } else if (contract.tick_count && !chart_updated) {
-            TickDisplay.updateChart({ id_render: 'tick_chart', request_ticks: !ticks_requested }, contract);
+            TickDisplay.updateChart({ id_render: id_tick_chart, request_ticks: !ticks_requested }, contract);
             ticks_requested = true;
             if ('barrier' in contract) {
                 chart_updated = true;
@@ -32789,7 +34298,13 @@ var ViewPopup = function () {
         }
         if (is_ended) {
             contractEnded();
-            if (!contract.tick_count) Highchart.showChart(contract, 'update');else TickDisplay.updateChart({ is_sold: true }, contract);
+            if (is_digit) {
+                DigitDisplay.end(contract);
+            } else if (!contract.tick_count) {
+                Highchart.showChart(contract, 'update');
+            } else {
+                TickDisplay.updateChart({ is_sold: true }, contract);
+            }
             containerSetText('trade_details_live_remaining', '-');
             Clock.setExternalTimer(); // stop timer
         } else {
@@ -32920,7 +34435,7 @@ var ViewPopup = function () {
         var link = Utility.createElement('a', { class: 'previous-wrapper' });
 
         link.appendChild(Utility.createElement('span', { class: 'previous align-self-center' }));
-        link.appendChild(Utility.createElement('span', { class: 'nowrap', text: localize('View Chart') }));
+        link.appendChild(Utility.createElement('span', { class: 'nowrap', text: localize('View chart') }));
         link.addEventListener('click', function () {
             setAuditVisibility(0);
         });
@@ -33110,9 +34625,11 @@ var ViewPopup = function () {
             barrier_text = localize('Selected Tick');
         }
 
-        $sections.find('#sell_details_table').append($('<table>\n            <tr id="contract_tabs"><th colspan="2" id="contract_information_tab">' + localize('Contract Information') + '</th></tr><tbody id="contract_information_content">\n            ' + createRow(localize('Contract Type'), '', 'trade_details_contract_type') + '\n            ' + createRow(localize('Transaction ID'), '', 'trade_details_ref_id') + '\n            ' + createRow(localize('Start Time'), '', 'trade_details_start_date', true) + '\n            ' + createRow(localize('Purchase Time'), '', 'trade_details_purchase_time', true) + '\n            ' + (!contract.tick_count ? createRow(localize('Remaining Time'), '', 'trade_details_live_remaining') : '') + '\n            ' + (!Lookback.isLookback(contract.contract_type) ? createRow(localize('Entry Spot'), '', 'trade_details_entry_spot', 0, '<span></span>') : '') + '\n            ' + createRow(barrier_text, '', 'trade_details_barrier', true) + '\n            ' + (Reset.isReset(contract.contract_type) ? createRow(localize('Reset Barrier'), '', 'trade_details_reset_barrier', true) : '') + '\n            ' + (contract.barrier_count > 1 ? createRow(low_barrier_text, '', 'trade_details_barrier_low', true) : '') + '\n            ' + createRow(Callputspread.isCallputspread(contract.contract_type) ? localize('Maximum payout') : localize('Potential Payout'), '', 'trade_details_payout') + '\n            ' + (multiplier && Lookback.isLookback(contract.contract_type) ? createRow(localize('Multiplier'), '', 'trade_details_multiplier') : '') + '\n            ' + createRow(localize('Purchase Price'), '', 'trade_details_purchase_price') + '\n            </tbody>\n            <th colspan="2" id="barrier_change" class="invisible">' + localize('Barrier Change') + '</th>\n            <tbody id="barrier_change_content" class="invisible"></tbody>\n            <tr><th colspan="2" id="trade_details_current_title">' + localize('Current') + '</th></tr>\n            ' + createRow(localize('Spot'), 'trade_details_spot_label', 'trade_details_current_spot', 0, '<span></span>') + '\n            ' + createRow(localize('Spot Time'), 'trade_details_spottime_label', 'trade_details_current_date') + '\n            ' + createRow(localize('Current Time'), '', 'trade_details_live_date') + '\n            ' + (!contract.tick_count ? createRow('', 'trade_details_end_label', 'trade_details_end_date', true) : '') + '\n            ' + createRow(localize('Indicative'), 'trade_details_indicative_label', 'trade_details_indicative_price') + '\n            ' + createRow(localize('Potential Profit/Loss'), 'trade_details_profit_loss_label', 'trade_details_profit_loss') + '\n            <tr><td colspan="2" class="last_cell" id="trade_details_message">&nbsp;</td></tr>\n            </table>\n            <div id="errMsg" class="notice-msg ' + hidden_class + '"></div>\n            <div id="trade_details_bottom"><div id="contract_sell_wrapper" class="' + hidden_class + '"></div><div id="contract_sell_message"></div><div id="contract_win_status" class="' + hidden_class + '"></div></div>'));
+        var should_show_entry_spot = !Lookback.isLookback(contract.contract_type) && !/digit/i.test(contract.contract_type);
 
-        $sections.find('#sell_details_chart_wrapper').html($('<div/>', { id: contract.tick_count ? 'tick_chart' : 'analysis_live_chart', class: 'live_chart_wrapper' }));
+        $sections.find('#sell_details_table').append($('<table>\n            <tr id="contract_tabs"><th colspan="2" id="contract_information_tab">' + localize('Contract Information') + '</th></tr><tbody id="contract_information_content">\n            ' + createRow(localize('Contract Type'), '', 'trade_details_contract_type') + '\n            ' + createRow(localize('Transaction ID'), '', 'trade_details_ref_id') + '\n            ' + createRow(localize('Start Time'), '', 'trade_details_start_date', true) + '\n            ' + createRow(localize('Purchase Time'), '', 'trade_details_purchase_time', true) + '\n            ' + (!contract.tick_count ? createRow(localize('Remaining Time'), '', 'trade_details_live_remaining') : '') + '\n            ' + (should_show_entry_spot ? createRow(localize('Entry Spot'), '', 'trade_details_entry_spot', 0, '<span></span>') : '') + '\n            ' + createRow(barrier_text, '', 'trade_details_barrier', true) + '\n            ' + (Reset.isReset(contract.contract_type) ? createRow(localize('Reset Barrier'), '', 'trade_details_reset_barrier', true) : '') + '\n            ' + (contract.barrier_count > 1 ? createRow(low_barrier_text, '', 'trade_details_barrier_low', true) : '') + '\n            ' + createRow(Callputspread.isCallputspread(contract.contract_type) ? localize('Maximum payout') : localize('Potential Payout'), '', 'trade_details_payout') + '\n            ' + (multiplier && Lookback.isLookback(contract.contract_type) ? createRow(localize('Multiplier'), '', 'trade_details_multiplier') : '') + '\n            ' + createRow(localize('Purchase Price'), '', 'trade_details_purchase_price') + '\n            </tbody>\n            <th colspan="2" id="barrier_change" class="invisible">' + localize('Barrier Change') + '</th>\n            <tbody id="barrier_change_content" class="invisible"></tbody>\n            <tr><th colspan="2" id="trade_details_current_title">' + localize('Current') + '</th></tr>\n            ' + createRow(localize('Spot'), 'trade_details_spot_label', 'trade_details_current_spot', 0, '<span></span>') + '\n            ' + createRow(localize('Spot Time'), 'trade_details_spottime_label', 'trade_details_current_date') + '\n            ' + createRow(localize('Current Time'), '', 'trade_details_live_date') + '\n            ' + (!contract.tick_count ? createRow('', 'trade_details_end_label', 'trade_details_end_date', true) : '') + '\n            ' + createRow(localize('Indicative'), 'trade_details_indicative_label', 'trade_details_indicative_price') + '\n            ' + createRow(localize('Potential Profit/Loss'), 'trade_details_profit_loss_label', 'trade_details_profit_loss') + '\n            <tr><td colspan="2" class="last_cell" id="trade_details_message">&nbsp;</td></tr>\n            </table>\n            <div id="errMsg" class="notice-msg ' + hidden_class + '"></div>\n            <div id="trade_details_bottom"><div id="contract_sell_wrapper" class="' + hidden_class + '"></div><div id="contract_sell_message"></div><div id="contract_win_status" class="' + hidden_class + '"></div></div>'));
+
+        $sections.find('#sell_details_chart_wrapper').html($('<div/>', { id: contract.tick_count ? id_tick_chart : 'analysis_live_chart', class: 'live_chart_wrapper' }));
 
         $container.find('#' + wrapper_id).append($sections.html()).append($('<div/>', { id: 'errMsg', class: 'notice-msg ' + hidden_class })).append($('<div/>', { id: 'notice_ongoing', class: 'fill-bg-color gr-padding-10 ' + hidden_class, text: localize('You can close this window without interrupting your trade.') }));
 
@@ -33301,6 +34818,7 @@ module.exports = ViewPopup;
 var setExternalTimer = __webpack_require__(/*! ../../../base/clock */ "./src/javascript/app/base/clock.js").setExternalTimer;
 var BinarySocket = __webpack_require__(/*! ../../../base/socket */ "./src/javascript/app/base/socket.js");
 var getHighestZIndex = __webpack_require__(/*! ../../../../_common/utility */ "./src/javascript/_common/utility.js").getHighestZIndex;
+var removeDigitTicker = __webpack_require__(/*! ../../trade/digit_ticker */ "./src/javascript/app/pages/trade/digit_ticker.js").remove;
 
 var ViewPopupUI = function () {
     var $container = void 0,
@@ -33326,6 +34844,7 @@ var ViewPopupUI = function () {
                 cleanup(true);
                 $(document).off('keydown');
                 $(window).off('popstate', onClose);
+                removeDigitTicker();
             };
             $con.find('a.close').on('click', onClose);
             $(document).on('keydown', function (e) {
@@ -33644,6 +35163,7 @@ window.$ = window.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jqu
 __webpack_require__(/*! babel-polyfill */ "./node_modules/babel-polyfill/lib/index.js");
 __webpack_require__(/*! promise-polyfill */ "./node_modules/promise-polyfill/promise.js");
 __webpack_require__(/*! ./_common/lib/polyfills/nodelist.foreach */ "./src/javascript/_common/lib/polyfills/nodelist.foreach.js");
+__webpack_require__(/*! ./_common/lib/polyfills/element.closest */ "./src/javascript/_common/lib/polyfills/element.closest.js");
 
 __webpack_require__(/*! @binary-com/binary-style */ "./node_modules/@binary-com/binary-style/binary.js");
 __webpack_require__(/*! @binary-com/binary-style/binary.more */ "./node_modules/@binary-com/binary-style/binary.more.js");
@@ -33665,50 +35185,6 @@ $(window).on('pageshow', function (e) {
         BinaryLoader.init();
     }
 });
-
-/***/ }),
-
-/***/ "./src/javascript/static/pages/charity.js":
-/*!************************************************!*\
-  !*** ./src/javascript/static/pages/charity.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Charity = function () {
-    var interval = null;
-
-    var onLoad = function onLoad() {
-        var $gallery = $('.gallery');
-
-        var images = void 0;
-        var switchPicture = function switchPicture() {
-            images = $gallery.find('img');
-            if (images.length > 1) {
-                images.eq(images.length - 1).prependTo($gallery);
-            }
-        };
-
-        interval = setInterval(switchPicture, 5000);
-    };
-
-    var onUnload = function onUnload() {
-        if (interval) {
-            clearInterval(interval);
-            interval = null;
-        }
-    };
-
-    return {
-        onLoad: onLoad,
-        onUnload: onUnload
-    };
-}();
-
-module.exports = Charity;
 
 /***/ }),
 
@@ -33905,7 +35381,7 @@ module.exports = {
     },
     BinaryOptionsForMT5: {
         onLoad: function onLoad() {
-            MenuSelector.init(['what-are-binary-options', 'how-to-trade-binary']);
+            MenuSelector.init(['what-are-binary-options', 'how-to-trade-binary', 'types-of-trades']);
         },
         onUnload: function onUnload() {
             MenuSelector.clean();
@@ -33925,6 +35401,8 @@ module.exports = {
 "use strict";
 
 
+var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+var GTM = __webpack_require__(/*! ../../_common/base/gtm */ "./src/javascript/_common/base/gtm.js");
 var Login = __webpack_require__(/*! ../../_common/base/login */ "./src/javascript/_common/base/login.js");
 var localize = __webpack_require__(/*! ../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 var State = __webpack_require__(/*! ../../_common/storage */ "./src/javascript/_common/storage.js").State;
@@ -33940,6 +35418,7 @@ var Home = function () {
     var clients_country = void 0;
 
     var onLoad = function onLoad() {
+        Login.initOneAll();
         TabSelector.onLoad();
 
         BinarySocket.wait('website_status', 'authorize', 'landing_company').then(function () {
@@ -33955,17 +35434,9 @@ var Home = function () {
                 fnc_response_handler: handler,
                 fnc_additional_check: checkCountry
             });
-            socialLogin();
             if (isEuCountry()) {
                 $('.mfsa_message').slideDown(300);
             }
-        });
-    };
-
-    var socialLogin = function socialLogin() {
-        $('#google-signup').off('click').on('click', function (e) {
-            e.preventDefault();
-            window.location.href = Login.socialLoginUrl('google');
         });
     };
 
@@ -33978,15 +35449,29 @@ var Home = function () {
     };
 
     var handler = function handler(response) {
-        var error = response.error;
-        if (error) {
-            $('#signup_error').setVisibility(1).text(error.message);
-        } else if (isBinaryApp()) {
-            BinaryPjax.load(urlFor('new_account/virtualws'));
-        } else {
-            $('.signup-box div').replaceWith($('<p/>', { text: localize('Thank you for signing up! Please check your email to complete the registration process.'), class: 'gr-10 gr-centered center-text' }));
-            $('#social-signup').setVisibility(0);
+        if (response.error) {
+            $('#signup_error').setVisibility(1).text(response.error.message);
+            return;
         }
+        BinarySocket.wait('time').then(function (_ref) {
+            var time = _ref.time;
+
+            var is_binary_app = isBinaryApp();
+
+            GTM.pushDataLayer({
+                event: 'email_submit',
+                email_submit_input: response.echo_req.verify_email,
+                email_submit_days_passed: moment(time * 1000).utc().diff(moment.utc(localStorage.getItem('date_first_contact')), 'days'),
+                email_submit_source: is_binary_app ? 'desktop app' : 'binary.com'
+            });
+
+            if (is_binary_app) {
+                BinaryPjax.load(urlFor('new_account/virtualws'));
+            } else {
+                $('.signup-box div').replaceWith($('<p/>', { text: localize('Thank you for signing up! Please check your email to complete the registration process.'), class: 'gr-10 gr-centered center-text' }));
+                $('#social-signup').setVisibility(0);
+            }
+        });
     };
 
     var onUnload = function onUnload() {
@@ -34181,6 +35666,10 @@ module.exports = Platforms;
 "use strict";
 
 
+var BinarySocket = __webpack_require__(/*! ../../app/base/socket */ "./src/javascript/app/base/socket.js");
+var isExcludedFromCfd = __webpack_require__(/*! ../../app/common/country_base */ "./src/javascript/app/common/country_base.js").isExcludedFromCfd;
+var getElementById = __webpack_require__(/*! ../../../javascript/_common/common_functions */ "./src/javascript/_common/common_functions.js").getElementById;
+
 var Regulation = function () {
     var onLoad = function onLoad() {
         $(function () {
@@ -34202,6 +35691,14 @@ var Regulation = function () {
                 // if EU passport rights tab is active, call relocateLinks to initialize map coordinates
                 if (!$accordion.accordion('option', 'active')) {
                     relocateLinks();
+                }
+            });
+
+            BinarySocket.wait('website_status', 'authorize').then(function () {
+                if (isExcludedFromCfd()) {
+                    var el_cfd_fillbox = getElementById('cfd_fillbox');
+                    el_cfd_fillbox.nextSibling.classList.remove('margin-left-0');
+                    el_cfd_fillbox.remove();
                 }
             });
         });
@@ -34318,6 +35815,11 @@ module.exports = {
         },
         onUnload: function onUnload() {
             MenuSelector.clean();
+        }
+    },
+    BinaryInNumbers: {
+        onLoad: function onLoad() {
+            Scroll.scrollToHashSection();
         }
     }
 };
