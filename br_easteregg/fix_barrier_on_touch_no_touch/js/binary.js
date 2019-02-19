@@ -26260,6 +26260,7 @@ var TickDisplay = function () {
                     category = 'highlowticks';
                 }
                 initialize({
+                    barrier: barrier,
                     symbol: contract.underlying,
                     number_of_ticks: contract.tick_count,
                     contract_category: category,
