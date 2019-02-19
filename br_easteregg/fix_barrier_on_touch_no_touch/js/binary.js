@@ -200,7 +200,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/br_easteregg/fix_barrier_on_touch_no_touch/js/";
+/******/ 	__webpack_require__.p = "/binary-static/br_easteregg/fix_barrier_on_touch_no_touch/js/";
 /******/
 /******/ 	// on error function for async loading
 /******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
@@ -23037,8 +23037,8 @@ var TradingEvents = function () {
                 // as submarket change has modified the underlying list so we need to manually
                 // fire change event for underlying
                 document.querySelectorAll('#underlying option:enabled')[0].selected = 'selected';
-                var event = new Event('change');
-                elem.dispatchEvent(event);
+                var _event = new Event('change');
+                elem.dispatchEvent(_event);
             }
         });
 
@@ -23053,35 +23053,30 @@ var TradingEvents = function () {
             Price.processPriceRequest();
         });
 
-        /*
-         * attach event to purchase buttons to buy the current contract
+        /**
+         * Handle Incoming Click or double click event.
+         * @param {EventTarget} e
          */
-        var $purchase_button = $('.purchase_button');
-        $purchase_button.on('click dblclick', function () {
-            if (isVisible(getElementById('confirmation_message_container')) || /disabled/.test(this.parentNode.classList)) {
+        var preparePurchaseParams = function preparePurchaseParams(e) {
+            if (isVisible(getElementById('confirmation_message_container')) || /disabled/.test(e.currentTarget.parentElement.classList) || !e.currentTarget.hasAttributes()) {
                 return;
             }
-            var id = this.getAttribute('data-purchase-id');
-            var ask_price = this.getAttribute('data-ask-price');
-            var params = { buy: id, price: ask_price, passthrough: {} };
 
-            Object.keys(this.attributes).forEach(function (attr) {
-                if (attr && this.attributes[attr] && this.attributes[attr].name) {
-                    if (/^data-balloon$/.test(this.attributes[attr].name)) {
-                        // Force removal of attribute for Safari
-                        this.removeAttribute(this.attributes[attr].name);
-                    } else if (!/data-balloon/.test(this.attributes[attr].name)) {
-                        // Do not send tooltip data
-                        var m = this.attributes[attr].name.match(/data-(.+)/);
-                        if (m && m[1] && m[1] !== 'purchase-id' && m[1] !== 'passthrough') {
-                            params.passthrough[m[1]] = this.attributes[attr].value;
-                        }
-                    }
+            var id = e.currentTarget.getAttribute('data-purchase-id');
+            var ask_price = e.currentTarget.getAttribute('data-ask-price');
+            var params = { buy: id, price: ask_price, passthrough: {} };
+            Array.prototype.slice.call(event.currentTarget.attributes).filter(function (attr) {
+                if (!/^data/.test(attr.name) || /^data-balloon$/.test(attr.name) || /data-balloon/.test(attr.name)) {
+                    return false;
                 }
-            }, this);
+                return true;
+            }).forEach(function (attr) {
+                params.passthrough[attr.name.substring(5)] = attr.value;
+            });
+
             if (id && ask_price) {
-                $purchase_button.parent().addClass('button-disabled');
-                $(this).text(localize('Purchase request sent'));
+                e.currentTarget.parentElement.classList.add('button-disabled');
+                e.currentTarget.innerText = localize('Purchase request sent');
                 BinarySocket.send(params).then(function (response) {
                     Purchase.display(response);
                     GTM.pushPurchaseData(response);
@@ -23089,6 +23084,16 @@ var TradingEvents = function () {
                 Price.incrFormId();
                 Price.processForgetProposals();
             }
+        };
+
+        /*
+         * attach event to purchase buttons to buy the current contract
+         */
+        var el_purchase_button = document.querySelectorAll('.purchase_button');
+
+        el_purchase_button.forEach(function (el) {
+            el.addEventListener('click', preparePurchaseParams);
+            el.addEventListener('dblclick', preparePurchaseParams);
         });
 
         /*
@@ -35063,7 +35068,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
