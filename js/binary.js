@@ -23037,8 +23037,8 @@ var TradingEvents = function () {
                 // as submarket change has modified the underlying list so we need to manually
                 // fire change event for underlying
                 document.querySelectorAll('#underlying option:enabled')[0].selected = 'selected';
-                var event = new Event('change');
-                elem.dispatchEvent(event);
+                var _event = new Event('change');
+                elem.dispatchEvent(_event);
             }
         });
 
@@ -23053,35 +23053,30 @@ var TradingEvents = function () {
             Price.processPriceRequest();
         });
 
-        /*
-         * attach event to purchase buttons to buy the current contract
+        /**
+         * Handle Incoming Click or double click event.
+         * @param {EventTarget} e
          */
-        var $purchase_button = $('.purchase_button');
-        $purchase_button.on('click dblclick', function () {
-            if (isVisible(getElementById('confirmation_message_container')) || /disabled/.test(this.parentNode.classList)) {
+        var preparePurchaseParams = function preparePurchaseParams(e) {
+            if (isVisible(getElementById('confirmation_message_container')) || /disabled/.test(e.currentTarget.parentElement.classList) || !e.currentTarget.hasAttributes()) {
                 return;
             }
-            var id = this.getAttribute('data-purchase-id');
-            var ask_price = this.getAttribute('data-ask-price');
-            var params = { buy: id, price: ask_price, passthrough: {} };
 
-            Object.keys(this.attributes).forEach(function (attr) {
-                if (attr && this.attributes[attr] && this.attributes[attr].name) {
-                    if (/^data-balloon$/.test(this.attributes[attr].name)) {
-                        // Force removal of attribute for Safari
-                        this.removeAttribute(this.attributes[attr].name);
-                    } else if (!/data-balloon/.test(this.attributes[attr].name)) {
-                        // Do not send tooltip data
-                        var m = this.attributes[attr].name.match(/data-(.+)/);
-                        if (m && m[1] && m[1] !== 'purchase-id' && m[1] !== 'passthrough') {
-                            params.passthrough[m[1]] = this.attributes[attr].value;
-                        }
-                    }
+            var id = e.currentTarget.getAttribute('data-purchase-id');
+            var ask_price = e.currentTarget.getAttribute('data-ask-price');
+            var params = { buy: id, price: ask_price, passthrough: {} };
+            Array.prototype.slice.call(event.currentTarget.attributes).filter(function (attr) {
+                if (!/^data/.test(attr.name) || /^data-balloon$/.test(attr.name) || /data-balloon/.test(attr.name)) {
+                    return false;
                 }
-            }, this);
+                return true;
+            }).forEach(function (attr) {
+                params.passthrough[attr.name.substring(5)] = attr.value;
+            });
+
             if (id && ask_price) {
-                $purchase_button.parent().addClass('button-disabled');
-                $(this).text(localize('Purchase request sent'));
+                e.currentTarget.parentElement.classList.add('button-disabled');
+                e.currentTarget.innerText = localize('Purchase request sent');
                 BinarySocket.send(params).then(function (response) {
                     Purchase.display(response);
                     GTM.pushPurchaseData(response);
@@ -23089,6 +23084,16 @@ var TradingEvents = function () {
                 Price.incrFormId();
                 Price.processForgetProposals();
             }
+        };
+
+        /*
+         * attach event to purchase buttons to buy the current contract
+         */
+        var el_purchase_button = document.querySelectorAll('.purchase_button');
+
+        el_purchase_button.forEach(function (el) {
+            el.addEventListener('click', preparePurchaseParams);
+            el.addEventListener('dblclick', preparePurchaseParams);
         });
 
         /*
@@ -25930,8 +25935,7 @@ var TickDisplay = function () {
         reset_spot_plotted = void 0,
         response_id = void 0,
         contract = void 0,
-        selected_tick = void 0,
-        entry_spot_offset = void 0;
+        selected_tick = void 0;
 
     var id_render = 'tick_chart';
 
@@ -25958,7 +25962,7 @@ var TickDisplay = function () {
         display_decimals = data.display_decimals || 2;
         show_contract_result = data.show_contract_result;
         reset_spot_plotted = false;
-        entry_spot_offset = data.barrier || undefined;
+        barrier = data.barrier || undefined;
 
         if (data.id_render) {
             id_render = data.id_render;
@@ -26111,8 +26115,6 @@ var TickDisplay = function () {
                 barrier_quote = final_barrier;
             } else if (contract && contract.barrier) {
                 barrier_quote = parseFloat(contract.barrier);
-            } else if (entry_spot_offset) {
-                barrier_quote = /^[+|-]/i.test(entry_spot_offset) ? Number(Math.round(barrier_quote + parseFloat(entry_spot_offset) + 'e' + display_decimals) + 'e-' + display_decimals) : entry_spot_offset;
             }
 
             chart.yAxis[0].addPlotLine({
@@ -26263,6 +26265,7 @@ var TickDisplay = function () {
                     category = 'highlowticks';
                 }
                 initialize({
+                    barrier: barrier,
                     symbol: contract.underlying,
                     number_of_ticks: contract.tick_count,
                     contract_category: category,
