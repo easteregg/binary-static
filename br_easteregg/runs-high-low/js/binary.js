@@ -722,7 +722,8 @@ var CryptoConfig = function () {
             ETH: { name: localize('Ether'), min_withdrawal: 0.002, pa_max_withdrawal: 5, pa_min_withdrawal: 0.002 },
             ETC: { name: localize('Ether Classic'), min_withdrawal: 0.002, pa_max_withdrawal: 5, pa_min_withdrawal: 0.002 },
             LTC: { name: localize('Litecoin'), min_withdrawal: 0.002, pa_max_withdrawal: 5, pa_min_withdrawal: 0.002 },
-            UST: { name: localize('Tether'), min_withdrawal: 0.02, pa_max_withdrawal: 2000, pa_min_withdrawal: 10 }
+            UST: { name: localize('Tether'), min_withdrawal: 0.02, pa_max_withdrawal: 2000, pa_min_withdrawal: 10 },
+            USB: { name: localize('Binary Coin'), min_withdrawal: 0.02, pa_max_withdrawal: 2000, pa_min_withdrawal: 10 }
         };
     };
 
@@ -9557,7 +9558,9 @@ var BinaryLoader = function () {
 
             ScrollToAnchor.init();
         });
-        BinarySocket.setOnReconnect(active_script.onReconnect);
+        if (active_script) {
+            BinarySocket.setOnReconnect(active_script.onReconnect);
+        }
     };
 
     var error_messages = {
@@ -18517,8 +18520,8 @@ var TradingAnalysis = function () {
                 image2: 'low-tick.svg'
             },
             runs: {
-                image1: 'run-up.svg',
-                image2: 'run-down.svg'
+                image1: 'ups.svg',
+                image2: 'downs.svg'
             }
         };
 
@@ -21793,9 +21796,9 @@ var DigitTicker = function () {
     };
 
     var setElements = function setElements() {
-        el_peek = el_container.querySelector('.peek');
-        el_peek_box = el_container.querySelector('.peek-box');
-        el_mask = el_peek_box.querySelector('.peek-box > .mask');
+        el_peek = el_container ? el_container.querySelector('.peek') : null;
+        el_peek_box = el_peek ? el_container.querySelector('.peek-box') : null;
+        el_mask = el_peek_box ? el_peek_box.querySelector('.mask') : null;
     };
 
     var isBarrierMissing = function isBarrierMissing(contract_type, bar) {
@@ -21915,13 +21918,19 @@ var DigitDisplay = function () {
         tick_count = void 0,
         spot_times = void 0;
 
+    // Subscribe if contract is still ongoing/running.
     var subscribe = function subscribe(request) {
-        // Subscribe if contract is still ongoing/running.
-        if (contract.current_spot_time < contract.date_expiry) {
+        request.end = 'latest';
+
+        if (contract.exit_tick_time) {
+            request.end = +contract.exit_tick_time;
+            request.count = +contract.tick_count;
+            if (+contract.tick_count === 1) {
+                request.end += 1; // TODO: API sends the improper response when end and start are the same for 1 tick contracts. remove this block on fix
+            }
+        } else {
             request.subscribe = 1;
             request.end = 'latest';
-        } else {
-            request.end = contract.date_expiry;
         }
     };
 
@@ -21934,9 +21943,10 @@ var DigitDisplay = function () {
         $container.addClass('normal-font').html($('<h5 />', { text: contract.display_name, class: 'center-text' })).append($('<div />', { class: 'gr-8 gr-centered gr-12-m' }).append($('<div />', { class: 'gr-row', id: 'table_digits' }).append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') })))).append($('<div />', { class: 'digit-ticker invisible', id: 'digit_ticker_container' }));
 
         DigitTicker.init('digit_ticker_container', contract.contract_type, contract.shortcode, contract.tick_count, contract.status);
+
         var request = {
             ticks_history: contract.underlying,
-            start: contract.date_start
+            start: +contract.entry_tick_time
         };
 
         subscribe(request);
@@ -21967,31 +21977,8 @@ var DigitDisplay = function () {
 
         DigitTicker.update(tick_count, {
             quote: contract.status !== 'open' ? contract.exit_tick : spot,
-            epoch: contract.status !== 'open' ? contract.exit_tick_time : contract.date_expiry
+            epoch: +contract.exit_tick_time || +contract.current_spot_time
         });
-    };
-
-    var redrawFromHistory = function redrawFromHistory(response) {
-        tick_count = 1;
-        if (!$container.is(':visible') || !response || !response.history) {
-            return;
-        }
-        $container.find('#table_digits').empty();
-        $container.find('#table_digits').append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') }));
-
-        response.history.times.some(function (time, idx) {
-            if (+time >= +contract.entry_tick_time && time <= +contract.exit_tick_time) {
-                var spot = response.history.prices[idx];
-                var csv_spot = addComma(spot);
-
-                $container.find('#table_digits').append($('<p />', { class: 'gr-3', text: tick_count })).append($('<p />', { class: 'gr-3 gray', html: tick_count === contract.tick_count ? csv_spot.slice(0, csv_spot.length - 1) + '<strong>' + csv_spot.substr(-1) + '</strong>' : csv_spot })).append($('<p />', { class: 'gr-6 gray digit-spot-time no-underline', text: moment(+time * 1000).utc().format('YYYY-MM-DD HH:mm:ss') }));
-
-                tick_count += 1;
-            }
-            return tick_count > contract.tick_count;
-        });
-
-        showLocalTimeOnHover('.digit-spot-time');
     };
 
     var update = function update(response) {
@@ -22024,17 +22011,8 @@ var DigitDisplay = function () {
         if (proposal_open_contract.status !== 'open') {
             DigitTicker.update(proposal_open_contract.tick_count, {
                 quote: proposal_open_contract.exit_tick,
-                epoch: proposal_open_contract.exit_tick_time
+                epoch: +proposal_open_contract.exit_tick_time
             });
-
-            var request = {
-                ticks_history: contract.underlying,
-                start: contract.entry_tick_time,
-                end: contract.exit_tick_time
-            };
-
-            // force rerender the table by sending the history
-            BinarySocket.send(request, { callback: redrawFromHistory });
         }
         if (proposal_open_contract.status === 'won') {
             DigitTicker.markAsWon();
@@ -23074,8 +23052,8 @@ var TradingEvents = function () {
                 // as submarket change has modified the underlying list so we need to manually
                 // fire change event for underlying
                 document.querySelectorAll('#underlying option:enabled')[0].selected = 'selected';
-                var event = new Event('change');
-                elem.dispatchEvent(event);
+                var _event = new Event('change');
+                elem.dispatchEvent(_event);
             }
         });
 
@@ -23090,35 +23068,30 @@ var TradingEvents = function () {
             Price.processPriceRequest();
         });
 
-        /*
-         * attach event to purchase buttons to buy the current contract
+        /**
+         * Handle Incoming Click or double click event.
+         * @param {EventTarget} e
          */
-        var $purchase_button = $('.purchase_button');
-        $purchase_button.on('click dblclick', function () {
-            if (isVisible(getElementById('confirmation_message_container')) || /disabled/.test(this.parentNode.classList)) {
+        var preparePurchaseParams = function preparePurchaseParams(e) {
+            if (isVisible(getElementById('confirmation_message_container')) || /disabled/.test(e.currentTarget.parentElement.classList) || !e.currentTarget.hasAttributes()) {
                 return;
             }
-            var id = this.getAttribute('data-purchase-id');
-            var ask_price = this.getAttribute('data-ask-price');
-            var params = { buy: id, price: ask_price, passthrough: {} };
 
-            Object.keys(this.attributes).forEach(function (attr) {
-                if (attr && this.attributes[attr] && this.attributes[attr].name) {
-                    if (/^data-balloon$/.test(this.attributes[attr].name)) {
-                        // Force removal of attribute for Safari
-                        this.removeAttribute(this.attributes[attr].name);
-                    } else if (!/data-balloon/.test(this.attributes[attr].name)) {
-                        // Do not send tooltip data
-                        var m = this.attributes[attr].name.match(/data-(.+)/);
-                        if (m && m[1] && m[1] !== 'purchase-id' && m[1] !== 'passthrough') {
-                            params.passthrough[m[1]] = this.attributes[attr].value;
-                        }
-                    }
+            var id = e.currentTarget.getAttribute('data-purchase-id');
+            var ask_price = e.currentTarget.getAttribute('data-ask-price');
+            var params = { buy: id, price: ask_price, passthrough: {} };
+            Array.prototype.slice.call(event.currentTarget.attributes).filter(function (attr) {
+                if (!/^data/.test(attr.name) || /^data-balloon$/.test(attr.name) || /data-balloon/.test(attr.name)) {
+                    return false;
                 }
-            }, this);
+                return true;
+            }).forEach(function (attr) {
+                params.passthrough[attr.name.substring(5)] = attr.value;
+            });
+
             if (id && ask_price) {
-                $purchase_button.parent().addClass('button-disabled');
-                $(this).text(localize('Purchase request sent'));
+                e.currentTarget.parentElement.classList.add('button-disabled');
+                e.currentTarget.innerText = localize('Purchase request sent');
                 BinarySocket.send(params).then(function (response) {
                     Purchase.display(response);
                     GTM.pushPurchaseData(response);
@@ -23126,6 +23099,16 @@ var TradingEvents = function () {
                 Price.incrFormId();
                 Price.processForgetProposals();
             }
+        };
+
+        /*
+         * attach event to purchase buttons to buy the current contract
+         */
+        var el_purchase_button = document.querySelectorAll('.purchase_button');
+
+        el_purchase_button.forEach(function (el) {
+            el.addEventListener('click', preparePurchaseParams);
+            el.addEventListener('dblclick', preparePurchaseParams);
         });
 
         /*
@@ -24986,6 +24969,8 @@ module.exports = Process;
 "use strict";
 
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 var isCallputspread = __webpack_require__(/*! ./callputspread */ "./src/javascript/app/pages/trade/callputspread.js").isCallputspread;
 var Contract = __webpack_require__(/*! ./contract */ "./src/javascript/app/pages/trade/contract.js");
@@ -25077,6 +25062,8 @@ var Purchase = function () {
 
         if (error) {
             var balance = State.getResponse('balance.balance');
+            confirmation_error.show();
+
             if (/InsufficientBalance/.test(error.code) && TopUpVirtualPopup.shouldShow(balance, true)) {
                 hidePriceOverlay();
                 processPriceRequest();
@@ -25091,18 +25078,37 @@ var Purchase = function () {
                     authorization_error_btn_login.removeEventListener('click', loginOnClick);
                     authorization_error_btn_login.addEventListener('click', loginOnClick);
                 } else {
-                    confirmation_error.setVisibility(1);
-                    var message = error.message;
-                    if (/RestrictedCountry/.test(error.code)) {
-                        var additional_message = '';
-                        if (/FinancialBinaries/.test(error.code)) {
-                            additional_message = localize('Try our [_1]Volatility Indices[_2].', ['<a href="' + urlFor('get-started/binary-options', 'anchor=volatility-indices#range-of-markets') + '" >', '</a>']);
-                        } else if (/Random/.test(error.code)) {
-                            additional_message = localize('Try our other markets.');
+                    BinarySocket.wait('get_account_status').then(function (response) {
+                        confirmation_error.setVisibility(1);
+                        var message = error.message;
+                        if (/NoMFProfessionalClient/.test(error.code)) {
+                            var account_status = getPropertyValue(response, ['get_account_status', 'status']) || [];
+                            var has_professional_requested = account_status.includes('professional_requested');
+                            var has_professional_rejected = account_status.includes('professional_rejected');
+                            if (has_professional_requested) {
+                                message = localize('Your application to be treated as a professional client is being processed.');
+                            } else if (has_professional_rejected) {
+                                var message_text = localize('Your professional client request is [_1]not approved[_2].', ['<strong>', '</strong>']) + '<br />' + localize('Please reapply once the required criteria has been fulfilled.') + '<br /><br />' + localize('More information can be found in an email sent to you.');
+                                var button_text = localize('I want to reapply');
+
+                                message = prepareConfirmationErrorCta(message_text, button_text, true);
+                            } else {
+                                var _message_text = localize('In the EU, financial binary options are only available to professional investors.');
+                                var _button_text = localize('Apply now as a professional investor');
+
+                                message = prepareConfirmationErrorCta(_message_text, _button_text);
+                            }
+                        } else if (/RestrictedCountry/.test(error.code)) {
+                            var additional_message = '';
+                            if (/FinancialBinaries/.test(error.code)) {
+                                additional_message = localize('Try our [_1]Volatility Indices[_2].', ['<a href="' + urlFor('get-started/binary-options', 'anchor=volatility-indices#range-of-markets') + '" >', '</a>']);
+                            } else if (/Random/.test(error.code)) {
+                                additional_message = localize('Try our other markets.');
+                            }
+                            message = error.message + '. ' + additional_message;
                         }
-                        message = error.message + '. ' + additional_message;
-                    }
-                    CommonFunctions.elementInnerHtml(confirmation_error, message);
+                        CommonFunctions.elementInnerHtml(confirmation_error, message);
+                    });
                 }
             }
         } else {
@@ -25266,6 +25272,33 @@ var Purchase = function () {
         return '<strong>' + d + '</strong>';
     };
 
+    var prepareConfirmationErrorCta = function prepareConfirmationErrorCta(message_text, button_text) {
+        var has_html = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+        var row_element = createElement('div', { class: 'gr-row font-style-normal' });
+        var columnElement = function columnElement() {
+            var extra_attributes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+            return createElement('div', _extends({ class: 'gr-12 gr-padding-20' }, extra_attributes));
+        };
+        var button_element = createElement('a', { class: 'button', href: urlFor('user/settings/professional') });
+        var cta_element = columnElement();
+        var message_element = void 0;
+
+        if (has_html) {
+            message_element = columnElement();
+            message_element.innerHTML = message_text;
+        } else {
+            message_element = columnElement({ text: message_text });
+        }
+
+        button_element.appendChild(createElement('span', { text: button_text }));
+        cta_element.appendChild(button_element);
+        row_element.appendChild(message_element);
+        row_element.appendChild(cta_element);
+
+        return row_element.outerHTML;
+    };
+
     var loginOnClick = function loginOnClick(e) {
         return Header.loginOnClick(e);
     };
@@ -25409,13 +25442,14 @@ var Purchase = function () {
         if (el_epoch && el_epoch.classList) {
             el_epoch.classList.add('is-visible');
             el_epoch.setAttribute('style', 'position: absolute; right: ' + ((el_epoch.parentElement.offsetWidth - el_epoch.nextSibling.offsetWidth) / 2 + adjustment) + 'px');
+            var last_digit_quote = last_tick_quote ? last_tick_quote.slice(-1) : '';
             if (contract_status === 'won') {
                 DigitTicker.markAsWon();
-                DigitTicker.markDigitAsWon(last_tick_quote.slice(-1));
+                DigitTicker.markDigitAsWon(last_digit_quote);
             }
             if (contract_status === 'lost') {
                 DigitTicker.markAsLost();
-                DigitTicker.markDigitAsLost(last_tick_quote.slice(-1));
+                DigitTicker.markDigitAsLost(last_digit_quote);
             }
         }
     };
@@ -25967,8 +26001,7 @@ var TickDisplay = function () {
         reset_spot_plotted = void 0,
         response_id = void 0,
         contract = void 0,
-        selected_tick = void 0,
-        entry_spot_offset = void 0;
+        selected_tick = void 0;
 
     var id_render = 'tick_chart';
 
@@ -25995,7 +26028,7 @@ var TickDisplay = function () {
         display_decimals = data.display_decimals || 2;
         show_contract_result = data.show_contract_result;
         reset_spot_plotted = false;
-        entry_spot_offset = data.barrier || undefined;
+        barrier = data.barrier || undefined;
 
         if (data.id_render) {
             id_render = data.id_render;
@@ -26152,8 +26185,6 @@ var TickDisplay = function () {
                 barrier_quote = final_barrier;
             } else if (contract && contract.barrier) {
                 barrier_quote = parseFloat(contract.barrier);
-            } else if (entry_spot_offset) {
-                barrier_quote = /^[+|-]/i.test(entry_spot_offset) ? Number(Math.round(barrier_quote + parseFloat(entry_spot_offset) + 'e' + display_decimals) + 'e-' + display_decimals) : entry_spot_offset;
             }
 
             chart.yAxis[0].addPlotLine({
@@ -26307,6 +26338,7 @@ var TickDisplay = function () {
                 }
 
                 initialize({
+                    barrier: barrier,
                     symbol: contract.underlying,
                     number_of_ticks: contract.tick_count,
                     contract_category: category,
@@ -29679,10 +29711,10 @@ var professionalClient = function () {
         populateProfessionalClient(is_financial);
     };
 
-    var setVisible = function setVisible(selector) {
+    var setVisible = function setVisible($selector) {
         $('#loading').remove();
         $('#frm_professional').setVisibility(0);
-        $(selector).setVisibility(1);
+        $selector.setVisibility(1);
     };
 
     var populateProfessionalClient = function populateProfessionalClient(is_financial) {
@@ -29695,16 +29727,23 @@ var professionalClient = function () {
             return;
         }
 
+        var $professional = $('#professional');
+        var $processing = $('#processing');
+        var $rejected = $('#rejected');
+
+        $professional.setVisibility(0);
+        $processing.setVisibility(0);
+        $rejected.setVisibility(0);
+
         var status = State.getResponse('get_account_status.status') || [];
         if (is_in_page && status.includes('professional')) {
-            setVisible('#professional');
+            setVisible($professional);
             return;
         } else if (is_in_page && status.includes('professional_requested')) {
-            setVisible('#processing');
+            setVisible($processing);
             return;
         } else if (is_in_page && status.includes('professional_rejected')) {
-            setVisible('#rejected');
-            return;
+            setVisible($rejected);
         }
 
         var $container = $('#fs_professional');
