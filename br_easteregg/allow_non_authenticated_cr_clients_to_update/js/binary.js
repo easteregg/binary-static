@@ -29268,7 +29268,8 @@ var PersonalDetails = function () {
         var landing_companies = State.getResponse('landing_company');
         var changeable = landing_companies.financial_company.changeable_fields;
         if (changeable && changeable.only_before_auth) {
-            changeable_fields = changeable.only_before_auth;
+            // TODO: remove tax_id and tax_residence when api is fixed.
+            changeable_fields = changeable.only_before_auth.concat(['tax_id', 'tax_residence']);
         }
     };
 
@@ -29293,10 +29294,7 @@ var PersonalDetails = function () {
         }
 
         if (changeable_fields.includes('date_of_birth')) {
-            var $input_el = $('#date_of_birth');
-            $input_el.attr('data-value', toISOFormat(moment().subtract(18, 'years'))).change(function () {
-                return CommonFunctions.dateValueChanged(this, 'date');
-            }).setVisibility(1);
+            $('#date_of_birth').setVisibility(1);
 
             DatePicker.init({
                 selector: '#date_of_birth',
@@ -29349,7 +29347,8 @@ var PersonalDetails = function () {
 
         if (has_changeable_fields) {
             displayChangeableFields(data);
-            $(real_acc_elements).setVisibility(1);
+            CommonFunctions.getElementById('tax_information_form').setVisibility(1);
+            // $(real_acc_elements).setVisibility(1);
         } else if (is_virtual) {
             $(real_acc_elements).remove();
         } else {
@@ -29422,14 +29421,15 @@ var PersonalDetails = function () {
                             // Force pushing values, used for (API-)expected values
                             $element.attr({ 'data-force': true, 'data-value': el_value });
                         }
-                        if (!has_label) {
-                            CommonFunctions.getElementById('row_lbl_' + key).setVisibility(0);
-                        }
                         // Update data-value on change for inputs
                         if (should_update_value) {
                             CommonFunctions.getElementById('row_' + key).setVisibility(1);
                             $(element_key).change(function () {
-                                this.setAttribute('data-value', this.value);
+                                if (this.getAttribute('id') === 'date_of_birth') {
+                                    this.setAttribute('data-value', toISOFormat(moment(this.value, 'DD MMM, YYYY')));
+                                    return CommonFunctions.dateValueChanged(this, 'date');
+                                }
+                                return this.setAttribute('data-value', this.value);
                             });
                         }
                     }
@@ -29471,7 +29471,7 @@ var PersonalDetails = function () {
 
             validations = [{ selector: '#address_line_1', validations: ['req', 'address'] }, { selector: '#address_line_2', validations: ['address'] }, { selector: '#address_city', validations: ['req', 'letter_symbol'] }, { selector: '#address_state', validations: $('#address_state').prop('nodeName') === 'SELECT' ? '' : ['letter_symbol'] }, { selector: '#address_postcode', validations: [Client.get('residence') === 'gb' ? 'req' : '', 'postcode', ['length', { min: 0, max: 20 }]] }, { selector: '#email_consent' }, { selector: '#phone', validations: ['req', 'phone', ['length', { min: 8, max: 35, value: function value() {
                         return $('#phone').val().replace(/\D/g, '');
-                    } }]] }, { selector: '#place_of_birth', validations: ['req'] }, { selector: '#account_opening_reason', validations: ['req'] }, { selector: '#tax_residence', validations: is_tax_req ? ['req'] : '' }, { selector: '#citizen', validations: is_financial || is_gaming || is_for_mt_citizen ? ['req'] : '' }, { selector: '#chk_tax_id', validations: is_financial ? [['req', { hide_asterisk: true, message: localize('Please confirm that all the information above is true and complete.') }]] : '', exclude_request: 1 }];
+                    } }]] }, { selector: '#place_of_birth', validations: ['req'] }, { selector: '#account_opening_reason', validations: ['req'] }, { selector: '#date_of_birth', validations: ['req'] }, { selector: '#tax_residence', validations: is_tax_req ? ['req'] : '' }, { selector: '#citizen', validations: is_financial || is_gaming || is_for_mt_citizen ? ['req'] : '' }, { selector: '#chk_tax_id', validations: is_financial ? [['req', { hide_asterisk: true, message: localize('Please confirm that all the information above is true and complete.') }]] : '', exclude_request: 1 }];
 
             // Push validations for changeable fields.
             changeable_fields.forEach(function (key) {
@@ -35174,7 +35174,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
