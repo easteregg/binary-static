@@ -2513,6 +2513,65 @@ exports.default = FullPageModal;
 
 /***/ }),
 
+/***/ "./src/javascript/app_2/App/Components/Elements/Notifications/empty_notification.jsx":
+/*!*******************************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Elements/Notifications/empty_notification.jsx ***!
+  \*******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.EmptyNotification = undefined;
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
+
+var _NavBar = __webpack_require__(/*! ../../../../Assets/Header/NavBar */ "./src/javascript/app_2/Assets/Header/NavBar/index.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var EmptyNotification = function EmptyNotification() {
+    return _react2.default.createElement(
+        'div',
+        { className: 'no-notifications-container' },
+        _react2.default.createElement(
+            'div',
+            { className: 'notification-message' },
+            _react2.default.createElement(
+                'div',
+                { className: 'bell-icon' },
+                _react2.default.createElement(_NavBar.IconBell, null)
+            ),
+            _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'h4',
+                    null,
+                    (0, _localize.localize)('No Notifications')
+                ),
+                _react2.default.createElement(
+                    'span',
+                    { className: 'no-notifications-message' },
+                    (0, _localize.localize)('You have yet to receive any notifications')
+                )
+            )
+        )
+    );
+};
+
+exports.EmptyNotification = EmptyNotification;
+
+/***/ }),
+
 /***/ "./src/javascript/app_2/App/Components/Elements/Notifications/index.js":
 /*!*****************************************************************************!*\
   !*** ./src/javascript/app_2/App/Components/Elements/Notifications/index.js ***!
@@ -2564,9 +2623,7 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
-
-var _NavBar = __webpack_require__(/*! ../../../../Assets/Header/NavBar */ "./src/javascript/app_2/Assets/Header/NavBar/index.js");
+var _empty_notification = __webpack_require__(/*! ./empty_notification.jsx */ "./src/javascript/app_2/App/Components/Elements/Notifications/empty_notification.jsx");
 
 var _Drawer = __webpack_require__(/*! ../Drawer */ "./src/javascript/app_2/App/Components/Elements/Drawer/index.js");
 
@@ -2583,38 +2640,12 @@ var Notifications = function Notifications(_ref) {
                 { key: idx },
                 _react2.default.createElement(_Drawer.DrawerItem, { text: item[idx] })
             );
-        }) : _react2.default.createElement(
-            'div',
-            { className: 'no-notifications-container' },
-            _react2.default.createElement(
-                'div',
-                { className: 'notification-message' },
-                _react2.default.createElement(
-                    'div',
-                    { className: 'bell-icon' },
-                    _react2.default.createElement(_NavBar.IconBell, null)
-                ),
-                _react2.default.createElement(
-                    'div',
-                    null,
-                    _react2.default.createElement(
-                        'h4',
-                        null,
-                        (0, _localize.localize)('No Notifications')
-                    ),
-                    _react2.default.createElement(
-                        'span',
-                        { className: 'no-notifications-message' },
-                        (0, _localize.localize)('You have yet to receive any notifications')
-                    )
-                )
-            )
-        )
+        }) : _react2.default.createElement(_empty_notification.EmptyNotification, null)
     );
 };
 
 Notifications.propTypes = {
-    'list': _propTypes2.default.object
+    list: _propTypes2.default.object
 };
 
 exports.Notifications = Notifications;
@@ -3863,7 +3894,7 @@ var CloseButton = function CloseButton(_ref) {
 };
 
 CloseButton.propTypes = {
-    onClick: _propTypes2.default.func
+    onClick: _propTypes2.default.func.isRequired
 };
 
 exports.default = CloseButton;
@@ -4414,6 +4445,10 @@ var _classnames2 = _interopRequireDefault(_classnames);
 
 var _mobxReact = __webpack_require__(/*! mobx-react */ "./node_modules/mobx-react/index.module.js");
 
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
@@ -4461,10 +4496,11 @@ var DatePicker = function (_React$Component) {
         }
 
         return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DatePicker.__proto__ || Object.getPrototypeOf(DatePicker)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-            value: _this.props.value,
+            date_value: '',
+            holidays: [],
             is_datepicker_visible: false,
             is_clear_btn_visible: false,
-            holidays: [],
+            value: _this.props.value,
             weekends: []
         }, _this.handleVisibility = function () {
             _this.setState(function (state) {
@@ -4490,14 +4526,16 @@ var DatePicker = function (_React$Component) {
             }
 
             if (_this.props.mode === 'duration') {
-                _this.updateDatePickerValue((0, _Date.daysFromTodayTo)(value));
+                _this.updateDatePickerValue(value);
             } else {
                 _this.updateDatePickerValue((0, _Date.formatDate)(value, 'DD MMM YYYY'));
             }
             _this.setState({ is_datepicker_visible: is_datepicker_visible });
         }, _this.onChangeInput = function (e) {
             var value = e.target.value;
-            _this.updateDatePickerValue(value);
+            var formatted_value = (0, _Date.formatDate)((0, _Date.addDays)((0, _Date.toMoment)(), value), 'DD MMM YYYY');
+            _this.updateDatePickerValue(formatted_value);
+            _this.props.onChange(e);
         }, _this.clearDatePickerInput = function () {
             _this.setState({ value: null }, _this.updateStore);
             if (_this.calendar) {
@@ -4509,11 +4547,16 @@ var DatePicker = function (_React$Component) {
                 mode = _this$props.mode,
                 start_date = _this$props.start_date;
 
-
             _this.setState({ value: value }, _this.updateStore);
 
+            if (mode === 'duration') {
+                var new_value = (0, _Date.daysFromTodayTo)(value);
+                var new_date_value = (0, _Date.formatDate)(value, 'DD MMM YYYY');
+                _this.setState({ value: new_value, date_value: new_date_value }, _this.updateStore);
+            }
+
             // update Calendar
-            var new_date = mode === 'duration' ? (0, _Date.addDays)((0, _Date.toMoment)(), value) : value;
+            var new_date = mode === 'duration' ? (0, _Date.formatDate)(value, 'DD MMM YYYY') : value;
             if (_this.calendar && ((0, _Date.isDateValid)(new_date) || !new_date)) {
                 if (!new_date) {
                     var current_date = (0, _Date.formatDate)(start_date, date_format);
@@ -4541,21 +4584,24 @@ var DatePicker = function (_React$Component) {
                 is_read_only = _this$props3.is_read_only,
                 mode = _this$props3.mode,
                 name = _this$props3.name,
-                validation_errors = _this$props3.validation_errors;
+                label = _this$props3.label,
+                error_messages = _this$props3.error_messages;
             var placeholder = _this.props.placeholder;
 
-            var type = void 0,
+            var value = void 0,
+                type = void 0,
                 onChange = void 0;
 
             switch (mode) {
                 case 'duration':
                     onChange = _this.onChangeInput;
-                    placeholder = placeholder || (0, _localize.localize)('Select a duration');
-                    type = 'number';
+                    type = 'text';
+                    value = _this.state.value;
                     break;
                 default:
                     placeholder = placeholder || (0, _localize.localize)('Select a date');
                     type = 'text';
+                    value = (0, _Date.formatDate)(_this.props.value, 'DD MMM YYYY');
             }
 
             return _react2.default.createElement(_input_field2.default, {
@@ -4563,14 +4609,16 @@ var DatePicker = function (_React$Component) {
                 classNameInput: 'trade-container__input',
                 'data-tip': false,
                 'data-value': _this.state.value,
-                error_messages: validation_errors,
+                error_messages: error_messages,
+                is_autocomplete_disabled: true,
+                label: label,
                 is_read_only: is_read_only,
                 name: name,
                 onChange: onChange,
                 onClick: _this.handleVisibility,
                 placeholder: placeholder,
                 type: type,
-                value: _this.state.value
+                value: value
             });
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
@@ -4583,11 +4631,9 @@ var DatePicker = function (_React$Component) {
                 mode = _props.mode,
                 value = _props.value;
 
-            if (mode === 'duration') {
-                this.updateDatePickerValue((0, _Date.daysFromTodayTo)(value));
-            } else {
-                this.updateDatePickerValue((0, _Date.formatDate)(value, 'DD MMM YYYY'));
-            }
+            var initial_value = mode === 'duration' ? (0, _Date.formatDate)((0, _Date.addDays)((0, _Date.toMoment)(), 1), 'DD MMM YYYY') : (0, _Date.formatDate)(value, 'DD MMM YYYY');
+
+            this.updateDatePickerValue(initial_value);
 
             if (this.props.disable_trading_events) {
                 this.onChangeCalendarMonth((0, _Date.getStartOfMonth)(this.state.value));
@@ -4706,7 +4752,8 @@ var DatePicker = function (_React$Component) {
                 this.renderInputField(),
                 _react2.default.createElement(_Common.IconCalendar, {
                     className: (0, _classnames2.default)('datepicker__icon datepicker__icon--calendar', {
-                        'datepicker__icon--is-hidden': this.state.is_clear_btn_visible
+                        'datepicker__icon--is-hidden': this.state.is_clear_btn_visible,
+                        'datepicker__icon--with-label': this.props.label
                     }),
                     onClick: this.handleVisibility
                 }),
@@ -4749,7 +4796,7 @@ var DatePicker = function (_React$Component) {
                             max_date: this.props.max_date,
                             min_date: this.props.min_date,
                             start_date: this.props.start_date,
-                            value: this.props.value
+                            value: this.props.mode === 'duration' ? this.state.date_value : this.props.value
                         })
                     )
                 )
@@ -4765,7 +4812,10 @@ DatePicker.defaultProps = {
     mode: 'date'
 };
 
-DatePicker.propTypes = _extends({}, _Calendar2.default.propTypes);
+DatePicker.propTypes = _extends({}, _Calendar2.default.propTypes, {
+    error_messages: _propTypes2.default.array,
+    label: _propTypes2.default.string
+});
 
 exports.default = (0, _mobxReact.observer)(DatePicker);
 
@@ -5581,7 +5631,7 @@ var RangeSlider = function RangeSlider(_ref) {
             ),
             _react2.default.createElement('div', {
                 className: 'range-slider__line',
-                style: { width: 'calc(' + value * 10 + '% - ' + (value < 4 ? '0.8rem' : '0.5rem') + ')' }
+                style: { width: 'calc(' + value * 10 + '% - ' + (value < 4 ? '1.6rem' : '1rem') + ')' }
             })
         ),
         _react2.default.createElement(
@@ -5839,7 +5889,7 @@ Dialog.propTypes = {
     end_time: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string, _propTypes2.default.object]),
     onChange: _propTypes2.default.func,
     preClass: _propTypes2.default.string,
-    start_time: _propTypes2.default.number,
+    start_time: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string, _propTypes2.default.object]),
     value: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string, _propTypes2.default.object])
 };
 
@@ -6381,7 +6431,7 @@ var InputField = function InputField(_ref) {
 
         if (type === 'number') {
             var is_empty = !e.target.value || e.target.value === '' || e.target.value === '  ';
-            var signed_regex = is_signed ? '[\+\-\.0-9]$' : '^';
+            var signed_regex = is_signed ? '[+\-\.0-9]$' : '^';
 
             var is_number = new RegExp(signed_regex + '(\\d*)?' + (is_float ? '(\\.\\d+)?' : '') + '$').test(e.target.value);
 
@@ -6486,7 +6536,7 @@ var InputField = function InputField(_ref) {
         },
         _react2.default.createElement(
             _tooltip2.default,
-            { alignment: 'left', message: has_error ? error_messages[0] : null },
+            { className: (0, _classnames2.default)('', { 'with-label': label }), alignment: 'left', message: has_error ? error_messages[0] : null },
             !!label && _react2.default.createElement(
                 'label',
                 { htmlFor: name, className: 'input-label' },
@@ -15096,6 +15146,160 @@ exports.default = ContractTypeWidget;
 
 /***/ }),
 
+/***/ "./src/javascript/app_2/Modules/Trading/Components/Form/DatePicker/index.js":
+/*!**********************************************************************************!*\
+  !*** ./src/javascript/app_2/Modules/Trading/Components/Form/DatePicker/index.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _trading_date_picker = __webpack_require__(/*! ./trading_date_picker.jsx */ "./src/javascript/app_2/Modules/Trading/Components/Form/DatePicker/trading_date_picker.jsx");
+
+var _trading_date_picker2 = _interopRequireDefault(_trading_date_picker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _trading_date_picker2.default;
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/Modules/Trading/Components/Form/DatePicker/trading_date_picker.jsx":
+/*!*************************************************************************************************!*\
+  !*** ./src/javascript/app_2/Modules/Trading/Components/Form/DatePicker/trading_date_picker.jsx ***!
+  \*************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _mobxReact = __webpack_require__(/*! mobx-react */ "./node_modules/mobx-react/index.module.js");
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _connect = __webpack_require__(/*! ../../../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
+
+var _Date = __webpack_require__(/*! ../../../../../Utils/Date */ "./src/javascript/app_2/Utils/Date/index.js");
+
+var _DatePicker = __webpack_require__(/*! ../../../../../App/Components/Form/DatePicker */ "./src/javascript/app_2/App/Components/Form/DatePicker/index.js");
+
+var _DatePicker2 = _interopRequireDefault(_DatePicker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var TradingDatePicker = function TradingDatePicker(_ref) {
+    var duration_min_max = _ref.duration_min_max,
+        duration_units_list = _ref.duration_units_list,
+        validation_errors = _ref.validation_errors,
+        expiry_date = _ref.expiry_date,
+        expiry_type = _ref.expiry_type,
+        is_24_hours_contract = _ref.is_24_hours_contract,
+        mode = _ref.mode,
+        name = _ref.name,
+        onChange = _ref.onChange,
+        server_time = _ref.server_time,
+        start_time = _ref.start_time,
+        start_date = _ref.start_date,
+        symbol = _ref.symbol;
+
+    var max_date_duration = void 0,
+        min_date_expiry = void 0,
+        has_today_btn = void 0,
+        is_read_only = void 0;
+    var moment_contract_start_date_time = (0, _Date.setTime)((0, _Date.toMoment)(start_date || server_time), (0, _Date.isTimeValid)(start_time) ? start_time : server_time.format('HH:mm'));
+
+    var max_daily_duration = duration_min_max.daily ? duration_min_max.daily.max : 365 * 24 * 3600;
+
+    if (is_24_hours_contract) {
+        min_date_expiry = moment_contract_start_date_time.clone().startOf('day');
+        max_date_duration = moment_contract_start_date_time.clone().add(start_date ? 24 * 3600 : max_daily_duration, 'second');
+    } else {
+        min_date_expiry = moment_contract_start_date_time.clone().startOf('day');
+        max_date_duration = moment_contract_start_date_time.clone().add(max_daily_duration, 'second');
+    }
+    if (expiry_type === 'duration') {
+        min_date_expiry.add(1, 'day');
+        has_today_btn = false;
+        is_read_only = false;
+    } else {
+        has_today_btn = true;
+        is_read_only = true;
+    }
+
+    return _react2.default.createElement(_DatePicker2.default, {
+        alignment: 'left',
+        disable_year_selector: true,
+        disable_trading_events: true,
+        error_messages: validation_errors.duration || [],
+        has_today_btn: has_today_btn,
+        is_nativepicker: false,
+        is_read_only: is_read_only,
+        label: duration_units_list.length === 1 ? duration_units_list[0].text : null,
+        mode: mode,
+        name: name,
+        onChange: onChange,
+        min_date: min_date_expiry,
+        max_date: max_date_duration,
+        start_date: start_date,
+        underlying: symbol,
+        value: expiry_date
+    });
+};
+
+TradingDatePicker.propTypes = {
+    duration: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
+    duration_min_max: _propTypes2.default.object,
+    duration_units_list: _mobxReact.PropTypes.arrayOrObservableArray,
+    expiry_date: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
+    expiry_type: _propTypes2.default.string,
+    is_24_hours_contract: _propTypes2.default.bool,
+    mode: _propTypes2.default.string,
+    name: _propTypes2.default.string,
+    onChange: _propTypes2.default.func,
+    server_time: _propTypes2.default.object,
+    start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+    start_time: _propTypes2.default.string,
+    symbol: _propTypes2.default.string,
+    validation_errors: _propTypes2.default.object
+};
+
+exports.default = (0, _connect.connect)(function (_ref2) {
+    var modules = _ref2.modules,
+        common = _ref2.common;
+    return {
+        duration_min_max: modules.trade.duration_min_max,
+        duration_units_list: modules.trade.duration_units_list,
+        expiry_date: modules.trade.expiry_date,
+        expiry_type: modules.trade.expiry_type,
+        onChange: modules.trade.onChange,
+        server_time: common.server_time,
+        start_date: modules.trade.start_date,
+        start_time: modules.trade.start_time,
+        symbol: modules.trade.symbol,
+        validation_errors: modules.trade.validation_errors
+    };
+})(TradingDatePicker);
+
+/***/ }),
+
 /***/ "./src/javascript/app_2/Modules/Trading/Components/Form/Purchase/MessageBox/Templates/error_balance.jsx":
 /*!**************************************************************************************************************!*\
   !*** ./src/javascript/app_2/Modules/Trading/Components/Form/Purchase/MessageBox/Templates/error_balance.jsx ***!
@@ -15748,6 +15952,121 @@ exports.default = ContractInfo;
 
 /***/ }),
 
+/***/ "./src/javascript/app_2/Modules/Trading/Components/Form/TimePicker/index.js":
+/*!**********************************************************************************!*\
+  !*** ./src/javascript/app_2/Modules/Trading/Components/Form/TimePicker/index.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _trading_time_picker = __webpack_require__(/*! ./trading_time_picker.jsx */ "./src/javascript/app_2/Modules/Trading/Components/Form/TimePicker/trading_time_picker.jsx");
+
+var _trading_time_picker2 = _interopRequireDefault(_trading_time_picker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _trading_time_picker2.default;
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/Modules/Trading/Components/Form/TimePicker/trading_time_picker.jsx":
+/*!*************************************************************************************************!*\
+  !*** ./src/javascript/app_2/Modules/Trading/Components/Form/TimePicker/trading_time_picker.jsx ***!
+  \*************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _connect = __webpack_require__(/*! ../../../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
+
+var _Date = __webpack_require__(/*! ../../../../../Utils/Date */ "./src/javascript/app_2/Utils/Date/index.js");
+
+var _TimePicker = __webpack_require__(/*! ../../../../../App/Components/Form/TimePicker */ "./src/javascript/app_2/App/Components/Form/TimePicker/index.js");
+
+var _TimePicker2 = _interopRequireDefault(_TimePicker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var TradingTimePicker = function TradingTimePicker(_ref) {
+    var expiry_date = _ref.expiry_date,
+        expiry_time = _ref.expiry_time,
+        market_close_times = _ref.market_close_times,
+        onChange = _ref.onChange,
+        server_time = _ref.server_time,
+        start_date = _ref.start_date,
+        start_time = _ref.start_time;
+
+    var moment_expiry = (0, _Date.toMoment)(expiry_date || server_time);
+    var moment_contract_start_date_time = (0, _Date.setTime)((0, _Date.toMoment)(start_date || server_time), (0, _Date.isTimeValid)(start_time) ? start_time : server_time.format('HH:mm'));
+    var expiry_date_time = (0, _Date.setTime)(moment_expiry.clone(), moment_contract_start_date_time.clone().add(5, 'minute').format('HH:mm'));
+    var expiry_date_market_close = (0, _Date.setTime)(expiry_date_time.clone(), market_close_times.slice(-1)[0]);
+    var is_expired_next_day = expiry_date_time.diff(moment_contract_start_date_time, 'day') === 1;
+    var min_date_expiry = moment_contract_start_date_time.clone().startOf('day');
+    var expiry_time_sessions = [{
+        open: is_expired_next_day ? expiry_date_time.clone().startOf('day') : expiry_date_time.clone(),
+        close: is_expired_next_day ? (0, _Date.minDate)(expiry_date_time.clone().subtract(10, 'minute'), expiry_date_market_close) : expiry_date_market_close.clone()
+    }];
+
+    return _react2.default.createElement(_TimePicker2.default, {
+        end_time: expiry_time_sessions[0].close,
+        onChange: onChange,
+        name: 'expiry_time',
+        placeholder: '12:00',
+        start_time: expiry_time_sessions[0].open,
+        value: expiry_time || min_date_expiry.format('HH:mm')
+    });
+};
+
+TradingTimePicker.propTypes = {
+    expiry_date: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
+    expiry_time: _propTypes2.default.string,
+    market_close_times: _propTypes2.default.array,
+    name: _propTypes2.default.string,
+    onChange: _propTypes2.default.func,
+    server_time: _propTypes2.default.object,
+    start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+    start_time: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string, _propTypes2.default.object])
+};
+
+exports.default = (0, _connect.connect)(function (_ref2) {
+    var modules = _ref2.modules,
+        common = _ref2.common;
+    return {
+        duration_units_list: modules.trade.duration_units_list,
+        expiry_date: modules.trade.expiry_date,
+        expiry_time: modules.trade.expiry_time,
+        market_close_times: modules.trade.market_close_times,
+        onChange: modules.trade.onChange,
+        server_time: common.server_time,
+        start_date: modules.trade.start_date,
+        start_time: modules.trade.start_time
+    };
+})(TradingTimePicker);
+
+/***/ }),
+
 /***/ "./src/javascript/app_2/Modules/Trading/Components/Form/TradeParams/Duration/advanced_duration.jsx":
 /*!*********************************************************************************************************!*\
   !*** ./src/javascript/app_2/Modules/Trading/Components/Form/TradeParams/Duration/advanced_duration.jsx ***!
@@ -15778,14 +16097,6 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _TimePicker = __webpack_require__(/*! ../../../../../../App/Components/Form/TimePicker */ "./src/javascript/app_2/App/Components/Form/TimePicker/index.js");
-
-var _TimePicker2 = _interopRequireDefault(_TimePicker);
-
-var _DatePicker = __webpack_require__(/*! ../../../../../../App/Components/Form/DatePicker */ "./src/javascript/app_2/App/Components/Form/DatePicker/index.js");
-
-var _DatePicker2 = _interopRequireDefault(_DatePicker);
-
 var _DropDown = __webpack_require__(/*! ../../../../../../App/Components/Form/DropDown */ "./src/javascript/app_2/App/Components/Form/DropDown/index.js");
 
 var _DropDown2 = _interopRequireDefault(_DropDown);
@@ -15806,66 +16117,39 @@ var _duration = __webpack_require__(/*! ../../../../../../Stores/Modules/Trading
 
 var _Date = __webpack_require__(/*! ../../../../../../Utils/Date */ "./src/javascript/app_2/Utils/Date/index.js");
 
+var _DatePicker = __webpack_require__(/*! ../../DatePicker */ "./src/javascript/app_2/Modules/Trading/Components/Form/DatePicker/index.js");
+
+var _DatePicker2 = _interopRequireDefault(_DatePicker);
+
+var _TimePicker = __webpack_require__(/*! ../../TimePicker */ "./src/javascript/app_2/Modules/Trading/Components/Form/TimePicker/index.js");
+
+var _TimePicker2 = _interopRequireDefault(_TimePicker);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var AdvancedDuration = function AdvancedDuration(_ref) {
     var advanced_duration_unit = _ref.advanced_duration_unit,
         advanced_expiry_type = _ref.advanced_expiry_type,
-        duration_min_max = _ref.duration_min_max,
         duration_units_list = _ref.duration_units_list,
+        duration_t = _ref.duration_t,
         changeDurationUnit = _ref.changeDurationUnit,
         getDurationFromUnit = _ref.getDurationFromUnit,
         expiry_date = _ref.expiry_date,
         expiry_list = _ref.expiry_list,
-        expiry_time = _ref.expiry_time,
         expiry_type = _ref.expiry_type,
-        is_nativepicker = _ref.is_nativepicker,
         number_input_props = _ref.number_input_props,
         onChange = _ref.onChange,
-        server_time = _ref.server_time,
-        sessions = _ref.sessions,
-        shared_input_props = _ref.shared_input_props,
-        start_date = _ref.start_date,
-        start_time = _ref.start_time,
-        symbol = _ref.symbol,
-        market_close_times = _ref.market_close_times,
         onChangeUiStore = _ref.onChangeUiStore,
-        duration_t = _ref.duration_t;
+        server_time = _ref.server_time,
+        shared_input_props = _ref.shared_input_props,
+        start_date = _ref.start_date;
 
     var moment_expiry = (0, _Date.toMoment)(expiry_date || server_time);
     var is_24_hours_contract = false;
-    var expiry_time_sessions = sessions;
-    var max_date_duration = void 0,
-        min_date_expiry = void 0;
 
     if (expiry_type === 'endtime') {
-        var max_daily_duration = duration_min_max.daily ? duration_min_max.daily.max : 365 * 24 * 3600;
-        var moment_contract_start_date_time = (0, _Date.setTime)((0, _Date.toMoment)(start_date || server_time), (0, _Date.isTimeValid)(start_time) ? start_time : server_time.format('HH:mm'));
         var has_intraday_duration_unit = (0, _duration.hasIntradayDurationUnit)(duration_units_list);
-
-        // When the contract start is forwarding or is not forwarding but the expiry date is as same as start date, the contract should be expired within 24 hours
         is_24_hours_contract = (!!start_date || moment_expiry.isSame((0, _Date.toMoment)(server_time), 'day')) && has_intraday_duration_unit;
-
-        if (is_24_hours_contract) {
-            var expiry_date_time = (0, _Date.setTime)(moment_expiry.clone(), moment_contract_start_date_time.clone().add(5, 'minute').format('HH:mm'));
-            var expiry_date_market_close = (0, _Date.setTime)(expiry_date_time.clone(), market_close_times.slice(-1)[0]);
-            var is_expired_next_day = expiry_date_time.diff(moment_contract_start_date_time, 'day') === 1;
-
-            expiry_time_sessions = [{
-                open: is_expired_next_day ? expiry_date_time.clone().startOf('day') : expiry_date_time.clone(),
-                // when the expiry_date is on the next day of the start_date, the session should be close 5 min before the start_time of the contract.
-                close: is_expired_next_day ? (0, _Date.minDate)(expiry_date_time.clone().subtract(10, 'minute'), expiry_date_market_close) : expiry_date_market_close.clone()
-            }];
-            min_date_expiry = moment_contract_start_date_time.clone().startOf('day');
-            max_date_duration = moment_contract_start_date_time.clone().add(start_date ? 24 * 3600 : max_daily_duration, 'second');
-        } else {
-            min_date_expiry = moment_contract_start_date_time.clone().startOf('day');
-            max_date_duration = moment_contract_start_date_time.clone().add(max_daily_duration, 'second');
-
-            if (!has_intraday_duration_unit) {
-                min_date_expiry.add(1, 'day');
-            }
-        }
     }
 
     var endtime_container_class = (0, _classnames2.default)('endtime-container', {
@@ -15899,7 +16183,7 @@ var AdvancedDuration = function AdvancedDuration(_ref) {
                 { className: 'duration-container' },
                 duration_units_list.length > 1 && _react2.default.createElement(_DropDown2.default, {
                     is_alignment_left: true,
-                    is_nativepicker: is_nativepicker,
+                    is_nativepicker: false,
                     list: duration_units_list,
                     name: 'advanced_duration_unit',
                     onChange: changeDurationUnit,
@@ -15910,7 +16194,12 @@ var AdvancedDuration = function AdvancedDuration(_ref) {
                     ticks: 10,
                     value: duration_t
                 }, shared_input_props)),
-                advanced_duration_unit !== 't' && _react2.default.createElement(_input_field2.default, _extends({
+                advanced_duration_unit === 'd' && _react2.default.createElement(_DatePicker2.default, {
+                    mode: 'duration',
+                    name: 'duration',
+                    is_24_hours_contract: is_24_hours_contract
+                }),
+                advanced_duration_unit !== 't' && advanced_duration_unit !== 'd' && _react2.default.createElement(_input_field2.default, _extends({
                     classNameInput: 'trade-container__input',
                     label: duration_units_list.length === 1 ? duration_units_list[0].text : null,
                     name: 'duration',
@@ -15925,30 +16214,12 @@ var AdvancedDuration = function AdvancedDuration(_ref) {
                 { className: endtime_container_class },
                 _react2.default.createElement(_DatePicker2.default, {
                     name: 'expiry_date',
-                    has_today_btn: true,
-                    min_date: min_date_expiry,
-                    max_date: max_date_duration,
-                    start_date: start_date,
-                    onChange: onChange,
-                    value: expiry_date,
-                    is_read_only: true,
-                    is_nativepicker: is_nativepicker,
-                    alignment: 'left',
-                    disable_year_selector: true,
-                    disable_trading_events: true,
-                    underlying: symbol
+                    is_24_hours_contract: is_24_hours_contract
                     // validation_errors={validation_errors.expiry_date} TODO: add validation_errors for expiry date
                 }),
-                is_24_hours_contract && _react2.default.createElement(_TimePicker2.default, {
-                    end_time: expiry_time_sessions[0].close,
-                    onChange: onChange,
-                    name: 'expiry_time',
-                    placeholder: '12:00',
-                    start_time: expiry_time_sessions[0].open,
-                    value: expiry_time || min_date_expiry.format('HH:mm'),
-                    is_nativepicker: is_nativepicker
-                    // validation_errors={validation_errors.end_time} TODO: add validation_errors for end time
-                })
+                is_24_hours_contract && _react2.default.createElement(_TimePicker2.default, null)
+                // validation_errors={validation_errors.end_time} TODO: add validation_errors for end time
+
             )
         )
     );
@@ -15958,25 +16229,19 @@ AdvancedDuration.propTypes = {
     advanced_duration_unit: _propTypes2.default.string,
     advanced_expiry_type: _propTypes2.default.string,
     changeDurationUnit: _propTypes2.default.func,
-    duration_min_max: _propTypes2.default.object,
     duration_t: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
     duration_units_list: _mobxReact.PropTypes.arrayOrObservableArray,
     expiry_date: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
     expiry_list: _propTypes2.default.array,
-    expiry_time: _propTypes2.default.string,
     expiry_type: _propTypes2.default.string,
     getDurationFromUnit: _propTypes2.default.func,
     is_nativepicker: _propTypes2.default.bool,
-    market_close_times: _propTypes2.default.array,
     number_input_props: _propTypes2.default.object,
     onChange: _propTypes2.default.func,
     onChangeUiStore: _propTypes2.default.func,
     server_time: _propTypes2.default.object,
-    sessions: _mobxReact.PropTypes.arrayOrObservableArray,
     shared_input_props: _propTypes2.default.object,
-    start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
-    start_time: _propTypes2.default.string,
-    symbol: _propTypes2.default.string
+    start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string])
 };
 
 exports.default = AdvancedDuration;
@@ -16040,31 +16305,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Duration = function Duration(_ref) {
     var advanced_duration_unit = _ref.advanced_duration_unit,
         advanced_expiry_type = _ref.advanced_expiry_type,
-        hasDurationUnit = _ref.hasDurationUnit,
         contract_expiry_type = _ref.contract_expiry_type,
         duration = _ref.duration,
         duration_unit = _ref.duration_unit,
         duration_units_list = _ref.duration_units_list,
         duration_min_max = _ref.duration_min_max,
+        duration_t = _ref.duration_t,
         expiry_date = _ref.expiry_date,
         expiry_time = _ref.expiry_time,
         expiry_type = _ref.expiry_type,
         getDurationFromUnit = _ref.getDurationFromUnit,
+        hasDurationUnit = _ref.hasDurationUnit,
+        is_advanced_duration = _ref.is_advanced_duration,
+        is_minimized = _ref.is_minimized,
         onChange = _ref.onChange,
         onChangeUiStore = _ref.onChangeUiStore,
         onChangeMultiple = _ref.onChangeMultiple,
-        is_advanced_duration = _ref.is_advanced_duration,
-        is_minimized = _ref.is_minimized,
-        is_nativepicker = _ref.is_nativepicker,
-        server_time = _ref.server_time,
-        sessions = _ref.sessions,
-        start_date = _ref.start_date,
-        start_time = _ref.start_time,
-        validation_errors = _ref.validation_errors,
-        market_close_times = _ref.market_close_times,
         simple_duration_unit = _ref.simple_duration_unit,
-        duration_t = _ref.duration_t,
-        symbol = _ref.symbol;
+        server_time = _ref.server_time,
+        start_date = _ref.start_date,
+        validation_errors = _ref.validation_errors;
 
     var expiry_list = [{ text: (0, _localize.localize)('Duration'), value: 'duration' }];
 
@@ -16164,7 +16424,6 @@ var Duration = function Duration(_ref) {
         },
         number_input: {
             type: 'number',
-            is_nativepicker: is_nativepicker,
             is_incrementable: true,
             error_messages: validation_errors.duration || []
         }
@@ -16187,37 +16446,27 @@ var Duration = function Duration(_ref) {
                 advanced_expiry_type: advanced_expiry_type,
                 advanced_duration_unit: advanced_duration_unit,
                 changeDurationUnit: changeDurationUnit,
-                contract_expiry_type: contract_expiry_type,
-                duration_min_max: duration_min_max,
+                duration_t: duration_t,
                 duration_units_list: duration_units_list,
                 expiry_date: expiry_date,
                 expiry_list: expiry_list,
-                expiry_time: expiry_time,
                 expiry_type: expiry_type,
                 getDurationFromUnit: getDurationFromUnit,
-                is_nativepicker: is_nativepicker,
-                market_close_times: market_close_times,
                 number_input_props: props.number_input,
                 onChange: onChange,
-                server_time: server_time,
-                sessions: sessions,
-                shared_input_props: props.shared_input,
-                start_date: start_date,
-                start_time: start_time,
                 onChangeUiStore: onChangeUiStore,
-                duration_t: duration_t,
-                symbol: symbol
+                server_time: server_time,
+                shared_input_props: props.shared_input,
+                start_date: start_date
             }),
             !is_advanced_duration && _react2.default.createElement(_simple_duration2.default, {
                 getDurationFromUnit: getDurationFromUnit,
                 changeDurationUnit: changeDurationUnit,
+                duration_t: duration_t,
                 duration_units_list: duration_units_list,
                 number_input_props: props.number_input,
-                onChange: onChange,
                 shared_input_props: props.shared_input,
-                simple_duration_unit: simple_duration_unit,
-                onChangeUiStore: onChangeUiStore,
-                duration_t: duration_t
+                simple_duration_unit: simple_duration_unit
             }),
             _react2.default.createElement(_duration_toggle2.default, {
                 name: 'is_advanced_duration',
@@ -16244,16 +16493,11 @@ Duration.propTypes = {
     hasDurationUnit: _propTypes2.default.func,
     is_advanced_duration: _propTypes2.default.bool,
     is_minimized: _propTypes2.default.bool,
-    is_nativepicker: _propTypes2.default.bool,
-    market_close_times: _propTypes2.default.array,
     onChange: _propTypes2.default.func,
     onChangeUiStore: _propTypes2.default.func,
     server_time: _propTypes2.default.object,
-    sessions: _mobxReact.PropTypes.arrayOrObservableArray,
     simple_duration_unit: _propTypes2.default.string,
     start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
-    start_time: _propTypes2.default.string,
-    symbol: _propTypes2.default.string,
     validation_errors: _propTypes2.default.object
 };
 
@@ -16477,7 +16721,6 @@ DurationWrapper.propTypes = {
     getDurationFromUnit: _propTypes2.default.func,
     is_advanced_duration: _propTypes2.default.bool,
     is_minimized: _propTypes2.default.bool,
-    is_nativepicker: _propTypes2.default.bool,
     market_close_times: _propTypes2.default.array,
     onChange: _propTypes2.default.func,
     onChangeMultiple: _propTypes2.default.func,
@@ -16558,16 +16801,20 @@ var _RangeSlider = __webpack_require__(/*! ../../../../../../App/Components/Form
 
 var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
+var _DatePicker = __webpack_require__(/*! ../../DatePicker */ "./src/javascript/app_2/Modules/Trading/Components/Form/DatePicker/index.js");
+
+var _DatePicker2 = _interopRequireDefault(_DatePicker);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var SimpleDuration = function SimpleDuration(_ref) {
     var changeDurationUnit = _ref.changeDurationUnit,
+        duration_t = _ref.duration_t,
+        duration_units_list = _ref.duration_units_list,
         getDurationFromUnit = _ref.getDurationFromUnit,
         number_input_props = _ref.number_input_props,
-        duration_units_list = _ref.duration_units_list,
         shared_input_props = _ref.shared_input_props,
-        simple_duration_unit = _ref.simple_duration_unit,
-        duration_t = _ref.duration_t;
+        simple_duration_unit = _ref.simple_duration_unit;
 
     var filterMinutesAndTicks = function filterMinutesAndTicks(arr) {
         var filtered_arr = arr.filter(function (du) {
@@ -16595,7 +16842,12 @@ var SimpleDuration = function SimpleDuration(_ref) {
             value: duration_t,
             ticks: 10
         }, shared_input_props)),
-        simple_duration_unit !== 't' && _react2.default.createElement(_input_field2.default, _extends({
+        simple_duration_unit === 'd' && _react2.default.createElement(_DatePicker2.default, {
+            alignment: 'left',
+            mode: 'duration',
+            name: 'duration'
+        }),
+        simple_duration_unit !== 't' && simple_duration_unit !== 'd' && _react2.default.createElement(_input_field2.default, _extends({
             classNameInput: 'trade-container__input',
             name: 'duration',
             label: has_label ? duration_units_list[0].text : null,
@@ -16784,7 +17036,8 @@ var Amount = function Amount(_ref) {
                 list: basis_list,
                 name: 'basis',
                 value: basis,
-                onChange: onChange
+                onChange: onChange,
+                className: 'no-margin'
             }),
             !is_single_currency && _react2.default.createElement(_DropDown2.default, {
                 is_alignment_left: true,
@@ -17205,7 +17458,7 @@ var TradeTypeInfoItem = function TradeTypeInfoItem(_ref) {
                 _ttReactCustomScrollbars.Scrollbars,
                 {
                     autoHide: true,
-                    style: { height: '215px' }
+                    style: { height: '100%' }
                 },
                 _react2.default.createElement(_trade_categories.TradeCategories, { category: item.value })
             )
@@ -25651,7 +25904,7 @@ var isMinuteValid = exports.isMinuteValid = function isMinuteValid(time_str) {
  * @param {String|moment} date date
  */
 var isDateValid = exports.isDateValid = function isDateValid(date) {
-  return (0, _moment2.default)(date, 'YYYY-MM-DD').isValid();
+  return (0, _moment2.default)(date, 'DD MMM YYYY').isValid();
 };
 
 /**
