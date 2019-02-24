@@ -1726,6 +1726,10 @@ a.previous-wrapper {
     #trading_socket_container .contract_heading.PUTSPREAD {
       background: url("../images/pages/trade/put_spread.svg") no-repeat center top;
       background-size: 50%; }
+    #trading_socket_container .contract_heading.RUNHIGH {
+      background: url("../images/pages/trade/run_high.svg") no-repeat center top; }
+    #trading_socket_container .contract_heading.RUNLOW {
+      background: url("../images/pages/trade/run_low.svg") no-repeat center top; }
     #trading_socket_container .contract_heading.TICKHIGH {
       background: url("../images/pages/trade/high_tick.svg") no-repeat center top; }
     #trading_socket_container .contract_heading.TICKLOW {
@@ -2980,7 +2984,8 @@ a.previous-wrapper {
       .transfer_form__right_pane__input_group__prefix {
         display: -webkit-box;
         display: -ms-flexbox;
-        display: flex; }
+        display: flex;
+        max-width: 280px; }
         .transfer_form__right_pane__input_group__prefix .input-add-on {
           background-color: #f2f2f2;
           border: 1px solid #dedede;
@@ -3013,6 +3018,8 @@ a.previous-wrapper {
           width: 100%; }
       .transfer_form__right_pane__input_group .select {
         width: 100%; }
+    .transfer_form__right_pane .select {
+      width: 280px !important; }
 
 @media screen and (max-width: 480px) {
   .transfer_form__right_pane, .transfer_form__left_pane {
