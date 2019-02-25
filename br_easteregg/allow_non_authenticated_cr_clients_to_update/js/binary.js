@@ -29517,6 +29517,9 @@ var PersonalDetails = function () {
             $('#residence').replaceWith($('<label/>').append($('<strong/>', { id: 'country' })));
             $('#country').text(get_settings.country);
         }
+        if (is_virtual) {
+            CommonFunctions.getElementById('row_date_of_birth').setVisibility(0);
+        }
     };
 
     var additionalCheck = function additionalCheck(data) {
@@ -29742,6 +29745,9 @@ var PersonalDetails = function () {
                 name_fields.forEach(function (field) {
                     return CommonFunctions.getElementById('row_' + field).classList.add('invisible');
                 });
+            } else {
+                displayResidenceList();
+                // getDetailsResponse(get_settings_data);
             }
         });
     };
