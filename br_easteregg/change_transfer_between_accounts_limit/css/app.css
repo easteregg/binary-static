@@ -2950,9 +2950,6 @@ a.previous-wrapper {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: start;
-      -ms-flex-align: start;
-          align-items: flex-start;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
@@ -2960,7 +2957,7 @@ a.previous-wrapper {
   -ms-flex-wrap: wrap-reverse;
       flex-wrap: wrap-reverse; }
   .transfer_form p {
-    margin: 0; }
+    margin: 0 0 6px; }
   .transfer_form #transfer_to_select.form-row {
     padding-top: 0;
     padding-bottom: 0; }
@@ -2971,27 +2968,24 @@ a.previous-wrapper {
     padding: 30px;
     width: 50%;
     min-height: 266px;
-    border: 1px solid #f2f2f2;
-    border-right: 0; }
+    background-color: #f2f2f2;
+    color: #000; }
   .transfer_form__right_pane {
     padding: 30px;
     width: 50%;
     min-height: 266px;
-    background-color: #f2f2f2;
-    color: #000; }
+    border: 1px solid #f2f2f2;
+    border-left: 0; }
     .transfer_form__right_pane__input_group {
       width: 100%; }
       .transfer_form__right_pane__input_group__prefix {
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
         max-width: 280px; }
         .transfer_form__right_pane__input_group__prefix .input-add-on {
-          background-color: #f2f2f2;
-          border: 1px solid #dedede;
-          border-top-left-radius: 4px;
-          border-bottom-left-radius: 4px;
-          cursor: pointer;
           display: -webkit-inline-box;
           display: -ms-inline-flexbox;
           display: inline-flex;
@@ -3002,24 +2996,18 @@ a.previous-wrapper {
                   align-items: center;
           -webkit-box-pack: center;
               -ms-flex-pack: center;
-                  justify-content: center;
-          -webkit-transition: all 0.3s ease;
-          transition: all 0.3s ease; }
-        .transfer_form__right_pane__input_group__prefix .input-add-on.has-dropdown:hover {
-          -webkit-box-shadow: 0px 0px 6px #e98024;
-                  box-shadow: 0px 0px 6px #e98024; }
+                  justify-content: center; }
         .transfer_form__right_pane__input_group__prefix input {
           margin: 0;
           padding: 0;
-          border: 1px solid #dedede;
-          border-left: 0;
-          border-radius: 0 4px 4px 0;
           height: 28px;
-          width: 100%; }
+          max-width: 100%;
+          width: 232px; }
       .transfer_form__right_pane__input_group .select {
         width: 100%; }
     .transfer_form__right_pane .select {
-      width: 280px !important; }
+      width: 280px !important;
+      display: block; }
 
 @media screen and (max-width: 480px) {
   .transfer_form__right_pane, .transfer_form__left_pane {
