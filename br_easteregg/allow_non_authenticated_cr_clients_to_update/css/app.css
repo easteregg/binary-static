@@ -2264,6 +2264,9 @@ a.previous-wrapper {
 .epg_forwardws-content iframe {
   height: 800px; }
 
+.detailsws-content div.select-dropdown {
+  width: 100%; }
+
 .detailsws-content #address_form select.select-hidden {
   min-width: 205px; }
 
