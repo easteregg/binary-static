@@ -2999,15 +2999,20 @@ a.previous-wrapper {
                   justify-content: center; }
         .transfer_form__right_pane__input_group__prefix input {
           margin: 0;
-          padding: 0;
+          padding: 0 0 0 5px;
           height: 28px;
           max-width: 100%;
-          width: 232px; }
+          width: 232px;
+          -webkit-box-sizing: border-box;
+                  box-sizing: border-box; }
+        .transfer_form__right_pane__input_group__prefix p.error-msg {
+          margin-left: 50px !important; }
       .transfer_form__right_pane__input_group .select {
         width: 100%; }
     .transfer_form__right_pane .select {
       width: 280px !important;
-      display: block; }
+      display: block;
+      margin-bottom: 2px; }
 
 @media screen and (max-width: 480px) {
   .transfer_form__right_pane, .transfer_form__left_pane {
@@ -3018,3 +3023,9 @@ a.previous-wrapper {
   .account_transfer__header {
     padding: 5px !important;
     font-size: smaller !important; }
+
+.account_transfer-content .hint {
+  font-size: 15px; }
+
+.account_transfer-content .italic {
+  font-style: italic; }
