@@ -14595,6 +14595,11 @@ var AccountTransfer = function () {
             var to_currency = el_transfer_to.getAttribute('data-currency');
             el_transfer_fee.setVisibility(client_currency !== to_currency);
         }
+
+        // Hide Notes from MF|MLT accounts
+        if (/iom|malta/.test(Client.get('landing_company_shortcode'))) {
+            el_transfer_fee.setVisibility(0);
+        }
     };
 
     var setTransferFeeAmount = function setTransferFeeAmount() {
@@ -14655,12 +14660,12 @@ var AccountTransfer = function () {
         getElementById(form_id).setVisibility(0);
         response.accounts.forEach(function (account) {
             if (account.loginid === client_loginid) {
-                // getElementById('from_currency').innerHTML = Currency.formatCurrency(account.currency);
+                elementTextContent(getElementById('transfer_success_from'), localize('From account: '));
                 elementTextContent(getElementById('from_loginid'), account.loginid + ' (' + account.currency + ')');
                 getElementById('from_current_balance').innerHTML = Currency.formatMoney(account.currency, account.balance);
             } else if (account.loginid === response_submit_success.client_to_loginid) {
+                elementTextContent(getElementById('transfer_success_to'), localize('To account: '));
                 elementTextContent(getElementById('to_loginid'), account.loginid + ' (' + account.currency + ')');
-                // getElementById('to_currency').innerHTML = Currency.formatCurrency(account.currency);
                 getElementById('to_current_balance').innerHTML = Currency.formatMoney(account.currency, account.balance);
             }
         });

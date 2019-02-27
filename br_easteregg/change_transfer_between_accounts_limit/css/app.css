@@ -2954,6 +2954,7 @@ a.previous-wrapper {
       -ms-flex-pack: justify;
           justify-content: space-between;
   width: 100%;
+  margin-bottom: 30px;
   -ms-flex-wrap: wrap-reverse;
       flex-wrap: wrap-reverse; }
   .transfer_form p {
@@ -3005,8 +3006,6 @@ a.previous-wrapper {
           width: 232px;
           -webkit-box-sizing: border-box;
                   box-sizing: border-box; }
-        .transfer_form__right_pane__input_group__prefix p.error-msg {
-          margin-left: 50px !important; }
       .transfer_form__right_pane__input_group .select {
         width: 100%; }
     .transfer_form__right_pane .select {
