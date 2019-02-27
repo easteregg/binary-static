@@ -29735,10 +29735,10 @@ var PersonalDetails = function () {
             is_fully_authenticated = checkStatus(account_status, 'authenticated');
             has_changeable_fields = Client.get('landing_company_shortcode') === 'costarica' && !is_fully_authenticated;
 
-            if (is_virtual) {
-                getDetailsResponse(get_settings_data);
-            } else if (!residence) {
+            if (!residence) {
                 displayResidenceList();
+            } else if (is_virtual) {
+                getDetailsResponse(get_settings_data);
             } else if (has_changeable_fields) {
                 populateChangeableFields();
                 displayResidenceList();
