@@ -2453,6 +2453,9 @@ a.previous-wrapper {
           -ms-flex-pack: center;
               justify-content: center; } }
 
+.realws-content div.select-dropdown {
+  width: 100%; }
+
 .markets {
   min-width: 120px;
   position: relative; }
