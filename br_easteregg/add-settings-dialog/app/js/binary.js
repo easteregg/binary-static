@@ -63,7 +63,7 @@
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "" + ({"404":"404","account_password":"account_password","api_toke":"api_toke","authorized_application":"authorized_application","cashier_password":"cashier_password","contract":"contract","financial_assessment":"financial_assessment","limits":"limits","login_history":"login_history","personal_details":"personal_details","portfolio~statement":"portfolio~statement","portfolio":"portfolio","statement":"statement","self_exclusion":"self_exclusion","settings":"settings","vendors~smart_chart":"vendors~smart_chart","smart_chart":"smart_chart"}[chunkId]||chunkId) + "-" + {"404":"a07416dc903d3942d9a3","account_password":"5b98c5e0011cf272df7f","api_toke":"856a16352b5b0f7b5fb2","authorized_application":"41eb62c13df5f986ea68","cashier_password":"90e23ba1132672b3e187","contract":"8b3665b7e8bf3e4a7c08","financial_assessment":"182a107203c81d1cc33a","limits":"6122a66075b7120f5152","login_history":"92742ccaa1efb1ab65b8","personal_details":"716845b634031dd9cf95","portfolio~statement":"e79a828fb50efd777085","portfolio":"248d5d8cd64064b168d1","statement":"3af8c127375a2b6f3658","self_exclusion":"226ac0134b0354423868","settings":"897ff546fbd9f45f9d55","vendors~smart_chart":"c2ded38486a6d9befede","smart_chart":"0ed58ff43f746c8e010e"}[chunkId] + ".js"
+/******/ 		return __webpack_require__.p + "" + ({"404":"404","account_password":"account_password","api_toke":"api_toke","authorized_application":"authorized_application","cashier_password":"cashier_password","contract":"contract","financial_assessment":"financial_assessment","limits":"limits","login_history":"login_history","personal_details":"personal_details","portfolio~statement":"portfolio~statement","portfolio":"portfolio","statement":"statement","self_exclusion":"self_exclusion","settings":"settings","vendors~smart_chart":"vendors~smart_chart","smart_chart":"smart_chart"}[chunkId]||chunkId) + "-" + {"404":"cbb3f11fff75dd57bfef","account_password":"5b98c5e0011cf272df7f","api_toke":"856a16352b5b0f7b5fb2","authorized_application":"41eb62c13df5f986ea68","cashier_password":"90e23ba1132672b3e187","contract":"09dd0c21e65b199cae97","financial_assessment":"182a107203c81d1cc33a","limits":"6122a66075b7120f5152","login_history":"92742ccaa1efb1ab65b8","personal_details":"716845b634031dd9cf95","portfolio~statement":"4b11346e99830481ee15","portfolio":"fdae1dad85e7457b80a9","statement":"83be0ace500a644e5479","self_exclusion":"226ac0134b0354423868","settings":"90edf5f4d945de1a9104","vendors~smart_chart":"c2ded38486a6d9befede","smart_chart":"0ed58ff43f746c8e010e"}[chunkId] + ".js"
 /******/ 	}
 /******/
 /******/ 	// The require function
@@ -1260,22 +1260,32 @@ var _react2 = _interopRequireDefault(_react);
 
 var _Common = __webpack_require__(/*! ../../../../Assets/Common */ "./src/javascript/app_2/Assets/Common/index.js");
 
+var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var CalendarFooter = function CalendarFooter(_ref) {
     var footer = _ref.footer,
         has_today_btn = _ref.has_today_btn,
+        has_range_selection = _ref.has_range_selection,
+        duration_date = _ref.duration_date,
+        is_minimum = _ref.is_minimum,
         onClick = _ref.onClick;
     return _react2.default.createElement(
         _react2.default.Fragment,
         null,
-        (has_today_btn || footer) && _react2.default.createElement(
+        (has_today_btn || footer || has_range_selection) && _react2.default.createElement(
             'div',
             { className: 'calendar__footer' },
             footer && _react2.default.createElement(
                 'span',
                 { className: 'calendar__text' },
                 footer
+            ),
+            has_range_selection && _react2.default.createElement(
+                'span',
+                { className: 'calendar__text' },
+                '' + (!is_minimum ? (0, _localize.localize)('Duration: ') : '') + duration_date
             ),
             has_today_btn && _react2.default.createElement(_Common.IconCalendarToday, {
                 className: 'calendar__icon',
@@ -1286,8 +1296,11 @@ var CalendarFooter = function CalendarFooter(_ref) {
 };
 
 CalendarFooter.propTypes = {
+    duration_date: _propTypes2.default.string,
     footer: _propTypes2.default.string,
+    has_range_selection: _propTypes2.default.bool,
     has_today_btn: _propTypes2.default.bool,
+    is_minimum: _propTypes2.default.bool,
     onClick: _propTypes2.default.func
 };
 
@@ -1496,6 +1509,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _Date = __webpack_require__(/*! ../../../../Utils/Date */ "./src/javascript/app_2/Utils/Date/index.js");
 
+var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
+
 var _calendarBody = __webpack_require__(/*! ./calendar-body.jsx */ "./src/javascript/app_2/App/Components/Elements/Calendar/calendar-body.jsx");
 
 var _calendarBody2 = _interopRequireDefault(_calendarBody);
@@ -1534,7 +1549,9 @@ var Calendar = (_temp = _class = function (_React$PureComponent) {
         _this.state = {
             calendar_date: current_date, // calendar date reference
             selected_date: value, // selected date
-            calendar_view: 'date'
+            calendar_view: 'date',
+            hovered_date: '',
+            duration_date: ''
         };
         return _this;
     }
@@ -1544,16 +1561,28 @@ var Calendar = (_temp = _class = function (_React$PureComponent) {
         value: function render() {
             var _props = this.props,
                 date_format = _props.date_format,
+                duration_date = _props.duration_date,
                 footer = _props.footer,
                 has_today_btn = _props.has_today_btn,
-                start_date = _props.start_date,
+                has_range_selection = _props.has_range_selection,
                 holidays = _props.holidays,
+                start_date = _props.start_date,
                 weekends = _props.weekends;
             var _state = this.state,
                 calendar_date = _state.calendar_date,
                 calendar_view = _state.calendar_view,
                 selected_date = _state.selected_date;
 
+            var default_message = void 0,
+                is_minimum = void 0;
+
+            if (duration_date) {
+                default_message = duration_date + ' ' + (duration_date === 1 ? (0, _localize.localize)('Day') : (0, _localize.localize)('Days'));
+                is_minimum = false;
+            } else {
+                default_message = (0, _localize.localize)('Minimum duration is 1 day');
+                is_minimum = true;
+            }
 
             return _react2.default.createElement(
                 'div',
@@ -1574,11 +1603,18 @@ var Calendar = (_temp = _class = function (_React$PureComponent) {
                     selected_date: selected_date,
                     updateSelected: this.updateSelected,
                     holidays: holidays,
-                    weekends: weekends
+                    has_range_selection: has_range_selection,
+                    hovered_date: this.state.hovered_date,
+                    weekends: weekends,
+                    onMouseOver: this.onMouseOver,
+                    onMouseLeave: this.onMouseLeave
                 }),
                 _react2.default.createElement(_calendarFooter2.default, {
                     footer: footer,
+                    duration_date: this.state.duration_date || default_message,
+                    is_minimum: is_minimum,
                     has_today_btn: has_today_btn,
+                    has_range_selection: has_range_selection,
                     onClick: this.setToday
                 })
             );
@@ -1602,6 +1638,31 @@ var Calendar = (_temp = _class = function (_React$PureComponent) {
                 _this2.props.onChangeCalendarMonth(start_of_month);
             }
         });
+    };
+
+    this.onMouseOver = function (event) {
+        var target = event.currentTarget;
+
+        if (!target.classList.contains('calendar__cell--disabled') && !target.classList.contains('calendar__cell--hover')) {
+            target.className += ' calendar__cell--hover';
+            _this2.setState({
+                hovered_date: target.getAttribute('data-date'),
+                duration_date: target.getAttribute('data-duration')
+            });
+        }
+    };
+
+    this.onMouseLeave = function (event) {
+        var target = event.currentTarget;
+
+        if (target.classList.contains('calendar__cell--hover')) {
+            target.classList.remove('calendar__cell--hover');
+
+            _this2.setState({
+                hovered_date: null,
+                duration_date: null
+            });
+        }
     };
 
     this.updateSelectedDate = function (e) {
@@ -1712,7 +1773,9 @@ Calendar.defaultProps = {
 
 Calendar.propTypes = {
     date_format: _propTypes2.default.string,
+    duration_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
     footer: _propTypes2.default.string,
+    has_range_selection: _propTypes2.default.bool,
     has_today_btn: _propTypes2.default.bool,
     holidays: _propTypes2.default.arrayOf(_propTypes2.default.shape({
         dates: _propTypes2.default.array,
@@ -1818,6 +1881,8 @@ var _dateTime = __webpack_require__(/*! ../../../../../Constants/date-time */ ".
 
 var _Date = __webpack_require__(/*! ../../../../../Utils/Date */ "./src/javascript/app_2/Utils/Date/index.js");
 
+var _localize = __webpack_require__(/*! ../../../../../../_common/localize */ "./src/javascript/_common/localize.js");
+
 var _types = __webpack_require__(/*! ./types */ "./src/javascript/app_2/App/Components/Elements/Calendar/panels/types.js");
 
 var _types2 = _interopRequireDefault(_types);
@@ -1831,12 +1896,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var getDays = function getDays(_ref) {
     var calendar_date = _ref.calendar_date,
         date_format = _ref.date_format,
+        has_range_selection = _ref.has_range_selection,
         holidays = _ref.holidays,
+        hovered_date = _ref.hovered_date,
         isPeriodDisabled = _ref.isPeriodDisabled,
         start_date = _ref.start_date,
         selected_date = _ref.selected_date,
         updateSelected = _ref.updateSelected,
-        weekends = _ref.weekends;
+        weekends = _ref.weekends,
+        onMouseOver = _ref.onMouseOver,
+        onMouseLeave = _ref.onMouseLeave;
 
     // adjust Calendar week by 1 day so that Calendar week starts on Monday
     // change to zero to set Calendar week to start on Sunday
@@ -1876,6 +1945,7 @@ var getDays = function getDays(_ref) {
 
     dates.map(function (date) {
         var moment_date = (0, _Date.toMoment)(date).startOf('day');
+        var moment_hovered = (0, _Date.toMoment)(hovered_date).startOf('day');
         var is_active = selected_date && moment_date.isSame(moment_selected);
         var is_today = moment_date.isSame(moment_today, 'day');
 
@@ -1894,7 +1964,9 @@ var getDays = function getDays(_ref) {
         var message = events.map(function (event) {
             return event.descrip;
         })[0] || '';
-
+        var duration_from_today = (0, _Date.daysFromTodayTo)(date);
+        var is_between = moment_date.isBetween(moment_today, moment_selected);
+        var is_between_hover = moment_date.isBetween(moment_today, moment_hovered);
         var is_before_min_or_after_max_date = isPeriodDisabled(moment_date, 'day');
         var is_disabled =
         // check if date is before min_date or after_max_date
@@ -1916,15 +1988,22 @@ var getDays = function getDays(_ref) {
             {
                 key: date,
                 className: (0, _classnames2.default)('calendar__cell', {
-                    'calendar__cell--active': is_active && !is_disabled,
+                    'calendar__cell--active': is_active,
                     'calendar__cell--today': is_today,
+                    'calendar__cell--active-duration': is_active && has_range_selection && !is_today,
+                    'calendar__cell--today-duration': is_today && has_range_selection,
                     'calendar__cell--disabled': is_disabled,
-                    'calendar__cell--other': is_other_month
+                    'calendar__cell--other': is_other_month,
+                    'calendar__cell--between-hover': is_between_hover && has_range_selection,
+                    'calendar__cell--between': is_between && has_range_selection
                 }),
                 onClick: is_disabled ? undefined : function (e) {
                     return updateSelected(e, 'day');
                 },
-                'data-date': date
+                'data-date': date,
+                'data-duration': duration_from_today + ' ' + (duration_from_today === 1 ? (0, _localize.localize)('Day') : (0, _localize.localize)('Days')),
+                onMouseOver: onMouseOver,
+                onMouseLeave: onMouseLeave
             },
             (has_events || is_closes_early) && !is_other_month && !is_before_min_or_after_max_date && _react2.default.createElement(_tooltip2.default, {
                 alignment: 'top',
@@ -1966,10 +2045,14 @@ CalendarDays.defaultProps = {
 
 CalendarDays.propTypes = _extends({}, _types2.default, {
     date_format: _propTypes2.default.string,
+    has_range_selection: _propTypes2.default.bool,
     holidays: _propTypes2.default.arrayOf(_propTypes2.default.shape({
         dates: _propTypes2.default.array,
         descrip: _propTypes2.default.string
     })),
+    hovered_date: _propTypes2.default.string,
+    onMouseLeave: _propTypes2.default.func,
+    onMouseOver: _propTypes2.default.func,
     start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
     weekends: _propTypes2.default.arrayOf(_propTypes2.default.number)
 });
@@ -2355,7 +2438,7 @@ var DrawerHeader = exports.DrawerHeader = function DrawerHeader(_ref) {
     var alignment = _ref.alignment,
         closeBtn = _ref.closeBtn;
 
-    var drawer_header_class = (0, _classnames2.default)('drawer-header', alignment);
+    var drawer_header_class = (0, _classnames2.default)('drawer__header', alignment);
     return _react2.default.createElement(
         _react2.default.Fragment,
         null,
@@ -2364,15 +2447,15 @@ var DrawerHeader = exports.DrawerHeader = function DrawerHeader(_ref) {
             { className: drawer_header_class },
             _react2.default.createElement(
                 'div',
-                { className: 'icons btn-close', onClick: closeBtn },
-                _react2.default.createElement(_Common.IconClose, null)
+                { className: 'drawer__icons drawer__icons-btn-close', onClick: closeBtn },
+                _react2.default.createElement(_Common.IconClose, { className: 'drawer__icons-icon-close' })
             ),
             _react2.default.createElement(
                 'div',
-                { className: 'notifications-header' },
+                { className: 'drawer__notifications' },
                 _react2.default.createElement(
                     'h4',
-                    null,
+                    { className: 'drawer__notifications-header' },
                     (0, _localize.localize)('all notifications')
                 )
             )
@@ -2381,13 +2464,13 @@ var DrawerHeader = exports.DrawerHeader = function DrawerHeader(_ref) {
             { className: drawer_header_class },
             _react2.default.createElement(
                 'div',
-                { className: 'icons btn-close', onClick: closeBtn },
-                _react2.default.createElement(_Common.IconClose, null)
+                { className: 'drawer__icons drawer__icons-btn-close', onClick: closeBtn },
+                _react2.default.createElement(_Common.IconClose, { className: 'drawer__icons-icon-close' })
             ),
             _react2.default.createElement(
                 'div',
-                { className: 'icons brand-logo' },
-                _react2.default.createElement('div', { className: 'img' })
+                { className: 'drawer__icons drawer__brand-logo' },
+                _react2.default.createElement('div', { className: 'drawer__image' })
             )
         )
     );
@@ -2471,22 +2554,22 @@ var DrawerItem = function (_React$Component) {
 
             return _react2.default.createElement(
                 'div',
-                { className: 'drawer-item', onClick: this.drawerItemClicked },
+                { className: 'drawer__item', onClick: this.drawerItemClicked },
                 custom_action ? _react2.default.createElement(
                     'a',
-                    { href: 'javascript:;', onClick: custom_action },
+                    { href: 'javascript:;', className: 'drawer__item-link', onClick: custom_action },
                     _react2.default.createElement(
                         'span',
-                        null,
+                        { className: 'drawer__item-link-text' },
                         icon,
                         text
                     )
                 ) : _react2.default.createElement(
                     _Routes.BinaryLink,
-                    { to: link_to },
+                    { className: 'drawer__item-link', to: link_to },
                     _react2.default.createElement(
                         'span',
-                        null,
+                        { className: 'drawer__item-link-text' },
                         icon,
                         text
                     )
@@ -2595,18 +2678,18 @@ var DrawerItems = function (_React$Component) {
             var list_is_collapsed = {
                 visibility: is_collapsed ? 'visible' : 'hidden'
             };
-            var parent_item_class = (0, _classnames2.default)('parent-item', {
-                'show': is_collapsed
+            var parent_item_class = (0, _classnames2.default)('drawer__parent-item', {
+                'drawer__parent-item--show': is_collapsed
             });
-            var drawer_items_class = (0, _classnames2.default)('drawer-items', {
-                'show': is_collapsed
+            var drawer_items_class = (0, _classnames2.default)('drawer__items', {
+                'drawer__items--show': is_collapsed
             });
             return _react2.default.createElement(
                 _react2.default.Fragment,
                 null,
                 _react2.default.createElement(
                     'div',
-                    { className: 'drawer-item', onClick: this.collapseItems },
+                    { className: 'drawer__item', onClick: this.collapseItems },
                     _react2.default.createElement(
                         'span',
                         { className: parent_item_class },
@@ -2737,6 +2820,8 @@ var _drawerHeader = __webpack_require__(/*! ./drawer-header.jsx */ "./src/javasc
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -2789,17 +2874,21 @@ var Drawer = function (_React$Component) {
                 children = _props.children;
 
 
-            var drawer_bg_class = (0, _classnames2.default)('drawer-bg', {
-                'show': is_this_drawer_on
+            var drawer_bg_class = (0, _classnames2.default)('drawer__bg', {
+                'drawer--show': is_this_drawer_on
             });
-            var drawer_class = (0, _classnames2.default)('drawer', alignment);
+            var drawer_class = (0, _classnames2.default)('drawer', _defineProperty({}, 'drawer--' + alignment, alignment));
 
             return _react2.default.createElement(
                 _reactTransitionGroup.CSSTransition,
                 {
                     'in': is_this_drawer_on,
                     timeout: 150,
-                    classNames: 'drawer-container',
+                    classNames: {
+                        enter: 'drawer__container--enter',
+                        enterDone: 'drawer__container--enter-done',
+                        exit: 'drawer__container--exit'
+                    },
                     unmountOnExit: true
                 },
                 _react2.default.createElement(
@@ -3034,7 +3123,7 @@ var ToggleDrawer = function (_React$Component) {
                 children = _props.children;
 
 
-            var toggle_class = (0, _classnames2.default)('navbar-icons', icon_class);
+            var toggle_class = (0, _classnames2.default)('header__navbar-icons', 'header__navbar-icons--' + icon_class);
 
             return _react2.default.createElement(
                 _react2.default.Fragment,
@@ -3196,11 +3285,11 @@ var ErrorComponent = function ErrorComponent(_ref) {
     }
     return _react2.default.createElement(
         'div',
-        { className: 'error-container' },
+        { className: 'error__container' },
         _react2.default.createElement(_iconError.IconError, { type: type }),
         _react2.default.createElement(
             'p',
-            null,
+            { className: 'error__message' },
             msg || (0, _localize.localize)('Sorry, an error occured while processing your request.')
         )
     );
@@ -3257,6 +3346,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
 var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
@@ -3264,6 +3357,10 @@ var _react2 = _interopRequireDefault(_react);
 var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _button = __webpack_require__(/*! ../../Form/button.jsx */ "./src/javascript/app_2/App/Components/Form/button.jsx");
+
+var _button2 = _interopRequireDefault(_button);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3296,30 +3393,18 @@ var FullPageModal = function FullPageModal(_ref) {
                 _react2.default.createElement(
                     'div',
                     { className: 'full-page-modal__footer' },
-                    _react2.default.createElement(
-                        'div',
-                        {
-                            className: 'full-page-modal__button btn btn--flat effect btn--primary',
-                            onClick: onCancel
-                        },
-                        _react2.default.createElement(
-                            'span',
-                            { className: 'full-page-modal__button-text' },
-                            cancel_button_text
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        {
-                            className: 'full-page-modal__button btn btn--flat effect btn--primary',
-                            onClick: onConfirm
-                        },
-                        _react2.default.createElement(
-                            'span',
-                            { className: 'full-page-modal__button-text' },
-                            confirm_button_text
-                        )
-                    )
+                    _react2.default.createElement(_button2.default, {
+                        className: (0, _classnames2.default)('full-page-modal__button', 'btn--secondary btn--secondary--orange'),
+                        has_effect: true,
+                        text: cancel_button_text,
+                        onClick: onCancel
+                    }),
+                    _react2.default.createElement(_button2.default, {
+                        className: (0, _classnames2.default)('full-page-modal__button', 'btn--primary btn--primary--orange'),
+                        has_effect: true,
+                        text: confirm_button_text,
+                        onClick: onConfirm
+                    })
                 )
             )
         );
@@ -3557,26 +3642,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var EmptyNotification = function EmptyNotification() {
     return _react2.default.createElement(
         'div',
-        { className: 'no-notifications-container' },
+        { className: 'drawer__no-notifications-container' },
         _react2.default.createElement(
             'div',
-            { className: 'notification-message' },
+            { className: 'drawer__no-notifications' },
             _react2.default.createElement(
                 'div',
-                { className: 'bell-icon' },
-                _react2.default.createElement(_NavBar.IconBell, null)
+                { className: 'drawer__bell' },
+                _react2.default.createElement(_NavBar.IconBell, { className: 'drawer__bell-icon' })
             ),
             _react2.default.createElement(
                 'div',
                 null,
                 _react2.default.createElement(
                     'h4',
-                    null,
+                    { className: 'drawer__no-notifications-header' },
                     (0, _localize.localize)('No Notifications')
                 ),
                 _react2.default.createElement(
                     'span',
-                    { className: 'no-notifications-message' },
+                    { className: 'drawer__no-notifications-message' },
                     (0, _localize.localize)('You have yet to receive any notifications')
                 )
             )
@@ -5241,7 +5326,7 @@ var SettingsDialog = function (_React$PureComponent) {
         var _this = _possibleConstructorReturn(this, (SettingsDialog.__proto__ || Object.getPrototypeOf(SettingsDialog)).call(this, props));
 
         _this.handleClickOutside = function (event) {
-            var footer_settings_btn = !event.target.classList.contains('ic-settings', 'ic-settings active');
+            var footer_settings_btn = !event.target.classList.contains('ic-settings', 'ic-settings ic-settings--active');
             if (_this.wrapper_ref && !_this.wrapper_ref.contains(event.target) && _this.props.is_open && footer_settings_btn) {
                 _this.props.toggleDialog();
             }
@@ -5639,10 +5724,6 @@ exports.VerticalTabContentContainer = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
 var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
@@ -5688,16 +5769,6 @@ var VerticalTabContentContainer = function (_React$PureComponent) {
     return VerticalTabContentContainer;
 }(_react2.default.PureComponent);
 
-VerticalTabContentContainer.propTypes = {
-    items: _propTypes2.default.arrayOf(_propTypes2.default.shape({
-        icon: _propTypes2.default.shape({
-            active: _propTypes2.default.func,
-            normal: _propTypes2.default.func
-        }),
-        label: _propTypes2.default.string,
-        value: _propTypes2.default.func
-    }))
-};
 exports.VerticalTabContentContainer = VerticalTabContentContainer;
 
 /***/ }),
@@ -5722,10 +5793,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 
 var _classnames2 = _interopRequireDefault(_classnames);
-
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
@@ -5795,26 +5862,6 @@ var VerticalTabHeaders = function (_React$PureComponent) {
     return VerticalTabHeaders;
 }(_react2.default.PureComponent);
 
-VerticalTabHeaders.propTypes = {
-    items: _propTypes2.default.arrayOf(_propTypes2.default.shape({
-        icon: _propTypes2.default.shape({
-            active: _propTypes2.default.func,
-            normal: _propTypes2.default.func
-        }),
-        label: _propTypes2.default.string,
-        value: _propTypes2.default.func
-    })),
-    onChange: _propTypes2.default.func,
-    selected: _propTypes2.default.shape({
-        icon: _propTypes2.default.shape({
-            active: _propTypes2.default.func,
-            normal: _propTypes2.default.func
-        }),
-        label: _propTypes2.default.string,
-        value: _propTypes2.default.func
-    })
-};
-
 exports.VerticalTabHeaders = VerticalTabHeaders;
 
 /***/ }),
@@ -5832,7 +5879,6 @@ exports.VerticalTabHeaders = VerticalTabHeaders;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.VerticalTab = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -5906,10 +5952,10 @@ VerticalTab.propTypes = {
         }),
         label: _propTypes2.default.string,
         value: _propTypes2.default.func
-    }))
+    })).isRequired
 };
 
-exports.VerticalTab = VerticalTab;
+exports.default = VerticalTab;
 
 /***/ }),
 
@@ -6555,7 +6601,9 @@ var DatePicker = function (_React$Component) {
             }
         }, _this.onMouseLeave = function () {
             _this.setState({ is_clear_btn_visible: false });
-        }, _this.onSelectCalendar = function (selected_date, is_datepicker_visible) {
+        }, _this.onSelectCalendar = function (selected_date) {
+            var is_datepicker_visible = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
             var value = selected_date;
             if (!(0, _Date.isDateValid)(value)) {
                 value = '';
@@ -6728,7 +6776,7 @@ var DatePicker = function (_React$Component) {
                 }, _callee, this);
             }));
 
-            function onChangeCalendarMonth(_x) {
+            function onChangeCalendarMonth(_x2) {
                 return _ref2.apply(this, arguments);
             }
 
@@ -6826,8 +6874,10 @@ var DatePicker = function (_React$Component) {
                             onChangeCalendarMonth: this.props.disable_trading_events ? this.onChangeCalendarMonth.bind(this) : undefined,
                             holidays: this.state.holidays,
                             weekends: this.state.weekends,
+                            duration_date: this.state.value,
                             date_format: this.props.date_format,
                             has_today_btn: this.props.has_today_btn,
+                            has_range_selection: this.props.has_range_selection,
                             footer: this.props.footer,
                             max_date: this.props.max_date,
                             min_date: this.props.min_date,
@@ -7650,7 +7700,7 @@ var RadioGroup = function (_React$PureComponent) {
                             selected: selected === item.value,
                             onClick: _this2.props.onToggle
                         },
-                        _react2.default.createElement(_localize2.default, { str: item.label })
+                        item.label && _react2.default.createElement(_localize2.default, { str: item.label })
                     );
                 })
             );
@@ -7661,7 +7711,10 @@ var RadioGroup = function (_React$PureComponent) {
 }(_react2.default.PureComponent);
 
 RadioGroup.propTypes = {
-    items: _propTypes2.default.array,
+    items: _propTypes2.default.arrayOf(_propTypes2.default.shape({
+        label: _propTypes2.default.string.isRequired,
+        value: _propTypes2.default.bool.isRequired
+    })),
     onToggle: _propTypes2.default.func,
     selected: _propTypes2.default.bool
 };
@@ -8026,9 +8079,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var Dialog = function Dialog(_ref) {
     var preClass = _ref.preClass,
-        value = _ref.value,
-        start_time = _ref.start_time,
+        selected_time = _ref.selected_time,
         end_time = _ref.end_time,
+        start_time = _ref.start_time,
         onChange = _ref.onChange,
         className = _ref.className;
 
@@ -8036,10 +8089,10 @@ var Dialog = function Dialog(_ref) {
     var end_time_moment = end_time ? (0, _Date.toMoment)(end_time) : (0, _Date.toMoment)().hour('23').minute('59').seconds('59').milliseconds('999');
     var to_compare_moment = (0, _Date.toMoment)();
 
-    var _value$split = value.split(':'),
-        _value$split2 = _slicedToArray(_value$split, 2),
-        hour = _value$split2[0],
-        minute = _value$split2[1];
+    var _selected_time$split = selected_time.split(':'),
+        _selected_time$split2 = _slicedToArray(_selected_time$split, 2),
+        hour = _selected_time$split2[0],
+        minute = _selected_time$split2[1];
 
     var hours = [].concat(_toConsumableArray(Array(24).keys())).map(function (a) {
         return ('0' + a).slice(-2);
@@ -8085,15 +8138,18 @@ var Dialog = function Dialog(_ref) {
                     'div',
                     null,
                     hours.map(function (h, key) {
-                        to_compare_moment.hour(h).minute(minute);
-                        var is_enabled = to_compare_moment.isBetween(start_time_moment, end_time_moment);
+                        to_compare_moment.hour(h);
+                        var start_time_reset_minute = start_time_moment.clone().minute(0);
+                        var is_hour_enabled = to_compare_moment.isBetween(start_time_reset_minute, end_time_moment);
+                        var is_minute_enabled = to_compare_moment.isBetween(start_time_moment, end_time_moment, 'minute');
+                        var is_enabled = is_hour_enabled && is_minute_enabled;
                         return _react2.default.createElement(
                             'div',
                             {
                                 className: (0, _classnames2.default)(preClass + '__selector-list-item', _defineProperty({}, preClass + '__selector-list-item--selected', hour === h), _defineProperty({}, preClass + '__selector-list-item--disabled', !is_enabled)),
                                 key: key,
                                 onClick: function onClick() {
-                                    selectOption('h', h, value, is_enabled);
+                                    selectOption('h', h, selected_time, is_enabled);
                                 }
                             },
                             h
@@ -8125,7 +8181,7 @@ var Dialog = function Dialog(_ref) {
                                 className: (0, _classnames2.default)(preClass + '__selector-list-item', _defineProperty({}, preClass + '__selector-list-item--selected', minute === mm), _defineProperty({}, preClass + '__selector-list-item--disabled', !is_enabled)),
                                 key: key,
                                 onClick: function onClick() {
-                                    selectOption('m', mm, value, is_enabled);
+                                    selectOption('m', mm, selected_time, is_enabled);
                                 }
                             },
                             mm
@@ -8142,8 +8198,8 @@ Dialog.propTypes = {
     end_time: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string, _propTypes2.default.object]),
     onChange: _propTypes2.default.func,
     preClass: _propTypes2.default.string,
-    start_time: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string, _propTypes2.default.object]),
-    value: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string, _propTypes2.default.object])
+    selected_time: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string, _propTypes2.default.object]),
+    start_time: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string, _propTypes2.default.object])
 };
 
 exports.default = Dialog;
@@ -8249,9 +8305,9 @@ var TimePicker = function (_React$Component) {
             });
         }, _this.handleChange = function (arg) {
             // To handle nativepicker;
-            var value = (typeof arg === 'undefined' ? 'undefined' : _typeof(arg)) === 'object' ? arg.target.value : arg;
+            var value = (typeof arg === 'undefined' ? 'undefined' : _typeof(arg)) === 'object' ? arg.target.selected_time : arg;
 
-            if (value !== _this.props.value) {
+            if (value !== _this.props.selected_time) {
                 _this.props.onChange({ target: { name: _this.props.name, value: value } });
             }
         }, _this.saveRef = function (node) {
@@ -8285,12 +8341,12 @@ var TimePicker = function (_React$Component) {
         value: function render() {
             var prefix_class = 'time-picker';
             var _props = this.props,
-                value = _props.value,
+                selected_time = _props.selected_time,
                 name = _props.name,
                 is_nativepicker = _props.is_nativepicker,
                 placeholder = _props.placeholder,
-                start_time = _props.start_time,
                 end_time = _props.end_time,
+                start_time = _props.start_time,
                 validation_errors = _props.validation_errors;
 
             return _react2.default.createElement(
@@ -8302,7 +8358,7 @@ var TimePicker = function (_React$Component) {
                 is_nativepicker ? _react2.default.createElement('input', {
                     type: 'time',
                     id: prefix_class + '-input',
-                    value: value,
+                    value: selected_time,
                     onChange: this.handleChange,
                     name: name,
                     min: start_time,
@@ -8316,7 +8372,7 @@ var TimePicker = function (_React$Component) {
                         is_read_only: true,
                         id: prefix_class + '-input',
                         className: (0, _classnames2.default)(prefix_class + '-input'),
-                        value: value,
+                        value: selected_time,
                         onClick: this.toggleDropDown,
                         name: name,
                         placeholder: placeholder
@@ -8335,12 +8391,12 @@ var TimePicker = function (_React$Component) {
                             unmountOnExit: true
                         },
                         _react2.default.createElement(_dialog2.default, {
+                            end_time: end_time,
+                            start_time: start_time,
                             className: 'from-left',
                             onChange: this.handleChange,
                             preClass: prefix_class,
-                            start_time: start_time,
-                            end_time: end_time,
-                            value: value
+                            selected_time: selected_time
                         })
                     )
                 )
@@ -8359,8 +8415,8 @@ TimePicker.propTypes = {
     onChange: _propTypes2.default.func,
     padding: _propTypes2.default.string,
     placeholder: _propTypes2.default.string,
-    start_time: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string, _propTypes2.default.object]),
-    value: _propTypes2.default.string
+    selected_time: _propTypes2.default.string,
+    start_time: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string, _propTypes2.default.object])
 };
 
 exports.default = (0, _mobxReact.observer)(TimePicker);
@@ -8686,7 +8742,7 @@ var InputField = function InputField(_ref) {
 
         if (type === 'number') {
             var is_empty = !e.target.value || e.target.value === '' || e.target.value === '  ';
-            var signed_regex = is_signed ? '[+\-\.0-9]$' : '^';
+            var signed_regex = is_signed ? '^([+\-\.0-9])' : '^';
 
             var is_number = new RegExp(signed_regex + '(\\d*)?' + (is_float ? '(\\.\\d+)?' : '') + '$').test(e.target.value);
 
@@ -9029,14 +9085,14 @@ var NetworkStatus = function NetworkStatus(_ref) {
     var status = _ref.status;
     return _react2.default.createElement(
         'div',
-        { className: 'network-status-wrapper' },
+        { className: 'network-status__wrapper' },
         _react2.default.createElement(
             _tooltip2.default,
             { alignment: 'top', message: (0, _localize.localize)('Network status: [_1]', [status.tooltip || (0, _localize.localize)('Connecting to server')]) },
-            _react2.default.createElement('div', { className: (0, _classnames2.default)('network-status-circle', {
-                    'network-status-circle--offline': status.class === 'offline',
-                    'network-status-circle--online': status.class === 'online',
-                    'network-status-circle--blinker': status.class === 'blinker'
+            _react2.default.createElement('div', { className: (0, _classnames2.default)('network-status__circle', {
+                    'network-status__circle--offline': status.class === 'offline',
+                    'network-status__circle--online': status.class === 'online',
+                    'network-status__circle--blinker': status.class === 'blinker'
                 })
             })
         )
@@ -9142,8 +9198,8 @@ var ToggleFullScreen = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var full_screen_icon_class = (0, _classnames2.default)('ic-fullscreen', {
-                'active': this.state.is_full_screen
+            var full_screen_icon_class = (0, _classnames2.default)('ic-fullscreen', 'footer__link', {
+                'ic-fullscreen--active': this.state.is_full_screen
             });
             return _react2.default.createElement(
                 'a',
@@ -9152,7 +9208,7 @@ var ToggleFullScreen = function (_React$Component) {
                     className: full_screen_icon_class,
                     onClick: this.toggleFullScreen
                 },
-                _react2.default.createElement(_Footer.IconMaximize, { className: 'footer-icon' })
+                _react2.default.createElement(_Footer.IconMaximize, { className: 'footer__icon' })
             );
         }
     }]);
@@ -9199,8 +9255,8 @@ var TogglePositions = function TogglePositions(_ref) {
     var is_positions_drawer_on = _ref.is_positions_drawer_on,
         togglePositionsDrawer = _ref.togglePositionsDrawer;
 
-    var toggle_positions_class = (0, _classnames2.default)('ic-positions', {
-        'active': is_positions_drawer_on
+    var toggle_positions_class = (0, _classnames2.default)('ic-positions', 'footer__link', {
+        'ic-positions--active': is_positions_drawer_on
     });
     return _react2.default.createElement(
         'a',
@@ -9209,7 +9265,7 @@ var TogglePositions = function TogglePositions(_ref) {
             className: toggle_positions_class,
             onClick: togglePositionsDrawer
         },
-        _react2.default.createElement(_Footer.IconPositions, null)
+        _react2.default.createElement(_Footer.IconPositions, { className: 'footer__icon ic-positions__icon' })
     );
 };
 
@@ -9265,8 +9321,8 @@ var ToggleSettings = function ToggleSettings(_ref) {
         showBlur = _ref.showBlur,
         toggleSettings = _ref.toggleSettings;
 
-    var toggle_settings_class = (0, _classnames2.default)('ic-settings', {
-        'active': is_settings_visible
+    var toggle_settings_class = (0, _classnames2.default)('ic-settings', 'footer__link', {
+        'ic-settings--active': is_settings_visible
     });
     return _react2.default.createElement(
         _react2.default.Fragment,
@@ -9278,7 +9334,7 @@ var ToggleSettings = function ToggleSettings(_ref) {
                 onClick: toggleSettings,
                 className: toggle_settings_class
             },
-            _react2.default.createElement(_Footer.IconSettings, { className: 'footer-icon' })
+            _react2.default.createElement(_Footer.IconSettings, { className: 'footer__icon ic-settings__icon' })
         ),
         _react2.default.createElement(
             _reactTransitionGroup.CSSTransition,
@@ -9394,7 +9450,7 @@ var AccountInfo = function AccountInfo(_ref) {
                 }),
                 balance
             ),
-            _react2.default.createElement(_Common.IconArrow, { className: 'acc-info__select-arrow' })
+            _react2.default.createElement(_Common.IconArrow, { className: 'acc-info__select-arrow', is_bold: true })
         ),
         _react2.default.createElement(
             _reactTransitionGroup.CSSTransition,
@@ -9767,19 +9823,19 @@ var MenuLinks = function MenuLinks(_ref) {
         null,
         _react2.default.createElement(
             'div',
-            { className: 'navbar-icons binary-logo' },
+            { className: 'header__navbar-icons header__navbar-icons--binary-logo' },
             _react2.default.createElement(_symbol2.default, { width: '30px', height: '30px' })
         ),
         !!items.length && _react2.default.createElement(
             'div',
-            { className: 'menu-links' },
+            { className: 'header__menu-links' },
             items.map(function (item, idx) {
                 return _react2.default.createElement(
                     _Routes.BinaryLink,
-                    { key: idx, to: item.link_to },
+                    { key: idx, to: item.link_to, className: 'header__menu-link', active_class: 'header__menu-link--active' },
                     _react2.default.createElement(
                         'span',
-                        { title: item.text },
+                        { title: item.text, className: 'header__menu-link-text' },
                         item.icon,
                         item.text
                     )
@@ -9838,7 +9894,7 @@ var ToggleMenuDrawer = function ToggleMenuDrawer() {
         {
             alignment: 'left',
             icon: _react2.default.createElement(_NavBar.IconHamburger, null),
-            icon_class: 'menu-toggle'
+            icon_class: 'header__menu-toggle'
         },
         _react2.default.createElement(_menuDrawer2.default, null)
     );
@@ -10361,12 +10417,12 @@ var _Constants = __webpack_require__(/*! ../../Constants */ "./src/javascript/ap
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var header_links = [{
-    icon: _react2.default.createElement(_NavBar.IconTrade, { className: 'ic-header__trade' }),
+    icon: _react2.default.createElement(_NavBar.IconTrade, { className: 'header__icon' }),
     text: (0, _localize.localize)('Trade'),
     link_to: _Constants.routes.trade
 }, {
     // TODO: Combine portfolio and statement into reports page
-    icon: _react2.default.createElement(_NavBar.IconStatement, { className: 'ic-header__statement' }),
+    icon: _react2.default.createElement(_NavBar.IconStatement, { className: 'header__icon' }),
     text: (0, _localize.localize)('Reports'),
     link_to: _Constants.routes.statement
 }];
@@ -10717,7 +10773,7 @@ var AccountSwitcher = function (_React$Component) {
                         { className: 'acc-switcher__logout-text' },
                         (0, _localize.localize)('Log out')
                     ),
-                    _react2.default.createElement(_Drawer.IconLogout, { className: 'acc-switcher__logout-icon drawer-icon' })
+                    _react2.default.createElement(_Drawer.IconLogout, { className: 'acc-switcher__logout-icon drawer__icon' })
                 )
             );
         }
@@ -10969,7 +11025,7 @@ var MenuDrawer = function MenuDrawer(_ref) {
         togglePurchaseLock = _ref.togglePurchaseLock;
     return _react2.default.createElement(
         'div',
-        { className: 'drawer-items-container' },
+        { className: 'drawer__items-container' },
         _react2.default.createElement(
             'div',
             { className: 'list-items-container' },
@@ -10978,20 +11034,20 @@ var MenuDrawer = function MenuDrawer(_ref) {
                 null,
                 _react2.default.createElement(_Drawer.DrawerItem, {
                     text: (0, _localize.localize)('Trade'),
-                    icon: _react2.default.createElement(_NavBar.IconTrade, { className: 'drawer-icon' }),
+                    icon: _react2.default.createElement(_NavBar.IconTrade, { className: 'drawer__icon' }),
                     link_to: _routes2.default.trade
                 }),
                 _react2.default.createElement(_Drawer.DrawerItem, {
                     text: (0, _localize.localize)('Portfolio'),
-                    icon: _react2.default.createElement(_NavBar.IconPortfolio, { className: 'drawer-icon' }),
+                    icon: _react2.default.createElement(_NavBar.IconPortfolio, { className: 'drawer__icon' }),
                     link_to: _routes2.default.portfolio
                 }),
                 _react2.default.createElement(_Drawer.DrawerItem, {
                     text: (0, _localize.localize)('Statement'),
-                    icon: _react2.default.createElement(_NavBar.IconStatement, { className: 'drawer-icon' }),
+                    icon: _react2.default.createElement(_NavBar.IconStatement, { className: 'drawer__icon' }),
                     link_to: _routes2.default.statement
                 }),
-                _react2.default.createElement('hr', null),
+                _react2.default.createElement('hr', { className: 'hr' }),
                 _react2.default.createElement(_Drawer.DrawerToggle, {
                     text: (0, _localize.localize)('Dark Mode'),
                     toggle: toggleDarkMode,
@@ -11006,9 +11062,9 @@ var MenuDrawer = function MenuDrawer(_ref) {
         ),
         !!(is_logged_in && is_mobile) && _react2.default.createElement(
             'div',
-            { className: 'drawer-footer' },
+            { className: 'drawer__footer' },
             _react2.default.createElement(_Drawer.DrawerItem, {
-                icon: _react2.default.createElement(_Drawer2.IconLogout, { className: 'drawer-icon' }),
+                icon: _react2.default.createElement(_Drawer2.IconLogout, { className: 'drawer__icon' }),
                 text: (0, _localize.localize)('Logout'),
                 custom_action: function custom_action() {
                     if (is_positions_drawer_on) {
@@ -11178,7 +11234,7 @@ var Footer = function Footer(_ref) {
         null,
         _react2.default.createElement(
             'div',
-            { className: 'footer-links footer-links-left' },
+            { className: 'footer__links footer__links--left' },
             is_logged_in && _react2.default.createElement(_Footer.TogglePositions, {
                 is_positions_drawer_on: is_positions_drawer_on,
                 togglePositionsDrawer: togglePositionsDrawer
@@ -11188,7 +11244,7 @@ var Footer = function Footer(_ref) {
         _react2.default.createElement(_serverTime2.default, null),
         _react2.default.createElement(
             'div',
-            { className: 'footer-links' },
+            { className: 'footer__links' },
             _react2.default.createElement(_Footer.ToggleFullScreen, null),
             _react2.default.createElement(_Footer.ToggleSettings, {
                 is_dark_mode: is_dark_mode,
@@ -11302,16 +11358,16 @@ var Header = function Header(_ref) {
         { className: 'header' },
         _react2.default.createElement(
             'div',
-            { className: 'menu-items' },
+            { className: 'header__menu-items' },
             _react2.default.createElement(
                 'div',
-                { className: 'menu-left' },
+                { className: 'header__menu-left' },
                 is_mobile && _react2.default.createElement(_Header.ToggleMenuDrawer, null),
                 _react2.default.createElement(_Header.MenuLinks, { items: _headerLinks2.default })
             ),
             _react2.default.createElement(
                 'div',
-                { className: 'menu-right' },
+                { className: 'header__menu-right' },
                 _react2.default.createElement(
                     'div',
                     { className: 'acc-info__container' },
@@ -12364,8 +12420,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var IconArrow = function IconArrow(_ref) {
     var className = _ref.className,
-        classNamePath = _ref.classNamePath;
-    return _react2.default.createElement(
+        classNamePath = _ref.classNamePath,
+        _ref$is_bold = _ref.is_bold,
+        is_bold = _ref$is_bold === undefined ? false : _ref$is_bold;
+    return is_bold ? _react2.default.createElement(
         'svg',
         { className: (0, _classnames2.default)('inline-icon', className), width: '16', height: '16', xmlns: 'http://www.w3.org/2000/svg' },
         _react2.default.createElement('path', {
@@ -12373,7 +12431,16 @@ var IconArrow = function IconArrow(_ref) {
             fill: '#000',
             fillOpacity: '.8',
             fillRule: 'evenodd',
-            d: 'M8 6.414l-5.293 5.293a1 1 0 0 1-1.414-1.414l6-6a1 1 0 0 1 1.414 0l6 6a1 1 0 1 1-1.414 1.414L8 6.414z'
+            d: 'M8 9.586l5.293-5.293a1 1 0 0 1 1.414 1.414l-6 6a1 1 0 0 1-1.414 0l-6-6a1 1 0 0 1 1.414-1.414L8 9.586z'
+        })
+    ) : _react2.default.createElement(
+        'svg',
+        { className: (0, _classnames2.default)('inline-icon', className), width: '16', height: '16', xmlns: 'http://www.w3.org/2000/svg' },
+        _react2.default.createElement('path', {
+            className: (0, _classnames2.default)(classNamePath, 'color1-fill'),
+            fill: 'rgba(0, 0, 0, 0.8)',
+            fillRule: 'nonzero',
+            d: 'M13.164 5.13a.5.5 0 1 1 .672.74l-5.5 5a.5.5 0 0 1-.672 0l-5.5-5a.5.5 0 0 1 .672-.74L8 9.824l5.164-4.694z'
         })
     );
 };
@@ -13332,6 +13399,57 @@ exports.IconExclamation = IconExclamation;
 
 /***/ }),
 
+/***/ "./src/javascript/app_2/Assets/Common/icon-flag.jsx":
+/*!**********************************************************!*\
+  !*** ./src/javascript/app_2/Assets/Common/icon-flag.jsx ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.IconFlag = undefined;
+
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var IconFlag = function IconFlag(_ref) {
+    var className = _ref.className;
+    return _react2.default.createElement(
+        'svg',
+        { className: (0, _classnames2.default)('inline-icon', className), xmlns: 'http://www.w3.org/2000/svg', width: '24', height: '24', viewBox: '0 0 24 24' },
+        _react2.default.createElement(
+            'g',
+            { fillRule: 'nonzero', fill: 'none' },
+            _react2.default.createElement('path', { d: 'M-6-4h32v32H-6z' }),
+            _react2.default.createElement('path', { className: 'color1-fill', d: 'M2 2h18a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2v5a1 1 0 0 1-2 0V1a1 1 0 1 1 2 0v1zm6 2v4h4V4H8zm4 4v4h4V8h-4zm4-4v4h4V4h-4zm0 8v4h4v-4h-4zm-8 0v4h4v-4H8zM4 8v4h4V8H4z', fill: '#7F8397' })
+        )
+    );
+};
+
+IconFlag.propTypes = {
+    className: _propTypes2.default.string
+};
+
+exports.IconFlag = IconFlag;
+
+/***/ }),
+
 /***/ "./src/javascript/app_2/Assets/Common/icon-info-blue.jsx":
 /*!***************************************************************!*\
   !*** ./src/javascript/app_2/Assets/Common/icon-info-blue.jsx ***!
@@ -13976,6 +14094,18 @@ Object.keys(_iconInfoOutline).forEach(function (key) {
   });
 });
 
+var _iconFlag = __webpack_require__(/*! ./icon-flag.jsx */ "./src/javascript/app_2/Assets/Common/icon-flag.jsx");
+
+Object.keys(_iconFlag).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _iconFlag[key];
+    }
+  });
+});
+
 var _iconMinimize = __webpack_require__(/*! ./icon-minimize.jsx */ "./src/javascript/app_2/Assets/Common/icon-minimize.jsx");
 
 Object.keys(_iconMinimize).forEach(function (key) {
@@ -14091,7 +14221,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var IconEntrySpot = function IconEntrySpot() {
     return _react2.default.createElement(
         'svg',
-        { xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 16 16' },
+        { className: 'chart-spot__icon', xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 16 16' },
         _react2.default.createElement(
             'g',
             { fill: 'none', fillRule: 'evenodd' },
@@ -14139,7 +14269,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var IconFlag = function IconFlag() {
     return _react2.default.createElement(
         'svg',
-        { xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 16 16' },
+        { className: 'chart-spot__icon', xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 16 16' },
         _react2.default.createElement(
             'g',
             { fill: 'none', fillRule: 'evenodd' },
@@ -16802,7 +16932,7 @@ exports.default = (0, _mobxReact.observer)(DigitDisplay);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.InfoBoxGeneral = exports.InfoBoxExpired = exports.InfoBoxDigit = undefined;
+exports.InfoBoxLongcode = exports.InfoBoxGeneral = exports.InfoBoxExpired = exports.InfoBoxDigit = undefined;
 
 var _infoBoxDigit = __webpack_require__(/*! ./info-box-digit.jsx */ "./src/javascript/app_2/Modules/Contract/Components/InfoBox/info-box-digit.jsx");
 
@@ -16816,11 +16946,16 @@ var _infoBoxGeneral = __webpack_require__(/*! ./info-box-general.jsx */ "./src/j
 
 var _infoBoxGeneral2 = _interopRequireDefault(_infoBoxGeneral);
 
+var _infoBoxLongcode = __webpack_require__(/*! ./info-box-longcode.jsx */ "./src/javascript/app_2/Modules/Contract/Components/InfoBox/info-box-longcode.jsx");
+
+var _infoBoxLongcode2 = _interopRequireDefault(_infoBoxLongcode);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.InfoBoxDigit = _infoBoxDigit2.default;
 exports.InfoBoxExpired = _infoBoxExpired2.default;
 exports.InfoBoxGeneral = _infoBoxGeneral2.default;
+exports.InfoBoxLongcode = _infoBoxLongcode2.default;
 
 /***/ }),
 
@@ -17132,6 +17267,56 @@ InfoBoxGeneral.propTypes = {
 };
 
 exports.default = (0, _mobxReact.observer)(InfoBoxGeneral);
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/Modules/Contract/Components/InfoBox/info-box-longcode.jsx":
+/*!****************************************************************************************!*\
+  !*** ./src/javascript/app_2/Modules/Contract/Components/InfoBox/info-box-longcode.jsx ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _mobxReact = __webpack_require__(/*! mobx-react */ "./node_modules/mobx-react/index.module.js");
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Common = __webpack_require__(/*! ../../../../Assets/Common */ "./src/javascript/app_2/Assets/Common/index.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var InfoBoxLongcode = function InfoBoxLongcode(_ref) {
+    var contract_info = _ref.contract_info;
+    return _react2.default.createElement(
+        'div',
+        { className: 'info-box-longcode' },
+        _react2.default.createElement(_Common.IconFlag, { className: 'info-box-longcode-icon' }),
+        _react2.default.createElement(
+            'span',
+            { className: 'info-box-longcode-text' },
+            contract_info.longcode
+        )
+    );
+};
+
+InfoBoxLongcode.propTypes = {
+    longcode: _propTypes2.default.string
+};
+
+exports.default = (0, _mobxReact.observer)(InfoBoxLongcode);
 
 /***/ }),
 
@@ -17621,12 +17806,11 @@ var InfoBox = function InfoBox(_ref) {
         'ended': is_ended
     });
 
-    var Contents = is_ended ? _InfoBox.InfoBoxExpired : _InfoBox.InfoBoxGeneral;
+    var Contents = _InfoBox.InfoBoxLongcode;
     if (is_digit && is_trade_page) {
         // we don't display digit info in Statement/Portfolio because of API shortages
         Contents = _InfoBox.InfoBoxDigit;
     }
-
     return (
         // TODO: Resolve issue with undefined contract_info showing upon unmounting transition
         // <CSSTransition
@@ -17798,6 +17982,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
 var _mobxReact = __webpack_require__(/*! mobx-react */ "./node_modules/mobx-react/index.module.js");
 
 var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
@@ -17815,10 +18003,10 @@ var MarkerLine = function MarkerLine(_ref) {
         line_style = _ref.line_style;
     return _react2.default.createElement(
         'div',
-        { className: line_style },
+        { className: (0, _classnames2.default)('chart-marker-line__wrapper', 'chart-marker-line--' + line_style) },
         _react2.default.createElement(
             'div',
-            null,
+            { className: 'chart-marker-line__label' },
             label
         )
     );
@@ -17871,15 +18059,15 @@ var MarkerSpot = function MarkerSpot(_ref) {
         status = _ref.status;
     return _react2.default.createElement(
         'div',
-        { className: (0, _classnames2.default)('chart-spot', align, status) },
+        { className: (0, _classnames2.default)('chart-spot', 'chart-spot--' + align, 'chart-spot--' + status) },
         _react2.default.createElement(
             'div',
-            { className: 'content' },
+            { className: 'chart-spot__content' },
             icon,
             (0, _currency_base.addComma)(spot_value)
         ),
-        _react2.default.createElement('div', { className: 'arrow' }),
-        _react2.default.createElement('div', { className: 'spot' })
+        _react2.default.createElement('div', { className: 'chart-spot__arrow' }),
+        _react2.default.createElement('div', { className: 'chart-spot__spot' })
     );
 };
 
@@ -18696,7 +18884,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var TradingDatePicker = function TradingDatePicker(_ref) {
     var duration_min_max = _ref.duration_min_max,
         duration_units_list = _ref.duration_units_list,
-        validation_errors = _ref.validation_errors,
         expiry_date = _ref.expiry_date,
         expiry_type = _ref.expiry_type,
         is_24_hours_contract = _ref.is_24_hours_contract,
@@ -18706,13 +18893,14 @@ var TradingDatePicker = function TradingDatePicker(_ref) {
         server_time = _ref.server_time,
         start_time = _ref.start_time,
         start_date = _ref.start_date,
-        symbol = _ref.symbol;
+        symbol = _ref.symbol,
+        validation_errors = _ref.validation_errors;
 
     var max_date_duration = void 0,
         min_date_expiry = void 0,
         has_today_btn = void 0,
         is_read_only = void 0;
-    var moment_contract_start_date_time = (0, _Date.setTime)((0, _Date.toMoment)(start_date || server_time), (0, _Date.isTimeValid)(start_time) ? start_time : server_time.format('HH:mm'));
+    var moment_contract_start_date_time = (0, _Date.setTime)((0, _Date.toMoment)(start_date || server_time), (0, _Date.isTimeValid)(start_time) ? start_time : server_time.format('HH:mm:ss'));
 
     var max_daily_duration = duration_min_max.daily ? duration_min_max.daily.max : 365 * 24 * 3600;
 
@@ -18738,6 +18926,7 @@ var TradingDatePicker = function TradingDatePicker(_ref) {
         disable_trading_events: true,
         error_messages: validation_errors.duration || [],
         has_today_btn: has_today_btn,
+        has_range_selection: mode === 'duration',
         is_nativepicker: false,
         is_read_only: is_read_only,
         label: duration_units_list.length === 1 ? duration_units_list[0].text : null,
@@ -19321,7 +19510,7 @@ var PurchaseLock = function PurchaseLock(_ref) {
             (0, _localize.localize)('Purchase Locked')
         ),
         _react2.default.createElement(_button2.default, {
-            className: 'purchase-container__lock-button btn--flat btn--secondary btn--secondary--orange',
+            className: 'purchase-container__lock-button btn--secondary btn--secondary--orange',
             has_effect: true,
             onClick: onClick,
             text: (0, _localize.localize)('Unlock')
@@ -19414,7 +19603,7 @@ var ContractInfo = function ContractInfo(_ref) {
                 ),
                 _react2.default.createElement(
                     'div',
-                    null,
+                    { className: 'trade-container__price-info-value' },
                     _react2.default.createElement(_money2.default, { amount: proposal_info.obj_contract_basis.value, className: 'trade-container__price-info-currency', currency: currency })
                 ),
                 _react2.default.createElement(
@@ -19497,35 +19686,33 @@ var _TimePicker = __webpack_require__(/*! ../../../../../App/Components/Form/Tim
 
 var _TimePicker2 = _interopRequireDefault(_TimePicker);
 
+var _endTime = __webpack_require__(/*! ../../../../../Stores/Modules/Trading/Helpers/end-time */ "./src/javascript/app_2/Stores/Modules/Trading/Helpers/end-time.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var TradingTimePicker = function TradingTimePicker(_ref) {
     var expiry_date = _ref.expiry_date,
         expiry_time = _ref.expiry_time,
         market_close_times = _ref.market_close_times,
+        market_open_times = _ref.market_open_times,
         onChange = _ref.onChange,
-        server_time = _ref.server_time,
-        start_date = _ref.start_date,
-        start_time = _ref.start_time;
+        server_time = _ref.server_time;
 
-    var moment_expiry = (0, _Date.toMoment)(expiry_date || server_time);
-    var moment_contract_start_date_time = (0, _Date.setTime)((0, _Date.toMoment)(start_date || server_time), (0, _Date.isTimeValid)(start_time) ? start_time : server_time.format('HH:mm'));
-    var expiry_date_time = (0, _Date.setTime)(moment_expiry.clone(), moment_contract_start_date_time.clone().add(5, 'minute').format('HH:mm'));
-    var expiry_date_market_close = (0, _Date.setTime)(expiry_date_time.clone(), market_close_times.slice(-1)[0]);
-    var is_expired_next_day = expiry_date_time.diff(moment_contract_start_date_time, 'day') === 1;
-    var min_date_expiry = moment_contract_start_date_time.clone().startOf('day');
-    var expiry_time_sessions = [{
-        open: is_expired_next_day ? expiry_date_time.clone().startOf('day') : expiry_date_time.clone(),
-        close: is_expired_next_day ? (0, _Date.minDate)(expiry_date_time.clone().subtract(10, 'minute'), expiry_date_market_close) : expiry_date_market_close.clone()
-    }];
+    var moment_expiry_date = (0, _Date.toMoment)(expiry_date);
+    var market_open_datetime = (0, _Date.setTime)(moment_expiry_date.clone(), market_open_times[0]);
+    var market_close_datetime = (0, _Date.setTime)(moment_expiry_date.clone(), market_close_times.slice(-1)[0]);
+    var expiry_datetime = (0, _Date.setTime)(moment_expiry_date.clone(), expiry_time);
+    var server_datetime = (0, _Date.toMoment)(server_time);
 
+    var boundaries = (0, _endTime.getBoundaries)(server_datetime.clone(), market_open_datetime.clone(), market_close_datetime);
+    var selected_time = (0, _endTime.getSelectedTime)(server_datetime.clone(), expiry_datetime, market_open_datetime);
     return _react2.default.createElement(_TimePicker2.default, {
-        end_time: expiry_time_sessions[0].close,
+        end_time: boundaries.end,
         onChange: onChange,
         name: 'expiry_time',
         placeholder: '12:00',
-        start_time: expiry_time_sessions[0].open,
-        value: expiry_time || min_date_expiry.format('HH:mm')
+        start_time: boundaries.start,
+        selected_time: selected_time
     });
 };
 
@@ -19535,9 +19722,7 @@ TradingTimePicker.propTypes = {
     market_close_times: _propTypes2.default.array,
     name: _propTypes2.default.string,
     onChange: _propTypes2.default.func,
-    server_time: _propTypes2.default.object,
-    start_date: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
-    start_time: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string, _propTypes2.default.object])
+    server_time: _propTypes2.default.object
 };
 
 exports.default = (0, _connect.connect)(function (_ref2) {
@@ -19545,13 +19730,12 @@ exports.default = (0, _connect.connect)(function (_ref2) {
         common = _ref2.common;
     return {
         duration_units_list: modules.trade.duration_units_list,
-        expiry_date: modules.trade.expiry_date,
         expiry_time: modules.trade.expiry_time,
+        expiry_date: modules.trade.expiry_date,
         market_close_times: modules.trade.market_close_times,
+        market_open_times: modules.trade.market_open_times,
         onChange: modules.trade.onChange,
-        server_time: common.server_time,
-        start_date: modules.trade.start_date,
-        start_time: modules.trade.start_time
+        server_time: common.server_time
     };
 })(TradingTimePicker);
 
@@ -19634,12 +19818,11 @@ var AdvancedDuration = function AdvancedDuration(_ref) {
         shared_input_props = _ref.shared_input_props,
         start_date = _ref.start_date;
 
-    var moment_expiry = (0, _Date.toMoment)(expiry_date || server_time);
     var is_24_hours_contract = false;
 
     if (expiry_type === 'endtime') {
         var has_intraday_duration_unit = (0, _duration.hasIntradayDurationUnit)(duration_units_list);
-        is_24_hours_contract = (!!start_date || moment_expiry.isSame((0, _Date.toMoment)(server_time), 'day')) && has_intraday_duration_unit;
+        is_24_hours_contract = (!!start_date || (0, _Date.toMoment)(expiry_date || server_time).isSame((0, _Date.toMoment)(server_time), 'day')) && has_intraday_duration_unit;
     }
 
     var endtime_container_class = (0, _classnames2.default)('endtime-container', {
@@ -19725,7 +19908,6 @@ AdvancedDuration.propTypes = {
     expiry_list: _propTypes2.default.array,
     expiry_type: _propTypes2.default.string,
     getDurationFromUnit: _propTypes2.default.func,
-    is_nativepicker: _propTypes2.default.bool,
     number_input_props: _propTypes2.default.object,
     onChange: _propTypes2.default.func,
     onChangeUiStore: _propTypes2.default.func,
@@ -19954,7 +20136,7 @@ DurationWrapper.propTypes = {
     getDurationFromUnit: _propTypes2.default.func,
     is_advanced_duration: _propTypes2.default.bool,
     is_minimized: _propTypes2.default.bool,
-    market_close_times: _propTypes2.default.array,
+    market_open_times: _propTypes2.default.array,
     onChange: _propTypes2.default.func,
     onChangeMultiple: _propTypes2.default.func,
     onChangeUiStore: _propTypes2.default.func,
@@ -20047,7 +20229,8 @@ var Duration = function Duration(_ref) {
         simple_duration_unit = _ref.simple_duration_unit,
         server_time = _ref.server_time,
         start_date = _ref.start_date,
-        validation_errors = _ref.validation_errors;
+        validation_errors = _ref.validation_errors,
+        market_open_times = _ref.market_open_times;
 
     var expiry_list = [{ text: (0, _localize.localize)('Duration'), value: 'duration' }];
 
@@ -20174,6 +20357,7 @@ var Duration = function Duration(_ref) {
                 expiry_list: expiry_list,
                 expiry_type: expiry_type,
                 getDurationFromUnit: getDurationFromUnit,
+                market_open_times: market_open_times,
                 number_input_props: props.number_input,
                 onChange: onChange,
                 onChangeUiStore: onChangeUiStore,
@@ -20215,6 +20399,7 @@ Duration.propTypes = {
     hasDurationUnit: _propTypes2.default.func,
     is_advanced_duration: _propTypes2.default.bool,
     is_minimized: _propTypes2.default.bool,
+    market_open_times: _propTypes2.default.array,
     onChange: _propTypes2.default.func,
     onChangeUiStore: _propTypes2.default.func,
     server_time: _propTypes2.default.object,
@@ -21132,8 +21317,8 @@ var ScreenLarge = function ScreenLarge(_ref) {
         is_trade_enabled = _ref.is_trade_enabled;
     return _react2.default.createElement(
         'div',
-        { className: (0, _classnames2.default)('sidebar-items', {
-                'sidebar-items__slideout': is_contract_visible
+        { className: (0, _classnames2.default)('sidebar__items', {
+                'sidebar__items--slideout': is_contract_visible
             })
         },
         !is_trade_enabled && !is_contract_visible ? _react2.default.createElement(_uiLoader2.default, null) : _react2.default.createElement(
@@ -21827,7 +22012,7 @@ var Trade = function (_React$Component) {
         key: 'render',
         value: function render() {
             var contract_id = (0, _utility.getPropertyValue)(this.props.purchase_info, ['buy', 'contract_id']);
-            var form_wrapper_class = this.props.is_mobile ? 'mobile-wrapper' : 'sidebar-container desktop-only';
+            var form_wrapper_class = this.props.is_mobile ? 'mobile-wrapper' : 'sidebar__container desktop-only';
             var should_show_last_digit_stats = ['match_diff', 'even_odd', 'over_under'].includes(this.props.contract_type);
 
             return _react2.default.createElement(
@@ -21868,12 +22053,16 @@ var Trade = function (_React$Component) {
                         {
                             'in': !!contract_id,
                             timeout: 400,
-                            classNames: 'contract-wrapper',
+                            classNames: {
+                                enter: 'contract--enter',
+                                enterDone: 'contract--enter-done',
+                                exit: 'contract--exit'
+                            },
                             unmountOnExit: true
                         },
                         _react2.default.createElement(
                             'div',
-                            { className: 'contract-wrapper' },
+                            { className: 'contract__wrapper' },
                             _react2.default.createElement(_contractDetails2.default, {
                                 contract_id: contract_id,
                                 onClickNewTrade: this.props.onClickNewTrade
@@ -25073,7 +25262,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 var onChangeStartDate = exports.onChangeStartDate = function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(store) {
-        var contract_type, duration_unit, expiry_time, start_date, symbol, server_time, start_time, expiry_date, expiry_type, obj_contract_start_type, contract_start_type, obj_sessions, sessions, obj_start_time, obj_duration_units_list, duration_units_list, obj_duration_unit, obj_expiry_type, obj_expiry_date, obj_market_close_times, market_close_times, obj_expiry_time, obj_duration_min_max;
+        var contract_type, duration_unit, expiry_time, start_date, symbol, server_time, start_time, expiry_date, expiry_type, obj_contract_start_type, contract_start_type, obj_sessions, sessions, obj_start_time, obj_duration_units_list, duration_units_list, obj_duration_unit, obj_expiry_type, obj_expiry_date, trading_times, obj_market_open_times, obj_market_close_times, market_close_times, obj_expiry_time, obj_duration_min_max;
         return regeneratorRuntime.wrap(function _callee$(_context) {
             while (1) {
                 switch (_context.prev = _context.next) {
@@ -25107,16 +25296,15 @@ var onChangeStartDate = exports.onChangeStartDate = function () {
                         return _contractType2.default.getTradingTimes(expiry_date, symbol);
 
                     case 19:
-                        _context.t0 = _context.sent;
-                        obj_market_close_times = {
-                            market_close_times: _context.t0
-                        };
+                        trading_times = _context.sent;
+                        obj_market_open_times = { market_open_times: trading_times.open };
+                        obj_market_close_times = { market_close_times: trading_times.close };
                         market_close_times = obj_market_close_times.market_close_times;
                         obj_expiry_time = _contractType2.default.getExpiryTime(expiry_date, expiry_time, expiry_type, market_close_times, sessions, start_date, start_time);
                         obj_duration_min_max = _contractType2.default.getDurationMinMax(contract_type, contract_start_type);
-                        return _context.abrupt('return', _extends({}, obj_contract_start_type, obj_duration_units_list, obj_duration_min_max, obj_duration_unit, obj_sessions, obj_start_time, obj_expiry_date, obj_expiry_time, obj_expiry_type, obj_market_close_times));
+                        return _context.abrupt('return', _extends({}, obj_contract_start_type, obj_duration_units_list, obj_duration_min_max, obj_duration_unit, obj_sessions, obj_start_time, obj_expiry_date, obj_expiry_time, obj_expiry_type, obj_market_open_times, obj_market_close_times));
 
-                    case 25:
+                    case 26:
                     case 'end':
                         return _context.stop();
                 }
@@ -25824,7 +26012,10 @@ var ContractType = function () {
                                                     if (!trading_times[trading_times_response.echo_req.trading_times]) {
                                                         trading_times[trading_times_response.echo_req.trading_times] = {};
                                                     }
-                                                    trading_times[trading_times_response.echo_req.trading_times][symbol.symbol] = symbol.times.close;
+                                                    trading_times[trading_times_response.echo_req.trading_times][symbol.symbol] = {
+                                                        'open': symbol.times.open,
+                                                        'close': symbol.times.close
+                                                    };
                                                 }
                                             }
                                         }
@@ -26176,6 +26367,42 @@ var hasIntradayDurationUnit = exports.hasIntradayDurationUnit = function hasIntr
 
 /***/ }),
 
+/***/ "./src/javascript/app_2/Stores/Modules/Trading/Helpers/end-time.js":
+/*!*************************************************************************!*\
+  !*** ./src/javascript/app_2/Stores/Modules/Trading/Helpers/end-time.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var getClosestTime = function getClosestTime(time, interval) {
+    return time.minute(Math.round(time.minute() / interval) * interval);
+};
+
+var getSelectedTime = exports.getSelectedTime = function getSelectedTime(server_time, selected_time, market_open_time) {
+    var value = selected_time.isBefore(market_open_time) ? market_open_time.isBefore(server_time) ? server_time : market_open_time : selected_time;
+
+    value = getClosestTime(value, 5);
+    return value.format('HH:mm');
+};
+
+var getBoundaries = exports.getBoundaries = function getBoundaries(server_time, market_open_time, market_close_time) {
+    var boundaries = {
+        start: server_time.isBefore(market_open_time) ? market_open_time : server_time,
+        end: market_close_time
+    };
+
+    boundaries.start = getClosestTime(boundaries.start, 5);
+    return boundaries;
+};
+
+/***/ }),
+
 /***/ "./src/javascript/app_2/Stores/Modules/Trading/Helpers/process.js":
 /*!************************************************************************!*\
   !*** ./src/javascript/app_2/Stores/Modules/Trading/Helpers/process.js ***!
@@ -26521,7 +26748,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _dec15, _dec16, _dec17, _dec18, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, _descriptor17, _descriptor18, _descriptor19, _descriptor20, _descriptor21, _descriptor22, _descriptor23, _descriptor24, _descriptor25, _descriptor26, _descriptor27, _descriptor28, _descriptor29, _descriptor30, _descriptor31, _descriptor32, _descriptor33, _descriptor34;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _dec15, _dec16, _dec17, _dec18, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, _descriptor17, _descriptor18, _descriptor19, _descriptor20, _descriptor21, _descriptor22, _descriptor23, _descriptor24, _descriptor25, _descriptor26, _descriptor27, _descriptor28, _descriptor29, _descriptor30, _descriptor31, _descriptor32, _descriptor33, _descriptor34, _descriptor35;
 
 var _lodash = __webpack_require__(/*! lodash.debounce */ "./node_modules/lodash.debounce/index.js");
 
@@ -26648,7 +26875,6 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
 
     // Purchase
 
-
     // End Date Time
     /**
      * An array that contains market closing time.
@@ -26656,15 +26882,16 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
      * e.g. ["04:00:00", "08:00:00"]
      *
      */
+    // Number(0) refers to 'now'
 
 
-    // Start Time
+    // Barrier
 
 
-    // Duration
+    // Amount
 
 
-    // Underlying
+    // Contract Type
     function TradeStore(_ref) {
         var root_store = _ref.root_store;
 
@@ -26737,19 +26964,21 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
 
         _initDefineProp(_this, 'sessions', _descriptor29, _this);
 
-        _initDefineProp(_this, 'market_close_times', _descriptor30, _this);
+        _initDefineProp(_this, 'market_open_times', _descriptor30, _this);
 
-        _initDefineProp(_this, 'last_digit', _descriptor31, _this);
+        _initDefineProp(_this, 'market_close_times', _descriptor31, _this);
 
-        _initDefineProp(_this, 'proposal_info', _descriptor32, _this);
+        _initDefineProp(_this, 'last_digit', _descriptor32, _this);
 
-        _initDefineProp(_this, 'purchase_info', _descriptor33, _this);
+        _initDefineProp(_this, 'proposal_info', _descriptor33, _this);
+
+        _initDefineProp(_this, 'purchase_info', _descriptor34, _this);
 
         _this.chart_id = 1;
         _this.debouncedProposal = (0, _lodash2.default)(_this.requestProposal, 500);
         _this.proposal_requests = {};
 
-        _initDefineProp(_this, 'init', _descriptor34, _this);
+        _initDefineProp(_this, 'init', _descriptor35, _this);
 
         Object.defineProperty(_this, 'is_query_string_applied', {
             enumerable: false,
@@ -26771,16 +27000,15 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
     }
 
     // Last Digit
-    // Number(0) refers to 'now'
 
 
-    // Barrier
+    // Start Time
 
 
-    // Amount
+    // Duration
 
 
-    // Contract Type
+    // Underlying
 
 
     _createClass(TradeStore, [{
@@ -27431,27 +27659,32 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
     initializer: function initializer() {
         return [];
     }
-}), _descriptor30 = _applyDecoratedDescriptor(_class.prototype, 'market_close_times', [_mobx.observable], {
+}), _descriptor30 = _applyDecoratedDescriptor(_class.prototype, 'market_open_times', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return [];
     }
-}), _descriptor31 = _applyDecoratedDescriptor(_class.prototype, 'last_digit', [_mobx.observable], {
+}), _descriptor31 = _applyDecoratedDescriptor(_class.prototype, 'market_close_times', [_mobx.observable], {
+    enumerable: true,
+    initializer: function initializer() {
+        return [];
+    }
+}), _descriptor32 = _applyDecoratedDescriptor(_class.prototype, 'last_digit', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return 5;
     }
-}), _descriptor32 = _applyDecoratedDescriptor(_class.prototype, 'proposal_info', [_mobx.observable], {
+}), _descriptor33 = _applyDecoratedDescriptor(_class.prototype, 'proposal_info', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return {};
     }
-}), _descriptor33 = _applyDecoratedDescriptor(_class.prototype, 'purchase_info', [_mobx.observable], {
+}), _descriptor34 = _applyDecoratedDescriptor(_class.prototype, 'purchase_info', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return {};
     }
-}), _descriptor34 = _applyDecoratedDescriptor(_class.prototype, 'init', [_dec], {
+}), _descriptor35 = _applyDecoratedDescriptor(_class.prototype, 'init', [_dec], {
     enumerable: true,
     initializer: function initializer() {
         var _this9 = this;
@@ -29978,7 +30211,8 @@ var URLHelper = function () {
          */
         value: function getQueryParams(url) {
             var query_string = url ? new URL(url).search : window.location.search;
-            var query_params = new URLSearchParams(query_string.slice(1));
+            var query_encoded = encodeURIComponent(query_string);
+            var query_params = new URLSearchParams(query_encoded);
 
             return query_params;
         }
