@@ -10744,12 +10744,19 @@ var Header = function () {
     };
 
     var displayAccountStatus = function displayAccountStatus() {
-        BinarySocket.wait('authorize').then(function () {
+        BinarySocket.wait('authorize', 'landing_company').then(function () {
             var get_account_status = void 0,
                 status = void 0;
+            var is_costarica = Client.get('landing_company_shortcode') === 'costarica';
+            var necessary_withdrawal_fields = is_costarica ? State.getResponse('landing_company.financial_company.requirements.withdrawal') : [];
+            var necessary_signup_fields = is_costarica ? State.getResponse('landing_company.financial_company.requirements.signup').map(function (field) {
+                return field === 'residence' ? 'country' : field;
+            }) : [];
 
             var hasMissingRequiredField = function hasMissingRequiredField() {
-                var required_fields = ['account_opening_reason', 'address_line_1', 'address_city', 'phone', 'tax_identification_number', 'tax_residence'].concat(_toConsumableArray(Client.get('residence') === 'gb' ? ['address_postcode'] : []));
+                // eslint-disable-next-line no-nested-ternary
+                var required_fields = is_costarica ? [].concat(_toConsumableArray(necessary_signup_fields), _toConsumableArray(necessary_withdrawal_fields)) : Client.isAccountOfType('financial') ? ['account_opening_reason', 'address_line_1', 'address_city', 'phone', 'tax_identification_number', 'tax_residence'].concat(_toConsumableArray(Client.get('residence') === 'gb' ? ['address_postcode'] : [])) : [];
+
                 var get_settings = State.getResponse('get_settings');
                 return required_fields.some(function (field) {
                     return !get_settings[field];
@@ -10848,7 +10855,7 @@ var Header = function () {
                     return hasStatus('mt5_withdrawal_locked');
                 },
                 required_fields: function required_fields() {
-                    return Client.isAccountOfType('financial') && hasMissingRequiredField();
+                    return hasMissingRequiredField();
                 },
                 residence: function residence() {
                     return !Client.get('residence');
@@ -14577,19 +14584,17 @@ var AccountTransfer = function () {
             to_loginid = fragment_transfer_to.firstChild.getAttribute('data-loginid');
             el_transfer_to.setVisibility(0);
             el_transfer_to.setAttribute('data-value', fragment_transfer_to.firstChild.textContent);
+            el_transfer_to.setAttribute('data-loginid', to_loginid);
             el_transfer_to.parentElement.insertBefore(el_label_transfer_to, el_transfer_to);
         } else {
             el_transfer_to.innerHTML = fragment_transfer_to.innerHTML;
         }
-
-        el_transfer_to.onchange = function () {
+        el_transfer_to.addEventListener('change', function () {
             setTransferFeeAmount();
-        };
+        });
 
         transfer_to_currency = getElementById('amount-add-on');
         transfer_to_currency.textContent = Client.get('currency');
-
-        showForm();
 
         if (Client.hasCurrencyType('crypto') && Client.hasCurrencyType('fiat')) {
             setTransferFeeAmount();
@@ -14608,6 +14613,7 @@ var AccountTransfer = function () {
 
     var setTransferFeeAmount = function setTransferFeeAmount() {
         elementTextContent(el_fee_amount, Currency.getTransferFee(client_currency, (el_transfer_to.value || el_transfer_to.getAttribute('data-value') || '').match(/\((\w+)\)/)[1]));
+        to_loginid = el_transfer_to.getAttribute('data-loginid');
     };
 
     var hasError = function hasError(response) {
@@ -14633,7 +14639,7 @@ var AccountTransfer = function () {
 
         getElementById(form_id).setVisibility(1);
 
-        FormManager.init(form_id_hash, [{ selector: '#amount', validations: [['req', { hide_asterisk: true }], ['number', { type: 'float', decimals: Currency.getDecimalPlaces(client_currency), min: Currency.getTransferLimits(client_currency, 'min'), max: transferable_amount, format_money: true }]] }, { request_field: 'transfer_between_accounts', value: 1 }, { request_field: 'account_from', value: client_loginid }, { request_field: 'account_to', value: function value() {
+        FormManager.init(form_id_hash, [{ selector: '#amount', validations: [['req', { hide_asterisk: true }], ['number', { type: 'float', decimals: Currency.getDecimalPlaces(client_currency), min: Currency.getTransferLimits(client_currency, 'min'), max: +transferable_amount, format_money: true }]] }, { request_field: 'transfer_between_accounts', value: 1 }, { request_field: 'account_from', value: client_loginid }, { request_field: 'account_to', value: function value() {
                 return (el_transfer_to.value || el_transfer_to.getAttribute('data-value') || '').split(' (')[0];
             } }, { request_field: 'currency', value: client_currency }]);
 
@@ -14727,36 +14733,41 @@ var AccountTransfer = function () {
                     if (hasError(response_limits)) {
                         return;
                     }
-                    withdrawal_limit = +response_limits.get_limits.remainder;
 
-                    if (withdrawal_limit < +min_amount) {
-                        getElementById(messages.limit).setVisibility(1);
-                        getElementById(messages.parent).setVisibility(1);
-                        return;
-                    }
-                    max_amount = Currency.getTransferLimits(Client.get('currency'), 'max');
-
-                    var from_currency = Client.get('currency');
-                    var to_currency = Client.get('currency', to_loginid);
-                    if (!Currency.isCryptocurrency(from_currency) && !Currency.isCryptocurrency(to_currency)) {
-                        transferable_amount = client_balance;
-                    } else {
-                        transferable_amount = max_amount ? Math.min(max_amount, withdrawal_limit, client_balance) : Math.min(withdrawal_limit, client_balance);
-                    }
-
-                    getElementById('range_hint_min').textContent = min_amount;
-                    getElementById('range_hint_max').textContent = transferable_amount.toFixed(Currency.getDecimalPlaces(Client.get('currency')));
-                    populateHints();
                     populateAccounts(accounts);
+                    setLimits(response_limits, min_amount);
+                    showForm();
+                    populateHints();
                 });
             }
         });
     };
 
+    var setLimits = function setLimits(response, min_amount) {
+        withdrawal_limit = +response.get_limits.remainder;
+        if (withdrawal_limit < +min_amount) {
+            getElementById(messages.limit).setVisibility(1);
+            getElementById(messages.parent).setVisibility(1);
+            return;
+        }
+
+        max_amount = Currency.getTransferLimits(Client.get('currency'), 'max');
+
+        var from_currency = Client.get('currency');
+        var to_currency = Client.get('currency', to_loginid);
+        if (!Currency.isCryptocurrency(from_currency) && !Currency.isCryptocurrency(to_currency)) {
+            transferable_amount = client_balance;
+        } else {
+            transferable_amount = max_amount ? Math.min(max_amount, withdrawal_limit, client_balance) : Math.min(withdrawal_limit, client_balance);
+        }
+
+        getElementById('range_hint_min').textContent = min_amount;
+    };
+
     var populateHints = function populateHints() {
         getElementById('limit_current_balance').innerHTML = Currency.formatMoney(client_currency, client_balance);
 
-        getElementById('limit_max_amount').innerHTML = max_amount ? Currency.formatMoney(client_currency, max_amount) : localize('Not announced for this currency.');
+        getElementById('limit_max_amount').innerHTML = max_amount ? Currency.formatMoney(client_currency, transferable_amount) : localize('Not announced for this currency.');
 
         $('#range_hint').accordion({
             heightStyle: 'content',
@@ -35853,6 +35864,7 @@ module.exports = Home;
 "use strict";
 
 
+var BinaryPjax = __webpack_require__(/*! ../../app/base/binary_pjax */ "./src/javascript/app/base/binary_pjax.js");
 var urlParam = __webpack_require__(/*! ../../_common/url */ "./src/javascript/_common/url.js").param;
 var urlFor = __webpack_require__(/*! ../../_common/url */ "./src/javascript/_common/url.js").urlFor;
 
@@ -35885,7 +35897,14 @@ var JobDetails = function () {
         $sidebar.setVisibility(0);
         $('#title').find('h1').setVisibility(0);
         $('#image').find('img').setVisibility(0);
-        // show section
+
+        if ($sidebar_dept.length && window.location.hash === '') {
+            BinaryPjax.load(urlFor('open-positions/job-details') + '?dept=' + dept + $sidebar_dept.find('a')[0].hash);
+        } else if ($sidebar_dept.length === 0 || $sidebar_dept.find('a[href="' + window.location.hash + '"]').length === 0) {
+            BinaryPjax.load(urlFor('404'));
+        }
+
+        // show sections
         $(dept_class).setVisibility(1);
         $sidebar_dept.setVisibility(1).find('a[href="' + window.location.hash + '"]').parent('li').addClass('selected');
         showSelectedDiv();
