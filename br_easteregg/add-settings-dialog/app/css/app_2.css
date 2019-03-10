@@ -4823,6 +4823,8 @@ html {
             align-items: center;
     -webkit-transition: background-color 0.1s ease-in;
     transition: background-color 0.1s ease-in; }
+    .vertical-tab__header:not(.vertical-tab__header--active):hover {
+      background-color: rgba(153, 156, 172, 0.32); }
     .vertical-tab__header--active {
       font-size: 1.4em;
       color: #ffffff;
@@ -4867,6 +4869,30 @@ html {
     -webkit-box-align: start;
         -ms-flex-align: start;
             align-items: flex-start; }
+  .theme--dark .vertical-tab__tab {
+    background-color: #101320; }
+  .theme--dark .vertical-tab__header {
+    color: #7f8397; }
+    .theme--dark .vertical-tab__header:hover:not(.vertical-tab__header--active) {
+      background-color: #202641; }
+    .theme--dark .vertical-tab__header--active {
+      background-color: #2a3052;
+      color: #ffffff;
+      font-weight: bold; }
+    .theme--dark .vertical-tab__header__icon {
+      /* postcss-bem-linter: ignore */
+      /* postcss-bem-linter: ignore */ }
+      .theme--dark .vertical-tab__header__icon .color1-fill {
+        fill: #7f8397; }
+      .theme--dark .vertical-tab__header__icon .color1-stroke {
+        stroke: #7f8397; }
+      .theme--dark .vertical-tab__header__icon--active {
+        /* postcss-bem-linter: ignore */
+        /* postcss-bem-linter: ignore */ }
+        .theme--dark .vertical-tab__header__icon--active .color1-fill {
+          fill: #ffffff; }
+        .theme--dark .vertical-tab__header__icon--active .color1-stroke {
+          stroke: #ffffff; }
 
 .theme-select-settings {
   display: -webkit-box;
@@ -7348,30 +7374,6 @@ html {
         border-color: #2a3052; }
       .theme--dark .drawer__bg .drawer--left .drawer__header .drawer__brand-logo .drawer__img:before, .theme--dark .drawer__bg .drawer--left .drawer__footer .drawer__brand-logo .drawer__img:before, .theme--dark .drawer__bg .drawer--right .drawer__header .drawer__brand-logo .drawer__img:before, .theme--dark .drawer__bg .drawer--right .drawer__footer .drawer__brand-logo .drawer__img:before {
         background-image: url("../images/header/binary_logo_dark.svg"); }
-  .theme--dark .vertical-tab__tab {
-    background-color: #101320; }
-  .theme--dark .vertical-tab__header {
-    color: #7f8397; }
-    .theme--dark .vertical-tab__header:hover {
-      background-color: #202641; }
-    .theme--dark .vertical-tab__header--active {
-      background-color: #2a3052;
-      color: #ffffff;
-      font-weight: bold; }
-    .theme--dark .vertical-tab__header__icon {
-      /* postcss-bem-linter: ignore */
-      /* postcss-bem-linter: ignore */ }
-      .theme--dark .vertical-tab__header__icon .color1-fill {
-        fill: #7f8397; }
-      .theme--dark .vertical-tab__header__icon .color1-stroke {
-        stroke: #7f8397; }
-      .theme--dark .vertical-tab__header__icon--active {
-        /* postcss-bem-linter: ignore */
-        /* postcss-bem-linter: ignore */ }
-        .theme--dark .vertical-tab__header__icon--active .color1-fill {
-          fill: #ffffff; }
-        .theme--dark .vertical-tab__header__icon--active .color1-stroke {
-          stroke: #ffffff; }
   .theme--dark .dialog-header__sidebar {
     background-color: #101320;
     color: #7f8397; }
