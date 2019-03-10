@@ -14639,7 +14639,7 @@ var AccountTransfer = function () {
 
         getElementById(form_id).setVisibility(1);
 
-        FormManager.init(form_id_hash, [{ selector: '#amount', validations: [['req', { hide_asterisk: true }], ['number', { type: 'float', decimals: Currency.getDecimalPlaces(client_currency), min: Currency.getTransferLimits(client_currency, 'min'), max: +transferable_amount, format_money: true }]] }, { request_field: 'transfer_between_accounts', value: 1 }, { request_field: 'account_from', value: client_loginid }, { request_field: 'account_to', value: function value() {
+        FormManager.init(form_id_hash, [{ selector: '#amount', validations: [['req', { hide_asterisk: true }], ['number', { type: 'float', decimals: Currency.getDecimalPlaces(client_currency), min: Currency.getTransferLimits(client_currency, 'min'), max: transferable_amount, format_money: true }]] }, { request_field: 'transfer_between_accounts', value: 1 }, { request_field: 'account_from', value: client_loginid }, { request_field: 'account_to', value: function value() {
                 return (el_transfer_to.value || el_transfer_to.getAttribute('data-value') || '').split(' (')[0];
             } }, { request_field: 'currency', value: client_currency }]);
 
@@ -14735,33 +14735,39 @@ var AccountTransfer = function () {
                     }
 
                     populateAccounts(accounts);
-                    setLimits(response_limits, min_amount);
-                    showForm();
-                    populateHints();
+                    setLimits(response_limits, min_amount).then(function () {
+                        showForm();
+                        populateHints();
+                    }).catch(function () {
+                        getElementById(messages.limit).setVisibility(1);
+                        getElementById(messages.parent).setVisibility(1);
+                        el_transfer_fee.setVisibility(0);
+                    });
                 });
             }
         });
     };
 
     var setLimits = function setLimits(response, min_amount) {
-        withdrawal_limit = +response.get_limits.remainder;
-        if (withdrawal_limit < +min_amount) {
-            getElementById(messages.limit).setVisibility(1);
-            getElementById(messages.parent).setVisibility(1);
-            return;
-        }
+        return new Promise(function (resolve, reject) {
+            withdrawal_limit = +response.get_limits.remainder;
+            if (withdrawal_limit < +min_amount) {
+                reject(new Error('Withdrawal limit is less than Min amount.'));
+            }
 
-        max_amount = Currency.getTransferLimits(Client.get('currency'), 'max');
+            max_amount = Currency.getTransferLimits(Client.get('currency'), 'max');
 
-        var from_currency = Client.get('currency');
-        var to_currency = Client.get('currency', to_loginid);
-        if (!Currency.isCryptocurrency(from_currency) && !Currency.isCryptocurrency(to_currency)) {
-            transferable_amount = client_balance;
-        } else {
-            transferable_amount = max_amount ? Math.min(max_amount, withdrawal_limit, client_balance) : Math.min(withdrawal_limit, client_balance);
-        }
+            var from_currency = Client.get('currency');
+            var to_currency = Client.get('currency', to_loginid);
+            if (!Currency.isCryptocurrency(from_currency) && !Currency.isCryptocurrency(to_currency)) {
+                transferable_amount = client_balance;
+            } else {
+                transferable_amount = max_amount ? Math.min(max_amount, withdrawal_limit, client_balance) : Math.min(withdrawal_limit, client_balance);
+            }
 
-        getElementById('range_hint_min').textContent = min_amount;
+            getElementById('range_hint_min').textContent = min_amount;
+            resolve();
+        });
     };
 
     var populateHints = function populateHints() {
