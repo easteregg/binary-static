@@ -23523,7 +23523,9 @@ var barriersToString = exports.barriersToString = function barriersToString(is_r
         barriers_list[_key - 1] = arguments[_key];
     }
 
-    return barriers_list.map(function (barrier) {
+    return barriers_list.filter(function (barrier) {
+        return barrier !== undefined && barrier !== null;
+    }).map(function (barrier) {
         return '' + (is_relative && !/^[+-]/.test(barrier) ? '+' : '') + barrier;
     });
 };
@@ -28699,7 +28701,13 @@ var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _m
 
         window.addEventListener('resize', _this.handleResize);
         (0, _mobx.autorun)(function () {
-            return document.body.classList[_this.is_dark_mode_on ? 'add' : 'remove']('theme--dark');
+            if (_this.is_dark_mode_on) {
+                document.body.classList.remove('theme--light');
+                document.body.classList.add('theme--dark');
+            } else {
+                document.body.classList.remove('theme--dark');
+                document.body.classList.add('theme--light');
+            }
         });
         return _this;
     }
@@ -29028,7 +29036,7 @@ var toMoment = exports.toMoment = function toMoment(value) {
   var is_number = typeof value === 'number';
   // need to explicitly convert date string to a JS Date object then pass that into Moment
   // to get rid of the warning: Deprecation warning: moment construction falls back to js Date
-  var formatted_date = (0, _moment2.default)(new Date(value)).format('YYYY-MM-DD');
+  var formatted_date = (0, _moment2.default)(new Date(value)).utc().format('YYYY-MM-DD');
   return is_number ? epochToMoment(value) : _moment2.default.utc(formatted_date);
 };
 

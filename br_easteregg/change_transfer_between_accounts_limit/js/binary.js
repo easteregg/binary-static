@@ -14672,11 +14672,11 @@ var AccountTransfer = function () {
             if (account.loginid === client_loginid) {
                 elementTextContent(getElementById('transfer_success_from'), localize('From account: '));
                 elementTextContent(getElementById('from_loginid'), account.loginid + ' (' + account.currency + ')');
-                getElementById('from_current_balance').innerHTML = Currency.formatMoney(account.currency, account.balance);
+                getElementById('from_current_balance').innerText = account.currency + ' ' + account.balance;
             } else if (account.loginid === response_submit_success.client_to_loginid) {
                 elementTextContent(getElementById('transfer_success_to'), localize('To account: '));
                 elementTextContent(getElementById('to_loginid'), account.loginid + ' (' + account.currency + ')');
-                getElementById('to_current_balance').innerHTML = Currency.formatMoney(account.currency, account.balance);
+                getElementById('to_current_balance').innerText = account.currency + ' ' + account.balance;
             }
         });
 
@@ -14721,6 +14721,7 @@ var AccountTransfer = function () {
                 Promise.all([req_transfer_between_accounts, req_get_limits]).then(function () {
                     var response_transfer = State.get(['response', 'transfer_between_accounts']);
                     var response_limits = State.get(['response', 'get_limits']);
+                    var is_authenticated = State.get(['response', 'get_account_status', 'status']);
 
                     if (hasError(response_transfer)) {
                         return;
@@ -14735,8 +14736,8 @@ var AccountTransfer = function () {
                     }
 
                     populateAccounts(accounts);
-                    setLimits(response_limits, min_amount).then(function () {
-                        showForm();
+                    setLimits(response_limits, min_amount, is_authenticated).then(function () {
+                        showForm({ is_authenticated: is_authenticated });
                         populateHints();
                     }).catch(function () {
                         getElementById(messages.limit).setVisibility(1);
@@ -14748,7 +14749,7 @@ var AccountTransfer = function () {
         });
     };
 
-    var setLimits = function setLimits(response, min_amount) {
+    var setLimits = function setLimits(response, min_amount, is_authenticated) {
         return new Promise(function (resolve, reject) {
             withdrawal_limit = +response.get_limits.remainder;
             if (withdrawal_limit < +min_amount) {
@@ -14759,7 +14760,7 @@ var AccountTransfer = function () {
 
             var from_currency = Client.get('currency');
             var to_currency = Client.get('currency', to_loginid);
-            if (!Currency.isCryptocurrency(from_currency) && !Currency.isCryptocurrency(to_currency)) {
+            if (!Currency.isCryptocurrency(from_currency) && !Currency.isCryptocurrency(to_currency) && is_authenticated) {
                 transferable_amount = client_balance;
             } else {
                 transferable_amount = max_amount ? Math.min(max_amount, withdrawal_limit, client_balance) : Math.min(withdrawal_limit, client_balance);
@@ -14771,9 +14772,9 @@ var AccountTransfer = function () {
     };
 
     var populateHints = function populateHints() {
-        getElementById('limit_current_balance').innerHTML = Currency.formatMoney(client_currency, client_balance);
+        getElementById('limit_current_balance').innerText = client_currency + ' ' + client_balance;
 
-        getElementById('limit_max_amount').innerHTML = max_amount ? Currency.formatMoney(client_currency, transferable_amount) : localize('Not announced for this currency.');
+        getElementById('limit_max_amount').innerText = max_amount ? client_currency + ' ' + client_balance : localize('Not announced for this currency.');
 
         $('#range_hint').accordion({
             heightStyle: 'content',
@@ -25065,6 +25066,7 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
 var isCallputspread = __webpack_require__(/*! ./callputspread */ "./src/javascript/app/pages/trade/callputspread.js").isCallputspread;
 var Contract = __webpack_require__(/*! ./contract */ "./src/javascript/app/pages/trade/contract.js");
 var hidePriceOverlay = __webpack_require__(/*! ./common */ "./src/javascript/app/pages/trade/common.js").hidePriceOverlay;
+var countDecimalPlaces = __webpack_require__(/*! ./common_independent */ "./src/javascript/app/pages/trade/common_independent.js").countDecimalPlaces;
 var getLookBackFormula = __webpack_require__(/*! ./lookback */ "./src/javascript/app/pages/trade/lookback.js").getFormula;
 var isLookback = __webpack_require__(/*! ./lookback */ "./src/javascript/app/pages/trade/lookback.js").isLookback;
 var processPriceRequest = __webpack_require__(/*! ./price */ "./src/javascript/app/pages/trade/price.js").processPriceRequest;
@@ -25078,6 +25080,7 @@ var Header = __webpack_require__(/*! ../../base/header */ "./src/javascript/app/
 var BinarySocket = __webpack_require__(/*! ../../base/socket */ "./src/javascript/app/base/socket.js");
 var formatMoney = __webpack_require__(/*! ../../common/currency */ "./src/javascript/app/common/currency.js").formatMoney;
 var TopUpVirtualPopup = __webpack_require__(/*! ../../pages/user/account/top_up_virtual/pop_up */ "./src/javascript/app/pages/user/account/top_up_virtual/pop_up.js");
+var addComma = __webpack_require__(/*! ../../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js").addComma;
 var CommonFunctions = __webpack_require__(/*! ../../../_common/common_functions */ "./src/javascript/_common/common_functions.js");
 var localize = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 var localizeKeepPlaceholders = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js").localizeKeepPlaceholders;
@@ -25115,7 +25118,7 @@ var Purchase = function () {
                 var prev_quote_el = this_quote_el.parentElement.parentElement.previousSibling.querySelector('.quote');
                 var prev_quote = prev_quote_el.innerText;
                 DigitTicker.countUp(prev_quote, parseFloat(this_quote_el.innerText.replace(/,+/, '')), 700, this_quote_el, function (content) {
-                    return '<div class=\'quote\'>' + content.replace(/\d$/, makeBold) + '</div>';
+                    return '<div class=\'quote\'>' + addComma(content, countDecimalPlaces(content)).replace(/\d$/, makeBold) + '</div>';
                 });
             }
         } else {
@@ -25481,7 +25484,8 @@ var Purchase = function () {
                 if (!tick_config.is_digit) {
                     fragment.appendChild(el2);
                 }
-                var tick = tick_config.is_tick_high || tick_config.is_tick_low ? tick_d.quote : '<div class=\'quote\'>' + tick_d.quote.replace(/\d$/, makeBold) + '</div>';
+                var tick_with_comma = addComma(tick_d.quote, countDecimalPlaces(tick_d.quote));
+                var tick = tick_config.is_tick_high || tick_config.is_tick_low ? tick_with_comma : '<div class=\'quote\'>' + tick_with_comma.replace(/\d$/, makeBold) + '</div>';
                 var el3 = createElement('div', { class: 'col' });
                 CommonFunctions.elementInnerHtml(el3, tick);
 
@@ -25866,6 +25870,7 @@ module.exports = Symbols;
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 var countDecimalPlaces = __webpack_require__(/*! ./common_independent */ "./src/javascript/app/pages/trade/common_independent.js").countDecimalPlaces;
 var displayPriceMovement = __webpack_require__(/*! ./common_independent */ "./src/javascript/app/pages/trade/common_independent.js").displayPriceMovement;
+var addComma = __webpack_require__(/*! ../../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js").addComma;
 var elementTextContent = __webpack_require__(/*! ../../../_common/common_functions */ "./src/javascript/_common/common_functions.js").elementTextContent;
 var getElementById = __webpack_require__(/*! ../../../_common/common_functions */ "./src/javascript/_common/common_functions.js").getElementById;
 var isVisible = __webpack_require__(/*! ../../../_common/common_functions */ "./src/javascript/_common/common_functions.js").isVisible;
@@ -25919,21 +25924,26 @@ var Tick = function () {
     var display = function display() {
         $('#spot').fadeIn(200);
         var message = '';
+        var message_number = '';
         if (error_message) {
             message = error_message;
+            message_number = error_message;
         } else {
-            message = _quote;
+            var decimal_places = parseInt(countDecimalPlaces(Tick.quote()));
+            message = addComma(_quote, decimal_places);
+            message_number = _quote;
         }
 
         var spot_element = getElementById('spot');
-        if (parseFloat(message) !== +message) {
+        if (parseFloat(message_number) !== +message_number) {
             spot_element.className = 'error';
         } else {
             spot_element.classList.remove('error');
-            displayPriceMovement(spot_element, elementTextContent(spot_element), message);
+            displayPriceMovement(spot_element, spot_element.getAttribute('data-value'), message_number);
             displayIndicativeBarrier();
         }
 
+        spot_element.setAttribute('data-value', message_number);
         elementTextContent(spot_element, message);
     };
 
@@ -26289,17 +26299,18 @@ var TickDisplay = function () {
                 width: 2,
                 zIndex: 2
             });
-            calculated_barrier = barrier_quote;
+            calculated_barrier = addComma(barrier_quote, parseInt(display_decimals));
             should_set_barrier = false;
         }
 
         if (barrier_type === 'asian') {
+            var decimal_places = parseInt(display_decimals) + 1;
             var total = 0;
             for (var i = 0; i < applicable_ticks.length; i++) {
                 total += parseFloat(applicable_ticks[i].quote);
             }
             // round calculated barrier
-            var calc_barrier = (total / applicable_ticks.length).toFixed(parseInt(display_decimals) + 1);
+            var calc_barrier = (total / applicable_ticks.length).toFixed(decimal_places);
 
             chart.yAxis[0].removePlotLine('tick-barrier');
             chart.yAxis[0].addPlotLine({
@@ -26313,7 +26324,7 @@ var TickDisplay = function () {
                 width: 2,
                 zIndex: 2
             });
-            calculated_barrier = calc_barrier;
+            calculated_barrier = addComma(calc_barrier, decimal_places);
         }
 
         if (barrier_type === 'highlowticks') {
@@ -26567,7 +26578,7 @@ var TickDisplay = function () {
                 dashStyle: 'dot'
             });
 
-            CommonFunctions.elementInnerHtml(CommonFunctions.getElementById('contract_purchase_barrier'), localize('Reset Barrier') + ': ' + reset_barrier);
+            CommonFunctions.elementInnerHtml(CommonFunctions.getElementById('contract_purchase_barrier'), localize('Reset Barrier') + ': ' + addComma(reset_barrier, parseInt(display_decimals)));
             reset_spot_plotted = true;
             HighchartUI.updateLabels(chart, {
                 contract_type: contract_category,
