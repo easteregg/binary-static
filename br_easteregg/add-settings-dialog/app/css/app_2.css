@@ -625,7 +625,7 @@ html {
   overflow: hidden; }
   .app-contents--contract-mode .trade-container .chart-container {
     max-width: calc(100% - 240px - 16px); }
-  .app-contents--is-blurred {
+  .app-contents--is-blurred .trade-container, .app-contents--is-blurred .statement {
     -webkit-filter: blur(3px);
             filter: blur(3px); }
   .app-contents--show-positions-drawer .trade-container .chart-container {
