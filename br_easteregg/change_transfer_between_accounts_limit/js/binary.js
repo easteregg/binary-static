@@ -14722,11 +14722,14 @@ var AccountTransfer = function () {
             } else {
                 var req_transfer_between_accounts = BinarySocket.send({ transfer_between_accounts: 1 });
                 var req_get_limits = BinarySocket.send({ get_limits: 1 });
+                var get_account_status = BinarySocket.send({ get_account_status: 1 });
 
-                Promise.all([req_transfer_between_accounts, req_get_limits]).then(function () {
+                Promise.all([req_transfer_between_accounts, req_get_limits, get_account_status]).then(function () {
                     var response_transfer = State.get(['response', 'transfer_between_accounts']);
                     var response_limits = State.get(['response', 'get_limits']);
-                    var is_authenticated = State.get(['response', 'get_account_status', 'status']);
+                    var is_authenticated = State.getResponse('get_account_status.status').some(function (state) {
+                        return state === 'authenticated';
+                    });
 
                     if (hasError(response_transfer)) {
                         return;
