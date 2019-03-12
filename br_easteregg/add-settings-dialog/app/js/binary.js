@@ -11167,7 +11167,7 @@ var ChartSettings = function ChartSettings(_ref) {
                     _react2.default.createElement(
                         'p',
                         null,
-                        _react2.default.createElement(_localize3.default, { str: 'Cras quis nulla commodo, aliqam lectus sed, blandit augue cras.' })
+                        _react2.default.createElement(_localize3.default, { str: 'Chart control position' })
                     ),
                     _react2.default.createElement(_Radio2.default, {
                         items: [{
@@ -11200,7 +11200,7 @@ var ChartSettings = function ChartSettings(_ref) {
                     { className: 'media__form' },
                     _react2.default.createElement(_Checkbox2.default, {
                         value: is_asset_visible,
-                        label: (0, _localize.localize)('Cras quis nulla commodo, aliqam lectus sed, blandit augue cras.'),
+                        label: (0, _localize.localize)('Visible Asset'),
                         onClick: toggleAsset
                     })
                 )
@@ -11223,7 +11223,7 @@ var ChartSettings = function ChartSettings(_ref) {
                     { className: 'media__form' },
                     _react2.default.createElement(_Checkbox2.default, {
                         value: is_countdown_visible,
-                        label: (0, _localize.localize)('Cras quis nulla commodo, aliqam lectus sed, blandit augue cras.'),
+                        label: (0, _localize.localize)('Visible Countdown'),
                         onClick: toggleCountdown
                     })
                 )
