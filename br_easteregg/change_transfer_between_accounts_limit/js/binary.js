@@ -650,6 +650,10 @@ var getPropertyValue = __webpack_require__(/*! ../utility */ "./src/javascript/_
 
 var currencies_config = {};
 
+var getTextFormat = function getTextFormat(number, currency) {
+    return currency + ' ' + addComma(number, getDecimalPlaces(currency), isCryptocurrency(currency));
+};
+
 var formatMoney = function formatMoney(currency_value, amount, exclude_currency) {
     var decimals = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
     var minimumFractionDigits = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
@@ -796,6 +800,7 @@ module.exports = {
     getTransferLimits: getTransferLimits,
     getTransferFee: getTransferFee,
     getMinimumTransferFee: getMinimumTransferFee,
+    getTextFormat: getTextFormat,
     getMinPayout: getMinPayout,
     getPaWithdrawalLimit: getPaWithdrawalLimit,
     getCurrencies: function getCurrencies() {
@@ -14672,11 +14677,11 @@ var AccountTransfer = function () {
             if (account.loginid === client_loginid) {
                 elementTextContent(getElementById('transfer_success_from'), localize('From account: '));
                 elementTextContent(getElementById('from_loginid'), account.loginid + ' (' + account.currency + ')');
-                getElementById('from_current_balance').innerText = account.currency + ' ' + account.balance;
+                getElementById('from_current_balance').innerText = Currency.getTextFormat(account.balance, account.currency);
             } else if (account.loginid === response_submit_success.client_to_loginid) {
                 elementTextContent(getElementById('transfer_success_to'), localize('To account: '));
                 elementTextContent(getElementById('to_loginid'), account.loginid + ' (' + account.currency + ')');
-                getElementById('to_current_balance').innerText = account.currency + ' ' + account.balance;
+                getElementById('to_current_balance').innerText = Currency.getTextFormat(account.balance, account.currency);
             }
         });
 
@@ -14772,9 +14777,9 @@ var AccountTransfer = function () {
     };
 
     var populateHints = function populateHints() {
-        getElementById('limit_current_balance').innerText = client_currency + ' ' + client_balance;
+        getElementById('limit_current_balance').innerText = Currency.getTextFormat(client_balance, client_currency);
 
-        getElementById('limit_max_amount').innerText = max_amount ? client_currency + ' ' + client_balance : localize('Not announced for this currency.');
+        getElementById('limit_max_amount').innerText = max_amount ? Currency.getTextFormat(transferable_amount, client_currency) : localize('Not announced for this currency.');
 
         $('#range_hint').accordion({
             heightStyle: 'content',
@@ -29744,7 +29749,7 @@ var PersonalDetails = function () {
 
     var showFormMessage = function showFormMessage(localized_text, is_success) {
         var $ul = $('<ul/>', { class: 'checked' }).append($('<li/>', { text: localized_text }));
-        $('#formMessage').attr('class', is_success ? 'success-msg' : 'errorfield').html(is_success ? $ul : localized_text).css('display', 'block').delay(5000).fadeOut(1000);
+        $('#formMessage').attr('class', is_success ? 'success-msg' : 'errorfield').html(is_success ? $ul : localized_text).css('display', 'block').delay(15000).fadeOut(1000);
     };
 
     var populateResidence = function populateResidence(response) {
@@ -30391,7 +30396,7 @@ var SelfExclusion = function () {
 
     var showFormMessage = function showFormMessage(localized_text, is_success) {
         var $ul = $('<ul/>', { class: 'checked' }).append($('<li/>', { text: localized_text }));
-        $('#msg_form').attr('class', is_success ? 'success-msg' : error_class).html(is_success ? $ul : localized_text).css('display', 'block').delay(5000).fadeOut(1000);
+        $('#msg_form').attr('class', is_success ? 'success-msg' : error_class).html(is_success ? $ul : localized_text).css('display', 'block').delay(10000).fadeOut(1000);
     };
 
     return {
