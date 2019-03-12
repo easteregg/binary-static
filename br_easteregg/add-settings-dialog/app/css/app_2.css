@@ -3797,10 +3797,6 @@ html {
     -webkit-box-align: start;
         -ms-flex-align: start;
             align-items: flex-start; }
-  .theme--dark .media__heading {
-    color: #7f8397; }
-  .theme--dark .media__description {
-    color: #ffffff; }
 
 /** @define number-selector */
 .number-selector {
@@ -4301,11 +4297,14 @@ html {
           box-shadow: 0 2px 8px 0 var(rgba(0, 0, 0, 0.16)); }
   .dialog-header__sidebar {
     width: 200px;
-    font-size: 16px;
+    font-size: 1.6em;
+    color: rgba(0, 0, 0, 0.8);
+    font-weight: 700;
+    text-transform: capitalize;
+    text-align: left;
+    line-height: 1.75;
     line-height: 24px;
     padding: 16px;
-    font-weight: bold;
-    color: rgba(0, 0, 0, 0.8);
     background-color: #f4f4f6; }
   .dialog-header__main {
     width: 536px;
@@ -4951,15 +4950,6 @@ html {
     .theme-select-settings__option__icon--active, .theme-select-settings__option__icon:hover {
       -webkit-box-shadow: 0 0 0 2px rgba(153, 156, 172, 0.32);
               box-shadow: 0 0 0 2px rgba(153, 156, 172, 0.32); }
-  .theme--dark .theme-select-settings__title {
-    color: #7f8397; }
-  .theme--dark .theme-select-settings__option__title {
-    color: #ffffff; }
-  .theme--dark .theme-select-settings__option__icon {
-    border: solid 1px #7f8397; }
-    .theme--dark .theme-select-settings__option__icon--active, .theme--dark .theme-select-settings__option__icon:hover {
-      -webkit-box-shadow: 0 0 0 2px rgba(127, 131, 151, 0.3);
-              box-shadow: 0 0 0 2px rgba(127, 131, 151, 0.3); }
 
 /*
     to use styles without modifier class on .inline-icon
@@ -7377,3 +7367,16 @@ html {
   .theme--dark .dialog-header__sidebar {
     background-color: #101320;
     color: #7f8397; }
+  .theme--dark .media__heading {
+    color: #7f8397; }
+  .theme--dark .media__description {
+    color: #ffffff; }
+  .theme--dark .theme-select-settings__title {
+    color: #7f8397; }
+  .theme--dark .theme-select-settings__option__title {
+    color: #ffffff; }
+  .theme--dark .theme-select-settings__option__icon {
+    border: solid 1px #7f8397; }
+    .theme--dark .theme-select-settings__option__icon--active, .theme--dark .theme-select-settings__option__icon:hover {
+      -webkit-box-shadow: 0 0 0 2px rgba(127, 131, 151, 0.3);
+              box-shadow: 0 0 0 2px rgba(127, 131, 151, 0.3); }

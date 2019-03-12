@@ -2782,10 +2782,71 @@ exports.default = FullPageModal;
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Components/Elements/Media/MediaDescription.jsx":
-/*!*********************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/Media/MediaDescription.jsx ***!
-  \*********************************************************************************/
+/***/ "./src/javascript/app_2/App/Components/Elements/Media/index.js":
+/*!*********************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Elements/Media/index.js ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _mediaHeading = __webpack_require__(/*! ./media-heading.jsx */ "./src/javascript/app_2/App/Components/Elements/Media/media-heading.jsx");
+
+Object.keys(_mediaHeading).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _mediaHeading[key];
+    }
+  });
+});
+
+var _mediaIcon = __webpack_require__(/*! ./media-icon.jsx */ "./src/javascript/app_2/App/Components/Elements/Media/media-icon.jsx");
+
+Object.keys(_mediaIcon).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _mediaIcon[key];
+    }
+  });
+});
+
+var _mediaDescription = __webpack_require__(/*! ./media-description.jsx */ "./src/javascript/app_2/App/Components/Elements/Media/media-description.jsx");
+
+Object.keys(_mediaDescription).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _mediaDescription[key];
+    }
+  });
+});
+
+var _mediaItem = __webpack_require__(/*! ./media-item.jsx */ "./src/javascript/app_2/App/Components/Elements/Media/media-item.jsx");
+
+var _mediaItem2 = _interopRequireDefault(_mediaItem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _mediaItem2.default;
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/App/Components/Elements/Media/media-description.jsx":
+/*!**********************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Elements/Media/media-description.jsx ***!
+  \**********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2815,10 +2876,10 @@ exports.MediaDescription = MediaDescription;
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Components/Elements/Media/MediaHeading.jsx":
-/*!*****************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/Media/MediaHeading.jsx ***!
-  \*****************************************************************************/
+/***/ "./src/javascript/app_2/App/Components/Elements/Media/media-heading.jsx":
+/*!******************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Elements/Media/media-heading.jsx ***!
+  \******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2848,10 +2909,10 @@ exports.MediaHeading = MediaHeading;
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Components/Elements/Media/MediaIcon.jsx":
-/*!**************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/Media/MediaIcon.jsx ***!
-  \**************************************************************************/
+/***/ "./src/javascript/app_2/App/Components/Elements/Media/media-icon.jsx":
+/*!***************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Elements/Media/media-icon.jsx ***!
+  \***************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2877,10 +2938,10 @@ exports.MediaIcon = MediaIcon;
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Components/Elements/Media/MediaItem.jsx":
-/*!**************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/Media/MediaItem.jsx ***!
-  \**************************************************************************/
+/***/ "./src/javascript/app_2/App/Components/Elements/Media/media-item.jsx":
+/*!***************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Elements/Media/media-item.jsx ***!
+  \***************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2906,67 +2967,6 @@ var MediaItem = function MediaItem(props) {
 };
 
 exports.default = MediaItem;
-
-/***/ }),
-
-/***/ "./src/javascript/app_2/App/Components/Elements/Media/index.js":
-/*!*********************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/Media/index.js ***!
-  \*********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = undefined;
-
-var _MediaHeading = __webpack_require__(/*! ./MediaHeading.jsx */ "./src/javascript/app_2/App/Components/Elements/Media/MediaHeading.jsx");
-
-Object.keys(_MediaHeading).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _MediaHeading[key];
-    }
-  });
-});
-
-var _MediaIcon = __webpack_require__(/*! ./MediaIcon.jsx */ "./src/javascript/app_2/App/Components/Elements/Media/MediaIcon.jsx");
-
-Object.keys(_MediaIcon).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _MediaIcon[key];
-    }
-  });
-});
-
-var _MediaDescription = __webpack_require__(/*! ./MediaDescription.jsx */ "./src/javascript/app_2/App/Components/Elements/Media/MediaDescription.jsx");
-
-Object.keys(_MediaDescription).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _MediaDescription[key];
-    }
-  });
-});
-
-var _MediaItem = __webpack_require__(/*! ./MediaItem.jsx */ "./src/javascript/app_2/App/Components/Elements/Media/MediaItem.jsx");
-
-var _MediaItem2 = _interopRequireDefault(_MediaItem);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _MediaItem2.default;
 
 /***/ }),
 
@@ -4962,18 +4962,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _verticalTabHeaders = __webpack_require__(/*! ./vertical-tab-headers.jsx */ "./src/javascript/app_2/App/Components/Elements/VerticalTabs/vertical-tab-headers.jsx");
-
-Object.keys(_verticalTabHeaders).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _verticalTabHeaders[key];
-    }
-  });
-});
-
 var _verticalTabContentContainer = __webpack_require__(/*! ./vertical-tab-content-container.jsx */ "./src/javascript/app_2/App/Components/Elements/VerticalTabs/vertical-tab-content-container.jsx");
 
 Object.keys(_verticalTabContentContainer).forEach(function (key) {
@@ -4982,6 +4970,18 @@ Object.keys(_verticalTabContentContainer).forEach(function (key) {
     enumerable: true,
     get: function get() {
       return _verticalTabContentContainer[key];
+    }
+  });
+});
+
+var _verticalTabHeaders = __webpack_require__(/*! ./vertical-tab-headers.jsx */ "./src/javascript/app_2/App/Components/Elements/VerticalTabs/vertical-tab-headers.jsx");
+
+Object.keys(_verticalTabHeaders).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _verticalTabHeaders[key];
     }
   });
 });
@@ -5174,9 +5174,9 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _verticalTabHeaders = __webpack_require__(/*! ./vertical-tab-headers.jsx */ "./src/javascript/app_2/App/Components/Elements/VerticalTabs/vertical-tab-headers.jsx");
-
 var _verticalTabContentContainer = __webpack_require__(/*! ./vertical-tab-content-container.jsx */ "./src/javascript/app_2/App/Components/Elements/VerticalTabs/vertical-tab-content-container.jsx");
+
+var _verticalTabHeaders = __webpack_require__(/*! ./vertical-tab-headers.jsx */ "./src/javascript/app_2/App/Components/Elements/VerticalTabs/vertical-tab-headers.jsx");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11068,7 +11068,7 @@ exports.default = (0, _reactRouter.withRouter)((0, _connect.connect)(function (_
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PurchaseSettings = exports.ThemeSelectSettings = exports.LanguageSettings = exports.ChartSettings = undefined;
+exports.ThemeSelectSettings = exports.PurchaseSettings = exports.LanguageSettings = exports.ChartSettings = undefined;
 
 var _settingsChart = __webpack_require__(/*! ./settings-chart.jsx */ "./src/javascript/app_2/App/Containers/SettingsDialog/settings-chart.jsx");
 
@@ -11078,20 +11078,20 @@ var _settingsLanguage = __webpack_require__(/*! ./settings-language.jsx */ "./sr
 
 var _settingsLanguage2 = _interopRequireDefault(_settingsLanguage);
 
-var _settingsTheme = __webpack_require__(/*! ./settings-theme.jsx */ "./src/javascript/app_2/App/Containers/SettingsDialog/settings-theme.jsx");
-
-var _settingsTheme2 = _interopRequireDefault(_settingsTheme);
-
 var _settingsPurchase = __webpack_require__(/*! ./settings-purchase.jsx */ "./src/javascript/app_2/App/Containers/SettingsDialog/settings-purchase.jsx");
 
 var _settingsPurchase2 = _interopRequireDefault(_settingsPurchase);
+
+var _settingsTheme = __webpack_require__(/*! ./settings-theme.jsx */ "./src/javascript/app_2/App/Containers/SettingsDialog/settings-theme.jsx");
+
+var _settingsTheme2 = _interopRequireDefault(_settingsTheme);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.ChartSettings = _settingsChart2.default;
 exports.LanguageSettings = _settingsLanguage2.default;
-exports.ThemeSelectSettings = _settingsTheme2.default;
 exports.PurchaseSettings = _settingsPurchase2.default;
+exports.ThemeSelectSettings = _settingsTheme2.default;
 
 /***/ }),
 
@@ -11451,7 +11451,9 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
+var _localize = __webpack_require__(/*! ../../Components/Elements/localize.jsx */ "./src/javascript/app_2/App/Components/Elements/localize.jsx");
+
+var _localize2 = _interopRequireDefault(_localize);
 
 var _imgThemeDark = __webpack_require__(/*! ../../../../../images/app_2/settings/img-theme-dark.svg */ "./src/images/app_2/settings/img-theme-dark.svg");
 
@@ -11461,9 +11463,7 @@ var _imgThemeLight = __webpack_require__(/*! ../../../../../images/app_2/setting
 
 var _imgThemeLight2 = _interopRequireDefault(_imgThemeLight);
 
-var _localize = __webpack_require__(/*! ../../Components/Elements/localize.jsx */ "./src/javascript/app_2/App/Components/Elements/localize.jsx");
-
-var _localize2 = _interopRequireDefault(_localize);
+var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
