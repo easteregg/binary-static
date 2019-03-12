@@ -63,7 +63,7 @@
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "" + ({"404":"404","account_password":"account_password","api_toke":"api_toke","authorized_application":"authorized_application","cashier_password":"cashier_password","contract":"contract","financial_assessment":"financial_assessment","limits":"limits","login_history":"login_history","personal_details":"personal_details","portfolio~statement":"portfolio~statement","portfolio":"portfolio","statement":"statement","self_exclusion":"self_exclusion","settings":"settings","vendors~smart_chart":"vendors~smart_chart","smart_chart":"smart_chart"}[chunkId]||chunkId) + "-" + {"404":"cbb3f11fff75dd57bfef","account_password":"5b98c5e0011cf272df7f","api_toke":"856a16352b5b0f7b5fb2","authorized_application":"41eb62c13df5f986ea68","cashier_password":"90e23ba1132672b3e187","contract":"98f4708777954391cdf3","financial_assessment":"182a107203c81d1cc33a","limits":"6122a66075b7120f5152","login_history":"92742ccaa1efb1ab65b8","personal_details":"716845b634031dd9cf95","portfolio~statement":"4b11346e99830481ee15","portfolio":"fdae1dad85e7457b80a9","statement":"83be0ace500a644e5479","self_exclusion":"226ac0134b0354423868","settings":"90edf5f4d945de1a9104","vendors~smart_chart":"6420044f398e5bb36eef","smart_chart":"055a519715c79b34e33c"}[chunkId] + ".js"
+/******/ 		return __webpack_require__.p + "" + ({"404":"404","account_password":"account_password","api_toke":"api_toke","authorized_application":"authorized_application","cashier_password":"cashier_password","contract":"contract","financial_assessment":"financial_assessment","limits":"limits","login_history":"login_history","personal_details":"personal_details","portfolio~statement":"portfolio~statement","portfolio":"portfolio","statement":"statement","self_exclusion":"self_exclusion","settings":"settings","vendors~smart_chart":"vendors~smart_chart","smart_chart":"smart_chart"}[chunkId]||chunkId) + "-" + {"404":"cbb3f11fff75dd57bfef","account_password":"5b98c5e0011cf272df7f","api_toke":"856a16352b5b0f7b5fb2","authorized_application":"41eb62c13df5f986ea68","cashier_password":"90e23ba1132672b3e187","contract":"98f4708777954391cdf3","financial_assessment":"182a107203c81d1cc33a","limits":"6122a66075b7120f5152","login_history":"92742ccaa1efb1ab65b8","personal_details":"716845b634031dd9cf95","portfolio~statement":"4b11346e99830481ee15","portfolio":"fdae1dad85e7457b80a9","statement":"83be0ace500a644e5479","self_exclusion":"226ac0134b0354423868","settings":"90edf5f4d945de1a9104","vendors~smart_chart":"829a309c1e85fb2f6d22","smart_chart":"055a519715c79b34e33c"}[chunkId] + ".js"
 /******/ 	}
 /******/
 /******/ 	// The require function
@@ -4058,7 +4058,7 @@ var ResultDetails = function (_React$PureComponent) {
                         }),
                         onClick: this.toggleDetails
                     },
-                    _react2.default.createElement(_Common.IconArrow, null)
+                    _react2.default.createElement(_Common.IconArrow, { className: 'result-details__select-arrow' })
                 )
             );
         }
@@ -11674,13 +11674,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var IconClock = function IconClock(_ref) {
     var className = _ref.className,
-        onClick = _ref.onClick;
+        onClick = _ref.onClick,
+        _ref$height = _ref.height,
+        height = _ref$height === undefined ? '16' : _ref$height,
+        _ref$width = _ref.width,
+        width = _ref$width === undefined ? '16' : _ref$width;
     return _react2.default.createElement(
         'svg',
         {
             xmlns: 'http://www.w3.org/2000/svg',
-            width: '16',
-            height: '16',
+            viewBox: '0 0 16 16',
+            width: width,
+            height: height,
             className: className,
             onClick: onClick
         },
@@ -11695,7 +11700,9 @@ var IconClock = function IconClock(_ref) {
 
 IconClock.propTypes = {
     className: _propTypes2.default.string,
-    onClick: _propTypes2.default.func
+    height: _propTypes2.default.string,
+    onClick: _propTypes2.default.func,
+    width: _propTypes2.default.string
 };
 
 exports.IconClock = IconClock;
@@ -12987,54 +12994,6 @@ Object.keys(_iconWarning).forEach(function (key) {
     }
   });
 });
-
-/***/ }),
-
-/***/ "./src/javascript/app_2/Assets/Contract/icon-entry-spot.jsx":
-/*!******************************************************************!*\
-  !*** ./src/javascript/app_2/Assets/Contract/icon-entry-spot.jsx ***!
-  \******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _mobxReact = __webpack_require__(/*! mobx-react */ "./node_modules/mobx-react/index.module.js");
-
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var IconEntrySpot = function IconEntrySpot() {
-    return _react2.default.createElement(
-        'svg',
-        { className: 'chart-spot__icon', xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 16 16' },
-        _react2.default.createElement(
-            'g',
-            { fill: 'none', fillRule: 'evenodd' },
-            _react2.default.createElement('path', { d: 'M0 0h16v16H0z' }),
-            _react2.default.createElement('path', { fill: '#fff', fillRule: 'nonzero', d: 'M9.033 7.912c-1.107 1.014-2.214 2.03-3.33 3.037L5.701 8.84H0V6.88h5.7c.001-.979.002-1.822.005-2.107 1.099.982 2.178 1.987 3.27 2.977.044.047.151.108.058.16z' }),
-            _react2.default.createElement('path', { fill: '#fff', fillRule: 'nonzero', d: 'M7.66 3.005c2.9 0 5.258 2.244 5.258 5 0 2.757-2.357 5-5.258 5a5.329 5.329 0 0 1-4.178-2h-2.46c1.184 2.361 3.71 4 6.638 4 4.059 0 7.361-3.14 7.361-7s-3.302-7-7.36-7c-2.929 0-5.455 1.64-6.64 4h2.46a5.33 5.33 0 0 1 4.18-2z' })
-        )
-    );
-};
-
-IconEntrySpot.propTypes = {
-    color: _propTypes2.default.string
-};
-
-exports.default = (0, _mobxReact.observer)(IconEntrySpot);
 
 /***/ }),
 
@@ -17259,6 +17218,142 @@ exports.default = (0, _mobxReact.observer)(MarkerLine);
 
 /***/ }),
 
+/***/ "./src/javascript/app_2/Modules/SmartChart/Components/Markers/marker-spot-label.jsx":
+/*!******************************************************************************************!*\
+  !*** ./src/javascript/app_2/Modules/SmartChart/Components/Markers/marker-spot-label.jsx ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _mobxReact = __webpack_require__(/*! mobx-react */ "./node_modules/mobx-react/index.module.js");
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _currency_base = __webpack_require__(/*! ../../../../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js");
+
+var _Date = __webpack_require__(/*! ../../../../Utils/Date */ "./src/javascript/app_2/Utils/Date/index.js");
+
+var _iconClock = __webpack_require__(/*! ../../../../Assets/Common/icon-clock.jsx */ "./src/javascript/app_2/Assets/Common/icon-clock.jsx");
+
+var _markerSpot = __webpack_require__(/*! ./marker-spot.jsx */ "./src/javascript/app_2/Modules/SmartChart/Components/Markers/marker-spot.jsx");
+
+var _markerSpot2 = _interopRequireDefault(_markerSpot);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MarkerSpotLabel = function (_React$Component) {
+    _inherits(MarkerSpotLabel, _React$Component);
+
+    function MarkerSpotLabel(props) {
+        _classCallCheck(this, MarkerSpotLabel);
+
+        var _this = _possibleConstructorReturn(this, (MarkerSpotLabel.__proto__ || Object.getPrototypeOf(MarkerSpotLabel)).call(this, props));
+
+        _this.handleHoverToggle = function () {
+            _this.setState(function (state) {
+                return { show_label: !state.show_label };
+            });
+        };
+
+        _this.state = {
+            show_label: !_this.props.has_hover_toggle
+        };
+        return _this;
+    }
+
+    _createClass(MarkerSpotLabel, [{
+        key: 'render',
+        value: function render() {
+            var marker_spot = _react2.default.createElement(_markerSpot2.default, {
+                className: this.props.spot_className,
+                spot_count: this.props.spot_count,
+                status: this.props.status
+            });
+
+            if (this.props.has_hover_toggle) {
+                marker_spot = _react2.default.createElement(
+                    'div',
+                    { className: 'marker-hover-container', onMouseEnter: this.handleHoverToggle, onMouseLeave: this.handleHoverToggle },
+                    marker_spot
+                );
+            }
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'chart-spot-label' },
+                this.state.show_label && _react2.default.createElement(
+                    'div',
+                    { className: 'chart-spot-label__info-container' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'chart-spot-label__time-value-container chart-spot-label__time-value-container--' + this.props.align_label },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'chart-spot-label__time-container' },
+                            _react2.default.createElement(_iconClock.IconClock, { height: '10', width: '10', className: 'chart-spot-label__time-icon' }),
+                            _react2.default.createElement(
+                                'p',
+                                { className: 'chart-spot-label__time' },
+                                (0, _Date.toMoment)(+this.props.spot_epoch).format('HH:mm:ss')
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'chart-spot-label__value-container' },
+                            _react2.default.createElement(
+                                'p',
+                                null,
+                                (0, _currency_base.addComma)(this.props.spot_value)
+                            )
+                        )
+                    )
+                ),
+                marker_spot
+            );
+        }
+    }]);
+
+    return MarkerSpotLabel;
+}(_react2.default.Component);
+
+MarkerSpotLabel.defaultProps = {
+    align_label: 'top'
+};
+
+MarkerSpotLabel.propTypes = {
+    align_label: _propTypes2.default.oneOf(['top', 'bottom']),
+    has_hover_toggle: _propTypes2.default.bool,
+    spot_className: _propTypes2.default.string,
+    spot_count: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+    spot_epoch: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+    spot_value: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+    status: _propTypes2.default.oneOf(['won', 'lost'])
+};
+exports.default = (0, _mobxReact.observer)(MarkerSpotLabel);
+
+/***/ }),
+
 /***/ "./src/javascript/app_2/Modules/SmartChart/Components/Markers/marker-spot.jsx":
 /*!************************************************************************************!*\
   !*** ./src/javascript/app_2/Modules/SmartChart/Components/Markers/marker-spot.jsx ***!
@@ -17287,35 +17382,30 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _currency_base = __webpack_require__(/*! ../../../../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var MarkerSpot = function MarkerSpot(_ref) {
-    var align = _ref.align,
-        icon = _ref.icon,
-        spot_value = _ref.spot_value,
+    var className = _ref.className,
+        spot_count = _ref.spot_count,
         status = _ref.status;
     return _react2.default.createElement(
         'div',
-        { className: (0, _classnames2.default)('chart-spot', 'chart-spot--' + align, 'chart-spot--' + status) },
-        _react2.default.createElement(
-            'div',
-            { className: 'chart-spot__content' },
-            icon,
-            (0, _currency_base.addComma)(spot_value)
-        ),
-        _react2.default.createElement('div', { className: 'chart-spot__arrow' }),
-        _react2.default.createElement('div', { className: 'chart-spot__spot' })
+        {
+            className: (0, _classnames2.default)('chart-spot', className, {
+                'chart-spot__spot--won': status === 'won',
+                'chart-spot__spot--lost': status === 'lost'
+            })
+        },
+        spot_count
     );
 };
 
 MarkerSpot.propTypes = {
-    align: _propTypes2.default.oneOf(['left', 'right']),
-    icon: _propTypes2.default.object,
-    spot_value: _propTypes2.default.string,
+    className: _propTypes2.default.string,
+    spot_count: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
     status: _propTypes2.default.oneOf(['won', 'lost'])
 };
+
 exports.default = (0, _mobxReact.observer)(MarkerSpot);
 
 /***/ }),
@@ -22184,7 +22274,9 @@ function createMarkerSpotExit(contract_info, ContractStore) {
 
     return createMarkerConfig(_markers.MARKER_TYPES_CONFIG.SPOT_EXIT.type, ContractStore.end_spot_time, ContractStore.end_spot, {
         spot_value: '' + ContractStore.end_spot,
-        status: '' + (contract_info.profit > 0 ? 'won' : 'lost')
+        spot_epoch: ContractStore.end_spot_time,
+        status: '' + (contract_info.profit > 0 ? 'won' : 'lost'),
+        spot_count: contract_info.tick_count
     });
 }
 
@@ -23321,23 +23413,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.MARKER_TYPES_CONFIG = undefined;
 
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
 var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
-
-var _iconEntrySpot = __webpack_require__(/*! ../../../../Assets/Contract/icon-entry-spot.jsx */ "./src/javascript/app_2/Assets/Contract/icon-entry-spot.jsx");
-
-var _iconEntrySpot2 = _interopRequireDefault(_iconEntrySpot);
-
-var _iconFlag = __webpack_require__(/*! ../../../../Assets/Contract/icon-flag.jsx */ "./src/javascript/app_2/Assets/Contract/icon-flag.jsx");
-
-var _iconFlag2 = _interopRequireDefault(_iconFlag);
 
 var _markerLine = __webpack_require__(/*! ../../../../Modules/SmartChart/Components/Markers/marker-line.jsx */ "./src/javascript/app_2/Modules/SmartChart/Components/Markers/marker-line.jsx");
 
 var _markerLine2 = _interopRequireDefault(_markerLine);
+
+var _markerSpotLabel = __webpack_require__(/*! ../../../../Modules/SmartChart/Components/Markers/marker-spot-label.jsx */ "./src/javascript/app_2/Modules/SmartChart/Components/Markers/marker-spot-label.jsx");
+
+var _markerSpotLabel2 = _interopRequireDefault(_markerSpotLabel);
 
 var _markerSpot = __webpack_require__(/*! ../../../../Modules/SmartChart/Components/Markers/marker-spot.jsx */ "./src/javascript/app_2/Modules/SmartChart/Components/Markers/marker-spot.jsx");
 
@@ -23363,6 +23447,11 @@ var MARKER_CONTENT_TYPES = {
         className: 'chart-marker-line'
     },
     SPOT: {
+        ContentComponent: _markerSpotLabel2.default,
+        xPositioner: MARKER_X_POSITIONER.EPOCH,
+        yPositioner: MARKER_Y_POSITIONER.VALUE
+    },
+    SPOT_ENTRY: {
         ContentComponent: _markerSpot2.default,
         xPositioner: MARKER_X_POSITIONER.EPOCH,
         yPositioner: MARKER_Y_POSITIONER.VALUE
@@ -23370,11 +23459,36 @@ var MARKER_CONTENT_TYPES = {
 };
 
 var MARKER_TYPES_CONFIG = exports.MARKER_TYPES_CONFIG = {
-    LINE_END: { type: 'LINE_END', marker_config: MARKER_CONTENT_TYPES.LINE, content_config: { line_style: 'dash', label: (0, _localize.localize)('End Time') } },
-    LINE_PURCHASE: { type: 'LINE_PURCHASE', marker_config: MARKER_CONTENT_TYPES.LINE, content_config: { line_style: 'solid', label: (0, _localize.localize)('Purchase Time') } },
-    LINE_START: { type: 'LINE_START', marker_config: MARKER_CONTENT_TYPES.LINE, content_config: { line_style: 'solid', label: (0, _localize.localize)('Start Time') } },
-    SPOT_ENTRY: { type: 'SPOT_ENTRY', marker_config: MARKER_CONTENT_TYPES.SPOT, content_config: { align: 'left', icon: _react2.default.createElement(_iconEntrySpot2.default, null) } },
-    SPOT_EXIT: { type: 'SPOT_EXIT', marker_config: MARKER_CONTENT_TYPES.SPOT, content_config: { align: 'right', icon: _react2.default.createElement(_iconFlag2.default, null) } }
+    LINE_END: {
+        type: 'LINE_END',
+        marker_config: MARKER_CONTENT_TYPES.LINE,
+        content_config: { line_style: 'dash', label: (0, _localize.localize)('End Time') }
+    },
+    LINE_PURCHASE: {
+        type: 'LINE_PURCHASE',
+        marker_config: MARKER_CONTENT_TYPES.LINE,
+        content_config: { line_style: 'solid', label: (0, _localize.localize)('Purchase Time') }
+    },
+    LINE_START: {
+        type: 'LINE_START',
+        marker_config: MARKER_CONTENT_TYPES.LINE,
+        content_config: { line_style: 'solid', label: (0, _localize.localize)('Start Time') }
+    },
+    SPOT_ENTRY: {
+        type: 'SPOT_ENTRY',
+        marker_config: MARKER_CONTENT_TYPES.SPOT_ENTRY,
+        content_config: { className: 'chart-spot__entry' }
+    },
+    SPOT_EXIT: {
+        type: 'SPOT_EXIT',
+        marker_config: MARKER_CONTENT_TYPES.SPOT,
+        content_config: { spot_className: 'chart-spot__spot' }
+    },
+    SPOT_MIDDLE: {
+        type: 'SPOT_MIDDLE',
+        marker_config: MARKER_CONTENT_TYPES.SPOT,
+        content_config: { spot_className: 'chart-spot__spot' }
+    }
 };
 
 /***/ }),
@@ -23409,7 +23523,9 @@ var barriersToString = exports.barriersToString = function barriersToString(is_r
         barriers_list[_key - 1] = arguments[_key];
     }
 
-    return barriers_list.map(function (barrier) {
+    return barriers_list.filter(function (barrier) {
+        return barrier !== undefined && barrier !== null;
+    }).map(function (barrier) {
         return '' + (is_relative && !/^[+-]/.test(barrier) ? '+' : '') + barrier;
     });
 };
@@ -28585,7 +28701,13 @@ var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _m
 
         window.addEventListener('resize', _this.handleResize);
         (0, _mobx.autorun)(function () {
-            return document.body.classList[_this.is_dark_mode_on ? 'add' : 'remove']('theme--dark');
+            if (_this.is_dark_mode_on) {
+                document.body.classList.remove('theme--light');
+                document.body.classList.add('theme--dark');
+            } else {
+                document.body.classList.remove('theme--dark');
+                document.body.classList.add('theme--light');
+            }
         });
         return _this;
     }
