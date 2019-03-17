@@ -497,7 +497,8 @@ var ClientBase = function () {
         var can_open_multi = false;
         var type = void 0,
             can_upgrade_to = void 0;
-        if ((upgradeable_landing_companies || []).length) {
+        if ((upgradeable_landing_companies || []).length && !/^(py|ae)$/i.test(get('residence'))) {
+            // TODO: remove py and ae exceptions when API block is implemented
             var current_landing_company = get('landing_company_shortcode');
 
             can_open_multi = upgradeable_landing_companies.indexOf(current_landing_company) !== -1;
@@ -2032,6 +2033,50 @@ var SubscriptionManager = function () {
         }
     };
 
+    /**
+     * Add subscription without subscribers from request
+     * E.g. open subscription to proposal_open_contract on buy request
+     * @param {String}   msg_type               msg_type of the subscription
+     * @param {Object}   send_request           the object of the request to be made
+     * @param {Object}   subscribe_request      the object of the subscription request
+     * @param {Array}    subscription_props     Array of prop strings to add to subscribe_request from initial request, e.g. contract_id
+     */
+    var addSubscriptionFromRequest = function addSubscriptionFromRequest(msg_type, send_request, subscribe_request, subscription_props) {
+        return new Promise(function (resolve) {
+            var sub_id = void 0;
+            var is_stream = false;
+
+            _socket_base2.default.send(send_request, {
+                callback: function callback(response) {
+                    if (response.error) {
+                        return resolve(response);
+                    }
+                    if (!is_stream) {
+                        is_stream = true;
+                        sub_id = ++subscription_id;
+
+                        if (subscription_props && Array.isArray(subscription_props)) {
+                            subscription_props.forEach(function (prop) {
+                                if (response[response.msg_type][prop]) {
+                                    subscribe_request[prop] = response[response.msg_type][prop];
+                                }
+                            });
+                        }
+
+                        subscriptions[sub_id] = {
+                            msg_type: msg_type,
+                            request: (0, _utility.cloneObject)(subscribe_request),
+                            stream_id: '', // stream_id will be updated after receiving the response
+                            subscribers: []
+                        };
+                        return resolve(response);
+                    }
+                    return dispatch(response, sub_id);
+                }
+            });
+        });
+    };
+
     // dispatches the response to subscribers of the specific subscription id (internal use only)
     var dispatch = function dispatch(response, sub_id) {
         var stream_id = (0, _utility.getPropertyValue)(response, [response.msg_type, 'id']);
@@ -2158,6 +2203,7 @@ var SubscriptionManager = function () {
     };
 
     return {
+        addSubscriptionFromRequest: addSubscriptionFromRequest,
         subscribe: subscribe,
         forget: forget,
         forgetAll: forgetAll
@@ -14324,6 +14370,56 @@ module.exports = DatePicker;
 
 /***/ }),
 
+/***/ "./src/javascript/app/components/loading-spinner.js":
+/*!**********************************************************!*\
+  !*** ./src/javascript/app/components/loading-spinner.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var assertContainerExists = function assertContainerExists(content_id) {
+    if (!content_id) {
+        throw new Error('Loading spinner content id is missing or undefined.');
+    }
+};
+/**
+ * Accepts a DOM element ID and renders loading spinner inside of it.
+ *
+ * @param content_id
+ */
+var show = exports.show = function show(content_id) {
+    assertContainerExists(content_id);
+    var $container = $('#' + content_id);
+    $container.append($('<div />', { class: 'barspinner dark' }).append($('<div />', { class: 'rect1' })).append($('<div />', { class: 'rect2' })).append($('<div />', { class: 'rect3' })).append($('<div />', { class: 'rect4' })).append($('<div />', { class: 'rect5' })));
+};
+
+/**
+ * Remove Loading spinner inside the container, does nothing if there is no spinner loading.
+ *
+ * @param content_id
+ */
+var hide = exports.hide = function hide(content_id) {
+    assertContainerExists(content_id);
+    var $container = $('#' + content_id);
+    var $spinner = $container.find('.barspinner');
+    if ($spinner) {
+        $spinner.remove();
+    }
+};
+
+exports.default = {
+    showLoadingSpinner: show,
+    hideLoadingSpinner: hide
+};
+
+/***/ }),
+
 /***/ "./src/javascript/app/components/time_picker.js":
 /*!******************************************************!*\
   !*** ./src/javascript/app/components/time_picker.js ***!
@@ -14566,7 +14662,7 @@ var AccountTransfer = function () {
 
         elementTextContent(el_transfer_from, client_loginid + ' ' + (client_currency ? '(' + client_currency + ')' : ''));
 
-        var fragment_transfer_to = document.createElement('div');
+        var fragment_transfer_to = document.createElement('select');
 
         sortAccounts(accounts).forEach(function (account) {
             if (Client.canTransferFunds(account)) {
@@ -14592,10 +14688,12 @@ var AccountTransfer = function () {
             el_transfer_to.setAttribute('data-loginid', to_loginid);
             el_transfer_to.parentElement.insertBefore(el_label_transfer_to, el_transfer_to);
         } else {
+            to_loginid = accounts[0].loginid;
             el_transfer_to.innerHTML = fragment_transfer_to.innerHTML;
         }
-        el_transfer_to.addEventListener('change', function () {
+        el_transfer_to.addEventListener('change', function (e) {
             setTransferFeeAmount();
+            to_loginid = e.target.getAttribute('data-loginid');
         });
 
         transfer_to_currency = getElementById('amount-add-on');
@@ -14618,7 +14716,6 @@ var AccountTransfer = function () {
 
     var setTransferFeeAmount = function setTransferFeeAmount() {
         elementTextContent(el_fee_amount, Currency.getTransferFee(client_currency, (el_transfer_to.value || el_transfer_to.getAttribute('data-value') || '').match(/\((\w+)\)/)[1]));
-        to_loginid = el_transfer_to.getAttribute('data-loginid');
     };
 
     var hasError = function hasError(response) {
@@ -17877,6 +17974,7 @@ var AssetIndexUI = function () {
 
     var onLoad = function onLoad() {
         $container = $('#asset-index');
+        $('#empty-asset-index').setVisibility(0);
         asset_index = market_columns = undefined;
         active_symbols = undefined;
 
@@ -17892,6 +17990,12 @@ var AssetIndexUI = function () {
 
     var populateTable = function populateTable() {
         if (!active_symbols || !asset_index) return;
+
+        if (!asset_index.length) {
+            $container.empty();
+            $('#empty-asset-index').setVisibility(1);
+            return;
+        }
 
         $('#errorMsg').setVisibility(0);
         asset_index = AssetIndex.getAssetIndexData(asset_index, active_symbols);
@@ -18619,8 +18723,8 @@ var TradingAnalysis = function () {
                 image2: 'low-tick.svg'
             },
             runs: {
-                image1: 'ups.svg',
-                image2: 'downs.svg'
+                image1: 'only-ups.svg',
+                image2: 'only-downs.svg'
             }
         };
 
@@ -21196,7 +21300,7 @@ var Contract = function () {
         }
 
         if (trade_contract_forms.runs) {
-            trade_contract_forms.run = localize('Run');
+            trade_contract_forms.run = localize('Only Ups/Only Downs');
         }
 
         if (trade_contract_forms.endsinout || trade_contract_forms.staysinout) {
@@ -22007,6 +22111,7 @@ var DigitTicker = __webpack_require__(/*! ./digit_ticker */ "./src/javascript/ap
 var ViewPopupUI = __webpack_require__(/*! ../user/view_popup/view_popup.ui */ "./src/javascript/app/pages/user/view_popup/view_popup.ui.js");
 var showLocalTimeOnHover = __webpack_require__(/*! ../../base/clock */ "./src/javascript/app/base/clock.js").showLocalTimeOnHover;
 var BinarySocket = __webpack_require__(/*! ../../base/socket */ "./src/javascript/app/base/socket.js");
+var LoadingSpinner = __webpack_require__(/*! ../../components/loading-spinner */ "./src/javascript/app/components/loading-spinner.js");
 var addComma = __webpack_require__(/*! ../../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js").addComma;
 var localize = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
 var getPropertyValue = __webpack_require__(/*! ../../../_common/utility */ "./src/javascript/_common/utility.js").getPropertyValue;
@@ -22034,12 +22139,15 @@ var DigitDisplay = function () {
     };
 
     var init = function init(id_render, proposal_open_contract) {
+        var calculated_height = (proposal_open_contract.tick_count + 1) * 40;
+
         tick_count = 1;
         contract = proposal_open_contract;
         spot_times = [];
 
         $container = $('#' + id_render);
-        $container.addClass('normal-font').html($('<h5 />', { text: contract.display_name, class: 'center-text' })).append($('<div />', { class: 'gr-8 gr-centered gr-12-m' }).append($('<div />', { class: 'gr-row', id: 'table_digits' }).append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') })))).append($('<div />', { class: 'digit-ticker invisible', id: 'digit_ticker_container' }));
+        $container.addClass('normal-font').html($('<h5 />', { text: contract.display_name, class: 'center-text' })).append($('<div />', { class: 'gr-8 gr-centered gr-12-m', style: 'height: ' + calculated_height + 'px;' }).append($('<div />', { class: 'gr-row', id: 'table_digits' }).append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') })))).append($('<div />', { class: 'digit-ticker invisible', id: 'digit_ticker_container' }));
+        LoadingSpinner.show('table_digits');
 
         DigitTicker.init('digit_ticker_container', contract.contract_type, contract.shortcode, contract.tick_count, contract.status);
 
@@ -22088,7 +22196,7 @@ var DigitDisplay = function () {
         if (getPropertyValue(response, ['tick', 'id']) && document.getElementById('sell_content_wrapper')) {
             ViewPopupUI.storeSubscriptionID(response.tick.id);
         }
-
+        LoadingSpinner.hide('table_digits');
         if (response.history) {
             response.history.times.some(function (time, idx) {
                 if (+time >= +contract.entry_tick_time) {
@@ -22108,8 +22216,12 @@ var DigitDisplay = function () {
 
     var end = function end(proposal_open_contract) {
         if (proposal_open_contract.status !== 'open') {
+            // if there is no exit tick inside proposal open contract, select a fallback from history instead.
+            var fallback_exit_tick = spot_times.find(function (spot) {
+                return +spot.time === +proposal_open_contract.exit_tick_time;
+            });
             DigitTicker.update(proposal_open_contract.tick_count, {
-                quote: proposal_open_contract.exit_tick,
+                quote: proposal_open_contract.exit_tick || fallback_exit_tick.spot,
                 epoch: +proposal_open_contract.exit_tick_time
             });
         }
@@ -29766,7 +29878,8 @@ var PersonalDetails = function () {
                     $options_with_disabled.append(CommonFunctions.makeOption({
                         text: res.text,
                         value: res.value,
-                        is_disabled: res.disabled
+                        // is_disabled: res.disabled,
+                        is_disabled: res.disabled || /^(py|ae)$/i.test(res.value) ? 'disabled' : '' // TODO: remove py and ae exceptions when API block is implemented
                     }));
                 });
                 if (residence) {
@@ -32193,10 +32306,6 @@ var MetaTrader = function () {
                     BinarySocket.send({ get_limits: 1 }).then(getAllAccountsInfo);
                     getExchangeRates();
                 }
-            } else if (State.getResponse('landing_company.gaming_company.shortcode') === 'malta') {
-                // TODO: remove this elseif when we enable mt account opening for malta
-                // show specific message to clients from malta landing company as long as there is no mt_company for them
-                MetaTraderUI.displayPageError(localize('Our MT5 service is currently unavailable to EU residents due to pending regulatory approval.'));
             } else {
                 MetaTraderUI.displayPageError(localize('Sorry, this feature is not available in your jurisdiction.'));
             }
@@ -33464,7 +33573,8 @@ var VirtualAccOpening = function () {
                 $options_with_disabled.append(makeOption({
                     text: res.text,
                     value: res.value,
-                    is_disabled: res.disabled
+                    // is_disabled: res.disabled,
+                    is_disabled: res.disabled || /^(py|ae)$/i.test(res.value) ? 'disabled' : '' // TODO: remove py and ae exceptions when API block is implemented
                 }));
             });
             $residence.html($options_with_disabled.html());
@@ -34527,8 +34637,8 @@ var ViewPopup = function () {
                 PUTSPREAD: localize('Put Spread'),
                 TICKHIGH: localize('High Tick'),
                 TICKLOW: localize('Low Tick'),
-                RUNHIGH: localize('Run Ups'),
-                RUNLOW: localize('Run Downs')
+                RUNHIGH: localize('Only Ups'),
+                RUNLOW: localize('Only Downs')
             };
         };
 
@@ -35727,6 +35837,9 @@ module.exports = Contact;
 "use strict";
 
 
+var isEuCountry = __webpack_require__(/*! ../../app/common/country_base */ "./src/javascript/app/common/country_base.js").isEuCountry;
+var getElementById = __webpack_require__(/*! ../../_common/common_functions */ "./src/javascript/_common/common_functions.js").getElementById;
+var BinarySocket = __webpack_require__(/*! ../../_common/base/socket_base */ "./src/javascript/_common/base/socket_base.js");
 var MenuSelector = __webpack_require__(/*! ../../_common/menu_selector */ "./src/javascript/_common/menu_selector.js");
 
 module.exports = {
@@ -35772,7 +35885,16 @@ module.exports = {
     },
     BinaryOptionsForMT5: {
         onLoad: function onLoad() {
-            MenuSelector.init(['what-are-binary-options', 'how-to-trade-binary', 'types-of-trades']);
+            var menu_sections = ['what-are-binary-options', 'how-to-trade-binary', 'types-of-trades'];
+            BinarySocket.wait('authorize', 'website_status', 'landing_company').then(function () {
+                if (isEuCountry()) {
+                    menu_sections = menu_sections.filter(function (menu_item) {
+                        return menu_item !== 'how-to-trade-binary';
+                    });
+                }
+                MenuSelector.init(menu_sections);
+                getElementById('loading_binary_options_mt5').setVisibility(0);
+            });
         },
         onUnload: function onUnload() {
             MenuSelector.clean();
