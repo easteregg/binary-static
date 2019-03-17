@@ -14664,8 +14664,11 @@ var AccountTransfer = function () {
 
         var fragment_transfer_to = document.createElement('select');
 
-        sortAccounts(accounts).forEach(function (account) {
+        sortAccounts(accounts).forEach(function (account, index) {
             if (Client.canTransferFunds(account)) {
+                if (index === 0) {
+                    to_loginid = account.loginid;
+                }
                 var option = document.createElement('option');
                 option.setAttribute('data-currency', account.currency);
                 option.setAttribute('data-loginid', account.loginid);
@@ -14688,7 +14691,6 @@ var AccountTransfer = function () {
             el_transfer_to.setAttribute('data-loginid', to_loginid);
             el_transfer_to.parentElement.insertBefore(el_label_transfer_to, el_transfer_to);
         } else {
-            to_loginid = accounts[0].loginid;
             el_transfer_to.innerHTML = fragment_transfer_to.innerHTML;
         }
         el_transfer_to.addEventListener('change', function (e) {
