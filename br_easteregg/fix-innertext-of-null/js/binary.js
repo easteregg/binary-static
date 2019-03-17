@@ -21836,9 +21836,7 @@ var DigitTicker = function () {
     };
 
     var markAsLost = function markAsLost() {
-        if (!el_peek_box || !el_peek) {
-            setElements();
-        }
+        setElements();
         el_peek.classList.remove('digit-winning', 'digit-running');
         el_peek_box.classList.remove('digit-winning', 'digit-running');
         el_peek.classList.add('digit-losing');
@@ -21858,9 +21856,7 @@ var DigitTicker = function () {
     };
 
     var markAsWon = function markAsWon() {
-        if (!el_peek_box || !el_peek) {
-            setElements();
-        }
+        setElements();
         el_peek_box.classList.remove('digit-losing', 'digit-running');
         el_peek_box.classList.add('digit-winning');
         el_peek.classList.remove('digit-losing', 'digit-running');
@@ -21868,13 +21864,13 @@ var DigitTicker = function () {
     };
 
     var setElements = function setElements() {
+        if (!el_container || !el_peek || !el_peek_box || !el_mask) {
+            populateContainer(el_container);
+            highlightWinningNumbers(getWinningNumbers(type, barrier));
+        }
         el_peek = el_container ? el_container.querySelector('.peek') : null;
         el_peek_box = el_peek ? el_container.querySelector('.peek-box') : null;
         el_mask = el_peek_box ? el_peek_box.querySelector('.mask') : null;
-    };
-
-    var isBarrierMissing = function isBarrierMissing(contract_type, bar) {
-        return !/digit(even|odd)/i.test(type) && !bar;
     };
 
     var setBarrierFromShortcode = function setBarrierFromShortcode(contract_type, shortcode) {
@@ -21886,22 +21882,20 @@ var DigitTicker = function () {
     };
 
     var update = function update(current_tick_count, _ref) {
-        var quote = _ref.quote,
-            epoch = _ref.epoch;
+        var quote = _ref.quote;
 
-        if (!el_mask || !el_peek_box || !el_peek || current_tick_count > total_tick_count) {
+        if (current_tick_count > total_tick_count) {
             return;
         }
 
-        setElements(epoch);
+        setElements();
         el_container.classList.remove('invisible');
         adjustBoxSizes();
         current_spot = quote.substr(-1);
-        el_mask.innerText = current_tick_count + ' / ' + total_tick_count;
 
+        el_mask.innerText = current_tick_count + ' / ' + total_tick_count;
         el_peek_box.classList.add('digit-running');
         el_peek.classList.add('digit-running');
-
         el_peek_box.setAttribute('style', 'transform: translateX(' + calculateOffset() + 'px)');
     };
 
@@ -21952,7 +21946,6 @@ var DigitTicker = function () {
         init: init,
         update: update,
         countUp: countUp,
-        isBarrierMissing: isBarrierMissing,
         markAsWon: markAsWon,
         markAsLost: markAsLost,
         markDigitAsLost: markDigitAsLost,
@@ -21960,7 +21953,6 @@ var DigitTicker = function () {
         remove: remove
     };
 }();
-
 module.exports = DigitTicker;
 
 /***/ }),
@@ -22052,8 +22044,7 @@ var DigitDisplay = function () {
         $container.find('#table_digits').append($('<p />', { class: 'gr-3', text: tick_count })).append($('<p />', { class: 'gr-3 gray', html: tick_count === contract.tick_count ? csv_spot.slice(0, csv_spot.length - 1) + '<strong>' + csv_spot.substr(-1) + '</strong>' : csv_spot })).append($('<p />', { class: 'gr-6 gray digit-spot-time no-underline', text: moment(+time * 1000).utc().format('YYYY-MM-DD HH:mm:ss') }));
 
         DigitTicker.update(tick_count, {
-            quote: contract.status !== 'open' ? contract.exit_tick : spot,
-            epoch: +contract.exit_tick_time || +contract.current_spot_time
+            quote: contract.status !== 'open' ? contract.exit_tick : spot
         });
     };
 
@@ -22086,8 +22077,7 @@ var DigitDisplay = function () {
     var end = function end(proposal_open_contract) {
         if (proposal_open_contract.status !== 'open') {
             DigitTicker.update(proposal_open_contract.tick_count, {
-                quote: proposal_open_contract.exit_tick,
-                epoch: +proposal_open_contract.exit_tick_time
+                quote: proposal_open_contract.exit_tick
             });
         }
         if (proposal_open_contract.status === 'won') {
@@ -35435,7 +35425,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '15034'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
