@@ -3612,8 +3612,10 @@ html {
     transition: 0.3s ease-in-out;
     -ms-flex-negative: 0;
         flex-shrink: 0;
-    margin-right: 8px;
+    margin: 2px 8px 0 0;
     border-radius: 2px;
+    -ms-flex-item-align: start;
+        align-self: flex-start;
     border: 2px solid #7f8397; }
     .checkbox__box--active {
       border: none;
@@ -4310,7 +4312,7 @@ html {
     text-transform: capitalize;
     text-align: left;
     line-height: 1.5;
-    margin: 0 0 16px; }
+    margin: 0 0 8px; }
     .theme--light .media__heading {
       color: rgba(0, 0, 0, 0.8); }
     .theme--dark .media__heading {
