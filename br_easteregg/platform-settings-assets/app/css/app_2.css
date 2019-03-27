@@ -4935,7 +4935,7 @@ html {
             box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
     border-radius: 4px; }
     .theme--light .settings-dialog__container {
-      background-color: #f4f4f6; }
+      background-color: #ffffff; }
     .theme--dark .settings-dialog__container {
       background-color: #191c31; }
     .settings-dialog__container--hide {
