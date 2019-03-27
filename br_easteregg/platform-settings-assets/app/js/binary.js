@@ -12355,7 +12355,7 @@ var ChartSettings = function ChartSettings(_ref) {
             _react2.default.createElement(
                 _Media.MediaHeading,
                 null,
-                _react2.default.createElement(_localize3.default, { str: 'Open-High-Low-Close (OHLC) information' })
+                _react2.default.createElement(_localize3.default, { str: 'Open-High-Low-Close [_1](OHLC) information', replacers: { 1: _react2.default.createElement('br', null) } })
             ),
             _react2.default.createElement(
                 _Media.MediaDescription,

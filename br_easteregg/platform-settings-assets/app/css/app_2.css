@@ -4304,7 +4304,7 @@ html {
     text-align: center; }
 
 .media {
-  margin: 0 0 16px; }
+  margin: 0 0 24px; }
   .media__heading {
     font-size: 1.4em;
     color: rgba(0, 0, 0, 0.8);
@@ -4312,7 +4312,7 @@ html {
     text-transform: capitalize;
     text-align: left;
     line-height: 1.5;
-    margin: 0 0 8px; }
+    margin: 0 0 16px; }
     .theme--light .media__heading {
       color: rgba(0, 0, 0, 0.8); }
     .theme--dark .media__heading {
@@ -4357,7 +4357,8 @@ html {
             justify-content: flex-start;
     -webkit-box-align: start;
         -ms-flex-align: start;
-            align-items: flex-start; }
+            align-items: flex-start;
+    text-transform: initial; }
 
 /** @define number-selector */
 .number-selector {
