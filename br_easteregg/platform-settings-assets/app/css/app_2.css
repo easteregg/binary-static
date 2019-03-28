@@ -2489,7 +2489,7 @@ html {
     .theme--light .button-menu__button {
       background-color: #ffffff; }
       .theme--light .button-menu__button:hover {
-        background-color: rgba(153, 156, 172, 0.32); }
+        background-color: rgba(0, 0, 0, 0.04); }
     .theme--dark .button-menu__button {
       background-color: #101320; }
       .theme--dark .button-menu__button:hover {
@@ -2971,7 +2971,7 @@ html {
       margin: 3px;
       padding: 7px; }
       .theme--light .time-picker__selector-list-item:hover:not(.time-picker__selector-list-item--disabled):not(.time-picker__selector-list-item--selected) {
-        background: rgba(153, 156, 172, 0.32);
+        background: rgba(0, 0, 0, 0.04);
         color: rgba(0, 0, 0, 0.8); }
       .theme--dark .time-picker__selector-list-item:hover:not(.time-picker__selector-list-item--disabled):not(.time-picker__selector-list-item--selected) {
         background: #202641;
@@ -3149,7 +3149,7 @@ html {
         color: rgba(0, 0, 0, 0.4);
         float: left; }
       .theme--light .acc-switcher__new-account-title:hover {
-        background: rgba(153, 156, 172, 0.32); }
+        background: rgba(0, 0, 0, 0.04); }
     .theme--dark .acc-switcher__new-account-title {
       color: #7f8397;
       border: 1px dashed #7f8397; }
@@ -3200,7 +3200,7 @@ html {
   .theme--light .acc-switcher__accounts .acc-switcher__account {
     background: #ffffff; }
     .theme--light .acc-switcher__accounts .acc-switcher__account:hover:not(.acc-switcher__account--selected) {
-      background-color: rgba(153, 156, 172, 0.32); }
+      background-color: rgba(0, 0, 0, 0.04); }
     .theme--light .acc-switcher__accounts .acc-switcher__account .acc-switcher__id {
       color: rgba(0, 0, 0, 0.8); }
     .theme--light .acc-switcher__accounts .acc-switcher__account--selected {
@@ -4318,12 +4318,12 @@ html {
     .theme--dark .media__heading {
       color: #7f8397; }
   .media__icon {
-    min-width: 160px;
-    max-width: 160px;
-    height: 8em;
+    width: 160px;
+    height: 120px;
     margin-right: 1.6em;
-    background-color: rgba(0, 0, 0, 0.16);
     border-radius: 4px; }
+    .media__icon:empty {
+      background-color: rgba(0, 0, 0, 0.16); }
   .media__description {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -4409,7 +4409,7 @@ html {
     .number-selector__selection:hover:not(.number-selector__selection--selected) {
       cursor: pointer; }
       .theme--light .number-selector__selection:hover:not(.number-selector__selection--selected) {
-        background-color: rgba(153, 156, 172, 0.32); }
+        background-color: rgba(0, 0, 0, 0.04); }
       .theme--dark .number-selector__selection:hover:not(.number-selector__selection--selected) {
         background-color: #202641; }
     .number-selector__selection:last-child {
@@ -5530,9 +5530,9 @@ html {
     .theme--dark .vertical-tab__header {
       color: #7f8397; }
     .theme--light .vertical-tab__header:hover:not(.vertical-tab__header--active) {
-      background-color: rgba(153, 156, 172, 0.32); }
+      background-color: rgba(0, 0, 0, 0.04); }
     .theme--dark .vertical-tab__header:hover:not(.vertical-tab__header--active) {
-      background-color: rgba(127, 131, 151, 0.3); }
+      background-color: #202641; }
     .vertical-tab__header--active {
       font-size: 1.4em;
       color: #ffffff;
