@@ -12730,7 +12730,7 @@ var ThemeSelectSettings = function ThemeSelectSettings(_ref) {
                     _react2.default.createElement(
                         'p',
                         { className: 'theme-select-settings__option__title' },
-                        _react2.default.createElement(_localize2.default, { str: 'Dark mode' })
+                        _react2.default.createElement(_localize2.default, { str: 'Brand Dark' })
                     )
                 ),
                 _react2.default.createElement(
@@ -12745,7 +12745,7 @@ var ThemeSelectSettings = function ThemeSelectSettings(_ref) {
                     _react2.default.createElement(
                         'p',
                         { className: 'theme-select-settings__option__title' },
-                        _react2.default.createElement(_localize2.default, { str: 'Light mode' })
+                        _react2.default.createElement(_localize2.default, { str: 'Light' })
                     )
                 )
             )
