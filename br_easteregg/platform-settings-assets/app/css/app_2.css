@@ -249,6 +249,10 @@ html {
   margin: 0.5em 0;
   padding: 0; }
 
+/** @define binary-app */
+.binary-app {
+  overflow: hidden; }
+
 @font-face {
   font-family: 'BinarySymbols';
   font-style: normal;
@@ -4312,7 +4316,8 @@ html {
     text-transform: capitalize;
     text-align: left;
     line-height: 1.5;
-    margin: 0 0 16px; }
+    margin: 0 0 16px;
+    text-transform: none; }
     .theme--light .media__heading {
       color: rgba(0, 0, 0, 0.8); }
     .theme--dark .media__heading {
