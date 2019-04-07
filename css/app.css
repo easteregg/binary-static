@@ -605,7 +605,7 @@ a.previous-wrapper {
     #mt_account_management #account_selector #mt5_account, #mt_account_management #account_selector #accounts_list {
       border: 1px solid #394171; }
     #mt_account_management #account_selector #mt5_account {
-      height: 38px;
+      min-height: 38px;
       line-height: 38px;
       padding: 0 10px;
       -webkit-box-sizing: border-box;
@@ -622,6 +622,7 @@ a.previous-wrapper {
         display: block;
         float: right;
         margin-top: 17px;
+        margin-bottom: 17px;
         border-left: 5px solid transparent;
         border-right: 5px solid transparent;
         border-top: 5px solid #fff; }
@@ -1726,6 +1727,10 @@ a.previous-wrapper {
     #trading_socket_container .contract_heading.PUTSPREAD {
       background: url("../images/pages/trade/put_spread.svg") no-repeat center top;
       background-size: 50%; }
+    #trading_socket_container .contract_heading.RUNHIGH {
+      background: url("../images/pages/trade/run_high.svg") no-repeat center top; }
+    #trading_socket_container .contract_heading.RUNLOW {
+      background: url("../images/pages/trade/run_low.svg") no-repeat center top; }
     #trading_socket_container .contract_heading.TICKHIGH {
       background: url("../images/pages/trade/high_tick.svg") no-repeat center top; }
     #trading_socket_container .contract_heading.TICKLOW {
@@ -2260,6 +2265,9 @@ a.previous-wrapper {
 .epg_forwardws-content iframe {
   height: 800px; }
 
+.detailsws-content div.select-dropdown {
+  width: 100%; }
+
 .detailsws-content #address_form select.select-hidden {
   min-width: 205px; }
 
@@ -2268,6 +2276,10 @@ a.previous-wrapper {
     width: 85%; }
     .detailsws-content #address_form div.select select.select-hidden {
       min-width: unset; } }
+
+@media all and (max-width: 480px) {
+  .detailsws-content #frmPersonalDetails div.select {
+    width: 280px !important; } }
 
 #limits-container thead {
   text-align: left; }
@@ -2445,6 +2457,13 @@ a.previous-wrapper {
       -webkit-box-pack: center;
           -ms-flex-pack: center;
               justify-content: center; } }
+
+.realws-content div.select-dropdown {
+  width: 100%; }
+
+@media screen and (max-width: 480px) {
+  .realws-content {
+    width: 280px !important; } }
 
 .markets {
   min-width: 120px;
@@ -2946,17 +2965,15 @@ a.previous-wrapper {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: start;
-      -ms-flex-align: start;
-          align-items: flex-start;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
   width: 100%;
+  margin-bottom: 30px;
   -ms-flex-wrap: wrap-reverse;
       flex-wrap: wrap-reverse; }
   .transfer_form p {
-    margin: 0; }
+    margin: 0 0 6px; }
   .transfer_form #transfer_to_select.form-row {
     padding-top: 0;
     padding-bottom: 0; }
@@ -2967,26 +2984,24 @@ a.previous-wrapper {
     padding: 30px;
     width: 50%;
     min-height: 266px;
-    border: 1px solid #f2f2f2;
-    border-right: 0; }
+    background-color: #f2f2f2;
+    color: #000; }
   .transfer_form__right_pane {
     padding: 30px;
     width: 50%;
     min-height: 266px;
-    background-color: #f2f2f2;
-    color: #000; }
+    border: 1px solid #f2f2f2;
+    border-left: 0; }
     .transfer_form__right_pane__input_group {
       width: 100%; }
       .transfer_form__right_pane__input_group__prefix {
         display: -webkit-box;
         display: -ms-flexbox;
-        display: flex; }
+        display: flex;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+        max-width: 280px; }
         .transfer_form__right_pane__input_group__prefix .input-add-on {
-          background-color: #f2f2f2;
-          border: 1px solid #dedede;
-          border-top-left-radius: 4px;
-          border-bottom-left-radius: 4px;
-          cursor: pointer;
           display: -webkit-inline-box;
           display: -ms-inline-flexbox;
           display: inline-flex;
@@ -2997,22 +3012,21 @@ a.previous-wrapper {
                   align-items: center;
           -webkit-box-pack: center;
               -ms-flex-pack: center;
-                  justify-content: center;
-          -webkit-transition: all 0.3s ease;
-          transition: all 0.3s ease; }
-        .transfer_form__right_pane__input_group__prefix .input-add-on.has-dropdown:hover {
-          -webkit-box-shadow: 0px 0px 6px #e98024;
-                  box-shadow: 0px 0px 6px #e98024; }
+                  justify-content: center; }
         .transfer_form__right_pane__input_group__prefix input {
           margin: 0;
-          padding: 0;
-          border: 1px solid #dedede;
-          border-left: 0;
-          border-radius: 0 4px 4px 0;
+          padding: 0 0 0 5px;
           height: 28px;
-          width: 100%; }
+          max-width: 100%;
+          width: 232px;
+          -webkit-box-sizing: border-box;
+                  box-sizing: border-box; }
       .transfer_form__right_pane__input_group .select {
         width: 100%; }
+    .transfer_form__right_pane .select {
+      width: 280px !important;
+      display: block;
+      margin-bottom: 2px; }
 
 @media screen and (max-width: 480px) {
   .transfer_form__right_pane, .transfer_form__left_pane {
@@ -3023,3 +3037,9 @@ a.previous-wrapper {
   .account_transfer__header {
     padding: 5px !important;
     font-size: smaller !important; }
+
+.account_transfer-content .hint {
+  font-size: 15px; }
+
+.account_transfer-content .italic {
+  font-style: italic; }
