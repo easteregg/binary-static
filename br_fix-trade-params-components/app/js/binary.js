@@ -22642,7 +22642,7 @@ var DurationWrapper = function (_React$Component) {
             var new_duration_unit = this.props.duration_units_list[0].value;
             var new_duration_value = this.props.getDurationFromUnit(new_duration_unit);
 
-            this.props.onChangeUiStore({ name: (this.props.is_advanced_duration ? 'advanced' : 'simple') + '_duration_unit', value: +new_duration_unit });
+            this.props.onChangeUiStore({ name: (this.props.is_advanced_duration ? 'advanced' : 'simple') + '_duration_unit', value: new_duration_unit });
             this.props.onChangeMultiple({
                 duration_unit: new_duration_unit,
                 duration: +new_duration_value
@@ -23267,8 +23267,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 
 var _classnames2 = _interopRequireDefault(_classnames);
@@ -23311,126 +23309,103 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var Amount = function Amount(_ref) {
+    var amount = _ref.amount,
+        basis = _ref.basis,
+        basis_list = _ref.basis_list,
+        contract_start_type = _ref.contract_start_type,
+        contract_type = _ref.contract_type,
+        contract_types_list = _ref.contract_types_list,
+        currencies_list = _ref.currencies_list,
+        currency = _ref.currency,
+        duration_unit = _ref.duration_unit,
+        expiry_type = _ref.expiry_type,
+        is_equal = _ref.is_equal,
+        is_minimized = _ref.is_minimized,
+        is_nativepicker = _ref.is_nativepicker,
+        is_single_currency = _ref.is_single_currency,
+        onChange = _ref.onChange,
+        validation_errors = _ref.validation_errors;
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Amount = function (_React$Component) {
-    _inherits(Amount, _React$Component);
-
-    function Amount() {
-        _classCallCheck(this, Amount);
-
-        return _possibleConstructorReturn(this, (Amount.__proto__ || Object.getPrototypeOf(Amount)).apply(this, arguments));
+    if (is_minimized) {
+        return _react2.default.createElement(
+            'div',
+            { className: 'fieldset-minimized fieldset-minimized__amount' },
+            _react2.default.createElement(
+                'span',
+                { className: 'fieldset-minimized__basis' },
+                (basis_list.find(function (o) {
+                    return o.value === basis;
+                }) || {}).text
+            ),
+            '\xA0',
+            _react2.default.createElement(
+                'i',
+                null,
+                _react2.default.createElement('span', { className: (0, _classnames2.default)('fieldset-minimized__currency', 'symbols', _defineProperty({}, 'symbols--' + (currency || '').toLowerCase(), currency)) })
+            ),
+            (0, _currency_base.addComma)(amount, 2)
+        );
     }
 
-    _createClass(Amount, [{
-        key: 'render',
-        value: function render() {
-            var _props = this.props,
-                amount = _props.amount,
-                basis = _props.basis,
-                basis_list = _props.basis_list,
-                contract_start_type = _props.contract_start_type,
-                contract_type = _props.contract_type,
-                contract_types_list = _props.contract_types_list,
-                currencies_list = _props.currencies_list,
-                currency = _props.currency,
-                duration_unit = _props.duration_unit,
-                expiry_type = _props.expiry_type,
-                is_equal = _props.is_equal,
-                is_minimized = _props.is_minimized,
-                is_nativepicker = _props.is_nativepicker,
-                is_single_currency = _props.is_single_currency,
-                onChange = _props.onChange,
-                validation_errors = _props.validation_errors;
+    var input = _react2.default.createElement(_InputField2.default, {
+        className: 'trade-container__amount',
+        classNameInlinePrefix: 'trade-container__currency',
+        classNameInput: 'trade-container__input',
+        currency: currency,
+        error_messages: validation_errors.amount,
+        fractional_digits: (0, _currency_base.getDecimalPlaces)(currency),
+        id: 'amount',
+        inline_prefix: is_single_currency ? currency : null,
+        is_autocomplete_disabled: true,
+        is_float: true,
+        is_incrementable: true,
+        is_nativepicker: is_nativepicker,
+        is_negative_disabled: true,
+        max_length: 10,
+        name: 'amount',
+        onChange: onChange,
+        type: 'tel',
+        value: amount
+    });
 
-
-            if (is_minimized) {
-                return _react2.default.createElement(
-                    'div',
-                    { className: 'fieldset-minimized fieldset-minimized__amount' },
-                    _react2.default.createElement(
-                        'span',
-                        { className: 'fieldset-minimized__basis' },
-                        (basis_list.find(function (o) {
-                            return o.value === basis;
-                        }) || {}).text
-                    ),
-                    '\xA0',
-                    _react2.default.createElement(
-                        'i',
-                        null,
-                        _react2.default.createElement('span', { className: (0, _classnames2.default)('fieldset-minimized__currency', 'symbols', _defineProperty({}, 'symbols--' + (currency || '').toLowerCase(), currency)) })
-                    ),
-                    (0, _currency_base.addComma)(amount, 2)
-                );
-            }
-
-            var input = _react2.default.createElement(_InputField2.default, {
-                className: 'trade-container__amount',
-                classNameInlinePrefix: 'trade-container__currency',
-                classNameInput: 'trade-container__input',
-                currency: currency,
-                error_messages: validation_errors.amount,
-                fractional_digits: (0, _currency_base.getDecimalPlaces)(currency),
-                id: 'amount',
-                inline_prefix: is_single_currency ? currency : null,
-                is_autocomplete_disabled: true,
-                is_float: true,
-                is_incrementable: true,
-                is_nativepicker: is_nativepicker,
-                is_negative_disabled: true,
-                max_length: 10,
-                name: 'amount',
-                onChange: onChange,
-                type: 'tel',
-                value: amount
-            });
-
-            return _react2.default.createElement(
-                _fieldset2.default,
-                { className: 'trade-container__fieldset' },
-                _react2.default.createElement(_buttonToggleMenu2.default, {
-                    buttons_arr: basis_list,
-                    className: 'dropdown--no-margin',
-                    name: 'basis',
-                    onChange: onChange,
-                    value: basis
-                }),
-                !is_single_currency ? _react2.default.createElement(
-                    'div',
-                    { className: 'trade-container__currency-options' },
-                    _react2.default.createElement(_DropDown2.default, {
-                        className: (0, _classnames2.default)({ 'trade-container__currency-options-dropdown': !is_single_currency }),
-                        classNameDisplay: 'trade-container__currency-options--display',
-                        has_symbol: true,
-                        is_alignment_left: true,
-                        is_nativepicker: false,
-                        list: currencies_list,
-                        name: 'currency',
-                        value: currency,
-                        onChange: onChange
-                    }),
-                    input
-                ) : input,
-                _react2.default.createElement(_allowEquals2.default, {
-                    contract_start_type: contract_start_type,
-                    contract_type: contract_type,
-                    contract_types_list: contract_types_list,
-                    duration_unit: duration_unit,
-                    expiry_type: expiry_type,
-                    onChange: onChange,
-                    value: parseInt(is_equal)
-                })
-            );
-        }
-    }]);
-
-    return Amount;
-}(_react2.default.Component);
+    return _react2.default.createElement(
+        _fieldset2.default,
+        { className: 'trade-container__fieldset' },
+        _react2.default.createElement(_buttonToggleMenu2.default, {
+            buttons_arr: basis_list,
+            className: 'dropdown--no-margin',
+            name: 'basis',
+            onChange: onChange,
+            value: basis
+        }),
+        !is_single_currency ? _react2.default.createElement(
+            'div',
+            { className: 'trade-container__currency-options' },
+            _react2.default.createElement(_DropDown2.default, {
+                className: (0, _classnames2.default)({ 'trade-container__currency-options-dropdown': !is_single_currency }),
+                classNameDisplay: 'trade-container__currency-options--display',
+                has_symbol: true,
+                is_alignment_left: true,
+                is_nativepicker: false,
+                list: currencies_list,
+                name: 'currency',
+                value: currency,
+                onChange: onChange
+            }),
+            input
+        ) : input,
+        _react2.default.createElement(_allowEquals2.default, {
+            contract_start_type: contract_start_type,
+            contract_type: contract_type,
+            contract_types_list: contract_types_list,
+            duration_unit: duration_unit,
+            expiry_type: expiry_type,
+            onChange: onChange,
+            value: parseInt(is_equal)
+        })
+    );
+};
 
 Amount.propTypes = {
     amount: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
@@ -23451,11 +23426,10 @@ Amount.propTypes = {
     validation_errors: _propTypes2.default.object
 };
 
-exports.default = (0, _connect.connect)(function (_ref) {
-    var modules = _ref.modules,
-        client = _ref.client;
+exports.default = (0, _connect.connect)(function (_ref2) {
+    var modules = _ref2.modules,
+        client = _ref2.client;
     return {
-        // Amount component props
         amount: modules.trade.amount,
         basis: modules.trade.basis,
         basis_list: modules.trade.basis_list,
@@ -31009,7 +30983,16 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
     }, {
         key: 'setValidationErrorMessages',
         value: function setValidationErrorMessages(propertyName, messages) {
-            if (!this.validation_errors[propertyName] || this.validation_errors[propertyName] !== messages) {
+            var _this4 = this;
+
+            var is_different = function is_different() {
+                return _this4.validation_errors[propertyName].filter(function (x) {
+                    return messages.includes(x);
+                }).length > 0;
+            };
+            if (!this.validation_errors[propertyName]) {
+                this.validation_errors[propertyName] = messages;
+            } else if (is_different()) {
                 this.validation_errors[propertyName] = messages;
             }
         }
@@ -31024,12 +31007,12 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
     }, {
         key: 'setValidationRules',
         value: function setValidationRules() {
-            var _this4 = this;
+            var _this5 = this;
 
             var rules = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
             Object.keys(rules).forEach(function (key) {
-                _this4.addRule(key, rules[key]);
+                _this5.addRule(key, rules[key]);
             });
         }
 
@@ -31044,12 +31027,12 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
     }, {
         key: 'addRule',
         value: function addRule(property, rules) {
-            var _this5 = this;
+            var _this6 = this;
 
             this.validation_rules[property] = rules;
 
             (0, _mobx.intercept)(this, property, function (change) {
-                _this5.validateProperty(property, change.newValue);
+                _this6.validateProperty(property, change.newValue);
                 return change;
             });
         }
@@ -31065,7 +31048,7 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
     }, {
         key: 'validateProperty',
         value: function validateProperty(property, value) {
-            var _this6 = this;
+            var _this7 = this;
 
             var trigger = this.validation_rules[property].trigger;
             var inputs = _defineProperty({}, property, value !== undefined ? value : this[property]);
@@ -31081,9 +31064,7 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
             validator.isPassed();
 
             Object.keys(inputs).forEach(function (key) {
-                if (validator.errors.get(key).length > 0) {
-                    _this6.setValidationErrorMessages(key, validator.errors.get(key));
-                }
+                _this7.setValidationErrorMessages(key, validator.errors.get(key));
             });
         }
 
@@ -31095,29 +31076,29 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
     }, {
         key: 'validateAllProperties',
         value: function validateAllProperties() {
-            var _this7 = this;
+            var _this8 = this;
 
             var validation_rules = Object.keys(this.validation_rules);
             var validation_errors = Object.keys(this.validation_errors);
 
             validation_rules.forEach(function (p) {
-                _this7.validateProperty(p, _this7[p]);
+                _this8.validateProperty(p, _this8[p]);
             });
 
             // Remove keys that are present in error, but not in rules:
             validation_errors.forEach(function (error) {
                 if (!validation_rules.includes(error)) {
-                    delete _this7.validation_errors[error];
+                    delete _this8.validation_errors[error];
                 }
             });
         }
     }, {
         key: 'onSwitchAccount',
         value: function onSwitchAccount(listener) {
-            var _this8 = this;
+            var _this9 = this;
 
             this.switchAccountDisposer = (0, _mobx.when)(function () {
-                return _this8.root_store.client.switch_broadcast;
+                return _this9.root_store.client.switch_broadcast;
             }, _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
                 var result;
                 return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -31125,7 +31106,7 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
                         switch (_context.prev = _context.next) {
                             case 0:
                                 _context.prev = 0;
-                                result = _this8.switch_account_listener();
+                                result = _this9.switch_account_listener();
 
                                 if (!(result && result.then && typeof result.then === 'function')) {
                                     _context.next = 6;
@@ -31133,8 +31114,8 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
                                 }
 
                                 result.then(function () {
-                                    _this8.root_store.client.switchEndSignal();
-                                    _this8.onSwitchAccount(_this8.switch_account_listener);
+                                    _this9.root_store.client.switchEndSignal();
+                                    _this9.onSwitchAccount(_this9.switch_account_listener);
                                 });
                                 _context.next = 7;
                                 break;
@@ -31161,7 +31142,7 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
                                 return _context.stop();
                         }
                     }
-                }, _callee, _this8, [[0, 9]]);
+                }, _callee, _this9, [[0, 9]]);
             })));
             this.switch_account_listener = listener;
         }
@@ -33982,7 +33963,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '15034'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
