@@ -1,7 +1,7 @@
 {
-  "404.js": "/br_fix-trade-params-components/app/js/404-9678f971aecc8fd8a2ee.js",
+  "404.js": "/br_fix-trade-params-components/app/js/404-5189d05e3eada5e2fb30.js",
   "account_password.js": "/br_fix-trade-params-components/app/js/account_password-5b98c5e0011cf272df7f.js",
-  "api_toke.js": "/br_fix-trade-params-components/app/js/api_toke-856a16352b5b0f7b5fb2.js",
+  "api_token.js": "/br_fix-trade-params-components/app/js/api_token-1bcb0c881a41de9bfd6e.js",
   "authorized_application.js": "/br_fix-trade-params-components/app/js/authorized_application-41eb62c13df5f986ea68.js",
   "binary.js": "/br_fix-trade-params-components/app/js/binary.js",
   "binary.js.map": "/br_fix-trade-params-components/app/js/binary.js.map",
@@ -21,5 +21,5 @@
   "smart_chart.js": "/br_fix-trade-params-components/app/js/smart_chart-88116283be894294b9e5.js",
   "statement.js": "/br_fix-trade-params-components/app/js/statement-64dc835a679e2e68c64f.js",
   "vendor.js": "/br_fix-trade-params-components/app/js/vendor.min.js",
-  "vendors~smart_chart.js": "/br_fix-trade-params-components/app/js/vendors~smart_chart-04460e87dda1d6ec37fc.js"
+  "vendors~smart_chart.js": "/br_fix-trade-params-components/app/js/vendors~smart_chart-cb46f50490637cf4e2ac.js"
 }

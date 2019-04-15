@@ -63,7 +63,7 @@
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "" + ({"404":"404","account_password":"account_password","api_toke":"api_toke","authorized_application":"authorized_application","cashier_password":"cashier_password","contract":"contract","financial_assessment":"financial_assessment","limits":"limits","login_history":"login_history","personal_details":"personal_details","portfolio~statement":"portfolio~statement","portfolio":"portfolio","statement":"statement","self_exclusion":"self_exclusion","settings":"settings","vendors~smart_chart":"vendors~smart_chart","smart_chart":"smart_chart"}[chunkId]||chunkId) + "-" + {"404":"9678f971aecc8fd8a2ee","account_password":"5b98c5e0011cf272df7f","api_toke":"856a16352b5b0f7b5fb2","authorized_application":"41eb62c13df5f986ea68","cashier_password":"90e23ba1132672b3e187","contract":"c32b2b5dbf9407003f81","financial_assessment":"182a107203c81d1cc33a","limits":"6122a66075b7120f5152","login_history":"92742ccaa1efb1ab65b8","personal_details":"716845b634031dd9cf95","portfolio~statement":"89c32cd4391ea5a712d9","portfolio":"aab793ab7fcad630040c","statement":"64dc835a679e2e68c64f","self_exclusion":"226ac0134b0354423868","settings":"90edf5f4d945de1a9104","vendors~smart_chart":"04460e87dda1d6ec37fc","smart_chart":"88116283be894294b9e5"}[chunkId] + ".js"
+/******/ 		return __webpack_require__.p + "" + ({"404":"404","account_password":"account_password","api_token":"api_token","authorized_application":"authorized_application","cashier_password":"cashier_password","contract":"contract","financial_assessment":"financial_assessment","limits":"limits","login_history":"login_history","personal_details":"personal_details","portfolio~statement":"portfolio~statement","portfolio":"portfolio","statement":"statement","self_exclusion":"self_exclusion","settings":"settings","vendors~smart_chart":"vendors~smart_chart","smart_chart":"smart_chart"}[chunkId]||chunkId) + "-" + {"404":"5189d05e3eada5e2fb30","account_password":"5b98c5e0011cf272df7f","api_token":"1bcb0c881a41de9bfd6e","authorized_application":"41eb62c13df5f986ea68","cashier_password":"90e23ba1132672b3e187","contract":"c32b2b5dbf9407003f81","financial_assessment":"182a107203c81d1cc33a","limits":"6122a66075b7120f5152","login_history":"92742ccaa1efb1ab65b8","personal_details":"716845b634031dd9cf95","portfolio~statement":"89c32cd4391ea5a712d9","portfolio":"aab793ab7fcad630040c","statement":"64dc835a679e2e68c64f","self_exclusion":"226ac0134b0354423868","settings":"90edf5f4d945de1a9104","vendors~smart_chart":"cb46f50490637cf4e2ac","smart_chart":"88116283be894294b9e5"}[chunkId] + ".js"
 /******/ 	}
 /******/
 /******/ 	// The require function
@@ -532,98 +532,6 @@ exports.default = function (_ref) {
 
 /***/ }),
 
-/***/ "./src/images/app_2/settings/confirmation-disabled.svg":
-/*!*************************************************************!*\
-  !*** ./src/images/app_2/settings/confirmation-disabled.svg ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }return target;
-};
-
-function _objectWithoutProperties(obj, keys) {
-  var target = {};for (var i in obj) {
-    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
-  }return target;
-}
-
-exports.default = function (_ref) {
-  var _ref$styles = _ref.styles,
-      styles = _ref$styles === undefined ? {} : _ref$styles,
-      props = _objectWithoutProperties(_ref, ["styles"]);
-
-  return _react2.default.createElement("svg", _extends({ width: "160", height: "120", xmlns: "http://www.w3.org/2000/svg" }, props), _react2.default.createElement("defs", null, _react2.default.createElement("linearGradient", { x1: "50%", y1: "126.02%", x2: "50%", y2: "32.91%", id: "a" }, _react2.default.createElement("stop", { stopColor: "#FFF", stopOpacity: "0", offset: "0%" }), _react2.default.createElement("stop", { stopColor: "#999CAC", stopOpacity: ".16", offset: "100%" }))), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { fill: "#FAFAFA", d: "M0 0h160v120H0z" }), _react2.default.createElement("path", { fill: "url(#a)", d: "M82.24 29.8H65.58L58 52.48 54.97 17l-4.55 35.48h-6.06L36.8 82.72l-3.03-22.68-28.19-7.56L2.5 31.5 0 31.1v77.98h82.24z" }), _react2.default.createElement("path", { d: "M83 32c-.14.14-.34-1.45-.54-1.45H66.32l-7.41 22.3c-.27.79-1.43.64-1.48-.2L55 20.93l-3.65 31.76a.76.76 0 0 1-.75.69h-5.43L37.7 83.15c-.14.87-1.39.84-1.5-.02l-3-22.61L5.1 53.08a.76.76 0 0 1-.16-.37L2.08 32.56 0 32.84v-1.75l2.27-.43a.76.76 0 0 1 1.14.54l3.01 21.1 28.08 7.44a.76.76 0 0 1 .16.37l2.37 17.8 6.75-25.43a.76.76 0 0 1 .75-.63h5.38l4.49-35.16c.09-.93 1.45-.91 1.5.02L58.7 48.7l6.36-19.15a.76.76 0 0 1 .72-.52h16.38L83 32z", fill: "#999CAC", fillRule: "nonzero" }), _react2.default.createElement("rect", { fill: "#EBEBEB", fillRule: "nonzero", x: "51", y: "14", width: "105", height: "92", rx: "2" }), _react2.default.createElement("path", { d: "M56 21h32v3H56v-3zm0 43h32v3H56v-3z", fill: "#D6D6D6" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "56", y: "28", width: "96", height: "28", rx: "2" }), _react2.default.createElement("path", { d: "M58 28h46l10 14.21L104 56H58a2 2 0 0 1-2-2V30a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M121 36h23v3h-23v-3zm0 9h23v3h-23v-3z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M64 37h10v10H64V37zm13 4h27v3H77v-3z", fill: "#74CDBE" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "56", y: "71", width: "96", height: "28", rx: "2" }), _react2.default.createElement("path", { d: "M58 71h46l10 14.21L104 99H58a2 2 0 0 1-2-2V73a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M121 79h23v3h-23v-3zm0 9h23v3h-23v-3z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M64 80h10v10H64V80zm13 4h27v3H77v-3z", fill: "#74CDBE" })));
-};
-
-/***/ }),
-
-/***/ "./src/images/app_2/settings/confirmation-enabled.svg":
-/*!************************************************************!*\
-  !*** ./src/images/app_2/settings/confirmation-enabled.svg ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }return target;
-};
-
-function _objectWithoutProperties(obj, keys) {
-  var target = {};for (var i in obj) {
-    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
-  }return target;
-}
-
-exports.default = function (_ref) {
-  var _ref$styles = _ref.styles,
-      styles = _ref$styles === undefined ? {} : _ref$styles,
-      props = _objectWithoutProperties(_ref, ["styles"]);
-
-  return _react2.default.createElement("svg", _extends({ width: "160", height: "120", xmlns: "http://www.w3.org/2000/svg" }, props), _react2.default.createElement("defs", null, _react2.default.createElement("linearGradient", { x1: "50%", y1: "126.02%", x2: "50%", y2: "32.91%", id: "a" }, _react2.default.createElement("stop", { stopColor: "#FFF", stopOpacity: "0", offset: "0%" }), _react2.default.createElement("stop", { stopColor: "#999CAC", stopOpacity: ".16", offset: "100%" }))), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("rect", { fill: "#FAFAFA", width: "160", height: "120", rx: "4" }), _react2.default.createElement("path", { fill: "url(#a)", d: "M82.24 29.8H65.58L58 52.48 54.97 17l-4.55 35.48h-6.06L36.8 82.72l-3.03-22.68-28.19-7.56L2.5 31.5 0 31.1v77.98h82.24z" }), _react2.default.createElement("path", { d: "M83 32c-.14.14-.34-1.45-.54-1.45H66.32l-7.41 22.3c-.27.79-1.43.64-1.48-.2L55 20.93l-3.65 31.76a.76.76 0 0 1-.75.69h-5.43L37.7 83.15c-.14.87-1.39.84-1.5-.02l-3-22.61L5.1 53.08a.76.76 0 0 1-.16-.37L2.08 32.56 0 32.84v-1.75l2.27-.43a.76.76 0 0 1 1.14.54l3.01 21.1 28.08 7.44a.76.76 0 0 1 .16.37l2.37 17.8 6.75-25.43a.76.76 0 0 1 .75-.63h5.38l4.49-35.16c.09-.93 1.45-.91 1.5.02L58.7 48.7l6.36-19.15a.76.76 0 0 1 .72-.52h16.38L83 32z", fill: "#999CAC", fillRule: "nonzero" }), _react2.default.createElement("rect", { fill: "#EBEBEB", fillRule: "nonzero", x: "51", y: "14", width: "105", height: "92", rx: "2" }), _react2.default.createElement("path", { d: "M56 21h32v3H56v-3zm0 43h32v3H56v-3z", fill: "#D6D6D6" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "56", y: "28", width: "96", height: "28", rx: "2" }), _react2.default.createElement("path", { d: "M58 28h46l10 14.21L104 56H58a2 2 0 0 1-2-2V30a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M121 36h23v3h-23v-3zm0 9h23v3h-23v-3z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M64 37h10v10H64V37zm13 4h27v3H77v-3z", fill: "#74CDBE" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "56", y: "71", width: "96", height: "28", rx: "2" }), _react2.default.createElement("path", { d: "M58 71h46l10 14.21L104 99H58a2 2 0 0 1-2-2V73a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M121 79h23v3h-23v-3zm0 9h23v3h-23v-3z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M64 80h10v10H64V80zm13 4h27v3H77v-3z", fill: "#74CDBE" }), _react2.default.createElement("path", { fill: "#000", fillRule: "nonzero", opacity: ".5", d: "M0 0h160v120H0z" }), _react2.default.createElement("rect", { fill: "#EBEBEB", fillRule: "nonzero", x: "16", y: "33", width: "129", height: "55", rx: "2" }), _react2.default.createElement("path", { d: "M26 42h110v5H26v-5zm0 8h51v5H26v-5z", fill: "#D6D6D6" }), _react2.default.createElement("rect", { fill: "#F93", x: "87", y: "63", width: "50", height: "17", rx: "2" }), _react2.default.createElement("path", { d: "M92.68 72v2h-1.17v-5.69h2.22c.42 0 .8.08 1.12.24a1.73 1.73 0 0 1 1.01 1.64c0 .56-.19 1-.57 1.32-.38.32-.9.49-1.58.49h-1.03zm0-.95h1.05c.3 0 .54-.08.7-.22.17-.15.25-.36.25-.63 0-.28-.08-.5-.25-.67a.92.92 0 0 0-.68-.27h-1.07v1.79zm8.3-2.74v3.75c0 .62-.2 1.11-.6 1.47-.38.37-.91.55-1.59.55-.66 0-1.19-.18-1.58-.53a1.89 1.89 0 0 1-.6-1.45v-3.79h1.18v3.76c0 .37.09.64.26.81.18.17.43.26.74.26.66 0 1-.35 1-1.04V68.3h1.18zm3.06 3.6h-.93V74h-1.18v-5.69h2.12c.67 0 1.19.15 1.55.45.37.3.55.72.55 1.27 0 .39-.09.71-.25.97-.17.26-.43.47-.77.62l1.23 2.32V74h-1.25l-1.07-2.08zm-.93-.94h.94c.3 0 .52-.08.68-.23a.8.8 0 0 0 .25-.62.86.86 0 0 0-.23-.63c-.15-.15-.39-.23-.7-.23h-.94v1.7zm8.4 1.13c-.05.62-.28 1.1-.68 1.45-.41.35-.95.53-1.61.53-.73 0-1.3-.25-1.72-.74a3.02 3.02 0 0 1-.63-2.02v-.35c0-.54.1-1.03.29-1.44.19-.42.46-.74.82-.96a2.31 2.31 0 0 1 1.25-.34c.66 0 1.19.18 1.59.53.4.35.63.85.7 1.48h-1.18c-.03-.37-.13-.63-.3-.8-.18-.16-.45-.25-.81-.25-.39 0-.68.14-.88.42-.19.28-.29.72-.3 1.3v.44c0 .61.1 1.06.28 1.34.19.29.48.43.88.43.37 0 .64-.08.82-.25.17-.16.28-.42.3-.77h1.17zm5.4 1.9h-1.18v-2.44h-2.29V74h-1.17v-5.69h1.18v2.3h2.28v-2.3h1.17V74zm4.3-1.17h-2.06l-.39 1.17h-1.24l2.11-5.69h1.09l2.13 5.69h-1.25l-.4-1.17zm-1.74-.95h1.42l-.71-2.13-.71 2.13zm6.86.63a.6.6 0 0 0-.24-.51 3.12 3.12 0 0 0-.84-.38 5.98 5.98 0 0 1-.96-.39c-.65-.35-.97-.82-.97-1.4 0-.31.08-.59.26-.83.17-.24.42-.43.74-.56a2.8 2.8 0 0 1 1.1-.2c.4 0 .76.07 1.08.22a1.63 1.63 0 0 1 1 1.54h-1.17a.77.77 0 0 0-.24-.61c-.17-.15-.4-.22-.7-.22-.28 0-.5.06-.66.18a.57.57 0 0 0-.24.48c0 .18.1.34.28.46.18.13.46.25.82.36.67.2 1.15.44 1.46.74.3.3.45.67.45 1.11 0 .5-.18.88-.56 1.16-.37.28-.87.42-1.5.42a2.9 2.9 0 0 1-1.2-.24 1.9 1.9 0 0 1-.82-.66 1.69 1.69 0 0 1-.28-.97h1.18c0 .63.37.94 1.12.94.28 0 .5-.05.65-.17a.55.55 0 0 0 .24-.47zm5.39-.98h-2.25v1.53h2.64V74h-3.81v-5.69h3.8v.95h-2.63v1.36h2.25v.91z", fill: "#FFF", fillRule: "nonzero" }), _react2.default.createElement("path", { d: "M52.97 72.1c-.04.62-.27 1.1-.67 1.45-.41.35-.95.53-1.62.53-.73 0-1.3-.25-1.72-.74a3.02 3.02 0 0 1-.62-2.02v-.35c0-.54.1-1.03.29-1.44.19-.42.46-.74.82-.96a2.31 2.31 0 0 1 1.25-.34c.66 0 1.18.18 1.59.53.4.35.63.85.69 1.48h-1.17c-.03-.36-.13-.63-.3-.8-.18-.16-.45-.24-.81-.24-.39 0-.68.13-.88.41-.2.28-.29.72-.3 1.3v.44c0 .61.1 1.06.28 1.35.19.28.48.42.88.42.37 0 .64-.08.82-.25.17-.16.28-.42.3-.77h1.17zm3.98.73H54.9L54.5 74h-1.24l2.12-5.69h1.08L58.6 74h-1.24l-.4-1.17zm-1.74-.95h1.43l-.72-2.13-.7 2.13zM63.75 74h-1.17l-2.28-3.74V74h-1.17v-5.69h1.17l2.28 3.75v-3.75h1.17V74zm5.49-1.9c-.05.62-.27 1.1-.68 1.45-.4.35-.94.53-1.61.53-.73 0-1.3-.25-1.72-.74a3.02 3.02 0 0 1-.63-2.02v-.35c0-.54.1-1.03.3-1.44.18-.42.46-.74.82-.96a2.31 2.31 0 0 1 1.24-.34c.66 0 1.19.18 1.6.53.4.35.62.85.69 1.48h-1.18c-.02-.36-.13-.63-.3-.8-.18-.16-.45-.24-.8-.24-.4 0-.69.13-.88.41-.2.28-.3.72-.3 1.3v.44c0 .61.1 1.06.28 1.35.19.28.48.42.88.42.36 0 .63-.08.8-.25.19-.16.29-.42.32-.77h1.17zm4.19-.56h-2.25v1.52h2.64V74h-3.81v-5.69h3.8v.95h-2.63v1.36h2.25v.91zm2.25 1.52h2.49V74H74.5v-5.69h1.17v4.75z", fill: "#F93", fillRule: "nonzero" })));
-};
-
-/***/ }),
-
 /***/ "./src/images/app_2/settings/dark/OHLC-disabled.svg":
 /*!**********************************************************!*\
   !*** ./src/images/app_2/settings/dark/OHLC-disabled.svg ***!
@@ -762,98 +670,6 @@ exports.default = function (_ref) {
 
 /***/ }),
 
-/***/ "./src/images/app_2/settings/dark/confirmation-disabled.svg":
-/*!******************************************************************!*\
-  !*** ./src/images/app_2/settings/dark/confirmation-disabled.svg ***!
-  \******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }return target;
-};
-
-function _objectWithoutProperties(obj, keys) {
-  var target = {};for (var i in obj) {
-    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
-  }return target;
-}
-
-exports.default = function (_ref) {
-  var _ref$styles = _ref.styles,
-      styles = _ref$styles === undefined ? {} : _ref$styles,
-      props = _objectWithoutProperties(_ref, ["styles"]);
-
-  return _react2.default.createElement("svg", _extends({ width: "160", height: "120", xmlns: "http://www.w3.org/2000/svg" }, props), _react2.default.createElement("defs", null, _react2.default.createElement("linearGradient", { x1: "50%", y1: "147.77%", x2: "50%", y2: "10.76%", id: "a" }, _react2.default.createElement("stop", { stopColor: "#101320", stopOpacity: "0", offset: "0%" }), _react2.default.createElement("stop", { stopColor: "#FFF", stopOpacity: ".16", offset: "100%" }))), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { fill: "#101320", d: "M0 0h160v120H0z" }), _react2.default.createElement("path", { fill: "url(#a)", d: "M82.24 29.8H65.58L58 52.48 54.97 17l-4.55 35.48h-6.06L36.8 82.72l-3.03-22.68-28.19-7.56L2.5 31.5 0 31.1v77.98h82.24z" }), _react2.default.createElement("path", { d: "M83 32c-.14.14-.34-1.45-.54-1.45H66.32l-7.41 22.3c-.27.79-1.43.64-1.48-.2L55 20.93l-3.65 31.76a.76.76 0 0 1-.75.69h-5.43L37.7 83.15c-.14.87-1.39.84-1.5-.02l-3-22.61L5.1 53.08a.76.76 0 0 1-.16-.37L2.08 32.56 0 32.84v-1.75l2.27-.43a.76.76 0 0 1 1.14.54l3.01 21.1 28.08 7.44a.76.76 0 0 1 .16.37l2.37 17.8 6.75-25.43a.76.76 0 0 1 .75-.63h5.38l4.49-35.16c.09-.93 1.45-.91 1.5.02L58.7 48.7l6.36-19.15a.76.76 0 0 1 .72-.52h16.38L83 32z", fill: "#FFF", fillRule: "nonzero" }), _react2.default.createElement("rect", { fill: "#191C31", fillRule: "nonzero", x: "51", y: "14", width: "105", height: "92", rx: "2" }), _react2.default.createElement("path", { d: "M56 21h32v3H56v-3zm0 43h32v3H56v-3z", fill: "#303346" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "56", y: "28", width: "96", height: "28", rx: "2" }), _react2.default.createElement("path", { d: "M58 28h46l10 14.21L104 56H58a2 2 0 0 1-2-2V30a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M121 36h23v3h-23v-3zm0 9h23v3h-23v-3z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M64 37h10v10H64V37zm13 4h27v3H77v-3z", fill: "#74CDBE" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "56", y: "71", width: "96", height: "28", rx: "2" }), _react2.default.createElement("path", { d: "M58 71h46l10 14.21L104 99H58a2 2 0 0 1-2-2V73a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M121 79h23v3h-23v-3zm0 9h23v3h-23v-3z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M64 80h10v10H64V80zm13 4h27v3H77v-3z", fill: "#74CDBE" })));
-};
-
-/***/ }),
-
-/***/ "./src/images/app_2/settings/dark/confirmation-enabled.svg":
-/*!*****************************************************************!*\
-  !*** ./src/images/app_2/settings/dark/confirmation-enabled.svg ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }return target;
-};
-
-function _objectWithoutProperties(obj, keys) {
-  var target = {};for (var i in obj) {
-    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
-  }return target;
-}
-
-exports.default = function (_ref) {
-  var _ref$styles = _ref.styles,
-      styles = _ref$styles === undefined ? {} : _ref$styles,
-      props = _objectWithoutProperties(_ref, ["styles"]);
-
-  return _react2.default.createElement("svg", _extends({ width: "160", height: "120", xmlns: "http://www.w3.org/2000/svg" }, props), _react2.default.createElement("defs", null, _react2.default.createElement("linearGradient", { x1: "50%", y1: "147.77%", x2: "50%", y2: "10.76%", id: "a" }, _react2.default.createElement("stop", { stopColor: "#101320", stopOpacity: "0", offset: "0%" }), _react2.default.createElement("stop", { stopColor: "#FFF", stopOpacity: ".16", offset: "100%" }))), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { fill: "#101320", d: "M0 0h160v120H0z" }), _react2.default.createElement("path", { fill: "url(#a)", d: "M82.24 29.8H65.58L58 52.48 54.97 17l-4.55 35.48h-6.06L36.8 82.72l-3.03-22.68-28.19-7.56L2.5 31.5 0 31.1v77.98h82.24z" }), _react2.default.createElement("path", { d: "M83 32c-.14.14-.34-1.45-.54-1.45H66.32l-7.41 22.3c-.27.79-1.43.64-1.48-.2L55 20.93l-3.65 31.76a.76.76 0 0 1-.75.69h-5.43L37.7 83.15c-.14.87-1.39.84-1.5-.02l-3-22.61L5.1 53.08a.76.76 0 0 1-.16-.37L2.08 32.56 0 32.84v-1.75l2.27-.43a.76.76 0 0 1 1.14.54l3.01 21.1 28.08 7.44a.76.76 0 0 1 .16.37l2.37 17.8 6.75-25.43a.76.76 0 0 1 .75-.63h5.38l4.49-35.16c.09-.93 1.45-.91 1.5.02L58.7 48.7l6.36-19.15a.76.76 0 0 1 .72-.52h16.38L83 32z", fill: "#FFF", fillRule: "nonzero" }), _react2.default.createElement("rect", { fill: "#191C31", fillRule: "nonzero", x: "51", y: "14", width: "105", height: "92", rx: "2" }), _react2.default.createElement("path", { d: "M56 21h32v3H56v-3zm0 43h32v3H56v-3z", fill: "#303346" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "56", y: "28", width: "96", height: "28", rx: "2" }), _react2.default.createElement("path", { d: "M58 28h46l10 14.21L104 56H58a2 2 0 0 1-2-2V30a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M121 36h23v3h-23v-3zm0 9h23v3h-23v-3z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M64 37h10v10H64V37zm13 4h27v3H77v-3z", fill: "#74CDBE" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "56", y: "71", width: "96", height: "28", rx: "2" }), _react2.default.createElement("path", { d: "M58 71h46l10 14.21L104 99H58a2 2 0 0 1-2-2V73a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M121 79h23v3h-23v-3zm0 9h23v3h-23v-3z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M64 80h10v10H64V80zm13 4h27v3H77v-3z", fill: "#74CDBE" }), _react2.default.createElement("path", { fill: "#101320", fillRule: "nonzero", opacity: ".73", d: "M0 0h160v120H0z" }), _react2.default.createElement("rect", { fill: "#202641", fillRule: "nonzero", x: "16", y: "33", width: "129", height: "55", rx: "2" }), _react2.default.createElement("path", { d: "M26 42h110v5H26v-5zm0 8h51v5H26v-5z", fill: "#303346" }), _react2.default.createElement("rect", { fill: "#F93", x: "87", y: "63", width: "50", height: "17", rx: "2" }), _react2.default.createElement("path", { d: "M92.68 72v2h-1.17v-5.69h2.22c.42 0 .8.08 1.12.24a1.73 1.73 0 0 1 1.01 1.64c0 .56-.19 1-.57 1.32-.38.32-.9.49-1.58.49h-1.03zm0-.95h1.05c.3 0 .54-.08.7-.22.17-.15.25-.36.25-.63 0-.28-.08-.5-.25-.67a.92.92 0 0 0-.68-.27h-1.07v1.79zm8.3-2.74v3.75c0 .62-.2 1.11-.6 1.47-.38.37-.91.55-1.59.55-.66 0-1.19-.18-1.58-.53a1.89 1.89 0 0 1-.6-1.45v-3.79h1.18v3.76c0 .37.09.64.26.81.18.17.43.26.74.26.66 0 1-.35 1-1.04V68.3h1.18zm3.06 3.6h-.93V74h-1.18v-5.69h2.12c.67 0 1.19.15 1.55.45.37.3.55.72.55 1.27 0 .39-.09.71-.25.97-.17.26-.43.47-.77.62l1.23 2.32V74h-1.25l-1.07-2.08zm-.93-.94h.94c.3 0 .52-.08.68-.23a.8.8 0 0 0 .25-.62.86.86 0 0 0-.23-.63c-.15-.15-.39-.23-.7-.23h-.94v1.7zm8.4 1.13c-.05.62-.28 1.1-.68 1.45-.41.35-.95.53-1.61.53-.73 0-1.3-.25-1.72-.74a3.02 3.02 0 0 1-.63-2.02v-.35c0-.54.1-1.03.29-1.44.19-.42.46-.74.82-.96a2.31 2.31 0 0 1 1.25-.34c.66 0 1.19.18 1.59.53.4.35.63.85.7 1.48h-1.18c-.03-.37-.13-.63-.3-.8-.18-.16-.45-.25-.81-.25-.39 0-.68.14-.88.42-.19.28-.29.72-.3 1.3v.44c0 .61.1 1.06.28 1.34.19.29.48.43.88.43.37 0 .64-.08.82-.25.17-.16.28-.42.3-.77h1.17zm5.4 1.9h-1.18v-2.44h-2.29V74h-1.17v-5.69h1.18v2.3h2.28v-2.3h1.17V74zm4.3-1.17h-2.06l-.39 1.17h-1.24l2.11-5.69h1.09l2.13 5.69h-1.25l-.4-1.17zm-1.74-.95h1.42l-.71-2.13-.71 2.13zm6.86.63a.6.6 0 0 0-.24-.51 3.12 3.12 0 0 0-.84-.38 5.98 5.98 0 0 1-.96-.39c-.65-.35-.97-.82-.97-1.4 0-.31.08-.59.26-.83.17-.24.42-.43.74-.56a2.8 2.8 0 0 1 1.1-.2c.4 0 .76.07 1.08.22a1.63 1.63 0 0 1 1 1.54h-1.17a.77.77 0 0 0-.24-.61c-.17-.15-.4-.22-.7-.22-.28 0-.5.06-.66.18a.57.57 0 0 0-.24.48c0 .18.1.34.28.46.18.13.46.25.82.36.67.2 1.15.44 1.46.74.3.3.45.67.45 1.11 0 .5-.18.88-.56 1.16-.37.28-.87.42-1.5.42a2.9 2.9 0 0 1-1.2-.24 1.9 1.9 0 0 1-.82-.66 1.69 1.69 0 0 1-.28-.97h1.18c0 .63.37.94 1.12.94.28 0 .5-.05.65-.17a.55.55 0 0 0 .24-.47zm5.39-.98h-2.25v1.53h2.64V74h-3.81v-5.69h3.8v.95h-2.63v1.36h2.25v.91z", fill: "#FFF", fillRule: "nonzero" }), _react2.default.createElement("path", { d: "M52.97 72.1c-.04.62-.27 1.1-.67 1.45-.41.35-.95.53-1.62.53-.73 0-1.3-.25-1.72-.74a3.02 3.02 0 0 1-.62-2.02v-.35c0-.54.1-1.03.29-1.44.19-.42.46-.74.82-.96a2.31 2.31 0 0 1 1.25-.34c.66 0 1.18.18 1.59.53.4.35.63.85.69 1.48h-1.17c-.03-.36-.13-.63-.3-.8-.18-.16-.45-.24-.81-.24-.39 0-.68.13-.88.41-.2.28-.29.72-.3 1.3v.44c0 .61.1 1.06.28 1.35.19.28.48.42.88.42.37 0 .64-.08.82-.25.17-.16.28-.42.3-.77h1.17zm3.98.73H54.9L54.5 74h-1.24l2.12-5.69h1.08L58.6 74h-1.24l-.4-1.17zm-1.74-.95h1.43l-.72-2.13-.7 2.13zM63.75 74h-1.17l-2.28-3.74V74h-1.17v-5.69h1.17l2.28 3.75v-3.75h1.17V74zm5.49-1.9c-.05.62-.27 1.1-.68 1.45-.4.35-.94.53-1.61.53-.73 0-1.3-.25-1.72-.74a3.02 3.02 0 0 1-.63-2.02v-.35c0-.54.1-1.03.3-1.44.18-.42.46-.74.82-.96a2.31 2.31 0 0 1 1.24-.34c.66 0 1.19.18 1.6.53.4.35.62.85.69 1.48h-1.18c-.02-.36-.13-.63-.3-.8-.18-.16-.45-.24-.8-.24-.4 0-.69.13-.88.41-.2.28-.3.72-.3 1.3v.44c0 .61.1 1.06.28 1.35.19.28.48.42.88.42.36 0 .63-.08.8-.25.19-.16.29-.42.32-.77h1.17zm4.19-.56h-2.25v1.52h2.64V74h-3.81v-5.69h3.8v.95h-2.63v1.36h2.25v.91zm2.25 1.52h2.49V74H74.5v-5.69h1.17v4.75z", fill: "#F93", fillRule: "nonzero" })));
-};
-
-/***/ }),
-
 /***/ "./src/images/app_2/settings/dark/interval-disabled.svg":
 /*!**************************************************************!*\
   !*** ./src/images/app_2/settings/dark/interval-disabled.svg ***!
@@ -988,98 +804,6 @@ exports.default = function (_ref) {
       props = _objectWithoutProperties(_ref, ["styles"]);
 
   return _react2.default.createElement("svg", _extends({ width: "160", height: "120", xmlns: "http://www.w3.org/2000/svg" }, props), _react2.default.createElement("defs", null, _react2.default.createElement("linearGradient", { x1: "50%", y1: "97.16%", x2: "50%", y2: "3.83%", id: "a" }, _react2.default.createElement("stop", { stopColor: "#101320", stopOpacity: "0", offset: "0%" }), _react2.default.createElement("stop", { stopColor: "#FFF", stopOpacity: ".16", offset: "100%" }))), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { fill: "#101320", fillRule: "nonzero", d: "M0 0h160v120H0z" }), _react2.default.createElement("path", { fill: "url(#a)", d: "M0 28.06l1.35 3.76 4.04 7.53 2.7 3.77 4.04-3.77h2.7l2.7-3.76 1.35 3.76 1.35-3.76 1.34 3.76h2.7l1.35 15.06 2.7-3.76 4.04-3.77 1.35 3.77h5.4l3.04 25.76 2.34-25.76 1.35 3.76 1.35-3.76 6.74-7.53 1.35-11.3 4.05-3.76 8.09 3.76 2.7 3.77h2.69l1.35-3.77 1.35 3.77 1.34-3.77 1.35-3.76 4.05-7.53 2.7-3.76h2.7L88.98 13l2.7 3.77h2.7l2.69 3.76 1.35 18.82 1.34-3.76 6.75-3.77h2.7l1.34 11.3 1.35-11.3 1.35 3.77H130V120H0z" }), _react2.default.createElement("path", { d: "M8.43 43.19a.5.5 0 0 1-.74-.08l-2.74-3.78-4.04-7.45-.05-.14L0 27.6a.5.5 0 1 1 .98-.2l.83 4.06L5.8 38.8l2.37 3.27 3.63-3.35a.5.5 0 0 1 .33-.13h2.45l2.54-3.52a.5.5 0 0 1 .88.12l.88 2.43.88-2.43a.5.5 0 0 1 .94 0l1.22 3.4h2.35a.5.5 0 0 1 .5.46L26 52.63l1.98-2.73 4.04-3.72a.5.5 0 0 1 .81.2l1.23 3.4h5.04a.5.5 0 0 1 .5.43l2.48 21L44 50.22c.04-.54.78-.63.96-.13l.88 2.43.88-2.43.1-.16 6.63-7.34 1.33-11.02a.5.5 0 0 1 .16-.31L59 27.54a.5.5 0 0 1 .54-.09l8.1 3.73a.5.5 0 0 1 .19.16l2.55 3.52h2.09l1.23-3.4a.5.5 0 0 1 .94 0l.88 2.43.87-2.42 1.38-3.8 4.08-7.5 2.7-3.74a.5.5 0 0 1 .4-.2h2.35l1.23-3.4a.5.5 0 0 1 .87-.12l2.55 3.52h2.44a.5.5 0 0 1 .4.2l2.7 3.73a.5.5 0 0 1 .1.26l1.18 16.3.54-1.53a.5.5 0 0 1 .23-.26l6.74-3.73a.5.5 0 0 1 .25-.06h2.7a.5.5 0 0 1 .49.44l.85 7.06.85-7.06c.07-.53.79-.6.97-.11l1.23 3.4H130a.5.5 0 0 1 0 1h-16.74a.5.5 0 0 1-.47-.34l-.64-1.75-1.1 9.1c-.06.58-.91.58-.98 0l-1.3-10.74h-2.12l-6.47 3.57-1.28 3.55c-.19.5-.93.4-.97-.13l-1.34-18.5-2.46-3.4h-2.44a.5.5 0 0 1-.41-.21l-2.14-2.96-1.03 2.84a.5.5 0 0 1-.47.33H85.2l-2.51 3.46-4.02 7.39-2.7 7.45a.5.5 0 0 1-.93 0l-.88-2.42-.88 2.42a.5.5 0 0 1-.47.33h-2.7a.5.5 0 0 1-.4-.2l-2.62-3.62-7.67-3.54-3.66 3.38-1.33 11a.5.5 0 0 1-.13.27l-6.67 7.38-1.32 3.64a.5.5 0 0 1-.94 0l-.58-1.62-2.15 23.5c-.05.6-.92.6-.99 0l-3-25.28h-4.94a.5.5 0 0 1-.47-.33l-1.1-3.02-3.42 3.15-2.7 3.72a.5.5 0 0 1-.9-.25l-1.3-14.45h-2.25a.5.5 0 0 1-.47-.33l-.87-2.43-.88 2.43a.5.5 0 0 1-.94 0l-1.03-2.84-2.14 2.96a.5.5 0 0 1-.4.21h-2.5l-3.91 3.6z", fill: "#FFF", fillRule: "nonzero" }), _react2.default.createElement("path", { d: "M144.6 34.75l4.82-5.75H160v12h-10.59l-4.8-5.75h-1.11v-.5h1.1zm-11.7 0h.6v.5h-.5v.05a1.5 1.5 0 1 1-.1-.55zm2.6.5v-.5h2v.5h-2zm4 0v-.5h2v.5h-2z", fill: "#F93", fillRule: "nonzero" }), _react2.default.createElement("path", { fill: "#101320", d: "M0 3h24v114H0z" }), _react2.default.createElement("path", { fill: "#191C31", fillRule: "nonzero", d: "M23 3h1v114h-1z" }), _react2.default.createElement("path", { d: "M14.29 13.94l.64.63a.25.25 0 0 1-.36.36l-5.5-5.5a.25.25 0 1 1 .36-.36l.63.64a2.99 2.99 0 0 1 1.69-.7v-.76a.25.25 0 1 1 .5 0v.76a3 3 0 0 1 2.74 2.74h.76a.25.25 0 1 1 0 .5h-.76a2.99 2.99 0 0 1-.7 1.69zm-.35-.36a2.5 2.5 0 0 0-3.52-3.52l.35.36a2 2 0 0 1 2.81 2.8l.36.36zm-.72-.71a1.5 1.5 0 0 0-2.09-2.1l2.1 2.1zm-1.47 2.12a3 3 0 0 1-2.74-2.74h-.76a.25.25 0 1 1 0-.5h.76a3 3 0 0 1 .2-.83.25.25 0 1 1 .46.17 2.5 2.5 0 0 0 3.27 3.23.25.25 0 1 1 .19.46 2.98 2.98 0 0 1-.88.21v.76a.25.25 0 1 1-.5 0v-.76zm-1.69-3.48a.25.25 0 1 1 .49.12 1.5 1.5 0 0 0 1.76 1.84.25.25 0 0 1 .1.49 2 2 0 0 1-2.35-2.46zm-.03 16.46a.75.75 0 1 1 1.43.01l.86.65a.75.75 0 0 1 .77-.05l1.48-1.5a.75.75 0 1 1 .36.35l-1.5 1.51a.75.75 0 1 1-1.4.1l-.87-.66a.75.75 0 0 1-.83 0l-.86.65a.75.75 0 1 1-.3-.4l.86-.66zm5.22-.97a.25.25 0 1 0 0-.5.25.25 0 0 0 0 .5zm-2.5 2.5a.25.25 0 1 0 0-.5.25.25 0 0 0 0 .5zm-2-1.5a.25.25 0 1 0 0-.5.25.25 0 0 0 0 .5zm-2 1.5a.25.25 0 1 0 0-.5.25.25 0 0 0 0 .5zM13.4 61h-2.8l-1.12 2.36a.25.25 0 0 1-.46-.22L10.05 61h-.8a.25.25 0 1 1 0-.5h1.04l1.07-2.23a1 1 0 1 1 1.28 0l1.07 2.23h1.04a.25.25 0 1 1 0 .5h-.8l1.03 2.14a.25.25 0 0 1-.46.22L13.4 61zm-.24-.5l-.97-2.02a1 1 0 0 1-.38 0l-.97 2.02h2.32zM12 58a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm.85-13h2.9a.25.25 0 1 1 0 .5h-2.9l1.08 1.07a.25.25 0 1 1-.36.36l-1.5-1.5a.25.25 0 0 1 0-.36l1.5-1.5a.25.25 0 1 1 .36.36L12.85 45zm-1.7-2h-2.9a.25.25 0 1 1 0-.5h2.9l-1.08-1.07a.25.25 0 1 1 .36-.36l1.5 1.5a.25.25 0 0 1 0 .36l-1.5 1.5a.25.25 0 1 1-.36-.36L11.15 43zm1.1 64.75h2.25v.5h-2.25v2.25h-.5v-2.25H9.5v-.5h2.25v-2.25h.5v2.25zm-2.75-16h5v.5h-5v-.5zM14.04 74L13 72.96v.79c0 .14.11.25.25.25h.8zm-1.54-1.5h-3v7h5v-5h-1.25a.75.75 0 0 1-.75-.75V72.5zm-3-.5h3.25L15 74.25v5.25a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5zm2.25 5.15v-2.4a.25.25 0 1 1 .5 0v2.4l.57-.58a.25.25 0 1 1 .36.36l-1 1a.25.25 0 0 1-.36 0l-1-1a.25.25 0 1 1 .36-.36l.57.58z", fill: "#7F8397", fillRule: "nonzero" })));
-};
-
-/***/ }),
-
-/***/ "./src/images/app_2/settings/dark/lock-disabled.svg":
-/*!**********************************************************!*\
-  !*** ./src/images/app_2/settings/dark/lock-disabled.svg ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }return target;
-};
-
-function _objectWithoutProperties(obj, keys) {
-  var target = {};for (var i in obj) {
-    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
-  }return target;
-}
-
-exports.default = function (_ref) {
-  var _ref$styles = _ref.styles,
-      styles = _ref$styles === undefined ? {} : _ref$styles,
-      props = _objectWithoutProperties(_ref, ["styles"]);
-
-  return _react2.default.createElement("svg", _extends({ width: "160", height: "120", xmlns: "http://www.w3.org/2000/svg" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { fill: "#101320", fillRule: "nonzero", d: "M0 0h160v120H0z" }), _react2.default.createElement("rect", { fill: "#191C31", fillRule: "nonzero", x: "20", y: "7", width: "120", height: "105", rx: "2.29" }), _react2.default.createElement("path", { d: "M25.71 14.99H62.3v3.42H25.7V15zm0 49.08H62.3v3.42H25.7v-3.42z", fill: "#303346" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "25.71", y: "22.98", width: "109.71", height: "31.96", rx: "2.29" }), _react2.default.createElement("path", { d: "M27.71 22.98h52.86L92 39.2 80.57 54.93H27.71a2 2 0 0 1-2-2V24.99a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M100 32.1h26.29v3.43H100v-3.42zm0 10.28h26.29v3.42H100v-3.42z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M34.86 33.25h11.43v11.41H34.86V33.25zm14.85 4.57h30.86v3.42H49.71V37.8z", fill: "#74CDBE" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "25.71", y: "72.05", width: "109.71", height: "31.96", rx: "2.29" }), _react2.default.createElement("path", { d: "M27.71 72.05h52.86L92 88.27l-11.43 15.74H27.71a2 2 0 0 1-2-2V74.05a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M100 81.19h26.29v3.42H100v-3.42zm0 10.27h26.29v3.42H100v-3.42z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M34.86 82.33h11.43v11.41H34.86V82.33zm14.85 4.56h30.86v3.42H49.71V86.9z", fill: "#74CDBE" })));
-};
-
-/***/ }),
-
-/***/ "./src/images/app_2/settings/dark/lock-enabled.svg":
-/*!*********************************************************!*\
-  !*** ./src/images/app_2/settings/dark/lock-enabled.svg ***!
-  \*********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }return target;
-};
-
-function _objectWithoutProperties(obj, keys) {
-  var target = {};for (var i in obj) {
-    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
-  }return target;
-}
-
-exports.default = function (_ref) {
-  var _ref$styles = _ref.styles,
-      styles = _ref$styles === undefined ? {} : _ref$styles,
-      props = _objectWithoutProperties(_ref, ["styles"]);
-
-  return _react2.default.createElement("svg", _extends({ width: "160", height: "120", xmlns: "http://www.w3.org/2000/svg" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { fill: "#101320", fillRule: "nonzero", d: "M0 0h160v120H0z" }), _react2.default.createElement("rect", { fill: "#191C31", fillRule: "nonzero", x: "20", y: "7", width: "120", height: "105", rx: "2.29" }), _react2.default.createElement("path", { d: "M25.71 14.99H62.3v3.42H25.7V15zm0 49.08H62.3v3.42H25.7v-3.42z", fill: "#303346" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "25.71", y: "22.98", width: "109.71", height: "31.96", rx: "2.29" }), _react2.default.createElement("path", { d: "M27.71 22.98h52.86L92 39.2 80.57 54.93H27.71a2 2 0 0 1-2-2V24.99a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M100 32.1h26.29v3.43H100v-3.42zm0 10.28h26.29v3.42H100v-3.42z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M34.86 33.25h11.43v11.41H34.86V33.25zm14.85 4.57h30.86v3.42H49.71V37.8z", fill: "#74CDBE" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "25.71", y: "72.05", width: "109.71", height: "31.96", rx: "2.29" }), _react2.default.createElement("path", { d: "M27.71 72.05h52.86L92 88.27l-11.43 15.74H27.71a2 2 0 0 1-2-2V74.05a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M100 81.19h26.29v3.42H100v-3.42zm0 10.27h26.29v3.42H100v-3.42z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M34.86 82.33h11.43v11.41H34.86V82.33zm14.85 4.56h30.86v3.42H49.71V86.9z", fill: "#74CDBE" }), _react2.default.createElement("path", { fill: "#101320", fillRule: "nonzero", opacity: ".73", d: "M0 0h160v120H0z" }), _react2.default.createElement("path", { d: "M95 57H65a3 3 0 0 0-3 3v18a3 3 0 0 0 3 3h30a3 3 0 0 0 3-3V60a3 3 0 0 0-3-3zm-27-3h24v-3a12 12 0 0 0-24 0v3zm27 0a6 6 0 0 1 6 6v18a6 6 0 0 1-6 6H65a6 6 0 0 1-6-6V60a6 6 0 0 1 6-6v-3a15 15 0 0 1 30 0v3zM80.3 73.5a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-3a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM78.5 74h3v7h-3v-7z", fill: "#FFF", fillRule: "nonzero" })));
 };
 
 /***/ }),
@@ -1310,98 +1034,6 @@ exports.default = function (_ref) {
       props = _objectWithoutProperties(_ref, ["styles"]);
 
   return _react2.default.createElement("svg", _extends({ width: "160", height: "120", xmlns: "http://www.w3.org/2000/svg" }, props), _react2.default.createElement("defs", null, _react2.default.createElement("linearGradient", { x1: "50%", y1: "126.02%", x2: "50%", y2: "32.91%", id: "a" }, _react2.default.createElement("stop", { stopColor: "#FFF", stopOpacity: "0", offset: "0%" }), _react2.default.createElement("stop", { stopColor: "#999CAC", stopOpacity: ".16", offset: "100%" }))), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { fill: "#FAFAFA", fillRule: "nonzero", d: "M0 0h160v120H0z" }), _react2.default.createElement("path", { fill: "url(#a)", d: "M0 28.06l1.35 3.76 4.04 7.53 2.7 3.77 4.04-3.77h2.7l2.7-3.76 1.35 3.76 1.35-3.76 1.34 3.76h2.7l1.35 15.06 2.7-3.76 4.04-3.77 1.35 3.77h5.4l3.04 25.76 2.34-25.76 1.35 3.76 1.35-3.76 6.74-7.53 1.35-11.3 4.05-3.76 8.09 3.76 2.7 3.77h2.69l1.35-3.77 1.35 3.77 1.34-3.77 1.35-3.76 4.05-7.53 2.7-3.76h2.7L88.98 13l2.7 3.77h2.7l2.69 3.76 1.35 18.82 1.34-3.76 6.75-3.77h2.7l1.34 11.3 1.35-11.3 1.35 3.77H130V120H0z" }), _react2.default.createElement("path", { d: "M8.43 43.19a.5.5 0 0 1-.74-.08l-2.74-3.78-4.04-7.45-.05-.14L0 27.6a.5.5 0 1 1 .98-.2l.83 4.06L5.8 38.8l2.37 3.27 3.63-3.35a.5.5 0 0 1 .33-.13h2.45l2.54-3.52a.5.5 0 0 1 .88.12l.88 2.43.88-2.43a.5.5 0 0 1 .94 0l1.22 3.4h2.35a.5.5 0 0 1 .5.46L26 52.63l1.98-2.73 4.04-3.72a.5.5 0 0 1 .81.2l1.23 3.4h5.04a.5.5 0 0 1 .5.43l2.48 21L44 50.22c.04-.54.78-.63.96-.13l.88 2.43.88-2.43.1-.16 6.63-7.34 1.33-11.02a.5.5 0 0 1 .16-.31L59 27.54a.5.5 0 0 1 .54-.09l8.1 3.73a.5.5 0 0 1 .19.16l2.55 3.52h2.09l1.23-3.4a.5.5 0 0 1 .94 0l.87 2.43.88-2.42 1.38-3.8 4.08-7.5 2.7-3.74a.5.5 0 0 1 .4-.2h2.35l1.23-3.4a.5.5 0 0 1 .87-.12l2.55 3.52h2.44a.5.5 0 0 1 .4.2l2.7 3.73a.5.5 0 0 1 .1.26l1.18 16.3.54-1.53a.5.5 0 0 1 .23-.26l6.74-3.73a.5.5 0 0 1 .25-.06h2.7a.5.5 0 0 1 .49.44l.85 7.06.85-7.06c.07-.53.79-.6.97-.11l1.23 3.4H130a.5.5 0 0 1 0 1h-16.74a.5.5 0 0 1-.47-.34l-.63-1.75-1.1 9.1c-.07.58-.92.58-1 0l-1.29-10.74h-2.12l-6.47 3.57-1.28 3.55c-.18.5-.93.4-.97-.13l-1.34-18.5-2.46-3.4h-2.44a.5.5 0 0 1-.41-.21l-2.14-2.96-1.03 2.84a.5.5 0 0 1-.47.33H85.2l-2.51 3.46-4.02 7.39-2.7 7.45a.5.5 0 0 1-.93 0l-.88-2.42-.88 2.42a.5.5 0 0 1-.47.33h-2.7a.5.5 0 0 1-.4-.2l-2.62-3.62-7.67-3.54-3.67 3.38-1.32 11a.5.5 0 0 1-.13.27l-6.67 7.38-1.32 3.64a.5.5 0 0 1-.94 0l-.58-1.62-2.15 23.5c-.05.6-.92.6-.99 0l-3-25.28h-4.94a.5.5 0 0 1-.47-.33l-1.1-3.02-3.42 3.15-2.7 3.72a.5.5 0 0 1-.9-.25l-1.3-14.45h-2.25a.5.5 0 0 1-.47-.33l-.87-2.43-.88 2.43a.5.5 0 0 1-.94 0l-1.03-2.84-2.14 2.96a.5.5 0 0 1-.4.21h-2.51l-3.9 3.6z", fill: "#999CAC", fillRule: "nonzero" }), _react2.default.createElement("path", { d: "M144.61 34.75l4.8-5.75H160v12h-10.59l-4.8-5.75h-1.11v-.5h1.11zm-11.71 0h.6v.5h-.5v.05a1.5 1.5 0 1 1-.1-.55zm2.6.5v-.5h2v.5h-2zm4 0v-.5h2v.5h-2z", fill: "#F93", fillRule: "nonzero" }), _react2.default.createElement("path", { fill: "#FAFAFA", d: "M0 3h24v114H0z" }), _react2.default.createElement("path", { fill: "#F4F4F6", fillRule: "nonzero", d: "M23 3h1v114h-1z" }), _react2.default.createElement("path", { d: "M14.29 13.94l.64.63a.25.25 0 0 1-.36.36l-5.5-5.5a.25.25 0 1 1 .36-.36l.63.64a2.99 2.99 0 0 1 1.69-.7v-.76a.25.25 0 1 1 .5 0v.76a3 3 0 0 1 2.74 2.74h.76a.25.25 0 1 1 0 .5h-.76a2.99 2.99 0 0 1-.7 1.69zm-.35-.36a2.5 2.5 0 0 0-3.52-3.52l.35.36a2 2 0 0 1 2.81 2.8l.36.36zm-.72-.71a1.5 1.5 0 0 0-2.09-2.1l2.1 2.1zm-1.47 2.12a3 3 0 0 1-2.74-2.74h-.76a.25.25 0 1 1 0-.5h.76c.02-.29.09-.57.2-.83a.25.25 0 1 1 .46.17 2.5 2.5 0 0 0 3.27 3.23.25.25 0 1 1 .19.46 2.98 2.98 0 0 1-.88.21v.76a.25.25 0 1 1-.5 0v-.76zm-1.69-3.48a.25.25 0 1 1 .49.12 1.5 1.5 0 0 0 1.76 1.84.25.25 0 0 1 .1.49 2 2 0 0 1-2.35-2.46zm-.03 16.46a.75.75 0 1 1 1.43.01l.86.65a.75.75 0 0 1 .77-.05l1.48-1.5a.75.75 0 1 1 .36.35l-1.5 1.51a.75.75 0 1 1-1.4.1l-.87-.66a.75.75 0 0 1-.83 0l-.86.65a.75.75 0 1 1-.3-.4l.86-.66zm5.22-.97a.25.25 0 1 0 0-.5.25.25 0 0 0 0 .5zm-2.5 2.5a.25.25 0 1 0 0-.5.25.25 0 0 0 0 .5zm-2-1.5a.25.25 0 1 0 0-.5.25.25 0 0 0 0 .5zm-2 1.5a.25.25 0 1 0 0-.5.25.25 0 0 0 0 .5zM13.4 61h-2.8l-1.12 2.36a.25.25 0 0 1-.46-.22L10.05 61h-.8a.25.25 0 1 1 0-.5h1.04l1.07-2.23a1 1 0 1 1 1.28 0l1.07 2.23h1.04a.25.25 0 1 1 0 .5h-.8l1.03 2.14a.25.25 0 0 1-.46.22L13.4 61zm-.24-.5l-.97-2.02a1 1 0 0 1-.38 0l-.97 2.02h2.32zm-.3-15.5h2.9a.25.25 0 1 1 0 .5h-2.9l1.07 1.07a.25.25 0 1 1-.36.36l-1.5-1.5a.25.25 0 0 1 0-.36l1.5-1.5a.25.25 0 1 1 .36.36L12.85 45zm-1.71-2h-2.9a.25.25 0 1 1 0-.5h2.9l-1.08-1.07a.25.25 0 1 1 .36-.36l1.5 1.5a.25.25 0 0 1 0 .36l-1.5 1.5a.25.25 0 1 1-.36-.36L11.15 43zm1.1 64.75h2.25v.5h-2.25v2.25h-.5v-2.25H9.5v-.5h2.25v-2.25h.5v2.25zm-2.75-16h5v.5h-5v-.5zM14.04 74L13 72.96v.79c0 .14.11.25.25.25h.8zm-1.54-1.5h-3v7h5v-5h-1.25a.75.75 0 0 1-.75-.75V72.5zm-3-.5h3.25L15 74.25v5.25a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5zm2.25 5.15v-2.4a.25.25 0 1 1 .5 0v2.4l.57-.58a.25.25 0 1 1 .36.36l-1 1a.25.25 0 0 1-.36 0l-1-1a.25.25 0 1 1 .36-.36l.57.58z", fill: "#000", fillRule: "nonzero" })));
-};
-
-/***/ }),
-
-/***/ "./src/images/app_2/settings/lock-disabled.svg":
-/*!*****************************************************!*\
-  !*** ./src/images/app_2/settings/lock-disabled.svg ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }return target;
-};
-
-function _objectWithoutProperties(obj, keys) {
-  var target = {};for (var i in obj) {
-    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
-  }return target;
-}
-
-exports.default = function (_ref) {
-  var _ref$styles = _ref.styles,
-      styles = _ref$styles === undefined ? {} : _ref$styles,
-      props = _objectWithoutProperties(_ref, ["styles"]);
-
-  return _react2.default.createElement("svg", _extends({ width: "160", height: "120", xmlns: "http://www.w3.org/2000/svg" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("path", { fill: "#FAFAFA", fillRule: "nonzero", d: "M0 0h160v120H0z" }), _react2.default.createElement("rect", { fill: "#EBEBEB", fillRule: "nonzero", x: "20", y: "7", width: "120", height: "105", rx: "2.29" }), _react2.default.createElement("path", { d: "M25.71 14.99H62.3v3.42H25.7V15zm0 49.08H62.3v3.42H25.7v-3.42z", fill: "#D6D6D6" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "25.71", y: "22.98", width: "109.71", height: "31.96", rx: "2.29" }), _react2.default.createElement("path", { d: "M27.71 22.98h52.86L92 39.2 80.57 54.93H27.71a2 2 0 0 1-2-2V24.99a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M100 32.1h26.29v3.43H100v-3.42zm0 10.28h26.29v3.42H100v-3.42z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M34.86 33.25h11.43v11.41H34.86V33.25zm14.85 4.57h30.86v3.42H49.71V37.8z", fill: "#74CDBE" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "25.71", y: "72.05", width: "109.71", height: "31.96", rx: "2.29" }), _react2.default.createElement("path", { d: "M27.71 72.05h52.86L92 88.27l-11.43 15.74H27.71a2 2 0 0 1-2-2V74.05a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M100 81.19h26.29v3.42H100v-3.42zm0 10.27h26.29v3.42H100v-3.42z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M34.86 82.33h11.43v11.41H34.86V82.33zm14.85 4.56h30.86v3.42H49.71V86.9z", fill: "#74CDBE" })));
-};
-
-/***/ }),
-
-/***/ "./src/images/app_2/settings/lock-enabled.svg":
-/*!****************************************************!*\
-  !*** ./src/images/app_2/settings/lock-enabled.svg ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }return target;
-};
-
-function _objectWithoutProperties(obj, keys) {
-  var target = {};for (var i in obj) {
-    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
-  }return target;
-}
-
-exports.default = function (_ref) {
-  var _ref$styles = _ref.styles,
-      styles = _ref$styles === undefined ? {} : _ref$styles,
-      props = _objectWithoutProperties(_ref, ["styles"]);
-
-  return _react2.default.createElement("svg", _extends({ width: "160", height: "120", xmlns: "http://www.w3.org/2000/svg" }, props), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("rect", { fill: "#FAFAFA", fillRule: "nonzero", width: "160", height: "120", rx: "4" }), _react2.default.createElement("rect", { fill: "#EBEBEB", fillRule: "nonzero", x: "20", y: "7", width: "120", height: "105", rx: "2.29" }), _react2.default.createElement("path", { d: "M25.71 14.99H62.3v3.42H25.7V15zm0 49.08H62.3v3.42H25.7v-3.42z", fill: "#D6D6D6" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "25.71", y: "22.98", width: "109.71", height: "31.96", rx: "2.29" }), _react2.default.createElement("path", { d: "M27.71 22.98h52.86L92 39.2 80.57 54.93H27.71a2 2 0 0 1-2-2V24.99a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M100 32.1h26.29v3.43H100v-3.42zm0 10.28h26.29v3.42H100v-3.42z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M34.86 33.25h11.43v11.41H34.86V33.25zm14.85 4.57h30.86v3.42H49.71V37.8z", fill: "#74CDBE" }), _react2.default.createElement("rect", { fill: "#34A39A", x: "25.71", y: "72.05", width: "109.71", height: "31.96", rx: "2.29" }), _react2.default.createElement("path", { d: "M27.71 72.05h52.86L92 88.27l-11.43 15.74H27.71a2 2 0 0 1-2-2V74.05a2 2 0 0 1 2-2z", fill: "#4BBFAB" }), _react2.default.createElement("path", { d: "M100 81.19h26.29v3.42H100v-3.42zm0 10.27h26.29v3.42H100v-3.42z", fill: "#62B8B1" }), _react2.default.createElement("path", { d: "M34.86 82.33h11.43v11.41H34.86V82.33zm14.85 4.56h30.86v3.42H49.71V86.9z", fill: "#74CDBE" }), _react2.default.createElement("rect", { fill: "#000", fillRule: "nonzero", opacity: ".5", width: "160", height: "120", rx: "4" }), _react2.default.createElement("path", { d: "M95 57H65a3 3 0 0 0-3 3v18a3 3 0 0 0 3 3h30a3 3 0 0 0 3-3V60a3 3 0 0 0-3-3zm-27-3h24v-3a12 12 0 0 0-24 0v3zm27 0a6 6 0 0 1 6 6v18a6 6 0 0 1-6 6H65a6 6 0 0 1-6-6V60a6 6 0 0 1 6-6v-3a15 15 0 0 1 30 0v3zM80.3 73.5a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-3a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM78.5 74h3v7h-3v-7z", fill: "#FFF", fillRule: "nonzero" })));
 };
 
 /***/ }),
@@ -3537,9 +3169,13 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Common = __webpack_require__(/*! ../../../../Assets/Common */ "./src/javascript/app_2/Assets/Common/index.js");
-
 var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
+
+var _PageError = __webpack_require__(/*! ../../../../Modules/PageError */ "./src/javascript/app_2/Modules/PageError/index.js");
+
+var _PageError2 = _interopRequireDefault(_PageError);
+
+var _Constants = __webpack_require__(/*! ../../../../Constants */ "./src/javascript/app_2/Constants/index.js");
 
 var _localize2 = __webpack_require__(/*! ../localize.jsx */ "./src/javascript/app_2/App/Components/Elements/localize.jsx");
 
@@ -3548,8 +3184,7 @@ var _localize3 = _interopRequireDefault(_localize2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ErrorComponent = function ErrorComponent(_ref) {
-    var type = _ref.type,
-        message = _ref.message;
+    var message = _ref.message;
 
     var msg = '';
     if ((typeof message === 'undefined' ? 'undefined' : _typeof(message)) === 'object') {
@@ -3560,16 +3195,16 @@ var ErrorComponent = function ErrorComponent(_ref) {
     } else {
         msg = message;
     }
-    return _react2.default.createElement(
-        'div',
-        { className: 'error__container' },
-        _react2.default.createElement(_Common.Icon, { icon: _Common.IconError, type: type }),
-        _react2.default.createElement(
-            'p',
-            { className: 'error__message' },
-            msg || (0, _localize.localize)('Sorry, an error occured while processing your request.')
-        )
-    );
+    var refresh_message = (0, _localize.localize)('Please refresh this page to continue.');
+    return _react2.default.createElement(_PageError2.default, {
+        header: (0, _localize.localize)('Oops, something went wrong.'),
+        messages: msg ? [msg, refresh_message] : [(0, _localize.localize)('Sorry, an error occured while processing your request.'), refresh_message],
+        redirect_url: _Constants.routes.trade,
+        redirect_label: (0, _localize.localize)('Refresh'),
+        buttonOnClick: function buttonOnClick() {
+            return location.reload();
+        }
+    });
 };
 
 ErrorComponent.propTypes = {
@@ -3623,6 +3258,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 
 var _classnames2 = _interopRequireDefault(_classnames);
@@ -3635,71 +3272,173 @@ var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-type
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
+var _reactPose = __webpack_require__(/*! react-pose */ "./node_modules/react-pose/dist/react-pose.es.js");
+
+var _reactPose2 = _interopRequireDefault(_reactPose);
+
 var _button = __webpack_require__(/*! ../../Form/button.jsx */ "./src/javascript/app_2/App/Components/Form/button.jsx");
 
 var _button2 = _interopRequireDefault(_button);
 
+var _connect = __webpack_require__(/*! ../../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var FullPageModal = function FullPageModal(_ref) {
-    var cancel_button_text = _ref.cancel_button_text,
-        children = _ref.children,
-        confirm_button_text = _ref.confirm_button_text,
-        onConfirm = _ref.onConfirm,
-        onCancel = _ref.onCancel,
-        is_visible = _ref.is_visible,
-        title = _ref.title;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    if (is_visible) {
-        return _react2.default.createElement(
-            'div',
-            { className: 'full-page-modal' },
-            _react2.default.createElement(
-                'div',
-                { className: 'full-page-modal__dialog' },
-                _react2.default.createElement(
-                    'h1',
-                    { className: 'full-page-modal__header' },
-                    title
-                ),
-                _react2.default.createElement(
-                    'p',
-                    { className: 'full-page-modal__content' },
-                    children
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'full-page-modal__footer' },
-                    onCancel && _react2.default.createElement(_button2.default, {
-                        className: (0, _classnames2.default)('full-page-modal__button', 'btn--secondary btn--secondary--orange'),
-                        has_effect: true,
-                        text: cancel_button_text,
-                        onClick: onCancel
-                    }),
-                    _react2.default.createElement(_button2.default, {
-                        className: (0, _classnames2.default)('full-page-modal__button', 'btn--primary btn--primary--orange'),
-                        has_effect: true,
-                        text: confirm_button_text,
-                        onClick: onConfirm
-                    })
-                )
-            )
-        );
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ModalWrapper = _reactPose2.default.div({
+    enter: {
+        y: 0,
+        opacity: 1,
+        delay: 300,
+        transition: {
+            default: { duration: 250 }
+        }
+    },
+    exit: {
+        y: 50,
+        opacity: 0,
+        transition: { duration: 250 }
+    }
+});
+
+var ModalBackground = _reactPose2.default.div({
+    enter: { opacity: 1 },
+    exit: { opacity: 0 }
+});
+
+var FullPageModal = function (_React$Component) {
+    _inherits(FullPageModal, _React$Component);
+
+    function FullPageModal() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, FullPageModal);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = FullPageModal.__proto__ || Object.getPrototypeOf(FullPageModal)).call.apply(_ref, [this].concat(args))), _this), _this.handleCancel = function () {
+            if (_this.props.is_closed_on_cancel) {
+                _this.props.hideAppBlur();
+            }
+            _this.props.onCancel();
+        }, _this.handleConfirm = function () {
+            if (_this.props.is_closed_on_confirm) {
+                _this.props.hideAppBlur();
+            }
+            _this.props.onConfirm();
+        }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
-    return _react2.default.createElement(_react2.default.Fragment, null);
+    _createClass(FullPageModal, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            if (this.props.is_visible) {
+                this.props.showAppBlur();
+            }
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
+            if (this.props.is_visible) {
+                this.props.showAppBlur();
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                cancel_button_text = _props.cancel_button_text,
+                children = _props.children,
+                confirm_button_text = _props.confirm_button_text,
+                onCancel = _props.onCancel,
+                is_visible = _props.is_visible,
+                title = _props.title;
+
+            return _react2.default.createElement(
+                _reactPose.PoseGroup,
+                null,
+                is_visible && [_react2.default.createElement(ModalBackground, {
+                    className: 'full-page-modal__background',
+                    key: 'full-page-modal__background'
+                }), _react2.default.createElement(
+                    ModalWrapper,
+                    {
+                        className: 'full-page-modal__wrapper',
+                        key: 'full-page-modal__wrapper'
+                    },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'full-page-modal__dialog' },
+                        _react2.default.createElement(
+                            'h1',
+                            { className: 'full-page-modal__header' },
+                            title
+                        ),
+                        _react2.default.createElement(
+                            'p',
+                            { className: 'full-page-modal__content' },
+                            children
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'full-page-modal__footer' },
+                            onCancel && _react2.default.createElement(_button2.default, {
+                                className: (0, _classnames2.default)('full-page-modal__button', 'btn--secondary', 'btn--secondary--orange'),
+                                has_effect: true,
+                                text: cancel_button_text,
+                                onClick: this.handleCancel
+                            }),
+                            _react2.default.createElement(_button2.default, {
+                                className: (0, _classnames2.default)('full-page-modal__button', 'btn--primary', 'btn--primary--orange'),
+                                has_effect: true,
+                                text: confirm_button_text,
+                                onClick: this.handleConfirm
+                            })
+                        )
+                    )
+                )]
+            );
+        }
+    }]);
+
+    return FullPageModal;
+}(_react2.default.Component);
+
+FullPageModal.defaultProps = {
+    is_closed_on_cancel: true,
+    is_closed_on_confirm: true
 };
 
 FullPageModal.propTypes = {
     cancel_button_text: _propTypes2.default.string,
     confirm_button_text: _propTypes2.default.string,
+    hideAppBlur: _propTypes2.default.func,
+    is_closed_on_cancel: _propTypes2.default.bool,
+    is_closed_on_confirm: _propTypes2.default.bool,
     is_visible: _propTypes2.default.bool,
     onCancel: _propTypes2.default.func,
     onConfirm: _propTypes2.default.func,
+    showAppBlur: _propTypes2.default.func,
     title: _propTypes2.default.string
 };
 
-exports.default = FullPageModal;
+var full_page_modal = (0, _connect.connect)(function (_ref2) {
+    var ui = _ref2.ui;
+    return {
+        hideAppBlur: ui.hideAppBlur,
+        showAppBlur: ui.showAppBlur
+    };
+})(FullPageModal);
+exports.default = full_page_modal;
 
 /***/ }),
 
@@ -4044,270 +3783,6 @@ Notifications.propTypes = {
 };
 
 exports.Notifications = Notifications;
-
-/***/ }),
-
-/***/ "./src/javascript/app_2/App/Components/Elements/PopConfirm/index.js":
-/*!**************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/PopConfirm/index.js ***!
-  \**************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _popconfirm = __webpack_require__(/*! ./popconfirm.jsx */ "./src/javascript/app_2/App/Components/Elements/PopConfirm/popconfirm.jsx");
-
-Object.keys(_popconfirm).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _popconfirm[key];
-    }
-  });
-});
-
-var _popconfirmElement = __webpack_require__(/*! ./popconfirm-element.jsx */ "./src/javascript/app_2/App/Components/Elements/PopConfirm/popconfirm-element.jsx");
-
-Object.keys(_popconfirmElement).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _popconfirmElement[key];
-    }
-  });
-});
-
-/***/ }),
-
-/***/ "./src/javascript/app_2/App/Components/Elements/PopConfirm/popconfirm-element.jsx":
-/*!****************************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/PopConfirm/popconfirm-element.jsx ***!
-  \****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.PopConfirmElement = undefined;
-
-var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-var _Common = __webpack_require__(/*! ../../../../Assets/Common */ "./src/javascript/app_2/Assets/Common/index.js");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var PopConfirmElement = function PopConfirmElement(_ref) {
-    var _classNames;
-
-    var alignment = _ref.alignment,
-        cancel_text = _ref.cancel_text,
-        confirm_text = _ref.confirm_text,
-        is_visible = _ref.is_visible,
-        message = _ref.message,
-        onClose = _ref.onClose,
-        onConfirm = _ref.onConfirm,
-        wrapperRef = _ref.wrapperRef;
-
-    var popconfirm_class = (0, _classnames2.default)('popconfirm', 'popconfirm--' + alignment, (_classNames = {}, _defineProperty(_classNames, 'popconfirm--' + alignment + '--open', is_visible), _defineProperty(_classNames, 'popconfirm--open', is_visible), _classNames));
-    return _react2.default.createElement(
-        'div',
-        { ref: wrapperRef, className: popconfirm_class },
-        _react2.default.createElement(
-            'div',
-            { className: 'popconfirm__title' },
-            _react2.default.createElement(_Common.Icon, { icon: _Common.IconExclamation, className: 'popconfirm__icon_exclamation' }),
-            _react2.default.createElement(
-                'h4',
-                { className: 'popconfirm__header' },
-                message
-            )
-        ),
-        _react2.default.createElement(
-            'div',
-            { className: 'popconfirm__button-wrapper' },
-            _react2.default.createElement(
-                'div',
-                {
-                    className: 'popconfirm__button btn btn--flat effect',
-                    onClick: onClose
-                },
-                _react2.default.createElement(
-                    'span',
-                    { className: 'popconfirm__button-text' },
-                    cancel_text
-                )
-            ),
-            _react2.default.createElement(
-                'div',
-                {
-                    className: 'popconfirm__button btn btn--flat effect',
-                    onClick: onConfirm
-                },
-                _react2.default.createElement(
-                    'span',
-                    { className: 'popconfirm__button-text' },
-                    confirm_text
-                )
-            )
-        )
-    );
-};
-
-PopConfirmElement.propTypes = {
-    alignment: _propTypes2.default.string,
-    cancel_text: _propTypes2.default.string,
-    confirm_text: _propTypes2.default.string,
-    is_visible: _propTypes2.default.bool,
-    message: _propTypes2.default.string,
-    onClose: _propTypes2.default.func,
-    onConfirm: _propTypes2.default.func,
-    wrapperRef: _propTypes2.default.func
-};
-
-exports.PopConfirmElement = PopConfirmElement;
-
-/***/ }),
-
-/***/ "./src/javascript/app_2/App/Components/Elements/PopConfirm/popconfirm.jsx":
-/*!********************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Elements/PopConfirm/popconfirm.jsx ***!
-  \********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.PopConfirm = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _popconfirmElement = __webpack_require__(/*! ./popconfirm-element.jsx */ "./src/javascript/app_2/App/Components/Elements/PopConfirm/popconfirm-element.jsx");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var PopConfirm = function (_React$PureComponent) {
-    _inherits(PopConfirm, _React$PureComponent);
-
-    function PopConfirm() {
-        var _ref;
-
-        var _temp, _this, _ret;
-
-        _classCallCheck(this, PopConfirm);
-
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
-        }
-
-        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PopConfirm.__proto__ || Object.getPrototypeOf(PopConfirm)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-            is_open: false
-        }, _this.setWrapperRef = function (node) {
-            _this.wrapper_ref = node;
-        }, _this.handleClickOutside = function (event) {
-            if (_this.wrapper_ref && !_this.wrapper_ref.contains(event.target) && _this.state.is_open) {
-                _this.setState({ is_open: false });
-            }
-        }, _this.handleClose = function () {
-            _this.setState({ is_open: false });
-        }, _this.handleOpen = function (event) {
-            if (!_this.wrapper_ref.contains(event.target)) {
-                _this.setState({ is_open: true });
-            }
-        }, _temp), _possibleConstructorReturn(_this, _ret);
-    }
-
-    _createClass(PopConfirm, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            document.addEventListener('mousedown', this.handleClickOutside);
-        }
-    }, {
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {
-            document.removeEventListener('mousedown', this.handleClickOutside);
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this2 = this;
-
-            var popconfirm_element = _react2.default.createElement(_popconfirmElement.PopConfirmElement, {
-                wrapperRef: this.setWrapperRef,
-                alignment: this.props.alignment,
-                cancel_text: this.props.cancel_text,
-                confirm_text: this.props.confirm_text,
-                is_visible: this.state.is_open,
-                message: this.props.message,
-                onConfirm: this.props.children.props.onClick,
-                onClose: this.handleClose
-            });
-            return _react2.default.createElement(
-                _react2.default.Fragment,
-                null,
-                _react2.default.Children.map(this.props.children, function (child) {
-                    return _react2.default.cloneElement(child, {
-                        onClick: _this2.handleOpen
-                    });
-                }),
-                popconfirm_element
-            );
-        }
-    }]);
-
-    return PopConfirm;
-}(_react2.default.PureComponent);
-
-PopConfirm.propTypes = {
-    alignment: _propTypes2.default.string,
-    cancel_text: _propTypes2.default.string,
-    children: _propTypes2.default.object,
-    confirm_text: _propTypes2.default.string,
-    message: _propTypes2.default.string
-};
-
-exports.PopConfirm = PopConfirm;
 
 /***/ }),
 
@@ -4844,16 +4319,28 @@ var PositionsDrawerCard = function PositionsDrawerCard(_ref) {
                         'div',
                         { className: (0, _classnames2.default)('positions-drawer-card__indicative', 'positions-drawer-card__indicative-label')
                         },
-                        !result ? (0, _localize.localize)('Potential Payout:') : (0, _localize.localize)('Payout:')
+                        !result ? (0, _localize.localize)('Indicative Price:') : (0, _localize.localize)('Payout:')
                     ),
                     _react2.default.createElement(
                         'div',
                         { className: (0, _classnames2.default)('positions-drawer-card__profit-loss', {
-                                'positions-drawer-card__profit-loss--negative': profit_loss < 0,
-                                'positions-drawer-card__profit-loss--positive': profit_loss > 0
+                                'positions-drawer-card__profit-loss--minus': status !== 'complete' && profit_loss < 0,
+                                'positions-drawer-card__profit-loss--plus': status !== 'complete' && profit_loss > 0,
+                                'positions-drawer-card__profit-loss--negative': status === 'complete' && profit_loss < 0,
+                                'positions-drawer-card__profit-loss--positive': status === 'complete' && profit_loss > 0
                             })
                         },
-                        _react2.default.createElement(_money2.default, { amount: Math.abs(profit_loss), currency: currency })
+                        _react2.default.createElement(_money2.default, { amount: Math.abs(profit_loss), currency: currency }),
+                        _react2.default.createElement(
+                            'div',
+                            { className: (0, _classnames2.default)('positions-drawer-card__indicative--movement', {
+                                    'positions-drawer-card__indicative--movement-complete': status === 'complete'
+                                })
+                            },
+                            _react2.default.createElement(_iconPriceMove.IconPriceMove, {
+                                type: status !== 'complete' ? status : null
+                            })
+                        )
                     ),
                     _react2.default.createElement(
                         'div',
@@ -4899,7 +4386,7 @@ var PositionsDrawerCard = function PositionsDrawerCard(_ref) {
                 'div',
                 { className: 'positions-drawer-card__sell-button' },
                 _react2.default.createElement(_button2.default, {
-                    className: (0, _classnames2.default)('btn--primary', 'btn--primary--orange', 'btn--sell', {
+                    className: (0, _classnames2.default)('btn--primary', 'btn--primary--green', 'btn--sell', {
                         'btn--loading': is_sell_requested
                     }),
                     is_disabled: !is_valid_to_sell || is_sell_requested,
@@ -5541,10 +5028,48 @@ var _Language = __webpack_require__(/*! ../../../../Utils/Language */ "./src/jav
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var LanguageDialog = function LanguageDialog(_ref) {
-    var hide = _ref.hide,
-        is_visible = _ref.is_visible,
-        is_settings_on = _ref.is_settings_on;
+var isCurrentLanguage = function isCurrentLanguage(lang) {
+    return lang === _Language.currentLanguage;
+};
+
+var NonClickableLink = function NonClickableLink(_ref) {
+    var children = _ref.children,
+        lang = _ref.lang;
+    return _react2.default.createElement(
+        'div',
+        { className: (0, _classnames2.default)('settings-dialog__language-link', {
+                'settings-dialog__language-link--active': isCurrentLanguage(lang)
+            })
+        },
+        children
+    );
+};
+
+var LanguageLink = function LanguageLink(_ref2) {
+    var lang = _ref2.lang;
+    return _react2.default.createElement(
+        _react2.default.Fragment,
+        null,
+        _react2.default.createElement(_Common.IconCountryFlag, {
+            className: 'settings-dialog__language-link-flag settings-dialog__language-flag',
+            type: lang.replace(/(\s|_)/, '-').toLowerCase()
+        }),
+        _react2.default.createElement(
+            'span',
+            {
+                className: (0, _classnames2.default)('settings-dialog__language-name', {
+                    'settings-dialog__language-name--active': isCurrentLanguage(lang)
+                })
+            },
+            (0, _Language.getAllowedLanguages)()[lang]
+        )
+    );
+};
+
+var LanguageDialog = function LanguageDialog(_ref3) {
+    var hide = _ref3.hide,
+        is_visible = _ref3.is_visible,
+        is_settings_on = _ref3.is_settings_on;
 
     var language_dialog_class = (0, _classnames2.default)('settings-dialog__language-dialog-container', {
         'settings-dialog__language-dialog-container--show': is_visible && is_settings_on
@@ -5566,28 +5091,20 @@ var LanguageDialog = function LanguageDialog(_ref) {
             'div',
             { className: 'settings-dialog__language-container' },
             Object.keys((0, _Language.getAllowedLanguages)()).map(function (key) {
-                return _react2.default.createElement(
+                return isCurrentLanguage(key) ? _react2.default.createElement(
+                    NonClickableLink,
+                    { lang: key, key: key },
+                    _react2.default.createElement(LanguageLink, { lang: key })
+                ) : _react2.default.createElement(
                     'a',
                     {
                         key: key,
+                        href: (0, _Language.getURL)(key),
                         className: (0, _classnames2.default)('settings-dialog__language-link', {
-                            'settings-dialog__language-link--active': key === _Language.currentLanguage
-                        }),
-                        href: (0, _Language.getURL)(key)
+                            'settings-dialog__language-link--active': isCurrentLanguage(key)
+                        })
                     },
-                    _react2.default.createElement(_Common.IconCountryFlag, {
-                        className: 'settings-dialog__language-link-flag settings-dialog__language-flag',
-                        type: key.replace(/(\s|_)/, '-').toLowerCase()
-                    }),
-                    _react2.default.createElement(
-                        'span',
-                        {
-                            className: (0, _classnames2.default)('settings-dialog__language-name', {
-                                'settings-dialog__language-name--active': key === _Language.currentLanguage
-                            })
-                        },
-                        (0, _Language.getAllowedLanguages)()[key]
-                    )
+                    _react2.default.createElement(LanguageLink, { lang: key, key: key })
                 );
             })
         )
@@ -5598,6 +5115,15 @@ LanguageDialog.propTypes = {
     hide: _propTypes2.default.func,
     is_settings_on: _propTypes2.default.bool,
     is_visible: _propTypes2.default.bool
+};
+
+LanguageLink.propTypes = {
+    lang: _propTypes2.default.string
+};
+
+NonClickableLink.propTypes = {
+    children: _propTypes2.default.oneOfType([_propTypes2.default.arrayOf(_propTypes2.default.node), _propTypes2.default.node]).isRequired,
+    lang: _propTypes2.default.string
 };
 
 exports.default = LanguageDialog;
@@ -5664,8 +5190,8 @@ var SettingsDialog = function (_React$PureComponent) {
         var _this = _possibleConstructorReturn(this, (SettingsDialog.__proto__ || Object.getPrototypeOf(SettingsDialog)).call(this, props));
 
         _this.handleClickOutside = function (event) {
-            var footer_settings_btn = !event.target.classList.contains('ic-settings', 'ic-settings ic-settings--active');
-            if (_this.wrapper_ref && !_this.wrapper_ref.contains(event.target) && _this.props.is_open && footer_settings_btn) {
+            if (_this.wrapper_ref && !_this.wrapper_ref.contains(event.target) && _this.props.is_open) {
+                _this.props.hideFullBlur();
                 _this.props.toggleDialog();
             }
         };
@@ -5687,10 +5213,11 @@ var SettingsDialog = function (_React$PureComponent) {
                 icon: _Settings.IconCharts,
                 label: (0, _localize.localize)('Charts'),
                 value: _SettingsDialog.ChartSettings
-            }, {
-                icon: _Settings.IconPurchase,
-                label: (0, _localize.localize)('Purchase'),
-                value: _SettingsDialog.PurchaseSettings
+                // uncomment below lines to bring back purchase lock and purchase confirmation
+                // }, {
+                //     icon : IconPurchase,
+                //     label: localize('Purchase'),
+                //     value: PurchaseSettings,
             }];
         };
 
@@ -5706,7 +5233,7 @@ var SettingsDialog = function (_React$PureComponent) {
         value: function componentDidMount() {
             document.addEventListener('mousedown', this.handleClickOutside);
             this.el.classList.add('settings-dialog');
-            this.props.showBlur();
+            this.props.showFullBlur();
             this.state.modal_root.appendChild(this.el);
         }
     }, {
@@ -5714,11 +5241,8 @@ var SettingsDialog = function (_React$PureComponent) {
         value: function componentWillUnmount() {
             document.removeEventListener('mousedown', this.handleClickOutside);
             this.state.modal_root.removeChild(this.el);
-            this.props.hideBlur();
+            this.props.hideFullBlur();
         }
-
-        // TODO - Simplify this
-
     }, {
         key: 'render',
         value: function render() {
@@ -5759,11 +5283,11 @@ var SettingsDialog = function (_React$PureComponent) {
 }(_react2.default.PureComponent);
 
 SettingsDialog.propTypes = {
-    hideBlur: _propTypes2.default.func,
+    hideFullBlur: _propTypes2.default.func,
     is_dark_mode: _propTypes2.default.bool,
     is_language_dialog_visible: _propTypes2.default.bool,
     is_open: _propTypes2.default.bool,
-    showBlur: _propTypes2.default.func,
+    showFullBlur: _propTypes2.default.func,
     toggleDialog: _propTypes2.default.func
 };
 
@@ -6705,6 +6229,321 @@ UILoader.propTypes = {
 };
 
 exports.default = UILoader;
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/button-highlight-wrapper.jsx":
+/*!************************************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/button-highlight-wrapper.jsx ***!
+  \************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _buttonHighlight = __webpack_require__(/*! ./button-highlight.jsx */ "./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/button-highlight.jsx");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var HighlightWrapper = function (_React$PureComponent) {
+    _inherits(HighlightWrapper, _React$PureComponent);
+
+    function HighlightWrapper() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, HighlightWrapper);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HighlightWrapper.__proto__ || Object.getPrototypeOf(HighlightWrapper)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+            left: 0,
+            width: 0
+        }, _this.onClick = function (e, buttonClick) {
+            if (!e.target) return;
+            _this.updateHighlightPosition(e.target.closest('button'));
+            if (typeof buttonClick === 'function') {
+                buttonClick();
+            }
+        }, _this.resetHighlight = function () {
+            _this.setState({
+                left: 0,
+                width: 0
+            });
+        }, _this.updateHighlightPosition = function (el) {
+            if (!el) return;
+            var left = el.offsetLeft,
+                width = el.offsetWidth;
+
+            if (_this.state.width !== width) {
+                _this.setState({ width: width });
+            }
+            if (_this.state.left !== left) {
+                _this.setState({ left: left });
+            }
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    _createClass(HighlightWrapper, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var active_button_el = [].concat(_toConsumableArray(this.node.getElementsByClassName('button-menu__button--active')))[0];
+            if (!this.node) return;
+            this.updateHighlightPosition(active_button_el);
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
+            var active_button_el = [].concat(_toConsumableArray(this.node.getElementsByClassName('button-menu__button--active')))[0];
+            if (active_button_el) {
+                this.updateHighlightPosition(active_button_el);
+            } else if (this.state.left !== 0 || this.state.width !== 0) {
+                this.resetHighlight(); // clear highlight when active element doesn't exist
+            }
+        }
+    }, {
+        key: 'componentWillUnMount',
+        value: function componentWillUnMount() {
+            window.removeEventListener('resize', this.updateHighlightPosition);
+            this.resetHighlight();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            var _props = this.props,
+                className = _props.className,
+                other_props = _objectWithoutProperties(_props, ['className']);
+
+            var props = _extends({
+                className: (0, _classnames2.default)('button-menu__wrapper', className)
+            }, other_props);
+
+            return _react2.default.createElement(
+                'div',
+                _extends({ ref: function ref(node) {
+                        return _this2.node = node;
+                    } }, props),
+                _react2.default.Children.map(this.props.children, function (child) {
+                    return _react2.default.cloneElement(child, {
+                        onClick: function onClick(e) {
+                            return _this2.onClick(e, child.props.onClick);
+                        }
+                    });
+                }),
+                _react2.default.createElement(_buttonHighlight.Highlight, { left: this.state.left, width: this.state.width })
+            );
+        }
+    }]);
+
+    return HighlightWrapper;
+}(_react2.default.PureComponent);
+
+HighlightWrapper.propTypes = {
+    children: _propTypes2.default.array,
+    className: _propTypes2.default.string,
+    timeout: _propTypes2.default.number
+};
+
+exports.default = HighlightWrapper;
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/button-highlight.jsx":
+/*!****************************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/button-highlight.jsx ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Highlight = undefined;
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Highlight = function Highlight(_ref) {
+    var left = _ref.left,
+        width = _ref.width;
+
+    var border_radius_size = '4px';
+    var highlight_style = {
+        width: width,
+        transform: 'translate3d(' + left + 'px, 0, 0)',
+        'borderTopLeftRadius': left === 0 ? border_radius_size : 0,
+        'borderTopRightRadius': left === 0 ? 0 : border_radius_size,
+        'borderBottomLeftRadius': left === 0 ? border_radius_size : 0,
+        'borderBottomRightRadius': left === 0 ? 0 : border_radius_size
+    };
+
+    return _react2.default.createElement('span', { style: highlight_style, className: 'button-menu--highlight' });
+};
+
+Highlight.propTypes = {
+    left: _propTypes2.default.number,
+    width: _propTypes2.default.number
+};
+
+exports.Highlight = Highlight;
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/button-toggle-menu.jsx":
+/*!******************************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/button-toggle-menu.jsx ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _button = __webpack_require__(/*! ../button.jsx */ "./src/javascript/app_2/App/Components/Form/button.jsx");
+
+var _button2 = _interopRequireDefault(_button);
+
+var _buttonHighlightWrapper = __webpack_require__(/*! ./button-highlight-wrapper.jsx */ "./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/button-highlight-wrapper.jsx");
+
+var _buttonHighlightWrapper2 = _interopRequireDefault(_buttonHighlightWrapper);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ButtonToggleMenu = function ButtonToggleMenu(_ref) {
+    var buttons_arr = _ref.buttons_arr,
+        is_animated = _ref.is_animated,
+        name = _ref.name,
+        onChange = _ref.onChange,
+        value = _ref.value;
+
+    var changeValue = function changeValue(selected_value) {
+        if (value === selected_value) return;
+        onChange({ target: { value: selected_value, name: name } });
+    };
+    var menu = buttons_arr.map(function (val, idx) {
+        var className = (0, _classnames2.default)('button-menu__button', {
+            'button-menu__button--active': val.value === value
+        });
+        return _react2.default.createElement(_button2.default, {
+            key: idx,
+            text: '' + val.text.charAt(0).toUpperCase() + val.text.slice(1),
+            onClick: function onClick() {
+                return changeValue(val.value);
+            },
+            className: className
+        });
+    });
+    return _react2.default.createElement(
+        'div',
+        { className: 'button-menu' },
+        is_animated ? _react2.default.createElement(
+            _buttonHighlightWrapper2.default,
+            null,
+            menu
+        ) : _react2.default.createElement(
+            _react2.default.Fragment,
+            null,
+            menu
+        )
+    );
+};
+
+ButtonToggleMenu.propTypes = {
+    buttons_arr: _propTypes2.default.array,
+    is_animated: _propTypes2.default.bool,
+    name: _propTypes2.default.string,
+    onChange: _propTypes2.default.func,
+    value: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string])
+};
+
+exports.default = ButtonToggleMenu;
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/index.js":
+/*!****************************************************************************!*\
+  !*** ./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/index.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _buttonToggleMenu = __webpack_require__(/*! ./button-toggle-menu.jsx */ "./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/button-toggle-menu.jsx");
+
+var _buttonToggleMenu2 = _interopRequireDefault(_buttonToggleMenu);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _buttonToggleMenu2.default;
 
 /***/ }),
 
@@ -9349,79 +9188,6 @@ exports.default = (0, _mobxReact.observer)(TimePicker);
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/App/Components/Form/button-toggle-menu.jsx":
-/*!*************************************************************************!*\
-  !*** ./src/javascript/app_2/App/Components/Form/button-toggle-menu.jsx ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-var _button = __webpack_require__(/*! ./button.jsx */ "./src/javascript/app_2/App/Components/Form/button.jsx");
-
-var _button2 = _interopRequireDefault(_button);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var ButtonToggleMenu = function ButtonToggleMenu(_ref) {
-    var buttons_arr = _ref.buttons_arr,
-        name = _ref.name,
-        onChange = _ref.onChange,
-        value = _ref.value;
-
-    var changeValue = function changeValue(selected_value) {
-        if (value === selected_value) return;
-        onChange({ target: { value: selected_value, name: name } });
-    };
-    var menu = buttons_arr.map(function (val, idx) {
-        var className = (0, _classnames2.default)('button-menu__button', {
-            'button-menu__button--active': val.value === value
-        });
-        return _react2.default.createElement(_button2.default, {
-            key: idx,
-            text: val.text,
-            onClick: function onClick() {
-                return changeValue(val.value);
-            },
-            className: className
-        });
-    });
-    return _react2.default.createElement(
-        'div',
-        { className: 'button-menu' },
-        menu
-    );
-};
-
-ButtonToggleMenu.propTypes = {
-    buttons_arr: _propTypes2.default.array,
-    name: _propTypes2.default.string,
-    onChange: _propTypes2.default.func,
-    value: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string])
-};
-
-exports.default = ButtonToggleMenu;
-
-/***/ }),
-
 /***/ "./src/javascript/app_2/App/Components/Form/button.jsx":
 /*!*************************************************************!*\
   !*** ./src/javascript/app_2/App/Components/Form/button.jsx ***!
@@ -9759,7 +9525,7 @@ var NetworkStatus = function NetworkStatus(_ref) {
         { className: 'network-status__wrapper' },
         _react2.default.createElement(
             _tooltip2.default,
-            { alignment: 'top', message: (0, _localize.localize)('Network status: [_1]', [status.tooltip || (0, _localize.localize)('Connecting to server')]) },
+            { className: 'network-status__tooltip', alignment: 'top', message: (0, _localize.localize)('Network status: [_1]', [status.tooltip || (0, _localize.localize)('Connecting to server')]) },
             _react2.default.createElement('div', { className: (0, _classnames2.default)('network-status__circle', {
                     'network-status__circle--offline': status.class === 'offline',
                     'network-status__circle--online': status.class === 'online',
@@ -9997,11 +9763,11 @@ var _Footer = __webpack_require__(/*! ../../../../Assets/Footer */ "./src/javasc
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ToggleSettings = function ToggleSettings(_ref) {
-    var hideBlur = _ref.hideBlur,
+    var hideFullBlur = _ref.hideFullBlur,
         is_dark_mode = _ref.is_dark_mode,
         is_language_visible = _ref.is_language_visible,
         is_settings_visible = _ref.is_settings_visible,
-        showBlur = _ref.showBlur,
+        showFullBlur = _ref.showFullBlur,
         toggleSettings = _ref.toggleSettings;
 
     var toggle_settings_class = (0, _classnames2.default)('ic-settings', 'footer__link', {
@@ -10023,11 +9789,11 @@ var ToggleSettings = function ToggleSettings(_ref) {
             _reactTransitionGroup.CSSTransition,
             {
                 'in': is_settings_visible,
-                timeout: 100,
+                timeout: 250,
                 classNames: {
-                    enter: 'settings-dialog--enter',
-                    enterDone: 'settings-dialog--enter-done',
-                    exit: 'settings-dialog--exit'
+                    enter: 'settings-dialog__container--enter',
+                    enterDone: 'settings-dialog__container--enter-done',
+                    exit: 'settings-dialog__container--exit'
                 },
                 unmountOnExit: true
             },
@@ -10036,19 +9802,19 @@ var ToggleSettings = function ToggleSettings(_ref) {
                 is_language_dialog_visible: is_language_visible,
                 toggleDialog: toggleSettings,
                 is_dark_mode: is_dark_mode,
-                showBlur: showBlur,
-                hideBlur: hideBlur
+                showFullBlur: showFullBlur,
+                hideFullBlur: hideFullBlur
             })
         )
     );
 };
 
 ToggleSettings.propTypes = {
-    hideBlur: _propTypes2.default.func,
+    hideFullBlur: _propTypes2.default.func,
     is_dark_mode: _propTypes2.default.bool,
     is_language_visible: _propTypes2.default.bool,
     is_settings_visible: _propTypes2.default.bool,
-    showBlur: _propTypes2.default.func,
+    showFullBlur: _propTypes2.default.func,
     toggleSettings: _propTypes2.default.func
 };
 
@@ -10924,12 +10690,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var ButtonLink = function ButtonLink(_ref) {
     var children = _ref.children,
         className = _ref.className,
-        to = _ref.to;
+        to = _ref.to,
+        onClick = _ref.onClick;
     return _react2.default.createElement(
         _reactRouterDom.Link,
         {
             className: (0, _classnames2.default)('btn btn--link', className, 'effect'),
-            to: to
+            to: to,
+            onClick: onClick
         },
         children
     );
@@ -10938,6 +10706,7 @@ var ButtonLink = function ButtonLink(_ref) {
 ButtonLink.propTypes = {
     children: _propTypes2.default.object,
     className: _propTypes2.default.string,
+    onClick: _propTypes2.default.func,
     to: _propTypes2.default.string
 };
 
@@ -11243,7 +11012,7 @@ var AccountPassword = (0, _react.lazy)(function () {
     return __webpack_require__.e(/*! import() | account_password */ "account_password").then(__webpack_require__.t.bind(null, /*! ../../Modules/settings/sections/account-password.jsx */ "./src/javascript/app_2/Modules/settings/sections/account-password.jsx", 7));
 });
 var ApiToken = (0, _react.lazy)(function () {
-    return __webpack_require__.e(/*! import() | api_toke */ "api_toke").then(__webpack_require__.t.bind(null, /*! ../../Modules/settings/sections/api-token.jsx */ "./src/javascript/app_2/Modules/settings/sections/api-token.jsx", 7));
+    return __webpack_require__.e(/*! import() | api_token */ "api_token").then(__webpack_require__.t.bind(null, /*! ../../Modules/settings/sections/api-token.jsx */ "./src/javascript/app_2/Modules/settings/sections/api-token.jsx", 7));
 });
 var AuthorizedApplications = (0, _react.lazy)(function () {
     return __webpack_require__.e(/*! import() | authorized_application */ "authorized_application").then(__webpack_require__.t.bind(null, /*! ../../Modules/settings/sections/authorized-applications.jsx */ "./src/javascript/app_2/Modules/settings/sections/authorized-applications.jsx", 7));
@@ -11688,12 +11457,13 @@ var DenialOfServiceModal = function DenialOfServiceModal(_ref2) {
         _fullPageModal2.default,
         {
             title: (0, _localize.localize)('Whoops!'),
-            confirm_button_text: (0, _localize.localize)('Continue with virtual account'),
+            confirm_button_text: (0, _localize.localize)('Continue with Virtual Account'),
             cancel_button_text: (0, _localize.localize)('Back to main website'),
             onConfirm: function onConfirm() {
                 return _onConfirm(client);
             },
             onCancel: onCancel,
+            is_closed_on_cancel: false,
             is_visible: is_visible
         },
         _react2.default.createElement(_localize3.default, { str: 'You cannot use your real money account with BinaryNex at this time.' })
@@ -11788,10 +11558,8 @@ var MenuDrawer = function MenuDrawer(_ref) {
         is_logged_in = _ref.is_logged_in,
         is_mobile = _ref.is_mobile,
         is_positions_drawer_on = _ref.is_positions_drawer_on,
-        is_purchase_locked = _ref.is_purchase_locked,
         toggleDarkMode = _ref.toggleDarkMode,
-        togglePositionsDrawer = _ref.togglePositionsDrawer,
-        togglePurchaseLock = _ref.togglePurchaseLock;
+        togglePositionsDrawer = _ref.togglePositionsDrawer;
     return _react2.default.createElement(
         'div',
         { className: 'drawer__items-container' },
@@ -11821,11 +11589,6 @@ var MenuDrawer = function MenuDrawer(_ref) {
                     text: (0, _localize.localize)('Dark Mode'),
                     toggle: toggleDarkMode,
                     to_toggle: is_dark_mode
-                }),
-                _react2.default.createElement(_Drawer.DrawerToggle, {
-                    text: (0, _localize.localize)('Purchase Lock'),
-                    toggle: togglePurchaseLock,
-                    to_toggle: is_purchase_locked
                 })
             )
         ),
@@ -11851,12 +11614,12 @@ MenuDrawer.propTypes = {
     is_logged_in: _propTypes2.default.bool,
     is_mobile: _propTypes2.default.bool,
     is_positions_drawer_on: _propTypes2.default.bool,
-    is_purchase_confirmed: _propTypes2.default.bool,
-    is_purchase_locked: _propTypes2.default.bool,
+    // is_purchase_confirmed     : PropTypes.bool,
+    // is_purchase_locked        : PropTypes.bool,
     toggleDarkMode: _propTypes2.default.func,
-    togglePositionsDrawer: _propTypes2.default.func,
-    togglePurchaseConfirmation: _propTypes2.default.func,
-    togglePurchaseLock: _propTypes2.default.func
+    togglePositionsDrawer: _propTypes2.default.func
+    // togglePurchaseConfirmation: PropTypes.func,
+    // togglePurchaseLock        : PropTypes.func,
 };
 
 exports.default = (0, _connect.connect)(function (_ref2) {
@@ -11867,12 +11630,12 @@ exports.default = (0, _connect.connect)(function (_ref2) {
         is_dark_mode: ui.is_dark_mode_on,
         is_mobile: ui.is_mobile,
         is_positions_drawer_on: ui.is_positions_drawer_on,
-        is_purchase_confirmed: ui.is_purchase_confirm_on,
-        is_purchase_locked: ui.is_purchase_lock_on,
+        // is_purchase_confirmed     : ui.is_purchase_confirm_on,
+        // is_purchase_locked        : ui.is_purchase_lock_on,
         toggleDarkMode: ui.toggleDarkMode,
-        togglePositionsDrawer: ui.togglePositionsDrawer,
-        togglePurchaseConfirmation: ui.togglePurchaseConfirmation,
-        togglePurchaseLock: ui.togglePurchaseLock
+        togglePositionsDrawer: ui.togglePositionsDrawer
+        // togglePurchaseConfirmation: ui.togglePurchaseConfirmation,
+        // togglePurchaseLock        : ui.togglePurchaseLock,
     };
 })(MenuDrawer);
 
@@ -11916,7 +11679,8 @@ var AppContents = function AppContents(_ref) {
     var children = _ref.children,
         is_contract_mode = _ref.is_contract_mode,
         is_positions_drawer_on = _ref.is_positions_drawer_on,
-        is_blurred = _ref.is_blurred;
+        is_app_blurred = _ref.is_app_blurred,
+        is_fully_blurred = _ref.is_fully_blurred;
     return _react2.default.createElement(
         'div',
         {
@@ -11924,7 +11688,7 @@ var AppContents = function AppContents(_ref) {
             className: (0, _classnames2.default)('app-contents', {
                 'app-contents--show-positions-drawer': is_positions_drawer_on,
                 'app-contents--contract-mode': is_contract_mode,
-                'app-contents--is-blurred': is_blurred
+                'app-contents--is-blurred': is_fully_blurred || is_app_blurred
             })
         },
         _react2.default.createElement(
@@ -11949,7 +11713,8 @@ exports.default = (0, _reactRouter.withRouter)((0, _connect.connect)(function (_
     return {
         is_positions_drawer_on: ui.is_positions_drawer_on,
         is_contract_mode: modules.smart_chart.is_contract_mode,
-        is_blurred: ui.is_blurred
+        is_app_blurred: ui.is_app_blurred,
+        is_fully_blurred: ui.is_fully_blurred
     };
 })(AppContents));
 
@@ -11968,6 +11733,10 @@ exports.default = (0, _reactRouter.withRouter)((0, _connect.connect)(function (_
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
 
 var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
 
@@ -11988,18 +11757,22 @@ var _Footer = __webpack_require__(/*! ../../Components/Layout/Footer */ "./src/j
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Footer = function Footer(_ref) {
-    var hideBlur = _ref.hideBlur,
+    var hideFullBlur = _ref.hideFullBlur,
+        is_fully_blurred = _ref.is_fully_blurred,
         is_dark_mode = _ref.is_dark_mode,
         is_language_dialog_visible = _ref.is_language_dialog_visible,
         is_logged_in = _ref.is_logged_in,
         is_positions_drawer_on = _ref.is_positions_drawer_on,
         is_settings_dialog_on = _ref.is_settings_dialog_on,
-        showBlur = _ref.showBlur,
+        showFullBlur = _ref.showFullBlur,
         togglePositionsDrawer = _ref.togglePositionsDrawer,
         toggleSettingsDialog = _ref.toggleSettingsDialog;
     return _react2.default.createElement(
-        _react2.default.Fragment,
-        null,
+        'footer',
+        { className: (0, _classnames2.default)('footer', {
+                'footer--is-blurred': is_fully_blurred
+            })
+        },
         _react2.default.createElement(
             'div',
             { className: 'footer__links footer__links--left' },
@@ -12018,8 +11791,8 @@ var Footer = function Footer(_ref) {
                 is_language_visible: is_language_dialog_visible,
                 is_settings_visible: is_settings_dialog_on,
                 toggleSettings: toggleSettingsDialog,
-                showBlur: showBlur,
-                hideBlur: hideBlur
+                showFullBlur: showFullBlur,
+                hideFullBlur: hideFullBlur
             }),
             _react2.default.createElement(_Footer.ToggleFullScreen, null)
         )
@@ -12028,6 +11801,7 @@ var Footer = function Footer(_ref) {
 
 Footer.propTypes = {
     is_dark_mode: _propTypes2.default.bool,
+    is_fully_blurred: _propTypes2.default.bool,
     is_language_dialog_visible: _propTypes2.default.bool,
     is_logged_in: _propTypes2.default.bool,
     is_positions_drawer_on: _propTypes2.default.bool,
@@ -12040,13 +11814,14 @@ exports.default = (0, _connect.connect)(function (_ref2) {
     var client = _ref2.client,
         ui = _ref2.ui;
     return {
-        hideBlur: ui.hideBlur,
+        hideFullBlur: ui.hideFullBlur,
+        is_fully_blurred: ui.is_fully_blurred,
         is_dark_mode: ui.is_dark_mode_on,
         is_logged_in: client.is_logged_in,
         is_language_dialog_visible: ui.is_language_dialog_on,
         is_positions_drawer_on: ui.is_positions_drawer_on,
         is_settings_dialog_on: ui.is_settings_dialog_on,
-        showBlur: ui.showBlur,
+        showFullBlur: ui.showFullBlur,
         togglePositionsDrawer: ui.togglePositionsDrawer,
         toggleSettingsDialog: ui.toggleSettingsDialog
     };
@@ -12067,6 +11842,10 @@ exports.default = (0, _connect.connect)(function (_ref2) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
 
 var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
 
@@ -12098,6 +11877,7 @@ var Header = function Header(_ref) {
         can_upgrade_to = _ref.can_upgrade_to,
         currency = _ref.currency,
         is_acc_switcher_on = _ref.is_acc_switcher_on,
+        is_fully_blurred = _ref.is_fully_blurred,
         is_logged_in = _ref.is_logged_in,
         is_mobile = _ref.is_mobile,
         is_virtual = _ref.is_virtual,
@@ -12119,7 +11899,10 @@ var Header = function Header(_ref) {
 
     return _react2.default.createElement(
         'header',
-        { className: 'header' },
+        { className: (0, _classnames2.default)('header', {
+                'header--is-blurred': is_fully_blurred
+            })
+        },
         _react2.default.createElement(
             'div',
             { className: 'header__menu-items' },
@@ -12178,6 +11961,7 @@ Header.propTypes = {
     hideInstallButton: _propTypes2.default.func,
     is_acc_switcher_on: _propTypes2.default.bool,
     is_dark_mode: _propTypes2.default.bool,
+    is_fully_blurred: _propTypes2.default.bool,
     is_install_button_visible: _propTypes2.default.bool,
     is_logged_in: _propTypes2.default.bool,
     is_mobile: _propTypes2.default.bool,
@@ -12205,6 +11989,7 @@ exports.default = (0, _reactRouter.withRouter)((0, _connect.connect)(function (_
         loginid: client.loginid,
         hideInstallButton: ui.hideInstallButton,
         is_acc_switcher_on: ui.is_accounts_switcher_on,
+        is_fully_blurred: ui.is_fully_blurred,
         is_dark_mode: ui.is_dark_mode_on,
         is_install_button_visible: ui.is_install_button_visible,
         is_mobile: ui.is_mobile,
@@ -12289,7 +12074,7 @@ var MarketUnavailableModal = function MarketUnavailableModal(_ref) {
         _fullPageModal2.default,
         {
             cancel_button_text: (0, _localize.localize)('Go to SmartTrader'),
-            confirm_button_text: (0, _localize.localize)('No, Stay on BinaryNex'),
+            confirm_button_text: (0, _localize.localize)('No, stay on BinaryNex'),
             is_visible: is_visible,
             onCancel: function onCancel() {
                 return window.open(_url2.default.websiteUrl()) && setHasOnlyForwardingContracts(false);
@@ -12852,154 +12637,93 @@ exports.default = (0, _connect.connect)(function (_ref2) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+// import PropTypes                     from 'prop-types';
+// import React                         from 'react';
+// import { localize }                  from '_common/localize';
+// import MediaItem, {
+//     MediaDescription,
+//     MediaHeading,
+//     MediaIcon,
+// }                                    from 'App/Components/Elements/Media';
+// import Localize                      from 'App/Components/Elements/localize.jsx';
+// import Checkbox                      from 'App/Components/Form/Checkbox';
+// import ConfirmationDisabledLightIcon from 'Images/app_2/settings/confirmation-disabled.svg';
+// import ConfirmationEnabledLightIcon  from 'Images/app_2/settings/confirmation-enabled.svg';
+// import ConfirmationDisabledDarkIcon  from 'Images/app_2/settings/dark/confirmation-disabled.svg';
+// import ConfirmationEnabledDarkIcon   from 'Images/app_2/settings/dark/confirmation-enabled.svg';
+// import LockDisabledDarkIcon          from 'Images/app_2/settings/dark/lock-disabled.svg';
+// import LockEnabledDarkIcon           from 'Images/app_2/settings/dark/lock-enabled.svg';
+// import LockDisabledLightIcon         from 'Images/app_2/settings/lock-disabled.svg';
+// import LockEnabledLightIcon          from 'Images/app_2/settings/lock-enabled.svg';
+// import { connect }                   from 'Stores/connect';
+//
+// const PurchaseSettings = ({
+//     is_dark_mode,
+//     is_purchase_confirmed,
+//     is_purchase_locked,
+//     togglePurchaseConfirmation,
+//     togglePurchaseLock,
+// }) => (
+//     <div className='settings-dialog__purchase'>
+//         <MediaItem>
+//             <MediaHeading>
+//                 <Localize str='Purchase confirmation' />
+//             </MediaHeading>
+//             <MediaDescription>
+//                 <MediaIcon
+//                     disabled={is_dark_mode ? ConfirmationDisabledDarkIcon : ConfirmationDisabledLightIcon }
+//                     enabled={is_dark_mode ? ConfirmationEnabledDarkIcon : ConfirmationEnabledLightIcon }
+//                     is_enabled={is_purchase_confirmed}
+//                 />
+//                 <div className='media__form'>
+//                     <Checkbox
+//                         value={is_purchase_confirmed}
+//                         label={localize('Require confirmation before purchasing a contract')}
+//                         onClick={togglePurchaseConfirmation}
+//                     />
+//                 </div>
+//             </MediaDescription>
+//         </MediaItem>
+//         <MediaItem>
+//             <MediaHeading>
+//                 <Localize str='Purchase lock' />
+//             </MediaHeading>
+//             <MediaDescription>
+//                 <MediaIcon
+//                     disabled={is_dark_mode ? LockDisabledDarkIcon : LockDisabledLightIcon}
+//                     enabled={is_dark_mode ? LockEnabledDarkIcon : LockEnabledLightIcon}
+//                     is_enabled={is_purchase_locked}
+//                 />
+//                 <div className='media__form'>
+//                     <Checkbox
+//                         value={is_purchase_locked}
+//                         label={localize('Lock contract purchase buttons')}
+//                         onClick={togglePurchaseLock}
+//                     />
+//                 </div>
+//             </MediaDescription>
+//         </MediaItem>
+//     </div>
+// );
+//
+// PurchaseSettings.propTypes = {
+//     is_dark_mode              : PropTypes.bool,
+//     is_purchase_confirmed     : PropTypes.bool,
+//     is_purchase_locked        : PropTypes.bool,
+//     togglePurchaseConfirmation: PropTypes.func,
+//     togglePurchaseLock        : PropTypes.func,
+// };
+//
+// export default connect(({ ui }) => (
+//     {
+//         is_dark_mode              : ui.is_dark_mode_on,
+//         is_purchase_confirmed     : ui.is_purchase_confirm_on,
+//         is_purchase_locked        : ui.is_purchase_lock_on,
+//         togglePurchaseConfirmation: ui.togglePurchaseConfirmation,
+//         togglePurchaseLock        : ui.togglePurchaseLock,
+//     }
+// ))(PurchaseSettings);
 
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-var _localize = __webpack_require__(/*! ../../../../_common/localize */ "./src/javascript/_common/localize.js");
-
-var _Media = __webpack_require__(/*! ../../Components/Elements/Media */ "./src/javascript/app_2/App/Components/Elements/Media/index.js");
-
-var _Media2 = _interopRequireDefault(_Media);
-
-var _localize2 = __webpack_require__(/*! ../../Components/Elements/localize.jsx */ "./src/javascript/app_2/App/Components/Elements/localize.jsx");
-
-var _localize3 = _interopRequireDefault(_localize2);
-
-var _Checkbox = __webpack_require__(/*! ../../Components/Form/Checkbox */ "./src/javascript/app_2/App/Components/Form/Checkbox/index.js");
-
-var _Checkbox2 = _interopRequireDefault(_Checkbox);
-
-var _confirmationDisabled = __webpack_require__(/*! ../../../../../images/app_2/settings/confirmation-disabled.svg */ "./src/images/app_2/settings/confirmation-disabled.svg");
-
-var _confirmationDisabled2 = _interopRequireDefault(_confirmationDisabled);
-
-var _confirmationEnabled = __webpack_require__(/*! ../../../../../images/app_2/settings/confirmation-enabled.svg */ "./src/images/app_2/settings/confirmation-enabled.svg");
-
-var _confirmationEnabled2 = _interopRequireDefault(_confirmationEnabled);
-
-var _confirmationDisabled3 = __webpack_require__(/*! ../../../../../images/app_2/settings/dark/confirmation-disabled.svg */ "./src/images/app_2/settings/dark/confirmation-disabled.svg");
-
-var _confirmationDisabled4 = _interopRequireDefault(_confirmationDisabled3);
-
-var _confirmationEnabled3 = __webpack_require__(/*! ../../../../../images/app_2/settings/dark/confirmation-enabled.svg */ "./src/images/app_2/settings/dark/confirmation-enabled.svg");
-
-var _confirmationEnabled4 = _interopRequireDefault(_confirmationEnabled3);
-
-var _lockDisabled = __webpack_require__(/*! ../../../../../images/app_2/settings/dark/lock-disabled.svg */ "./src/images/app_2/settings/dark/lock-disabled.svg");
-
-var _lockDisabled2 = _interopRequireDefault(_lockDisabled);
-
-var _lockEnabled = __webpack_require__(/*! ../../../../../images/app_2/settings/dark/lock-enabled.svg */ "./src/images/app_2/settings/dark/lock-enabled.svg");
-
-var _lockEnabled2 = _interopRequireDefault(_lockEnabled);
-
-var _lockDisabled3 = __webpack_require__(/*! ../../../../../images/app_2/settings/lock-disabled.svg */ "./src/images/app_2/settings/lock-disabled.svg");
-
-var _lockDisabled4 = _interopRequireDefault(_lockDisabled3);
-
-var _lockEnabled3 = __webpack_require__(/*! ../../../../../images/app_2/settings/lock-enabled.svg */ "./src/images/app_2/settings/lock-enabled.svg");
-
-var _lockEnabled4 = _interopRequireDefault(_lockEnabled3);
-
-var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var PurchaseSettings = function PurchaseSettings(_ref) {
-    var is_dark_mode = _ref.is_dark_mode,
-        is_purchase_confirmed = _ref.is_purchase_confirmed,
-        is_purchase_locked = _ref.is_purchase_locked,
-        togglePurchaseConfirmation = _ref.togglePurchaseConfirmation,
-        togglePurchaseLock = _ref.togglePurchaseLock;
-    return _react2.default.createElement(
-        'div',
-        { className: 'settings-dialog__purchase' },
-        _react2.default.createElement(
-            _Media2.default,
-            null,
-            _react2.default.createElement(
-                _Media.MediaHeading,
-                null,
-                _react2.default.createElement(_localize3.default, { str: 'Purchase confirmation' })
-            ),
-            _react2.default.createElement(
-                _Media.MediaDescription,
-                null,
-                _react2.default.createElement(_Media.MediaIcon, {
-                    disabled: is_dark_mode ? _confirmationDisabled4.default : _confirmationDisabled2.default,
-                    enabled: is_dark_mode ? _confirmationEnabled4.default : _confirmationEnabled2.default,
-                    is_enabled: is_purchase_confirmed
-                }),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'media__form' },
-                    _react2.default.createElement(_Checkbox2.default, {
-                        value: is_purchase_confirmed,
-                        label: (0, _localize.localize)('Require confirmation before purchasing a contract'),
-                        onClick: togglePurchaseConfirmation
-                    })
-                )
-            )
-        ),
-        _react2.default.createElement(
-            _Media2.default,
-            null,
-            _react2.default.createElement(
-                _Media.MediaHeading,
-                null,
-                _react2.default.createElement(_localize3.default, { str: 'Purchase lock' })
-            ),
-            _react2.default.createElement(
-                _Media.MediaDescription,
-                null,
-                _react2.default.createElement(_Media.MediaIcon, {
-                    disabled: is_dark_mode ? _lockDisabled2.default : _lockDisabled4.default,
-                    enabled: is_dark_mode ? _lockEnabled2.default : _lockEnabled4.default,
-                    is_enabled: is_purchase_locked
-                }),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'media__form' },
-                    _react2.default.createElement(_Checkbox2.default, {
-                        value: is_purchase_locked,
-                        label: (0, _localize.localize)('Lock contract purchase buttons'),
-                        onClick: togglePurchaseLock
-                    })
-                )
-            )
-        )
-    );
-};
-
-PurchaseSettings.propTypes = {
-    is_dark_mode: _propTypes2.default.bool,
-    is_purchase_confirmed: _propTypes2.default.bool,
-    is_purchase_locked: _propTypes2.default.bool,
-    togglePurchaseConfirmation: _propTypes2.default.func,
-    togglePurchaseLock: _propTypes2.default.func
-};
-
-exports.default = (0, _connect.connect)(function (_ref2) {
-    var ui = _ref2.ui;
-    return {
-        is_dark_mode: ui.is_dark_mode_on,
-        is_purchase_confirmed: ui.is_purchase_confirm_on,
-        is_purchase_locked: ui.is_purchase_lock_on,
-        togglePurchaseConfirmation: ui.togglePurchaseConfirmation,
-        togglePurchaseLock: ui.togglePurchaseLock
-    };
-})(PurchaseSettings);
 
 /***/ }),
 
@@ -13043,17 +12767,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var ThemeSelectSettings = function ThemeSelectSettings(_ref) {
     var is_dark_mode = _ref.is_dark_mode,
-        toggleDarkMode = _ref.toggleDarkMode;
+        toggleDarkMode = _ref.toggleDarkMode,
+        updateBarrierColor = _ref.updateBarrierColor;
 
     var darkOnClick = function darkOnClick() {
         if (!is_dark_mode) {
-            toggleDarkMode();
+            var new_dark_mode = toggleDarkMode();
+            updateBarrierColor(new_dark_mode);
         }
     };
 
     var lightOnClick = function lightOnClick() {
         if (is_dark_mode) {
-            toggleDarkMode();
+            var new_dark_mode = toggleDarkMode();
+            updateBarrierColor(new_dark_mode);
         }
     };
     return _react2.default.createElement(
@@ -13106,10 +12833,12 @@ var ThemeSelectSettings = function ThemeSelectSettings(_ref) {
 };
 
 exports.default = (0, _connect.connect)(function (_ref2) {
-    var ui = _ref2.ui;
+    var ui = _ref2.ui,
+        modules = _ref2.modules;
     return {
         is_dark_mode: ui.is_dark_mode_on,
-        toggleDarkMode: ui.toggleDarkMode
+        toggleDarkMode: ui.toggleDarkMode,
+        updateBarrierColor: modules.smart_chart.updateBarrierColor
     };
 })(ThemeSelectSettings);
 
@@ -13533,10 +13262,6 @@ var _errorBoundary = __webpack_require__(/*! ./Components/Elements/Errors/error-
 
 var _errorBoundary2 = _interopRequireDefault(_errorBoundary);
 
-var _PositionsDrawer = __webpack_require__(/*! ./Components/Elements/PositionsDrawer */ "./src/javascript/app_2/App/Components/Elements/PositionsDrawer/index.js");
-
-var _PositionsDrawer2 = _interopRequireDefault(_PositionsDrawer);
-
 var _ToastMessage = __webpack_require__(/*! ./Components/Elements/ToastMessage */ "./src/javascript/app_2/App/Components/Elements/ToastMessage/index.js");
 
 var _toastMessage = __webpack_require__(/*! ./Containers/toast-message.jsx */ "./src/javascript/app_2/App/Containers/toast-message.jsx");
@@ -13577,6 +13302,9 @@ var _Wip2 = _interopRequireDefault(_Wip);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// Check if device is touch capable
+var isTouchDevice = 'ontouchstart' in document.documentElement;
+
 var App = function App(_ref) {
     var root_store = _ref.root_store;
     return _react2.default.createElement(
@@ -13585,14 +13313,10 @@ var App = function App(_ref) {
         _react2.default.createElement(
             _connect.MobxProvider,
             { store: root_store },
-            root_store.ui.is_mobile || root_store.ui.is_tablet ? _react2.default.createElement(_Wip2.default, null) : _react2.default.createElement(
+            root_store.ui.is_mobile || root_store.ui.is_tablet && isTouchDevice ? _react2.default.createElement(_Wip2.default, null) : _react2.default.createElement(
                 _react2.default.Fragment,
                 null,
-                _react2.default.createElement(
-                    'div',
-                    { className: 'header' },
-                    _react2.default.createElement(_header2.default, null)
-                ),
+                _react2.default.createElement(_header2.default, null),
                 _react2.default.createElement(
                     _errorBoundary2.default,
                     null,
@@ -13600,18 +13324,13 @@ var App = function App(_ref) {
                         _appContents2.default,
                         null,
                         _react2.default.createElement(_routes2.default, null),
-                        _react2.default.createElement(_PositionsDrawer2.default, null),
                         _react2.default.createElement(_toastMessage2.default, { position: _ToastMessage.POSITIONS.TOP_RIGHT })
                     ),
                     _react2.default.createElement(_DenialOfServiceModal2.default, null),
                     _react2.default.createElement(_MarketUnavailableModal2.default, null),
                     _react2.default.createElement(_ServicesErrorModal2.default, null)
                 ),
-                _react2.default.createElement(
-                    'footer',
-                    { className: 'footer' },
-                    _react2.default.createElement(_footer2.default, null)
-                )
+                _react2.default.createElement(_footer2.default, null)
             )
         )
     );
@@ -20492,6 +20211,132 @@ exports.default = (0, _connect.connect)(function (_ref2) {
 
 /***/ }),
 
+/***/ "./src/javascript/app_2/Modules/PageError/PageError.jsx":
+/*!**************************************************************!*\
+  !*** ./src/javascript/app_2/Modules/PageError/PageError.jsx ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _localize = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js");
+
+var _Routes = __webpack_require__(/*! ../../App/Components/Routes */ "./src/javascript/app_2/App/Components/Routes/index.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var PageError = function PageError(_ref) {
+    var buttonOnClick = _ref.buttonOnClick,
+        error_code = _ref.error_code,
+        messages = _ref.messages,
+        header = _ref.header,
+        redirect_label = _ref.redirect_label,
+        redirect_url = _ref.redirect_url;
+    return _react2.default.createElement(
+        'div',
+        { className: 'page-error__container' },
+        _react2.default.createElement(
+            'div',
+            { className: 'page-error__box' },
+            _react2.default.createElement(
+                'h3',
+                { className: 'page-error__header' },
+                header
+            ),
+            _react2.default.createElement(
+                'div',
+                { className: 'page-error__message-wrapper' },
+                _react2.default.createElement(
+                    'span',
+                    { className: 'page-error__message' },
+                    messages.map(function (message, index) {
+                        return _react2.default.createElement(
+                            'p',
+                            { key: index },
+                            message
+                        );
+                    }),
+                    error_code && _react2.default.createElement(
+                        _react2.default.Fragment,
+                        null,
+                        _react2.default.createElement('br', null),
+                        _react2.default.createElement(
+                            'p',
+                            { className: 'page-error__code' },
+                            (0, _localize.localize)('Error Code: [_1]', error_code)
+                        )
+                    )
+                )
+            ),
+            _react2.default.createElement(
+                _Routes.ButtonLink,
+                {
+                    className: 'page-error__btn btn--primary btn--primary--orange',
+                    to: redirect_url,
+                    onClick: buttonOnClick
+                },
+                _react2.default.createElement(
+                    'span',
+                    { className: 'page-error__btn-text btn__text' },
+                    redirect_label
+                )
+            )
+        )
+    );
+};
+
+PageError.propTypes = {
+    buttonOnClick: _propTypes2.default.func,
+    error_code: _propTypes2.default.number,
+    header: _propTypes2.default.string,
+    messages: _propTypes2.default.array,
+    redirect_label: _propTypes2.default.string,
+    redirect_url: _propTypes2.default.string
+};
+
+exports.default = PageError;
+
+/***/ }),
+
+/***/ "./src/javascript/app_2/Modules/PageError/index.js":
+/*!*********************************************************!*\
+  !*** ./src/javascript/app_2/Modules/PageError/index.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _PageError = __webpack_require__(/*! ./PageError.jsx */ "./src/javascript/app_2/Modules/PageError/PageError.jsx");
+
+var _PageError2 = _interopRequireDefault(_PageError);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _PageError2.default;
+
+/***/ }),
+
 /***/ "./src/javascript/app_2/Modules/Portfolio/Components/empty-portfolio-message.jsx":
 /*!***************************************************************************************!*\
   !*** ./src/javascript/app_2/Modules/Portfolio/Components/empty-portfolio-message.jsx ***!
@@ -21106,6 +20951,11 @@ var PurchaseButton = function PurchaseButton(_ref) {
         is_loading = _ref.is_loading,
         onClickPurchase = _ref.onClickPurchase,
         type = _ref.type;
+
+    var getIconType = function getIconType() {
+        if (is_loading) return '';
+        return is_high_low ? type.toLowerCase() + '_barrier' : type.toLowerCase();
+    };
     return _react2.default.createElement(
         _button2.default,
         {
@@ -21128,7 +20978,7 @@ var PurchaseButton = function PurchaseButton(_ref) {
                     { className: 'btn-purchase__icon_wrapper' },
                     _react2.default.createElement(_Types.IconTradeType, {
                         className: 'btn-purchase__icon',
-                        type: !is_loading ? is_high_low ? type.toLowerCase() + '_barrier' : type.toLowerCase() : ''
+                        type: getIconType()
                     })
                 ),
                 _react2.default.createElement(
@@ -21200,10 +21050,6 @@ var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-type
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js");
-
-var _PopConfirm = __webpack_require__(/*! ../../../../App/Components/Elements/PopConfirm */ "./src/javascript/app_2/App/Components/Elements/PopConfirm/index.js");
-
 var _tooltip = __webpack_require__(/*! ../../../../App/Components/Elements/tooltip.jsx */ "./src/javascript/app_2/App/Components/Elements/tooltip.jsx");
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
@@ -21216,31 +21062,25 @@ var _contractInfo = __webpack_require__(/*! ../Form/Purchase/contract-info.jsx *
 
 var _contractInfo2 = _interopRequireDefault(_contractInfo);
 
-var _PurchaseLock = __webpack_require__(/*! ../Form/Purchase/PurchaseLock */ "./src/javascript/app_2/Modules/Trading/Components/Form/Purchase/PurchaseLock/index.js");
-
-var _PurchaseLock2 = _interopRequireDefault(_PurchaseLock);
-
 var _purchaseButton = __webpack_require__(/*! ./purchase-button.jsx */ "./src/javascript/app_2/Modules/Trading/Components/Elements/purchase-button.jsx");
 
 var _purchaseButton2 = _interopRequireDefault(_purchaseButton);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import { localize }   from '_common/localize';
+// import { PopConfirm } from 'App/Components/Elements/PopConfirm';
 var PurchaseFieldset = function PurchaseFieldset(_ref) {
     var basis = _ref.basis,
         currency = _ref.currency,
-        index = _ref.index,
         info = _ref.info,
         is_contract_mode = _ref.is_contract_mode,
         is_disabled = _ref.is_disabled,
         is_high_low = _ref.is_high_low,
         is_loading = _ref.is_loading,
         is_proposal_error = _ref.is_proposal_error,
-        is_purchase_confirm_on = _ref.is_purchase_confirm_on,
-        is_purchase_locked = _ref.is_purchase_locked,
         onClickPurchase = _ref.onClickPurchase,
         onHoverPurchase = _ref.onHoverPurchase,
-        togglePurchaseLock = _ref.togglePurchaseLock,
         type = _ref.type;
 
     var purchase_button = _react2.default.createElement(_purchaseButton2.default, {
@@ -21258,7 +21098,6 @@ var PurchaseFieldset = function PurchaseFieldset(_ref) {
         {
             className: 'trade-container__fieldset purchase-container__option'
         },
-        is_purchase_locked && index === 0 && _react2.default.createElement(_PurchaseLock2.default, { onClick: togglePurchaseLock }),
         _react2.default.createElement(
             _react2.default.Fragment,
             null,
@@ -21273,45 +21112,60 @@ var PurchaseFieldset = function PurchaseFieldset(_ref) {
             _react2.default.createElement(
                 'div',
                 {
-                    className: (0, _classnames2.default)('btn-purchase__shadow-wrapper', { 'btn-purchase__shadow-wrapper--disabled': is_proposal_error || is_disabled }),
+                    className: (0, _classnames2.default)('btn-purchase__shadow-wrapper', {
+                        'btn-purchase__shadow-wrapper--disabled': is_proposal_error || is_disabled
+                    }),
                     onMouseEnter: function onMouseEnter() {
-                        onHoverPurchase(true, type);
+                        if (!is_disabled) {
+                            onHoverPurchase(true, type);
+                        }
                     },
                     onMouseLeave: function onMouseLeave() {
-                        onHoverPurchase(false);
+                        if (!is_disabled) {
+                            onHoverPurchase(false);
+                        }
                     }
                 },
-                is_proposal_error && _react2.default.createElement(_tooltip2.default, { message: info.message, alignment: 'left', className: 'tooltip--error-secondary' }),
-                is_purchase_confirm_on ? _react2.default.createElement(
-                    _PopConfirm.PopConfirm,
-                    {
-                        alignment: 'left',
-                        cancel_text: (0, _localize.localize)('Cancel'),
-                        confirm_text: (0, _localize.localize)('Purchase'),
-                        message: (0, _localize.localize)('Are you sure you want to purchase this contract?')
-                    },
-                    purchase_button
-                ) : purchase_button
+                _react2.default.createElement('div', { className: 'btn-purchase__box-shadow' }),
+                is_proposal_error && _react2.default.createElement(_tooltip2.default, {
+                    alignment: 'left',
+                    className: 'tooltip--error-secondary',
+                    message: info.message
+                }),
+
+                // is_purchase_confirm_on ?
+                //     <PopConfirm
+                //         alignment='left'
+                //         cancel_text={localize('Cancel')}
+                //         confirm_text={localize('Purchase')}
+                //         message={localize('Are you sure you want to purchase this contract?')}
+                //     >
+                //         {purchase_button}
+                //     </PopConfirm>
+                //     :
+                purchase_button
             )
         )
     );
 };
+// import PurchaseLock   from 'Modules/Trading/Components/Form/Purchase/PurchaseLock';
+
 
 PurchaseFieldset.propTypes = {
     basis: _propTypes2.default.string,
     currency: _propTypes2.default.string,
-    index: _propTypes2.default.number,
+    // index            : PropTypes.number,
     info: _propTypes2.default.object,
     is_contract_mode: _propTypes2.default.bool,
     is_disabled: _propTypes2.default.bool,
     is_high_low: _propTypes2.default.bool,
     is_loading: _propTypes2.default.bool,
     is_proposal_error: _propTypes2.default.bool,
-    is_purchase_confirm_on: _propTypes2.default.bool,
-    is_purchase_locked: _propTypes2.default.bool,
+    // is_purchase_confirm_on: PropTypes.bool,
+    // is_purchase_locked    : PropTypes.bool,
     onClickPurchase: _propTypes2.default.func,
     onHoverPurchase: _propTypes2.default.func,
-    togglePurchaseLock: _propTypes2.default.func,
+    // togglePurchaseLock    : PropTypes.func,
     type: _propTypes2.default.string
 };
 
@@ -22020,102 +21874,6 @@ exports.default = (0, _connect.connect)(function (_ref2) {
 
 /***/ }),
 
-/***/ "./src/javascript/app_2/Modules/Trading/Components/Form/Purchase/PurchaseLock/index.js":
-/*!*********************************************************************************************!*\
-  !*** ./src/javascript/app_2/Modules/Trading/Components/Form/Purchase/PurchaseLock/index.js ***!
-  \*********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = undefined;
-
-var _purchaseLock = __webpack_require__(/*! ./purchase-lock.jsx */ "./src/javascript/app_2/Modules/Trading/Components/Form/Purchase/PurchaseLock/purchase-lock.jsx");
-
-var _purchaseLock2 = _interopRequireDefault(_purchaseLock);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _purchaseLock2.default;
-
-/***/ }),
-
-/***/ "./src/javascript/app_2/Modules/Trading/Components/Form/Purchase/PurchaseLock/purchase-lock.jsx":
-/*!******************************************************************************************************!*\
-  !*** ./src/javascript/app_2/Modules/Trading/Components/Form/Purchase/PurchaseLock/purchase-lock.jsx ***!
-  \******************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _localize = __webpack_require__(/*! ../../../../../../../_common/localize */ "./src/javascript/_common/localize.js");
-
-var _button = __webpack_require__(/*! ../../../../../../App/Components/Form/button.jsx */ "./src/javascript/app_2/App/Components/Form/button.jsx");
-
-var _button2 = _interopRequireDefault(_button);
-
-var _icon = __webpack_require__(/*! ../../../../../../Assets/Common/icon.jsx */ "./src/javascript/app_2/Assets/Common/icon.jsx");
-
-var _iconLock = __webpack_require__(/*! ../../../../../../Assets/Trading/icon-lock.jsx */ "./src/javascript/app_2/Assets/Trading/icon-lock.jsx");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var PurchaseLock = function PurchaseLock(_ref) {
-    var onClick = _ref.onClick;
-    return _react2.default.createElement(
-        'div',
-        { className: 'purchase-container__lock' },
-        _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(_icon.Icon, { icon: _iconLock.IconLock, className: 'purchase-container__lock-icon' })
-        ),
-        _react2.default.createElement(
-            'h4',
-            { className: 'purchase-container__lock-header' },
-            (0, _localize.localize)('Purchase Locked')
-        ),
-        _react2.default.createElement(_button2.default, {
-            className: 'purchase-container__lock-button btn--secondary btn--secondary--orange',
-            has_effect: true,
-            onClick: onClick,
-            text: (0, _localize.localize)('Unlock')
-        }),
-        _react2.default.createElement(
-            'span',
-            { className: 'purchase-container__lock-message' },
-            (0, _localize.localize)('You can lock/unlock the purchase button from the Settings menu')
-        )
-    );
-};
-
-PurchaseLock.propTypes = {
-    onClick: _propTypes2.default.func
-};
-
-exports.default = PurchaseLock;
-
-/***/ }),
-
 /***/ "./src/javascript/app_2/Modules/Trading/Components/Form/Purchase/contract-info.jsx":
 /*!*****************************************************************************************!*\
   !*** ./src/javascript/app_2/Modules/Trading/Components/Form/Purchase/contract-info.jsx ***!
@@ -22198,7 +21956,13 @@ var ContractInfo = function ContractInfo(_ref) {
             _react2.default.createElement(
                 'span',
                 null,
-                _react2.default.createElement(_tooltip2.default, { alignment: 'left', className: 'trade-container__price-tooltip', classNameIcon: 'trade-container__price-tooltip-i', icon: 'info', message: is_loaded_with_error ? '' : proposal_info.message })
+                _react2.default.createElement(_tooltip2.default, {
+                    alignment: 'left',
+                    className: (0, _classnames2.default)('trade-container__price-tooltip', { 'trade-container__price-tooltip--disabled': is_loaded_with_error }),
+                    classNameIcon: 'trade-container__price-tooltip-i',
+                    icon: 'info',
+                    message: is_loaded_with_error ? '' : proposal_info.message
+                })
             )
         )
     );
@@ -22360,9 +22124,9 @@ var _DropDown = __webpack_require__(/*! ../../../../../../App/Components/Form/Dr
 
 var _DropDown2 = _interopRequireDefault(_DropDown);
 
-var _buttonToggleMenu = __webpack_require__(/*! ../../../../../../App/Components/Form/button-toggle-menu.jsx */ "./src/javascript/app_2/App/Components/Form/button-toggle-menu.jsx");
+var _ButtonToggleMenu = __webpack_require__(/*! ../../../../../../App/Components/Form/ButtonToggleMenu */ "./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/index.js");
 
-var _buttonToggleMenu2 = _interopRequireDefault(_buttonToggleMenu);
+var _ButtonToggleMenu2 = _interopRequireDefault(_ButtonToggleMenu);
 
 var _InputField = __webpack_require__(/*! ../../../../../../App/Components/Form/InputField */ "./src/javascript/app_2/App/Components/Form/InputField/index.js");
 
@@ -22427,9 +22191,10 @@ var AdvancedDuration = function AdvancedDuration(_ref) {
     return _react2.default.createElement(
         _react.Fragment,
         null,
-        expiry_list.length > 1 && _react2.default.createElement(_buttonToggleMenu2.default, {
+        expiry_list.length > 1 && _react2.default.createElement(_ButtonToggleMenu2.default, {
             buttons_arr: expiry_list,
             name: 'advanced_expiry_type',
+            is_animated: true,
             onChange: changeExpiry,
             value: advanced_expiry_type
         }),
@@ -22779,6 +22544,10 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
 var _mobxReact = __webpack_require__(/*! mobx-react */ "./node_modules/mobx-react/index.module.js");
 
 var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
@@ -22852,7 +22621,7 @@ var Duration = function Duration(_ref) {
             expiry_list.pop(); // remove end time for contracts with only tick duration
         }
     } else if (!has_end_time) {
-        expiry_list.push({ text: (0, _localize.localize)('End Time'), value: 'endtime' });
+        expiry_list.push({ text: (0, _localize.localize)('End time'), value: 'endtime' });
     }
 
     if (is_minimized) {
@@ -22948,7 +22717,10 @@ var Duration = function Duration(_ref) {
 
     return _react2.default.createElement(
         _fieldset2.default,
-        { className: 'trade-container__fieldset' },
+        { className: (0, _classnames2.default)('trade-container__fieldset', {
+                'trade-container__fieldset--advanced': is_advanced_duration
+            })
+        },
         !has_toggle && _react2.default.createElement(_RangeSlider2.default, _extends({
             name: 'duration',
             value: duration_t
@@ -23072,9 +22844,9 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _buttonToggleMenu = __webpack_require__(/*! ../../../../../../App/Components/Form/button-toggle-menu.jsx */ "./src/javascript/app_2/App/Components/Form/button-toggle-menu.jsx");
+var _ButtonToggleMenu = __webpack_require__(/*! ../../../../../../App/Components/Form/ButtonToggleMenu */ "./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/index.js");
 
-var _buttonToggleMenu2 = _interopRequireDefault(_buttonToggleMenu);
+var _ButtonToggleMenu2 = _interopRequireDefault(_ButtonToggleMenu);
 
 var _InputField = __webpack_require__(/*! ../../../../../../App/Components/Form/InputField */ "./src/javascript/app_2/App/Components/Form/InputField/index.js");
 
@@ -23114,8 +22886,9 @@ var SimpleDuration = function SimpleDuration(_ref) {
     return _react2.default.createElement(
         _react.Fragment,
         null,
-        duration_units_list.length > 1 && _react2.default.createElement(_buttonToggleMenu2.default, {
+        duration_units_list.length > 1 && _react2.default.createElement(_ButtonToggleMenu2.default, {
             buttons_arr: filterMinutesAndTicks(duration_units_list),
+            is_animated: true,
             name: 'simple_duration_unit',
             onChange: changeDurationUnit,
             value: simple_duration_unit
@@ -23283,9 +23056,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _currency_base = __webpack_require__(/*! ../../../../../../_common/base/currency_base */ "./src/javascript/_common/base/currency_base.js");
 
-var _buttonToggleMenu = __webpack_require__(/*! ../../../../../App/Components/Form/button-toggle-menu.jsx */ "./src/javascript/app_2/App/Components/Form/button-toggle-menu.jsx");
+var _ButtonToggleMenu = __webpack_require__(/*! ../../../../../App/Components/Form/ButtonToggleMenu */ "./src/javascript/app_2/App/Components/Form/ButtonToggleMenu/index.js");
 
-var _buttonToggleMenu2 = _interopRequireDefault(_buttonToggleMenu);
+var _ButtonToggleMenu2 = _interopRequireDefault(_ButtonToggleMenu);
 
 var _DropDown = __webpack_require__(/*! ../../../../../App/Components/Form/DropDown */ "./src/javascript/app_2/App/Components/Form/DropDown/index.js");
 
@@ -23372,9 +23145,10 @@ var Amount = function Amount(_ref) {
     return _react2.default.createElement(
         _fieldset2.default,
         { className: 'trade-container__fieldset' },
-        _react2.default.createElement(_buttonToggleMenu2.default, {
+        _react2.default.createElement(_ButtonToggleMenu2.default, {
             buttons_arr: basis_list,
             className: 'dropdown--no-margin',
+            is_animated: true,
             name: 'basis',
             onChange: onChange,
             value: basis
@@ -23846,9 +23620,13 @@ var TradeTypeInfoItem = function TradeTypeInfoItem(_ref) {
         _react2.default.createElement(
             'div',
             null,
-            _react2.default.createElement(_button2.default, { className: 'trade-type-info-dialog__choose-button', text: (0, _localize.localize)('Choose'), onClick: function onClick() {
+            _react2.default.createElement(_button2.default, {
+                className: 'btn--primary--orange trade-type-info-dialog__choose-button',
+                text: (0, _localize.localize)('Choose'),
+                onClick: function onClick() {
                     return onSubmitButtonClick(item);
-                } })
+                }
+            })
         ),
         _react2.default.createElement(
             'div',
@@ -24211,13 +23989,10 @@ var Purchase = function Purchase(_ref) {
         currency = _ref.currency,
         is_contract_mode = _ref.is_contract_mode,
         is_client_allowed_to_visit = _ref.is_client_allowed_to_visit,
-        is_purchase_confirm_on = _ref.is_purchase_confirm_on,
         is_purchase_enabled = _ref.is_purchase_enabled,
-        is_purchase_locked = _ref.is_purchase_locked,
         is_trade_enabled = _ref.is_trade_enabled,
         onClickPurchase = _ref.onClickPurchase,
         onHoverPurchase = _ref.onHoverPurchase,
-        togglePurchaseLock = _ref.togglePurchaseLock,
         proposal_info = _ref.proposal_info,
         trade_types = _ref.trade_types,
         validation_errors = _ref.validation_errors;
@@ -24242,12 +24017,12 @@ var Purchase = function Purchase(_ref) {
             is_contract_mode: is_contract_mode,
             is_disabled: is_disabled,
             is_high_low: is_high_low,
-            is_loading: is_loading,
-            is_purchase_confirm_on: is_purchase_confirm_on,
-            is_proposal_error: is_proposal_error,
-            is_purchase_locked: is_purchase_locked,
-            togglePurchaseLock: togglePurchaseLock,
-            onHoverPurchase: onHoverPurchase,
+            is_loading: is_loading
+            // is_purchase_confirm_on={is_purchase_confirm_on}
+            , is_proposal_error: is_proposal_error
+            // is_purchase_locked={is_purchase_locked}
+            // togglePurchaseLock={togglePurchaseLock}
+            , onHoverPurchase: onHoverPurchase,
             onClickPurchase: onClickPurchase,
             type: type
         });
@@ -24269,7 +24044,7 @@ Purchase.propTypes = {
     currency: _propTypes2.default.string,
     is_client_allowed_to_visit: _propTypes2.default.bool,
     is_contract_mode: _propTypes2.default.bool,
-    is_purchase_confirm_on: _propTypes2.default.bool,
+    // is_purchase_confirm_on    : PropTypes.bool,
     is_purchase_enabled: _propTypes2.default.bool,
     is_purchase_locked: _propTypes2.default.bool,
     is_trade_enabled: _propTypes2.default.bool,
@@ -24277,15 +24052,14 @@ Purchase.propTypes = {
     onHoverPurchase: _propTypes2.default.func,
     proposal_info: _propTypes2.default.object,
     purchase_info: _propTypes2.default.object,
-    togglePurchaseLock: _propTypes2.default.func,
+    // togglePurchaseLock        : PropTypes.func,
     trade_types: _propTypes2.default.object,
     validation_errors: _propTypes2.default.object
 };
 
 exports.default = (0, _connect.connect)(function (_ref2) {
     var client = _ref2.client,
-        modules = _ref2.modules,
-        ui = _ref2.ui;
+        modules = _ref2.modules;
     return {
         currency: client.currency,
         is_client_allowed_to_visit: client.is_client_allowed_to_visit,
@@ -24299,10 +24073,10 @@ exports.default = (0, _connect.connect)(function (_ref2) {
         proposal_info: modules.trade.proposal_info,
         purchase_info: modules.trade.purchase_info,
         trade_types: modules.trade.trade_types,
-        validation_errors: modules.trade.validation_errors,
-        is_purchase_confirm_on: ui.is_purchase_confirm_on,
-        is_purchase_locked: ui.is_purchase_lock_on,
-        togglePurchaseLock: ui.togglePurchaseLock
+        validation_errors: modules.trade.validation_errors
+        // is_purchase_confirm_on    : ui.is_purchase_confirm_on,
+        // is_purchase_locked        : ui.is_purchase_lock_on,
+        // togglePurchaseLock        : ui.togglePurchaseLock,
     };
 })(Purchase);
 
@@ -24571,6 +24345,10 @@ var _uiLoader2 = _interopRequireDefault(_uiLoader);
 
 var _connect = __webpack_require__(/*! ../../../Stores/connect */ "./src/javascript/app_2/Stores/connect.js");
 
+var _PositionsDrawer = __webpack_require__(/*! ../../../App/Components/Elements/PositionsDrawer */ "./src/javascript/app_2/App/Components/Elements/PositionsDrawer/index.js");
+
+var _PositionsDrawer2 = _interopRequireDefault(_PositionsDrawer);
+
 var _test = __webpack_require__(/*! ./test.jsx */ "./src/javascript/app_2/Modules/Trading/Containers/test.jsx");
 
 var _test2 = _interopRequireDefault(_test);
@@ -24627,6 +24405,7 @@ var Trade = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { id: 'trade_container', className: 'trade-container' },
+                _react2.default.createElement(_PositionsDrawer2.default, null),
                 _react2.default.createElement(
                     'div',
                     { className: 'chart-container' },
@@ -26762,8 +26541,9 @@ var DEFAULT_SHADES = exports.DEFAULT_SHADES = {
 };
 
 var BARRIER_COLORS = exports.BARRIER_COLORS = {
-    GREEN: 'green',
-    RED: 'red'
+    GREEN: '#39b19d',
+    RED: 'red',
+    GRAY: '#999cac'
 };
 
 var BARRIER_LINE_STYLES = exports.BARRIER_LINE_STYLES = {
@@ -26933,7 +26713,7 @@ exports.ChartBarrierStore = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _dec2, _dec3, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
+var _dec, _dec2, _dec3, _dec4, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
 
 var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
 
@@ -26988,7 +26768,7 @@ function _initializerWarningHelper(descriptor, context) {
     throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
-var ChartBarrierStore = exports.ChartBarrierStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, (_class = function () {
+var ChartBarrierStore = exports.ChartBarrierStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, (_class = function () {
     function ChartBarrierStore(high_barrier, low_barrier) {
         var onChartBarrierChange = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
@@ -27015,8 +26795,8 @@ var ChartBarrierStore = exports.ChartBarrierStore = (_dec = _mobx.action.bound, 
 
         _initDefineProp(this, 'hidePriceLines', _descriptor8, this);
 
-        this.color = color || _barriers.BARRIER_COLORS.GREEN;
-        this.lineStyle = line_style || _barriers.BARRIER_LINE_STYLES.DASHED;
+        this.color = color || _barriers.BARRIER_COLORS.GRAY; // dark mode is the default mode
+        this.lineStyle = line_style || _barriers.BARRIER_LINE_STYLES.SOLID;
         this.onChange = this.onBarrierChange;
 
         // trade_store's action to process new barriers on dragged
@@ -27061,6 +26841,11 @@ var ChartBarrierStore = exports.ChartBarrierStore = (_dec = _mobx.action.bound, 
             this.onChartBarrierChange.apply(this, _toConsumableArray((0, _barriers2.barriersToString)(this.relative, high, low)));
         }
     }, {
+        key: 'updateBarrierColor',
+        value: function updateBarrierColor(is_dark_mode) {
+            this.color = is_dark_mode ? _barriers.BARRIER_COLORS.GRAY : _barriers.BARRIER_COLORS.GREEN;
+        }
+    }, {
         key: 'barrier_count',
         get: function get() {
             return (typeof this.high !== 'undefined') + (typeof this.low !== 'undefined');
@@ -27097,7 +26882,7 @@ var ChartBarrierStore = exports.ChartBarrierStore = (_dec = _mobx.action.bound, 
 }), _descriptor8 = _applyDecoratedDescriptor(_class.prototype, 'hidePriceLines', [_mobx.observable], {
     enumerable: true,
     initializer: null
-}), _applyDecoratedDescriptor(_class.prototype, 'updateBarriers', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'updateBarriers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateBarrierShade', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'updateBarrierShade'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onBarrierChange', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'onBarrierChange'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'barrier_count', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'barrier_count'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'default_shade', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'default_shade'), _class.prototype)), _class));
+}), _applyDecoratedDescriptor(_class.prototype, 'updateBarriers', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'updateBarriers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateBarrierShade', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'updateBarrierShade'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'onBarrierChange', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'onBarrierChange'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateBarrierColor', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'updateBarrierColor'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'barrier_count', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'barrier_count'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'default_shade', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'default_shade'), _class.prototype)), _class));
 
 /***/ }),
 
@@ -27207,7 +26992,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _dec15, _dec16, _dec17, _dec18, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _dec15, _dec16, _dec17, _dec18, _dec19, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15;
 
 var _extend2 = __webpack_require__(/*! extend */ "./node_modules/extend/index.js");
 
@@ -27288,7 +27073,7 @@ function _initializerWarningHelper(descriptor, context) {
 
 var store_name = 'smart_chart_store';
 
-var SmartChartStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, _dec5 = _mobx.action.bound, _dec6 = _mobx.action.bound, _dec7 = _mobx.action.bound, _dec8 = _mobx.action.bound, _dec9 = _mobx.action.bound, _dec10 = _mobx.action.bound, _dec11 = _mobx.action.bound, _dec12 = _mobx.action.bound, _dec13 = _mobx.action.bound, _dec14 = _mobx.action.bound, _dec15 = _mobx.action.bound, _dec16 = _mobx.action.bound, _dec17 = _mobx.action.bound, _dec18 = _mobx.action.bound, (_class = function (_BaseStore) {
+var SmartChartStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, _dec5 = _mobx.action.bound, _dec6 = _mobx.action.bound, _dec7 = _mobx.action.bound, _dec8 = _mobx.action.bound, _dec9 = _mobx.action.bound, _dec10 = _mobx.action.bound, _dec11 = _mobx.action.bound, _dec12 = _mobx.action.bound, _dec13 = _mobx.action.bound, _dec14 = _mobx.action.bound, _dec15 = _mobx.action.bound, _dec16 = _mobx.action.bound, _dec17 = _mobx.action.bound, _dec18 = _mobx.action.bound, _dec19 = _mobx.action.bound, (_class = function (_BaseStore) {
     _inherits(SmartChartStore, _BaseStore);
 
     function SmartChartStore(_ref) {
@@ -27418,6 +27203,11 @@ var SmartChartStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _d
             if (!(0, _utility.isEmptyObject)(this.barriers.main)) {
                 this.barriers.main.updateBarrierShade(should_display, contract_type);
             }
+        }
+    }, {
+        key: 'updateBarrierColor',
+        value: function updateBarrierColor(is_dark_mode) {
+            this.barriers.main.updateBarrierColor(is_dark_mode);
         }
     }, {
         key: 'removeBarriers',
@@ -27589,11 +27379,11 @@ var SmartChartStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _d
     initializer: function initializer() {
         var _this6 = this;
 
-        return function (contract_type, high_barrier, low_barrier, onChartBarrierChange, config) {
+        return function (contract_type, high_barrier, low_barrier, onChartBarrierChange, barrier_config) {
             if ((0, _utility.isEmptyObject)(_this6.barriers.main)) {
                 var main_barrier = {};
                 if ((0, _barriers.isBarrierSupported)(contract_type)) {
-                    main_barrier = new _chartBarrierStore.ChartBarrierStore(high_barrier, low_barrier, onChartBarrierChange, config);
+                    main_barrier = new _chartBarrierStore.ChartBarrierStore(high_barrier, low_barrier, onChartBarrierChange, barrier_config);
                 }
 
                 _this6.barriers = {
@@ -27602,7 +27392,7 @@ var SmartChartStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _d
             }
         };
     }
-}), _applyDecoratedDescriptor(_class.prototype, 'updateBarriers', [_dec11], Object.getOwnPropertyDescriptor(_class.prototype, 'updateBarriers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateBarrierShade', [_dec12], Object.getOwnPropertyDescriptor(_class.prototype, 'updateBarrierShade'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removeBarriers', [_dec13], Object.getOwnPropertyDescriptor(_class.prototype, 'removeBarriers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'saveAndClearTradeChartLayout', [_dec14], Object.getOwnPropertyDescriptor(_class.prototype, 'saveAndClearTradeChartLayout'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'applySavedTradeChartLayout', [_dec15], Object.getOwnPropertyDescriptor(_class.prototype, 'applySavedTradeChartLayout'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'exportLayout', [_dec16], Object.getOwnPropertyDescriptor(_class.prototype, 'exportLayout'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'barriers_array', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'barriers_array'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'createMarker', [_dec17], Object.getOwnPropertyDescriptor(_class.prototype, 'createMarker'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removeMarkers', [_dec18], Object.getOwnPropertyDescriptor(_class.prototype, 'removeMarkers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'markers_array', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'markers_array'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'settings', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'settings'), _class.prototype)), _class));
+}), _applyDecoratedDescriptor(_class.prototype, 'updateBarriers', [_dec11], Object.getOwnPropertyDescriptor(_class.prototype, 'updateBarriers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateBarrierShade', [_dec12], Object.getOwnPropertyDescriptor(_class.prototype, 'updateBarrierShade'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'updateBarrierColor', [_dec13], Object.getOwnPropertyDescriptor(_class.prototype, 'updateBarrierColor'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removeBarriers', [_dec14], Object.getOwnPropertyDescriptor(_class.prototype, 'removeBarriers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'saveAndClearTradeChartLayout', [_dec15], Object.getOwnPropertyDescriptor(_class.prototype, 'saveAndClearTradeChartLayout'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'applySavedTradeChartLayout', [_dec16], Object.getOwnPropertyDescriptor(_class.prototype, 'applySavedTradeChartLayout'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'exportLayout', [_dec17], Object.getOwnPropertyDescriptor(_class.prototype, 'exportLayout'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'barriers_array', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'barriers_array'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'createMarker', [_dec18], Object.getOwnPropertyDescriptor(_class.prototype, 'createMarker'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removeMarkers', [_dec19], Object.getOwnPropertyDescriptor(_class.prototype, 'removeMarkers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'markers_array', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'markers_array'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'settings', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'settings'), _class.prototype)), _class));
 exports.default = SmartChartStore;
 
 /***/ }),
@@ -28526,13 +28316,13 @@ var buildBarriersConfig = exports.buildBarriersConfig = function buildBarriersCo
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var setChartBarrier = exports.setChartBarrier = function setChartBarrier(SmartChartStore, proposal_response, onBarrierChange) {
+var setChartBarrier = exports.setChartBarrier = function setChartBarrier(SmartChartStore, proposal_response, onBarrierChange, barrier_config) {
     var _proposal_response$ec = proposal_response.echo_req,
         barrier = _proposal_response$ec.barrier,
         barrier2 = _proposal_response$ec.barrier2,
         contract_type = _proposal_response$ec.contract_type;
 
-    SmartChartStore.createBarriers(contract_type, barrier, barrier2, onBarrierChange);
+    SmartChartStore.createBarriers(contract_type, barrier, barrier2, onBarrierChange, barrier_config);
 };
 
 /***/ }),
@@ -29707,6 +29497,8 @@ var _proposal = __webpack_require__(/*! ./Helpers/proposal */ "./src/javascript/
 
 var _symbol2 = __webpack_require__(/*! ./Helpers/symbol */ "./src/javascript/app_2/Stores/Modules/Trading/Helpers/symbol.js");
 
+var _barriers = __webpack_require__(/*! ../SmartChart/Constants/barriers */ "./src/javascript/app_2/Stores/Modules/SmartChart/Constants/barriers.js");
+
 var _baseStore = __webpack_require__(/*! ../../base-store */ "./src/javascript/app_2/Stores/base-store.js");
 
 var _baseStore2 = _interopRequireDefault(_baseStore);
@@ -30288,7 +30080,9 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
             this.proposal_info = _extends({}, this.proposal_info, _defineProperty({}, contract_type, (0, _proposal.getProposalInfo)(this, response, obj_prev_contract_basis)));
 
             if (!this.smart_chart.is_contract_mode) {
-                (0, _chart.setChartBarrier)(this.smart_chart, response, this.onChartBarrierChange);
+                var color = this.root_store.ui.is_dark_mode_on ? _barriers.BARRIER_COLORS.GRAY : _barriers.BARRIER_COLORS.GREEN;
+                var barrier_config = { color: color };
+                (0, _chart.setChartBarrier)(this.smart_chart, response, this.onChartBarrierChange, barrier_config);
             }
 
             if (response.error) {
@@ -31405,6 +31199,8 @@ var ClientStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
         key: 'switchEndSignal',
         value: function switchEndSignal() {
             this.switch_broadcast = false;
+            // TODO: Remove once app enables Real accounts
+            if (this.is_virtual) this.root_store.ui.is_app_blurred = false;
         }
 
         /**
@@ -31901,7 +31697,8 @@ var CommonStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 
         key: 'setNetworkStatus',
         value: function setNetworkStatus(status, is_online) {
             if (this.network_status.class) {
-                this.network_status = Object.assign(this.network_status, { class: status.class, tooltip: status.tooltip });
+                this.network_status.class = status.class;
+                this.network_status.tooltip = status.tooltip;
             } else {
                 this.network_status = status;
             }
@@ -32182,7 +31979,7 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _dec15, _dec16, _dec17, _dec18, _dec19, _dec20, _dec21, _dec22, _dec23, _dec24, _dec25, _dec26, _dec27, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, _descriptor17, _descriptor18, _descriptor19, _descriptor20, _descriptor21, _descriptor22, _descriptor23, _descriptor24, _descriptor25, _descriptor26, _descriptor27, _descriptor28;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _dec15, _dec16, _dec17, _dec18, _dec19, _dec20, _dec21, _dec22, _dec23, _dec24, _dec25, _dec26, _dec27, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, _descriptor17, _descriptor18, _descriptor19, _descriptor20, _descriptor21, _descriptor22, _descriptor23, _descriptor24, _descriptor25, _descriptor26, _descriptor27;
 
 var _mobx = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
 
@@ -32248,11 +32045,15 @@ var store_name = 'ui_store';
 var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _mobx.action.bound, _dec4 = _mobx.action.bound, _dec5 = _mobx.action.bound, _dec6 = _mobx.action.bound, _dec7 = _mobx.action.bound, _dec8 = _mobx.action.bound, _dec9 = _mobx.action.bound, _dec10 = _mobx.action.bound, _dec11 = _mobx.action.bound, _dec12 = _mobx.action.bound, _dec13 = _mobx.action.bound, _dec14 = _mobx.action.bound, _dec15 = _mobx.action.bound, _dec16 = _mobx.action.bound, _dec17 = _mobx.action.bound, _dec18 = _mobx.action.bound, _dec19 = _mobx.action.bound, _dec20 = _mobx.action.bound, _dec21 = _mobx.action.bound, _dec22 = _mobx.action.bound, _dec23 = _mobx.action.bound, _dec24 = _mobx.action.bound, _dec25 = _mobx.action.bound, _dec26 = _mobx.action.bound, _dec27 = _mobx.action.bound, (_class = function (_BaseStore) {
     _inherits(UIStore, _BaseStore);
 
-    // SmartCharts Controls
+    // PWA event and config
+
+
+    // Purchase Controls
+    // @observable is_purchase_confirm_on    = false;
     function UIStore() {
         _classCallCheck(this, UIStore);
 
-        var local_storage_properties = ['advanced_duration_unit', 'is_advanced_duration', 'advanced_expiry_type', 'simple_duration_unit', 'duration_t', 'duration_s', 'duration_m', 'duration_h', 'duration_d', 'is_chart_asset_info_visible', 'is_chart_countdown_visible', 'is_chart_layout_default', 'is_dark_mode_on', 'is_positions_drawer_on', 'is_purchase_confirm_on', 'is_purchase_lock_on'];
+        var local_storage_properties = ['advanced_duration_unit', 'is_advanced_duration', 'advanced_expiry_type', 'simple_duration_unit', 'duration_t', 'duration_s', 'duration_m', 'duration_h', 'duration_d', 'is_chart_asset_info_visible', 'is_chart_countdown_visible', 'is_chart_layout_default', 'is_dark_mode_on', 'is_positions_drawer_on'];
 
         var _this = _possibleConstructorReturn(this, (UIStore.__proto__ || Object.getPrototypeOf(UIStore)).call(this, { local_storage_properties: local_storage_properties, store_name: store_name }));
 
@@ -32272,45 +32073,43 @@ var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _m
 
         _initDefineProp(_this, 'has_only_forward_starting_contracts', _descriptor8, _this);
 
-        _initDefineProp(_this, 'is_purchase_confirm_on', _descriptor9, _this);
+        _initDefineProp(_this, 'is_services_error_visible', _descriptor9, _this);
 
-        _initDefineProp(_this, 'is_services_error_visible', _descriptor10, _this);
+        _initDefineProp(_this, 'is_chart_asset_info_visible', _descriptor10, _this);
 
-        _initDefineProp(_this, 'is_purchase_lock_on', _descriptor11, _this);
+        _initDefineProp(_this, 'is_chart_countdown_visible', _descriptor11, _this);
 
-        _initDefineProp(_this, 'is_chart_asset_info_visible', _descriptor12, _this);
+        _initDefineProp(_this, 'is_chart_layout_default', _descriptor12, _this);
 
-        _initDefineProp(_this, 'is_chart_countdown_visible', _descriptor13, _this);
+        _initDefineProp(_this, 'is_install_button_visible', _descriptor13, _this);
 
-        _initDefineProp(_this, 'is_chart_layout_default', _descriptor14, _this);
+        _initDefineProp(_this, 'pwa_prompt_event', _descriptor14, _this);
 
-        _initDefineProp(_this, 'is_install_button_visible', _descriptor15, _this);
+        _initDefineProp(_this, 'screen_width', _descriptor15, _this);
 
-        _initDefineProp(_this, 'pwa_prompt_event', _descriptor16, _this);
+        _initDefineProp(_this, 'toast_messages', _descriptor16, _this);
 
-        _initDefineProp(_this, 'screen_width', _descriptor17, _this);
+        _initDefineProp(_this, 'is_advanced_duration', _descriptor17, _this);
 
-        _initDefineProp(_this, 'toast_messages', _descriptor18, _this);
+        _initDefineProp(_this, 'advanced_duration_unit', _descriptor18, _this);
 
-        _initDefineProp(_this, 'is_advanced_duration', _descriptor19, _this);
+        _initDefineProp(_this, 'advanced_expiry_type', _descriptor19, _this);
 
-        _initDefineProp(_this, 'advanced_duration_unit', _descriptor20, _this);
+        _initDefineProp(_this, 'simple_duration_unit', _descriptor20, _this);
 
-        _initDefineProp(_this, 'advanced_expiry_type', _descriptor21, _this);
+        _initDefineProp(_this, 'duration_t', _descriptor21, _this);
 
-        _initDefineProp(_this, 'simple_duration_unit', _descriptor22, _this);
+        _initDefineProp(_this, 'duration_s', _descriptor22, _this);
 
-        _initDefineProp(_this, 'duration_t', _descriptor23, _this);
+        _initDefineProp(_this, 'duration_m', _descriptor23, _this);
 
-        _initDefineProp(_this, 'duration_s', _descriptor24, _this);
+        _initDefineProp(_this, 'duration_h', _descriptor24, _this);
 
-        _initDefineProp(_this, 'duration_m', _descriptor25, _this);
+        _initDefineProp(_this, 'duration_d', _descriptor25, _this);
 
-        _initDefineProp(_this, 'duration_h', _descriptor26, _this);
+        _initDefineProp(_this, 'is_fully_blurred', _descriptor26, _this);
 
-        _initDefineProp(_this, 'duration_d', _descriptor27, _this);
-
-        _initDefineProp(_this, 'is_blurred', _descriptor28, _this);
+        _initDefineProp(_this, 'is_app_blurred', _descriptor27, _this);
 
         _this.getDurationFromUnit = function (unit) {
             return _this['duration_' + unit];
@@ -32328,11 +32127,9 @@ var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _m
         });
         return _this;
     }
+    // @observable is_purchase_lock_on       = false;
 
-    // PWA event and config
-
-
-    // Purchase Controls
+    // SmartCharts Controls
 
 
     _createClass(UIStore, [{
@@ -32355,14 +32152,24 @@ var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _m
             }
         }
     }, {
-        key: 'showBlur',
-        value: function showBlur() {
-            this.is_blurred = true;
+        key: 'showAppBlur',
+        value: function showAppBlur() {
+            this.is_app_blurred = true;
         }
     }, {
-        key: 'hideBlur',
-        value: function hideBlur() {
-            this.is_blurred = false;
+        key: 'hideAppBlur',
+        value: function hideAppBlur() {
+            this.is_app_blurred = false;
+        }
+    }, {
+        key: 'showFullBlur',
+        value: function showFullBlur() {
+            this.is_fully_blurred = true;
+        }
+    }, {
+        key: 'hideFullBlur',
+        value: function hideFullBlur() {
+            this.is_fully_blurred = false;
         }
     }, {
         key: 'toggleAccountsDialog',
@@ -32384,20 +32191,22 @@ var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _m
         value: function toggleChartCountdown() {
             this.is_chart_countdown_visible = !this.is_chart_countdown_visible;
         }
-    }, {
-        key: 'togglePurchaseLock',
-        value: function togglePurchaseLock() {
-            this.is_purchase_lock_on = !this.is_purchase_lock_on;
-        }
-    }, {
-        key: 'togglePurchaseConfirmation',
-        value: function togglePurchaseConfirmation() {
-            this.is_purchase_confirm_on = !this.is_purchase_confirm_on;
-        }
+
+        // @action.bound
+        // togglePurchaseLock() {
+        //     this.is_purchase_lock_on = !this.is_purchase_lock_on;
+        // }
+
+        // @action.bound
+        // togglePurchaseConfirmation() {
+        //     this.is_purchase_confirm_on = !this.is_purchase_confirm_on;
+        // }
+
     }, {
         key: 'toggleDarkMode',
         value: function toggleDarkMode() {
             this.is_dark_mode_on = !this.is_dark_mode_on;
+            return this.is_dark_mode_on;
         }
     }, {
         key: 'toggleSettingsDialog',
@@ -32543,107 +32352,102 @@ var UIStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = _m
     initializer: function initializer() {
         return false;
     }
-}), _descriptor9 = _applyDecoratedDescriptor(_class.prototype, 'is_purchase_confirm_on', [_mobx.observable], {
+}), _descriptor9 = _applyDecoratedDescriptor(_class.prototype, 'is_services_error_visible', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return false;
     }
-}), _descriptor10 = _applyDecoratedDescriptor(_class.prototype, 'is_services_error_visible', [_mobx.observable], {
-    enumerable: true,
-    initializer: function initializer() {
-        return false;
-    }
-}), _descriptor11 = _applyDecoratedDescriptor(_class.prototype, 'is_purchase_lock_on', [_mobx.observable], {
-    enumerable: true,
-    initializer: function initializer() {
-        return false;
-    }
-}), _descriptor12 = _applyDecoratedDescriptor(_class.prototype, 'is_chart_asset_info_visible', [_mobx.observable], {
+}), _descriptor10 = _applyDecoratedDescriptor(_class.prototype, 'is_chart_asset_info_visible', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return true;
     }
-}), _descriptor13 = _applyDecoratedDescriptor(_class.prototype, 'is_chart_countdown_visible', [_mobx.observable], {
+}), _descriptor11 = _applyDecoratedDescriptor(_class.prototype, 'is_chart_countdown_visible', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return false;
     }
-}), _descriptor14 = _applyDecoratedDescriptor(_class.prototype, 'is_chart_layout_default', [_mobx.observable], {
+}), _descriptor12 = _applyDecoratedDescriptor(_class.prototype, 'is_chart_layout_default', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return true;
     }
-}), _descriptor15 = _applyDecoratedDescriptor(_class.prototype, 'is_install_button_visible', [_mobx.observable], {
+}), _descriptor13 = _applyDecoratedDescriptor(_class.prototype, 'is_install_button_visible', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return false;
     }
-}), _descriptor16 = _applyDecoratedDescriptor(_class.prototype, 'pwa_prompt_event', [_mobx.observable], {
+}), _descriptor14 = _applyDecoratedDescriptor(_class.prototype, 'pwa_prompt_event', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return null;
     }
-}), _descriptor17 = _applyDecoratedDescriptor(_class.prototype, 'screen_width', [_mobx.observable], {
+}), _descriptor15 = _applyDecoratedDescriptor(_class.prototype, 'screen_width', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return window.innerWidth;
     }
-}), _descriptor18 = _applyDecoratedDescriptor(_class.prototype, 'toast_messages', [_mobx.observable], {
+}), _descriptor16 = _applyDecoratedDescriptor(_class.prototype, 'toast_messages', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return [];
     }
-}), _descriptor19 = _applyDecoratedDescriptor(_class.prototype, 'is_advanced_duration', [_mobx.observable], {
+}), _descriptor17 = _applyDecoratedDescriptor(_class.prototype, 'is_advanced_duration', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return false;
     }
-}), _descriptor20 = _applyDecoratedDescriptor(_class.prototype, 'advanced_duration_unit', [_mobx.observable], {
+}), _descriptor18 = _applyDecoratedDescriptor(_class.prototype, 'advanced_duration_unit', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return 't';
     }
-}), _descriptor21 = _applyDecoratedDescriptor(_class.prototype, 'advanced_expiry_type', [_mobx.observable], {
+}), _descriptor19 = _applyDecoratedDescriptor(_class.prototype, 'advanced_expiry_type', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return 'duration';
     }
-}), _descriptor22 = _applyDecoratedDescriptor(_class.prototype, 'simple_duration_unit', [_mobx.observable], {
+}), _descriptor20 = _applyDecoratedDescriptor(_class.prototype, 'simple_duration_unit', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return 't';
     }
-}), _descriptor23 = _applyDecoratedDescriptor(_class.prototype, 'duration_t', [_mobx.observable], {
+}), _descriptor21 = _applyDecoratedDescriptor(_class.prototype, 'duration_t', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return 5;
     }
-}), _descriptor24 = _applyDecoratedDescriptor(_class.prototype, 'duration_s', [_mobx.observable], {
+}), _descriptor22 = _applyDecoratedDescriptor(_class.prototype, 'duration_s', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return 15;
     }
-}), _descriptor25 = _applyDecoratedDescriptor(_class.prototype, 'duration_m', [_mobx.observable], {
+}), _descriptor23 = _applyDecoratedDescriptor(_class.prototype, 'duration_m', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return 3;
     }
-}), _descriptor26 = _applyDecoratedDescriptor(_class.prototype, 'duration_h', [_mobx.observable], {
+}), _descriptor24 = _applyDecoratedDescriptor(_class.prototype, 'duration_h', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return 1;
     }
-}), _descriptor27 = _applyDecoratedDescriptor(_class.prototype, 'duration_d', [_mobx.observable], {
+}), _descriptor25 = _applyDecoratedDescriptor(_class.prototype, 'duration_d', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return 1;
     }
-}), _descriptor28 = _applyDecoratedDescriptor(_class.prototype, 'is_blurred', [_mobx.observable], {
+}), _descriptor26 = _applyDecoratedDescriptor(_class.prototype, 'is_fully_blurred', [_mobx.observable], {
     enumerable: true,
     initializer: function initializer() {
         return false;
     }
-}), _applyDecoratedDescriptor(_class.prototype, 'onChangeUiStore', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'onChangeUiStore'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'handleResize', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'handleResize'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_mobile', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_mobile'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_tablet', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_tablet'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showBlur', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'showBlur'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideBlur', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'hideBlur'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleAccountsDialog', [_dec5], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleAccountsDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChartLayout', [_dec6], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChartLayout'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChartAssetInfo', [_dec7], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChartAssetInfo'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChartCountdown', [_dec8], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChartCountdown'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'togglePurchaseLock', [_dec9], Object.getOwnPropertyDescriptor(_class.prototype, 'togglePurchaseLock'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'togglePurchaseConfirmation', [_dec10], Object.getOwnPropertyDescriptor(_class.prototype, 'togglePurchaseConfirmation'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleDarkMode', [_dec11], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleDarkMode'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleSettingsDialog', [_dec12], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleSettingsDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showLanguageDialog', [_dec13], Object.getOwnPropertyDescriptor(_class.prototype, 'showLanguageDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideLanguageDialog', [_dec14], Object.getOwnPropertyDescriptor(_class.prototype, 'hideLanguageDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'openPositionsDrawer', [_dec15], Object.getOwnPropertyDescriptor(_class.prototype, 'openPositionsDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'togglePositionsDrawer', [_dec16], Object.getOwnPropertyDescriptor(_class.prototype, 'togglePositionsDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleServicesErrorModal', [_dec17], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleServicesErrorModal'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showMainDrawer', [_dec18], Object.getOwnPropertyDescriptor(_class.prototype, 'showMainDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showNotificationsDrawer', [_dec19], Object.getOwnPropertyDescriptor(_class.prototype, 'showNotificationsDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideDrawers', [_dec20], Object.getOwnPropertyDescriptor(_class.prototype, 'hideDrawers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showInstallButton', [_dec21], Object.getOwnPropertyDescriptor(_class.prototype, 'showInstallButton'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideInstallButton', [_dec22], Object.getOwnPropertyDescriptor(_class.prototype, 'hideInstallButton'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setPWAPromptEvent', [_dec23], Object.getOwnPropertyDescriptor(_class.prototype, 'setPWAPromptEvent'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'addToastMessage', [_dec24], Object.getOwnPropertyDescriptor(_class.prototype, 'addToastMessage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removeToastMessage', [_dec25], Object.getOwnPropertyDescriptor(_class.prototype, 'removeToastMessage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removeAllToastMessages', [_dec26], Object.getOwnPropertyDescriptor(_class.prototype, 'removeAllToastMessages'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setHasOnlyForwardingContracts', [_dec27], Object.getOwnPropertyDescriptor(_class.prototype, 'setHasOnlyForwardingContracts'), _class.prototype)), _class));
+}), _descriptor27 = _applyDecoratedDescriptor(_class.prototype, 'is_app_blurred', [_mobx.observable], {
+    enumerable: true,
+    initializer: function initializer() {
+        return false;
+    }
+}), _applyDecoratedDescriptor(_class.prototype, 'onChangeUiStore', [_dec], Object.getOwnPropertyDescriptor(_class.prototype, 'onChangeUiStore'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'handleResize', [_dec2], Object.getOwnPropertyDescriptor(_class.prototype, 'handleResize'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_mobile', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_mobile'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'is_tablet', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'is_tablet'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showAppBlur', [_dec3], Object.getOwnPropertyDescriptor(_class.prototype, 'showAppBlur'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideAppBlur', [_dec4], Object.getOwnPropertyDescriptor(_class.prototype, 'hideAppBlur'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showFullBlur', [_dec5], Object.getOwnPropertyDescriptor(_class.prototype, 'showFullBlur'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideFullBlur', [_dec6], Object.getOwnPropertyDescriptor(_class.prototype, 'hideFullBlur'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleAccountsDialog', [_dec7], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleAccountsDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChartLayout', [_dec8], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChartLayout'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChartAssetInfo', [_dec9], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChartAssetInfo'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChartCountdown', [_dec10], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChartCountdown'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleDarkMode', [_dec11], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleDarkMode'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleSettingsDialog', [_dec12], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleSettingsDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showLanguageDialog', [_dec13], Object.getOwnPropertyDescriptor(_class.prototype, 'showLanguageDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideLanguageDialog', [_dec14], Object.getOwnPropertyDescriptor(_class.prototype, 'hideLanguageDialog'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'openPositionsDrawer', [_dec15], Object.getOwnPropertyDescriptor(_class.prototype, 'openPositionsDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'togglePositionsDrawer', [_dec16], Object.getOwnPropertyDescriptor(_class.prototype, 'togglePositionsDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleServicesErrorModal', [_dec17], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleServicesErrorModal'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showMainDrawer', [_dec18], Object.getOwnPropertyDescriptor(_class.prototype, 'showMainDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showNotificationsDrawer', [_dec19], Object.getOwnPropertyDescriptor(_class.prototype, 'showNotificationsDrawer'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideDrawers', [_dec20], Object.getOwnPropertyDescriptor(_class.prototype, 'hideDrawers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'showInstallButton', [_dec21], Object.getOwnPropertyDescriptor(_class.prototype, 'showInstallButton'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'hideInstallButton', [_dec22], Object.getOwnPropertyDescriptor(_class.prototype, 'hideInstallButton'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setPWAPromptEvent', [_dec23], Object.getOwnPropertyDescriptor(_class.prototype, 'setPWAPromptEvent'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'addToastMessage', [_dec24], Object.getOwnPropertyDescriptor(_class.prototype, 'addToastMessage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removeToastMessage', [_dec25], Object.getOwnPropertyDescriptor(_class.prototype, 'removeToastMessage'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'removeAllToastMessages', [_dec26], Object.getOwnPropertyDescriptor(_class.prototype, 'removeAllToastMessages'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'setHasOnlyForwardingContracts', [_dec27], Object.getOwnPropertyDescriptor(_class.prototype, 'setHasOnlyForwardingContracts'), _class.prototype)), _class));
 exports.default = UIStore;
 
 /***/ }),
@@ -33776,7 +33580,7 @@ var GTM = function () {
             settings: {
                 theme: root_store.ui.is_dark_mode_on ? 'dark' : 'light',
                 positions_drawer: root_store.ui.is_positions_drawer_on ? 'open' : 'closed',
-                purchase_confirm: root_store.ui.is_purchase_confirm_on ? 'enabled' : 'disabled',
+                // purchase_confirm: root_store.ui.is_purchase_confirm_on ? 'enabled' : 'disabled',
                 chart: {
                     toolbar_position: root_store.ui.is_chart_layout_default ? 'bottom' : 'left',
                     chart_asset_info: root_store.ui.is_chart_asset_info_visible ? 'visible' : 'hidden',
@@ -33974,18 +33778,15 @@ var getAppId = function getAppId() {
         app_id = binary_desktop_app_id;
     } else if (/staging\.binary\.com/i.test(window.location.hostname)) {
         window.localStorage.removeItem('config.default_app_id');
-        app_id = 1098;
+        app_id = is_new_app ? 16298 : 1098;
     } else if (user_app_id.length) {
         window.localStorage.setItem('config.default_app_id', user_app_id); // it's being used in endpoint chrome extension - please do not remove
         app_id = user_app_id;
     } else if (/localhost/i.test(window.location.hostname)) {
         app_id = 1159;
-    } else if (is_new_app) {
-        window.localStorage.removeItem('config.default_app_id');
-        app_id = 15265;
     } else {
         window.localStorage.removeItem('config.default_app_id');
-        app_id = domain_app_ids[getCurrentBinaryDomain()] || 1;
+        app_id = is_new_app ? 16299 : domain_app_ids[getCurrentBinaryDomain()] || 1;
     }
     return app_id;
 };
