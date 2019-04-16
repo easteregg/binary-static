@@ -63,7 +63,7 @@
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "" + ({"404":"404","account_password":"account_password","api_token":"api_token","authorized_application":"authorized_application","cashier_password":"cashier_password","contract":"contract","financial_assessment":"financial_assessment","limits":"limits","login_history":"login_history","personal_details":"personal_details","portfolio~statement":"portfolio~statement","portfolio":"portfolio","statement":"statement","self_exclusion":"self_exclusion","settings":"settings","vendors~smart_chart":"vendors~smart_chart","smart_chart":"smart_chart"}[chunkId]||chunkId) + "-" + {"404":"5189d05e3eada5e2fb30","account_password":"5b98c5e0011cf272df7f","api_token":"1bcb0c881a41de9bfd6e","authorized_application":"41eb62c13df5f986ea68","cashier_password":"90e23ba1132672b3e187","contract":"c32b2b5dbf9407003f81","financial_assessment":"182a107203c81d1cc33a","limits":"6122a66075b7120f5152","login_history":"92742ccaa1efb1ab65b8","personal_details":"716845b634031dd9cf95","portfolio~statement":"89c32cd4391ea5a712d9","portfolio":"aab793ab7fcad630040c","statement":"64dc835a679e2e68c64f","self_exclusion":"226ac0134b0354423868","settings":"90edf5f4d945de1a9104","vendors~smart_chart":"cb46f50490637cf4e2ac","smart_chart":"88116283be894294b9e5"}[chunkId] + ".js"
+/******/ 		return __webpack_require__.p + "" + ({"404":"404","account_password":"account_password","api_token":"api_token","authorized_application":"authorized_application","cashier_password":"cashier_password","contract":"contract","financial_assessment":"financial_assessment","limits":"limits","login_history":"login_history","personal_details":"personal_details","portfolio~statement":"portfolio~statement","portfolio":"portfolio","statement":"statement","self_exclusion":"self_exclusion","settings":"settings","vendors~smart_chart":"vendors~smart_chart","smart_chart":"smart_chart"}[chunkId]||chunkId) + "-" + {"404":"5189d05e3eada5e2fb30","account_password":"5b98c5e0011cf272df7f","api_token":"1bcb0c881a41de9bfd6e","authorized_application":"41eb62c13df5f986ea68","cashier_password":"90e23ba1132672b3e187","contract":"c32b2b5dbf9407003f81","financial_assessment":"182a107203c81d1cc33a","limits":"6122a66075b7120f5152","login_history":"92742ccaa1efb1ab65b8","personal_details":"716845b634031dd9cf95","portfolio~statement":"89c32cd4391ea5a712d9","portfolio":"aab793ab7fcad630040c","statement":"64dc835a679e2e68c64f","self_exclusion":"226ac0134b0354423868","settings":"90edf5f4d945de1a9104","vendors~smart_chart":"013ca5ddbeb1ffbc57a1","smart_chart":"88116283be894294b9e5"}[chunkId] + ".js"
 /******/ 	}
 /******/
 /******/ 	// The require function
@@ -5880,6 +5880,12 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
+var _url = __webpack_require__(/*! ../../../../_common/url */ "./src/javascript/_common/url.js");
+
+var _PageError = __webpack_require__(/*! ../../../Modules/PageError */ "./src/javascript/app_2/Modules/PageError/index.js");
+
+var _PageError2 = _interopRequireDefault(_PageError);
+
 var _localize = __webpack_require__(/*! ./localize.jsx */ "./src/javascript/app_2/App/Components/Elements/localize.jsx");
 
 var _localize2 = _interopRequireDefault(_localize);
@@ -5887,36 +5893,39 @@ var _localize2 = _interopRequireDefault(_localize);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var LoginPrompt = function LoginPrompt(_ref) {
-    var IconComponent = _ref.IconComponent,
-        onLogin = _ref.onLogin,
-        onSignup = _ref.onSignup;
-    return _react2.default.createElement(
-        'div',
-        { className: 'login-prompt' },
-        _react2.default.createElement(
-            'div',
-            { className: 'login-prompt__icon' },
-            IconComponent && // TODO: needs a general icon in case not specified in route
-            _react2.default.createElement(IconComponent, { className: 'login-prompt__icon-svg disabled' })
-        ),
-        _react2.default.createElement(
-            'div',
-            { className: 'login-prompt__message' },
-            _react2.default.createElement(_localize2.default, {
-                str: 'Please [_1]log in[_2] or [_3]sign up[_2] to view this page.',
-                replacers: {
-                    '1_2': _react2.default.createElement('a', { href: 'javascript:;', onClick: onLogin }),
-                    '3_2': _react2.default.createElement('a', { href: 'javascript:;', onClick: onSignup })
-                }
-            })
-        )
-    );
+    var onLogin = _ref.onLogin,
+        onSignup = _ref.onSignup,
+        page_title = _ref.page_title;
+    return _react2.default.createElement(_PageError2.default, {
+        header: _react2.default.createElement(_localize2.default, {
+            str: '[_1] page is only[_2]available for existing clients.',
+            replacers: {
+                '1': page_title || 'This',
+                '2': _react2.default.createElement('br', { key: 0 })
+            }
+        }),
+        messages: [_react2.default.createElement(_localize2.default, {
+            key: 0,
+            str: 'If you have an active account, please [_1]Log in[_2] for full access. Otherwise, please [_3]Sign up[_4] to start trading.',
+            replacers: {
+                '1_2': _react2.default.createElement('a', { className: 'link', href: 'javascript:;', onClick: onLogin }),
+                '3_4': _react2.default.createElement('a', { className: 'link', href: 'javascript:;', onClick: onSignup })
+            }
+        })]
+    });
 };
 
 LoginPrompt.propTypes = {
-    IconComponent: _propTypes2.default.func,
     onLogin: _propTypes2.default.func,
-    onSignup: _propTypes2.default.func
+    onSignup: _propTypes2.default.func,
+    page_title: _propTypes2.default.string
+};
+
+// TODO - Remove this default setting once sign-up has been integrated to app 2
+LoginPrompt.defaultProps = {
+    onSignup: function onSignup() {
+        window.open((0, _url.urlFor)('new-account', undefined, undefined, true));
+    }
 };
 
 exports.default = LoginPrompt;
@@ -10886,7 +10895,7 @@ var RouteWithSubRoutes = function RouteWithSubRoutes(route) {
             }
             result = _react2.default.createElement(_reactRouterDom.Redirect, { to: to });
         } else {
-            result = route.is_authenticated && !route.is_logged_in ? _react2.default.createElement(_loginPrompt2.default, { IconComponent: route.icon_component, onLogin: _login.redirectToLogin }) : _react2.default.createElement(route.component, _extends({}, props, { routes: route.routes }));
+            result = route.is_authenticated && !route.is_logged_in ? _react2.default.createElement(_loginPrompt2.default, { onLogin: _login.redirectToLogin, page_title: route.title }) : _react2.default.createElement(route.component, _extends({}, props, { routes: route.routes }));
         }
 
         var title = route.title ? route.title + ' | ' : '';
@@ -20235,7 +20244,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _localize = __webpack_require__(/*! ../../../_common/localize */ "./src/javascript/_common/localize.js");
 
-var _Routes = __webpack_require__(/*! ../../App/Components/Routes */ "./src/javascript/app_2/App/Components/Routes/index.js");
+var _buttonLink = __webpack_require__(/*! ../../App/Components/Routes/button-link.jsx */ "./src/javascript/app_2/App/Components/Routes/button-link.jsx");
+
+var _buttonLink2 = _interopRequireDefault(_buttonLink);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20282,8 +20293,8 @@ var PageError = function PageError(_ref) {
                     )
                 )
             ),
-            _react2.default.createElement(
-                _Routes.ButtonLink,
+            redirect_label && _react2.default.createElement(
+                _buttonLink2.default,
                 {
                     className: 'page-error__btn btn--primary btn--primary--orange',
                     to: redirect_url,
@@ -20302,7 +20313,7 @@ var PageError = function PageError(_ref) {
 PageError.propTypes = {
     buttonOnClick: _propTypes2.default.func,
     error_code: _propTypes2.default.number,
-    header: _propTypes2.default.string,
+    header: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.node]),
     messages: _propTypes2.default.array,
     redirect_label: _propTypes2.default.string,
     redirect_url: _propTypes2.default.string
@@ -23356,6 +23367,7 @@ exports.default = (0, _connect.connect)(function (_ref2) {
         barrier_1: modules.trade.barrier_1,
         barrier_2: modules.trade.barrier_2,
         barrier_count: modules.trade.barrier_count,
+        onChange: modules.trade.onChange,
         validation_errors: modules.trade.validation_errors
     };
 })(Barrier);
@@ -30770,7 +30782,7 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
          * Sets validation error messages for an observable property of the store
          *
          * @param {String} propertyName - The observable property's name
-         * @param {String} messages - An array of strings that contains validation error messages for the particular property.
+         * @param [{String}] messages - An array of strings that contains validation error messages for the particular property.
          *
          */
 
@@ -30780,13 +30792,13 @@ var BaseStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 = 
             var _this4 = this;
 
             var is_different = function is_different() {
-                return _this4.validation_errors[propertyName].filter(function (x) {
-                    return messages.includes(x);
-                }).length > 0;
+                return !!_this4.validation_errors[propertyName].filter(function (x) {
+                    return !messages.includes(x);
+                }).concat(messages.filter(function (x) {
+                    return !_this4.validation_errors[propertyName].includes(x);
+                })).length;
             };
-            if (!this.validation_errors[propertyName]) {
-                this.validation_errors[propertyName] = messages;
-            } else if (is_different()) {
+            if (!this.validation_errors[propertyName] || is_different()) {
                 this.validation_errors[propertyName] = messages;
             }
         }
@@ -33778,7 +33790,7 @@ var getAppId = function getAppId() {
         app_id = binary_desktop_app_id;
     } else if (/staging\.binary\.com/i.test(window.location.hostname)) {
         window.localStorage.removeItem('config.default_app_id');
-        app_id = is_new_app ? 16298 : 1098;
+        app_id = is_new_app ? 16303 : 1098;
     } else if (user_app_id.length) {
         window.localStorage.setItem('config.default_app_id', user_app_id); // it's being used in endpoint chrome extension - please do not remove
         app_id = user_app_id;
@@ -33786,7 +33798,7 @@ var getAppId = function getAppId() {
         app_id = 1159;
     } else {
         window.localStorage.removeItem('config.default_app_id');
-        app_id = is_new_app ? 16299 : domain_app_ids[getCurrentBinaryDomain()] || 1;
+        app_id = is_new_app ? 15265 : domain_app_ids[getCurrentBinaryDomain()] || 1;
     }
     return app_id;
 };

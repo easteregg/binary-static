@@ -946,7 +946,7 @@ var getAppId = __webpack_require__(/*! ../../config */ "./src/javascript/config.
 
 var GTM = function () {
     var isGtmApplicable = function isGtmApplicable() {
-        return (/^(1|1098|14473|15284)$/.test(getAppId())
+        return (/^(1|1098|14473|15284|16303|15265)$/.test(getAppId())
         );
     };
 
@@ -35963,7 +35963,7 @@ var getAppId = function getAppId() {
         app_id = binary_desktop_app_id;
     } else if (/staging\.binary\.com/i.test(window.location.hostname)) {
         window.localStorage.removeItem('config.default_app_id');
-        app_id = is_new_app ? 16298 : 1098;
+        app_id = is_new_app ? 16303 : 1098;
     } else if (user_app_id.length) {
         window.localStorage.setItem('config.default_app_id', user_app_id); // it's being used in endpoint chrome extension - please do not remove
         app_id = user_app_id;
@@ -35971,7 +35971,7 @@ var getAppId = function getAppId() {
         app_id = 1159;
     } else {
         window.localStorage.removeItem('config.default_app_id');
-        app_id = is_new_app ? 16299 : domain_app_ids[getCurrentBinaryDomain()] || 1;
+        app_id = is_new_app ? 15265 : domain_app_ids[getCurrentBinaryDomain()] || 1;
     }
     return app_id;
 };
