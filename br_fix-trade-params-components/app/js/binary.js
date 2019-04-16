@@ -22483,7 +22483,7 @@ DurationWrapper.propTypes = {
     advanced_duration_unit: _propTypes2.default.string,
     advanced_expiry_type: _propTypes2.default.string,
     contract_expiry_type: _propTypes2.default.string,
-    duration: _propTypes2.default.number,
+    duration: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
     duration_d: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
     duration_h: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
     duration_m: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
@@ -29701,10 +29701,6 @@ var TradeStore = (_dec = _mobx.action.bound, _dec2 = _mobx.action.bound, _dec3 =
             return _this.is_equal;
         }, function () {
             _this.onAllowEqualsChange();
-        });
-        (0, _mobx.intercept)(_this, 'duration', function (change) {
-            change.newValue = +change.newValue;
-            return change;
         });
         return _this;
     }
