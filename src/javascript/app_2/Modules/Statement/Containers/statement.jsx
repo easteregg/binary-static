@@ -48,7 +48,8 @@ class Statement extends React.Component {
 
         return (
             <div className={classnames('statement container', { 'statement--card-view': should_show_cards })}>
-                <Filter use_native_pickers={should_show_cards} />
+                {/* TODO: UI is working on a combo date-picker for statement, uncomment and update this once done. */}
+                {/* <Filter use_native_pickers={should_show_cards} /> */}
                 <div className='statement__content'>
                     {
                         should_show_cards ?
