@@ -1,6 +1,7 @@
 import BinarySocket        from '_common/base/socket_base';
 import SubscriptionManager from '_common/base/subscription_manager';
 import { isEmptyObject }   from '_common/utility';
+import { trackJSNetworkMonitor } from './trackjs';
 
 const WS = (() => {
     const activeSymbols = () =>
@@ -126,5 +127,5 @@ const WS = (() => {
         subscribeWebsiteStatus,
     };
 })();
-
-export default WS;
+// Instead of normal module, we pass TrackJSErrorMonitoring wrapper to catch network errors.
+export default trackJSNetworkMonitor(WS);

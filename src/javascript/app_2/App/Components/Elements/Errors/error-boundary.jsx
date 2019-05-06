@@ -1,4 +1,6 @@
-import React from 'react';
+import React            from 'react';
+import { TrackJS }      from 'trackjs';
+import { isProduction } from '../../../../../config';
 
 export default class ErrorBoundary extends React.Component {
     constructor(props) {
@@ -7,12 +9,21 @@ export default class ErrorBoundary extends React.Component {
     }
 
     componentDidCatch = (error, info) => {
+        if (info && info.componentStack && !isProduction()) {
+            // The component stack is sometimes useful in development mode
+            // In production it can be somewhat obfuscated, so feel free to omit this line.
+            console.log(info.componentStack); // eslint-disable-line
+        }
+        if (isProduction()) {
+            TrackJS.track(error);
+        }
+
         this.setState({
             hasError: true,
             error,
             info,
         });
-    }
+    };
 
     render = () => this.state.hasError ?
         (

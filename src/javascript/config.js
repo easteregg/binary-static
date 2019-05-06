@@ -93,10 +93,22 @@ const getSocketURL = () => {
     return `wss://${server_url}/websockets/v3`;
 };
 
+const getTrackJSConfig = () => ({
+    token      : '', // ADD TrackJS Token On build
+    application: '', // ADD Application Name at production
+    console    : {
+        display: !isProduction(),
+    },
+    version: document.querySelector('meta[name=version]')
+        ? document.querySelector('meta[name=version]').content
+        : 'localhost',
+});
+
 module.exports = {
     getCurrentBinaryDomain,
     isProduction,
     getAppId,
     isBinaryApp,
     getSocketURL,
+    getTrackJSConfig,
 };
