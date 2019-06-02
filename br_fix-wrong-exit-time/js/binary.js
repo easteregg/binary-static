@@ -8892,6 +8892,8 @@ var TabSelector = function () {
         applyToAllElements('.go-right', function (element) {
             element.addEventListener('click', goRight);
         });
+
+        setMobileHeader();
     };
 
     var repositionSelector = function repositionSelector() {
@@ -8927,6 +8929,14 @@ var TabSelector = function () {
         Url.updateParamsWithoutReload(_defineProperty({}, selector, tab_id), true);
     };
 
+    var setMobileHeader = function setMobileHeader() {
+        var el_mobile_tab = getElementById('tab_mobile_header');
+        if (el_mobile_tab) {
+            var active_tab = document.getElementsByClassName('a-active');
+            el_mobile_tab.innerHTML = active_tab[0].innerHTML;
+        }
+    };
+
     var goLeft = function goLeft(e) {
         changeTab({ selector: e.target.getAttribute('data-parent'), direction: 'left' });
     };
@@ -8958,6 +8968,7 @@ var TabSelector = function () {
         selectCircle(options.selector, current_index, index_to_show);
         slideSelector(options.selector, options.el_to_show);
         options.el_to_show.getElementsByTagName('a')[0].click();
+        setMobileHeader();
 
         if (params_hash.section) {
             setTimeout(function () {
@@ -9977,7 +9988,6 @@ var pages_config = {
     securityws: { module: Settings, is_authenticated: true },
     self_exclusionws: { module: SelfExclusion, is_authenticated: true, only_real: true },
     settingsws: { module: Settings, is_authenticated: true },
-    signup: { module: TabSelector }, // for /affiliate/signup.html
     statementws: { module: Statement, is_authenticated: true, needs_currency: true },
     tnc_approvalws: { module: TNCApproval, is_authenticated: true, only_real: true },
     top_up_virtualws: { module: TopUpVirtual, is_authenticated: true, only_virtual: true },
@@ -9988,6 +9998,7 @@ var pages_config = {
     welcome: { module: WelcomePage, is_authenticated: true, only_virtual: true },
     withdrawws: { module: PaymentAgentWithdraw, is_authenticated: true, only_real: true },
 
+    'affiliate-ib': { module: StaticPages.AffiliatesIb },
     'binary-in-numbers': { module: StaticPages.BinaryInNumbers },
     'binary-options': { module: GetStarted.BinaryOptions },
     'binary-options-mt5': { module: GetStarted.BinaryOptionsForMT5 },
@@ -9996,7 +10007,6 @@ var pages_config = {
     'get-started': { module: TabSelector },
     'how-to-trade-mt5': { module: TabSelector },
     'ib-faq': { module: StaticPages.IBProgrammeFAQ },
-    'ib-signup': { module: TabSelector },
     'job-details': { module: JobDetails },
     'keep-safe': { module: KeepSafe },
     'new-account': { module: NewAccount, not_authenticated: true },
@@ -19951,9 +19961,9 @@ var Highchart = function () {
         end_time = parseInt(contract.date_expiry);
         entry_tick_time = parseInt(contract.entry_tick_time);
         exit_tick_time = parseInt(contract.exit_tick_time);
-        sell_time = +contract.is_path_dependent && contract.status !== 'sold' ? contract.date_expiry : parseInt(contract.sell_time);
+        sell_time = +contract.is_path_dependent && contract.status !== 'sold' ? contract.exit_tick_time : parseInt(contract.sell_time);
         is_sold_before_expiry = sell_time < end_time;
-        exit_time = is_sold_before_expiry ? sell_time : exit_tick_time || end_time;
+        exit_time = is_sold_before_expiry ? sell_time : end_time;
         prev_barriers = [];
     };
 
@@ -36071,7 +36081,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '17097'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
@@ -36777,6 +36787,7 @@ module.exports = Regulation;
 var tabListener = __webpack_require__(/*! @binary-com/binary-style */ "./node_modules/@binary-com/binary-style/binary.js").tabListener;
 var ImageSlider = __webpack_require__(/*! ../../_common/image_slider */ "./src/javascript/_common/image_slider.js");
 var MenuSelector = __webpack_require__(/*! ../../_common/menu_selector */ "./src/javascript/_common/menu_selector.js");
+var TabSelector = __webpack_require__(/*! ../../_common/tab_selector */ "./src/javascript/_common/tab_selector.js");
 var Scroll = __webpack_require__(/*! ../../_common/scroll */ "./src/javascript/_common/scroll.js");
 var handleHash = __webpack_require__(/*! ../../_common/utility */ "./src/javascript/_common/utility.js").handleHash;
 var BinaryPjax = __webpack_require__(/*! ../../app/base/binary_pjax */ "./src/javascript/app/base/binary_pjax.js");
@@ -36830,6 +36841,14 @@ module.exports = {
             } else {
                 Header.upgradeMessageVisibility();
             }
+        }
+    },
+    AffiliatesIb: {
+        onLoad: function onLoad() {
+            $('.has-tabs').tabs();TabSelector.onLoad();
+        },
+        onUnload: function onUnload() {
+            TabSelector.onUnload();
         }
     },
     AffiliatesFAQ: {
