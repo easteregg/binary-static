@@ -13114,6 +13114,7 @@ var updateTabDisplay = __webpack_require__(/*! ../../_common/tab_selector */ "./
 var visible_classname = 'data-show-visible';
 var mt_company_rule = 'mtcompany';
 var eu_country_rule = 'eucountry';
+var all_rule = 'all';
 
 var ContentVisibility = function () {
     var init = function init() {
@@ -13215,6 +13216,7 @@ var ContentVisibility = function () {
         var rule_set_has_current = rule_set.has(current_landing_company_shortcode);
         var rule_set_has_mt = rule_set.has(mt_company_rule);
         var rule_set_has_eu_country = rule_set.has(eu_country_rule);
+        var rule_set_has_all = rule_set.has(all_rule);
 
         var show_element = false;
 
@@ -13228,7 +13230,7 @@ var ContentVisibility = function () {
             })) show_element = !is_exclude;
         }
 
-        return show_element;
+        return rule_set_has_all ? !is_exclude : show_element;
     };
 
     var controlVisibility = function controlVisibility(current_landing_company_shortcode, client_has_mt_company, mt5_login_list) {
@@ -22496,22 +22498,48 @@ var DigitDisplay = function () {
         }
     };
 
-    var init = function init(id_render, proposal_open_contract) {
-        var calculated_height = (proposal_open_contract.tick_count + 1) * 40;
-
-        tick_count = 1;
-        contract = proposal_open_contract;
-        spot_times = [];
-
+    var initTable = function initTable(id_render, calculated_height) {
         $container = $('#' + id_render);
-        $container.addClass('normal-font').html($('<h5 />', { text: contract.display_name, class: 'center-text' })).append($('<div />', { class: 'gr-8 gr-centered gr-12-m', style: 'height: ' + calculated_height + 'px;' }).append($('<div />', { class: 'gr-row', id: 'table_digits' }).append($('<strong />', { class: 'gr-3', text: localize('Tick') })).append($('<strong />', { class: 'gr-3', text: localize('Spot') })).append($('<strong />', { class: 'gr-6', text: localize('Spot Time (GMT)') })))).append($('<div />', { class: 'digit-ticker invisible', id: 'digit_ticker_container' }));
+        $container.addClass('normal-font').html($('<h5 />', {
+            text: contract.display_name,
+            class: 'center-text'
+        })).append($('<div />', {
+            class: 'gr-8 gr-centered gr-12-m',
+            style: 'height: ' + calculated_height + 'px;'
+        }).append($('<div />', {
+            class: 'gr-row',
+            id: 'table_digits'
+        }).append($('<strong />', {
+            class: 'gr-3',
+            text: localize('Tick')
+        })).append($('<strong />', {
+            class: 'gr-3',
+            text: localize('Spot')
+        })).append($('<strong />', {
+            class: 'gr-6',
+            text: localize('Spot Time (GMT)')
+        })))).append($('<div />', {
+            class: 'digit-ticker invisible',
+            id: 'digit_ticker_container'
+        }));
         LoadingSpinner.show('table_digits');
+    };
 
+    var calculateTableHeight = function calculateTableHeight(proposal_open_contract) {
+        return (proposal_open_contract.tick_count + 1) * 40;
+    };
+
+    var init = function init(id_render, proposal_open_contract) {
+        contract = proposal_open_contract;
+        tick_count = 1;
+        spot_times = [];
+        initTable(id_render, calculateTableHeight(proposal_open_contract));
         DigitTicker.init('digit_ticker_container', contract.contract_type, contract.shortcode, contract.tick_count, contract.status);
 
+        var tick_start_time = +contract.entry_tick_time || +contract.date_start; // In some situations, entry_tick_time is undefined, define a fallback.
         var request = {
             ticks_history: contract.underlying,
-            start: +contract.entry_tick_time || +contract.purchase_time
+            start: tick_start_time
         };
 
         subscribe(request);
@@ -22594,8 +22622,10 @@ var DigitDisplay = function () {
     };
 
     return {
+        calculateTableHeight: calculateTableHeight,
         end: end,
         init: init,
+        initTable: initTable,
         update: update
     };
 }();
@@ -35264,9 +35294,12 @@ var ViewPopup = function () {
 
         var is_digit = /digit/i.test(contract.contract_type);
         if (is_digit) {
-            if (!chart_started) {
+            if (!chart_started && contract.entry_tick_time) {
                 DigitDisplay.init(id_tick_chart, contract);
                 chart_started = true;
+            } else if (!chart_started && !contract.entry_tick_time) {
+                // Since the contract not started yet, display the loading table:
+                DigitDisplay.initTable(id_tick_chart, DigitDisplay.calculateTableHeight(contract));
             }
         } else if (!chart_started && !contract.tick_count) {
             if (!chart_init) {
@@ -36081,7 +36114,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '17097'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
