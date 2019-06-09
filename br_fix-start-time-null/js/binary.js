@@ -22498,10 +22498,10 @@ var DigitDisplay = function () {
         }
     };
 
-    var initTable = function initTable(id_render, calculated_height) {
+    var initTable = function initTable(id_render, calculated_height, poc) {
         $container = $('#' + id_render);
         $container.addClass('normal-font').html($('<h5 />', {
-            text: contract.display_name,
+            text: poc.display_name,
             class: 'center-text'
         })).append($('<div />', {
             class: 'gr-8 gr-centered gr-12-m',
@@ -22533,10 +22533,10 @@ var DigitDisplay = function () {
         contract = proposal_open_contract;
         tick_count = 1;
         spot_times = [];
-        initTable(id_render, calculateTableHeight(proposal_open_contract));
+        initTable(id_render, calculateTableHeight(proposal_open_contract), proposal_open_contract);
         DigitTicker.init('digit_ticker_container', contract.contract_type, contract.shortcode, contract.tick_count, contract.status);
 
-        var tick_start_time = +contract.entry_tick_time || +contract.date_start; // In some situations, entry_tick_time is undefined, define a fallback.
+        var tick_start_time = +contract.entry_tick_time;
         var request = {
             ticks_history: contract.underlying,
             start: tick_start_time
@@ -35299,7 +35299,7 @@ var ViewPopup = function () {
                 chart_started = true;
             } else if (!chart_started && !contract.entry_tick_time) {
                 // Since the contract not started yet, display the loading table:
-                DigitDisplay.initTable(id_tick_chart, DigitDisplay.calculateTableHeight(contract));
+                DigitDisplay.initTable(id_tick_chart, DigitDisplay.calculateTableHeight(contract), contract);
             }
         } else if (!chart_started && !contract.tick_count) {
             if (!chart_init) {
@@ -36114,7 +36114,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '17097'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
