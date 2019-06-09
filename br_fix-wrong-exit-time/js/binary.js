@@ -19934,7 +19934,6 @@ var Highchart = function () {
         sell_time = void 0,
         is_sold_before_expiry = void 0,
         exit_tick_time = void 0,
-        exit_time = void 0,
         margin = void 0,
         is_initialized = void 0,
         is_chart_delayed = void 0,
@@ -19961,9 +19960,8 @@ var Highchart = function () {
         end_time = parseInt(contract.date_expiry);
         entry_tick_time = parseInt(contract.entry_tick_time);
         exit_tick_time = parseInt(contract.exit_tick_time);
-        sell_time = +contract.is_path_dependent && contract.status !== 'sold' ? contract.exit_tick_time : parseInt(contract.sell_time);
-        is_sold_before_expiry = sell_time < end_time;
-        exit_time = is_sold_before_expiry ? sell_time : end_time;
+        sell_time = +contract.is_path_dependent && contract.status !== 'sold' ? exit_tick_time : parseInt(contract.sell_time);
+        is_sold_before_expiry = end_time - sell_time > 1; // fix odd timings when date_expiry is 1 second after exit_tick_time
         prev_barriers = [];
     };
 
@@ -20030,13 +20028,12 @@ var Highchart = function () {
         HighchartUI.updateLabels(chart, getHighchartLabelParams());
 
         var display_decimals = (history ? history.prices[0] : candles[0].open).split('.')[1].length || 3;
-
         chart_options = {
             data: data,
             display_decimals: display_decimals,
             type: type,
             entry_time: (entry_tick_time || start_time) * 1000,
-            exit_time: exit_time ? exit_time * 1000 : null,
+            exit_time: exit_tick_time * 1000,
             has_zone: true,
             height: Math.max(el.parentElement.offsetHeight, 450),
             radius: 2,
@@ -20316,7 +20313,7 @@ var Highchart = function () {
 
     var updateZone = function updateZone(type) {
         if (chart && type && contract.status !== 'sold') {
-            var value = type === 'entry' ? entry_tick_time : exit_time;
+            var value = type === 'entry' ? entry_tick_time : exit_tick_time;
             chart.series[0].zones[type === 'entry' ? 0 : 1].value = value * 1000;
         }
     };
@@ -20433,7 +20430,7 @@ var Highchart = function () {
         var history_times_length = history_times.length;
         if (contract.is_settleable || contract.is_sold) {
             var i = history_times.findIndex(function (time) {
-                return +time > exit_time;
+                return +time > exit_tick_time;
             });
             max_point = i > 0 ? +history_times[i] : end_time;
         }
@@ -20550,7 +20547,7 @@ var Highchart = function () {
     };
 
     var calculateGranularity = function calculateGranularity() {
-        var duration = Math.min(exit_time, now_time) - (purchase_time || start_time);
+        var duration = Math.min(exit_tick_time, now_time) - (purchase_time || start_time);
         var granularity = void 0;
         // days * hours * minutes * seconds
         if (duration <= 60 * 60) granularity = 0; // less than 1 hour
