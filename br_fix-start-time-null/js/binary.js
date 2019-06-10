@@ -513,8 +513,7 @@ var ClientBase = function () {
                 });
             };
 
-            // TODO [->svg]
-            can_upgrade_to = canUpgrade('costarica', 'svg', 'iom', 'malta', 'maltainvest');
+            can_upgrade_to = canUpgrade('iom', 'svg', 'malta', 'maltainvest');
             if (can_upgrade_to) {
                 type = can_upgrade_to === 'maltainvest' ? 'financial' : 'real';
             }
@@ -1068,8 +1067,7 @@ var GTM = function () {
             data.event = login_event;
             BinarySocket.wait('mt5_login_list').then(function (response) {
                 (response.mt5_login_list || []).forEach(function (obj) {
-                    var acc_type = (ClientBase.getMT5AccountType(obj.group) || '').replace('real_vanuatu', 'financial').replace('vanuatu_', '').replace(/costarica|svg/, 'gaming'); // i.e. financial_cent, demo_cent, demo_gaming, real_gaming
-                    // TODO [->svg]
+                    var acc_type = (ClientBase.getMT5AccountType(obj.group) || '').replace('real_vanuatu', 'financial').replace('vanuatu_', '').replace(/svg/, 'gaming'); // i.e. financial_cent, demo_cent, demo_gaming, real_gaming
                     if (acc_type) {
                         data['mt5_' + acc_type + '_id'] = obj.login;
                     }
@@ -10387,9 +10385,8 @@ var Client = function () {
 
         var upgrade_link = void 0;
         if (upgrade_info.can_upgrade_to) {
-            // TODO [->svg]
             var upgrade_link_map = {
-                realws: ['costarica', 'svg', 'iom', 'malta'],
+                realws: ['svg', 'iom', 'malta'],
                 maltainvestws: ['maltainvest']
             };
             upgrade_link = Object.keys(upgrade_link_map).find(function (link) {
@@ -10934,8 +10931,7 @@ var Header = function () {
         BinarySocket.wait('authorize', 'landing_company').then(function () {
             var get_account_status = void 0,
                 status = void 0;
-            // TODO [->svg]
-            var is_svg = Client.get('landing_company_shortcode') === 'costarica' || Client.get('landing_company_shortcode') === 'svg';
+            var is_svg = Client.get('landing_company_shortcode') === 'svg';
             var necessary_withdrawal_fields = is_svg ? State.getResponse('landing_company.financial_company.requirements.withdrawal') : [];
             var necessary_signup_fields = is_svg ? State.getResponse('landing_company.financial_company.requirements.signup').map(function (field) {
                 return field === 'residence' ? 'country' : field;
@@ -13114,7 +13110,6 @@ var updateTabDisplay = __webpack_require__(/*! ../../_common/tab_selector */ "./
 var visible_classname = 'data-show-visible';
 var mt_company_rule = 'mtcompany';
 var eu_country_rule = 'eucountry';
-var all_rule = 'all';
 
 var ContentVisibility = function () {
     var init = function init() {
@@ -13216,7 +13211,6 @@ var ContentVisibility = function () {
         var rule_set_has_current = rule_set.has(current_landing_company_shortcode);
         var rule_set_has_mt = rule_set.has(mt_company_rule);
         var rule_set_has_eu_country = rule_set.has(eu_country_rule);
-        var rule_set_has_all = rule_set.has(all_rule);
 
         var show_element = false;
 
@@ -13230,7 +13224,7 @@ var ContentVisibility = function () {
             })) show_element = !is_exclude;
         }
 
-        return rule_set_has_all ? !is_exclude : show_element;
+        return show_element;
     };
 
     var controlVisibility = function controlVisibility(current_landing_company_shortcode, client_has_mt_company, mt5_login_list) {
@@ -29277,9 +29271,8 @@ var FinancialAssessment = function () {
             event.preventDefault();
             submitForm();
         });
-        // TODO [->svg]
         BinarySocket.wait('landing_company').then(function () {
-            if (/^(costarica|svg|maltainvest)$/.test(Client.get('landing_company_shortcode'))) {
+            if (/^(svg|maltainvest)$/.test(Client.get('landing_company_shortcode'))) {
                 getElementById('risk_disclaimer').setVisibility(1);
             }
         });
@@ -29651,8 +29644,7 @@ var LimitsInit = function () {
                 elementTextContent(el_withdraw_limit, localize('Your [_1] day withdrawal limit is currently [_2] [_3] (or equivalent in other currency).', [limits.num_of_days, currency, days_limit]));
                 elementTextContent(el_withdrawn, localize('You have already withdrawn the equivalent of [_1] [_2] in aggregate over the last [_3] days.', [currency, limits.withdrawal_for_x_days_monetary, limits.num_of_days]));
                 elementTextContent(el_withdraw_limit_agg, localize('Therefore your current immediate maximum withdrawal (subject to your account having sufficient funds) is [_1] [_2] (or equivalent in other currency).', [currency, remainder]));
-            } else if (Client.get('landing_company_shortcode') === 'costarica' || Client.get('landing_company_shortcode') === 'svg') {
-                // TODO [->svg]
+            } else if (Client.get('landing_company_shortcode') === 'svg') {
                 elementTextContent(el_withdraw_limit, localize('Your withdrawal limit is [_1] [_2].', [currency, days_limit]));
                 elementTextContent(el_withdrawn, localize('You have already withdrawn [_1] [_2].', [currency, limits.withdrawal_since_inception_monetary]));
                 elementTextContent(el_withdraw_limit_agg, localize('Therefore your current immediate maximum withdrawal (subject to your account having sufficient funds) is [_1] [_2].', [currency, remainder]));
@@ -30291,8 +30283,7 @@ var PersonalDetails = function () {
             var account_status = State.getResponse('get_account_status').status;
             get_settings_data = State.getResponse('get_settings');
             is_fully_authenticated = checkStatus(account_status, 'authenticated');
-            // TODO [->svg]
-            has_changeable_fields = (Client.get('landing_company_shortcode') === 'costarica' || Client.get('landing_company_shortcode') === 'svg') && !is_fully_authenticated;
+            has_changeable_fields = Client.get('landing_company_shortcode') === 'svg' && !is_fully_authenticated;
 
             if (!residence) {
                 displayResidenceList();
@@ -32127,7 +32118,6 @@ var LostPassword = function () {
     var responseHandler = function responseHandler(response) {
         if (response.verify_email) {
             $('#password_reset_description').setVisibility(0);
-            $('#password_reset_social').setVisibility(0);
             $('#check_spam').setVisibility(1);
             if (isBinaryApp()) {
                 $(form_id).setVisibility(0);
@@ -33951,12 +33941,11 @@ var RealAccOpening = function () {
             if (AccountOpening.redirectAccount()) return;
 
             BinarySocket.wait('landing_company', 'get_account_status').then(function () {
-                // TODO [->svg]
                 var is_unwelcome_uk = State.getResponse('get_account_status.status').some(function (status) {
                     return status === 'unwelcome';
                 }) && /gb/.test(Client.get('residence'));
 
-                if (State.getResponse('authorize.upgradeable_landing_companies').indexOf('svg') !== -1 || State.getResponse('authorize.upgradeable_landing_companies').indexOf('costarica') !== -1) {
+                if (State.getResponse('authorize.upgradeable_landing_companies').indexOf('svg') !== -1) {
                     getElementById('risk_disclaimer').setVisibility(1);
                 }
                 if (is_unwelcome_uk) {
@@ -34695,8 +34684,7 @@ var SetCurrency = function () {
             var landing_company = State.getResponse('landing_company');
             var currencies = State.getResponse('payout_currencies');
 
-            // TODO [->svg]
-            if (Client.get('landing_company_shortcode') === 'costarica' || Client.get('landing_company_shortcode') === 'svg') {
+            if (Client.get('landing_company_shortcode') === 'svg') {
                 currencies = getCurrencies(landing_company);
             }
             var $fiat_currencies = $('<div/>');
