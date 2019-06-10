@@ -19930,6 +19930,7 @@ var Highchart = function () {
         purchase_time = void 0,
         now_time = void 0,
         end_time = void 0,
+        exit_time = void 0,
         entry_tick_time = void 0,
         sell_time = void 0,
         is_sold_before_expiry = void 0,
@@ -19963,6 +19964,7 @@ var Highchart = function () {
         sell_time = +contract.is_path_dependent && contract.status !== 'sold' ? exit_tick_time : parseInt(contract.sell_time);
         is_sold_before_expiry = end_time - sell_time > 1; // fix odd timings when date_expiry is 1 second after exit_tick_time
         prev_barriers = [];
+        exit_time = is_sold_before_expiry ? sell_time : exit_tick_time || end_time;
     };
 
     // initialize the chart only once with ticks or candles data
@@ -20033,7 +20035,7 @@ var Highchart = function () {
             display_decimals: display_decimals,
             type: type,
             entry_time: (entry_tick_time || start_time) * 1000,
-            exit_time: exit_tick_time * 1000,
+            exit_time: exit_tick_time ? exit_tick_time * 1000 : exit_time ? exit_time * 1000 : null, // eslint-disable-line do-not-nest-ternary
             has_zone: true,
             height: Math.max(el.parentElement.offsetHeight, 450),
             radius: 2,
@@ -20547,7 +20549,7 @@ var Highchart = function () {
     };
 
     var calculateGranularity = function calculateGranularity() {
-        var duration = Math.min(exit_tick_time, now_time) - (purchase_time || start_time);
+        var duration = Math.min(exit_time, now_time) - (purchase_time || start_time);
         var granularity = void 0;
         // days * hours * minutes * seconds
         if (duration <= 60 * 60) granularity = 0; // less than 1 hour
