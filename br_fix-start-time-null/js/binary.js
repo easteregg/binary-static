@@ -22513,10 +22513,7 @@ var DigitDisplay = function () {
 
     var renderTable = function renderTable(id_render, poc) {
         var el_tick_chart = document.getElementById(id_render);
-        if (!el_tick_chart || el_tick_chart.childElementCount < 3) {
-            init(id_render, poc);
-            return;
-        }
+        if (!el_tick_chart || el_tick_chart.childElementCount < 3) return;
 
         if (DigitTicker.isInitialized()) {
             DigitTicker.update(poc.tick_stream.length, {
